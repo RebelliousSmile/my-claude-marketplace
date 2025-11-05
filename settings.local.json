@@ -1,44 +1,16 @@
 {
   "permissions": {
-    "allow": [
-      "WebFetch(domain:docs.guesty.com)",
-      "Bash(tree:*)",
-      "Bash(git checkout:*)",
-      "Bash(cat:*)",
-      "Bash(vendor/bin/bdi detect:*)",
-      "Bash(PANTHER_CHROME_BINARY=/usr/bin/chromium-browser composer test-e2e-halpades)",
-      "Bash(echo \"Exit code: $?\")",
-      "WebFetch(domain:pennylane.readme.io)",
-      "WebFetch(domain:help.pennylane.com)",
-      "WebFetch(domain:docs.heybilly.io)",
-      "Read(//home/tnn/Projets/SmartLockers/**)",
-      "Bash(psql:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(vendor/bin/phpstan:*)",
-      "SlashCommand(/task:*)",
-      "Bash(./tests/integration/test_concurrent_http_locks.sh:*)",
-      "Bash(./tests/integration/test_multi_instances.sh:*)",
-      "Bash(git log:*)",
-      "Bash(kill:*)",
-      "Bash(if [ -f /tmp/planet_last_response.xml ])",
-      "Bash(then echo \"✅ XML capturé\")",
-      "Bash(else echo \"❌ Pas de fichier XML\")",
-      "Bash(fi)",
-      "Bash(else echo \"Fichier non trouvé. Relancez la requête Bruno d''abord.\")",
-      "Bash(awk '{print $9, \"\"\"\"(\"\"\"\" $5 \"\"\"\")\"\"\"\"}')",
-      "Bash(head -20 /home/tnn/Projets/SmartLockers/client-manager/smartlockers-middleware-bruno/onet/agents_{id}_materiel.bru)",
-      "Bash(for file in /home/tnn/Projets/SmartLockers/client-manager/smartlockers-middleware-bruno/onet/agents_*.bru)",
-      "Bash(head -5 \"$file\")",
-      "Bash(python3:*)",
-      "Bash(git reset:*)",
-      "Bash(lsof:*)",
-      "Bash(xargs kill:*)",
-      "Bash(awk:*)",
-      "Skill(task-definition)",
-      "Skill(documentation-sync)"
-    ],
-    "deny": [],
-    "ask": []
-  }
+    "defaultMode": "bypassPermissions",
+    "additionalDirectories": [
+      "./code",
+      "./documentation"
+    ]
+  },
+  "sandbox": {
+    "enabled": false,
+    "autoAllowBashIfSandboxed": false,
+    "allowUnsandboxedCommands": true
+  },
+  "includeCoAuthoredBy": true,
+  "cleanupPeriodDays": 30
 }
