@@ -1,12 +1,16 @@
 ---
 name: code-review
-description: Perform structured code review following project checklist. Use when reviewing code changes, PRs, or branches. Covers functionality, quality, security, performance, and testing.
+description: Perform structured code review following project checklist. Use when reviewing code changes, PRs, or branches. Covers functionality, quality, security, performance, and testing. (project)
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Code Review - SmartLockers Client Manager
 
-Perform a comprehensive code review following the SmartLockers project standards.
+Perform a **quick** structured code review following the SmartLockers project standards.
+
+**⚡ Review Rapide (< 5 fichiers, < 500 lignes, 5 min)**
+
+Pour reviews approfondies (>= 5 fichiers ou audits complets avec scoring), utiliser : `/review --depth=full`
 
 ## Instructions
 
@@ -61,7 +65,9 @@ When this skill is invoked, perform a structured code review using the template 
 
 ## Output Format
 
-Provide a review report in markdown format:
+**⚠️ FORMAT CRITIQUE** : Compatible avec `/review-and-fix`
+
+Provide a review report in markdown format using **EXACTLY this structure** :
 
 ```markdown
 # Code Review Report
@@ -69,23 +75,29 @@ Provide a review report in markdown format:
 **Branch/PR:** [name]
 **Reviewed files:** [count]
 **Date:** [today]
+**Review Type:** ⚡ Quick (Skill)
 
 ## Summary
 [2-3 sentence overview]
 
-## Files Changed
-- file1.php
-- file2.php
-
 ## Findings
 
-### Critical Issues
-- [ ] Issue 1 (file:line)
-- [ ] Issue 2 (file:line)
+### 🔴 Critical Issues
 
-### Suggestions
-- [ ] Suggestion 1 (file:line)
-- [ ] Suggestion 2 (file:line)
+1. **[🔴] CRITIQUE** : `file.php:123` - Cache-first manquant (utiliser api_resilient_call())
+2. **[🔴] CRITIQUE** : `file.php:287` - Input non sanitisé (utiliser sanitize_client_name())
+
+**FORMAT OBLIGATOIRE** : `**[🔴] CRITIQUE** : \`file.php:line\` - Description (suggestion)`
+
+### 🟡 Warnings
+
+1. **[🟡] AVERTISSEMENT** : `file.php:180` - Variable $lockerId (utiliser $lockerUuid)
+2. **[🟡] AVERTISSEMENT** : `file.php:202` - PHPDoc incomplète (ajouter @return)
+
+### 🟢 Suggestions
+
+1. **[🟢] SUGGESTION** : `file.php:345` - Extraire logique validation
+2. **[🟢] SUGGESTION** : `file.php:489` - Ajouter exemple dans PHPDoc
 
 ### Positive Points
 - Good practice 1
@@ -97,6 +109,7 @@ Provide a review report in markdown format:
 - Security: ✅/⚠️/❌
 - Performance: ✅/⚠️/❌
 - Testing: ✅/⚠️/❌
+- SmartLockers Patterns: ✅/⚠️/❌
 
 ## Decision
 - [ ] Approve
