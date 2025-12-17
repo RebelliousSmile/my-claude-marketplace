@@ -2,8 +2,8 @@
   "permissions": {
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [
-      "./code",
-      "./documentation"
+      "./cabpart_front",
+      "./ressources"
     ]
   },
   "sandbox": {
