@@ -510,3 +510,48 @@ TodoWrite([
 
 ```
 User: /task documentation/tasks/add-cache-ttl-validation.md
+
+Claude: [Reads task file]
+Claude: Task complexity: SIMPLE (< 2h)
+Claude: [Creates TodoWrite with 3 items]
+Claude: [Implements directly without planning]
+Claude: [Marks todos complete as work progresses]
+Claude: [Runs tests/validation]
+Claude: Task completed!
+```
+
+### Example PLAN Mode (> 2h)
+
+```
+User: /task documentation/tasks/implement-oauth2-beds24.md
+
+Claude: [Reads task file]
+Claude: Task complexity: COMPLEX (> 2h estimated)
+Claude: Entering PLAN mode for user validation...
+Claude: [Uses EnterPlanMode tool]
+Claude: [Explores codebase, reads related files]
+Claude: [Writes plan to documentation/tasks/plans/oauth2-beds24-plan.md]
+Claude: [Uses ExitPlanMode when plan is ready]
+User: [Reviews plan, approves or requests changes]
+Claude: [Implements approved plan]
+Claude: [Runs tests/validation]
+Claude: Task completed!
+```
+
+---
+
+## Error Handling
+
+- **Task file not found**: Ask user to provide correct path
+- **Ambiguous requirements**: Use AskUserQuestion to clarify
+- **Missing dependencies**: Document in plan, ask user before proceeding
+- **Test failures**: Fix issues before marking task complete
+
+---
+
+## Notes
+
+- Always consult memory-bank for project conventions before implementation
+- Use parallel agent launches when independent work is possible
+- Prefer editing existing files over creating new ones
+- Follow project's Definition of Done for all tasks
