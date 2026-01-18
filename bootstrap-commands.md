@@ -509,7 +509,7 @@ name: billing-report
 description: Generate billing report from git commits between two dates, grouped by category with time estimation. Use when user needs invoicing, time tracking, or work summary from git history.
 allowed-tools: Read, Write, Bash, Glob
 argument-hint: <start_date> <end_date>
-model: claude-sonnet-4-5-20250929
+model: sonnet
 ---
 
 # Billing Report Generator

@@ -1,7 +1,7 @@
 ---
 name: claude-code-optimizer
 description: Expert in Claude Code configuration and optimization. Use PROACTIVELY when users ask about improving their Claude Code setup, auditing .claude/ configuration, creating or optimizing skills/agents/commands/hooks, reviewing CLAUDE.md files, or troubleshooting Claude Code issues.
-tools: Read, Grep, Glob, Bash, WebFetch
+tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch
 model: inherit
 ---
 

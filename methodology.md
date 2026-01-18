@@ -415,6 +415,43 @@ Write: src/new-file.ts       # Créer fichier
 Edit: src/existing.ts        # Modifier fichier
 ```
 
+### 9.3 Fonctionnalités Avancées (Claude Code 2.0+)
+
+#### Checkpoints & Rewind
+
+Claude Code sauvegarde automatiquement l'état avant chaque modification.
+
+| Action | Raccourci | Description |
+|--------|-----------|-------------|
+| Rewind | `Esc` × 2 | Annuler les dernières modifications |
+| Rewind | `/rewind` | Revenir à un point précédent |
+
+**Quand utiliser** :
+- Modification non désirée appliquée
+- Exploration d'une approche alternative
+- Retour arrière après erreur
+
+#### Background Tasks
+
+Exécuter des commandes longues sans bloquer la conversation.
+
+| Action | Raccourci | Description |
+|--------|-----------|-------------|
+| Lancer en arrière-plan | `Ctrl+B` | Dev servers, builds longs |
+| Lister les tâches | `/tasks` | Voir les tâches actives |
+
+**Cas d'usage** :
+- Démarrer un serveur de développement
+- Exécuter des tests E2E longs
+- Builds et compilations
+
+#### LSP Tool (Intelligence de Code)
+
+Outil pour la navigation dans le code :
+- Go-to-definition
+- Find references
+- Hover documentation
+
 ---
 
 ## 10. Maintenance

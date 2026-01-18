@@ -37,8 +37,9 @@ When invoked, this skill will:
 ---
 name: ux-standards-validator
 description: Validate UI/UX design against ergonomics standards, brand guidelines, and accessibility rules (WCAG AA/AAA). Use when reviewing interfaces, checking accessibility, validating responsive design, or when user mentions "UI", "UX", "design", "accessibility", "a11y", "responsive", "mobile", "WCAG".
-allowed-tools: Read, Grep, Glob
+version: 1.0.0
 ---
+# Note: Skills inherit permissions from parent context (no allowed-tools field)
 
 # UX Standards Validator
 
@@ -158,8 +159,9 @@ If project documentation is missing:
 ---
 name: seo-validator
 description: Validate SEO implementation against best practices. Use when checking meta tags, structured data, semantic HTML, performance, mobile-friendliness, or when user mentions "SEO", "search", "Google", "meta tags", "keywords", "ranking".
-allowed-tools: Read, Grep, Glob
+version: 1.0.0
 ---
+# Note: Skills inherit permissions from parent context (no allowed-tools field)
 
 # SEO Validator
 
@@ -286,8 +288,9 @@ Grep pattern="SEO|meta tags|Open Graph|Schema.org"
 ---
 name: memory-bank-validator
 description: Validate memory bank consistency and integrity. Use when user mentions "memory", "documentation", "context", or asks about context usage, documentation health, or CLAUDE.md validation.
-allowed-tools: Read, Glob, Bash
+version: 1.0.0
 ---
+# Note: Skills inherit permissions from parent context (no allowed-tools field)
 
 # Memory Bank Validator
 
@@ -376,8 +379,9 @@ Would you like me to:
 ---
 name: task-definition
 description: Generate structured task definition files for the /task command. Use when user needs to create task files, define implementation tasks, or mentions "create task", "define task", "task file".
-allowed-tools: Read, Write, Glob
+version: 1.0.0
 ---
+# Note: Skills inherit permissions from parent context (no allowed-tools field)
 
 # Task Definition Generator
 
