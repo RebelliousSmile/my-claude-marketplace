@@ -1,8 +1,8 @@
 # Méthodologie Claude Code v3
 
-**Version**: 3.0.0
-**Compatible avec**: Claude Code 2.0.45+
-**Dernière mise à jour**: Janvier 2025
+**Version**: 3.1.0
+**Compatible avec**: Claude Code 2.1+
+**Dernière mise à jour**: Janvier 2026
 
 ---
 
@@ -66,17 +66,41 @@ projet/
 
 ## 3. Composants Claude Code
 
-### 3.1 Tableau de Décision
+### 3.1 Agents Natifs (Built-in)
+
+Claude Code inclut des agents natifs optimisés. **Utiliser en priorité avant les agents custom.**
+
+| Agent | Model | Tools | Quand l'utiliser |
+|-------|-------|-------|------------------|
+| **Explore** | Haiku | Read-only | Exploration codebase, recherche fichiers, questions sur le code |
+| **Plan** | Inherit | Read-only | Recherche approfondie en mode plan |
+| **general-purpose** | Inherit | Tous | Tâches complexes multi-étapes nécessitant écriture |
+
+**Agents utilitaires:**
+| Agent | Model | Usage |
+|-------|-------|-------|
+| **Bash** | - | Commandes terminal dans contexte séparé |
+| **statusline-setup** | Sonnet | Configuration `/statusline` |
+| **Claude Code Guide** | Haiku | Questions sur fonctionnalités Claude Code |
+
+**Recommandations:**
+1. **Exploration** → Utiliser `Explore` (rapide, économique)
+2. **Recherche + Plan** → Utiliser `Plan`
+3. **Tâches complexes** → Utiliser `general-purpose` ou agent custom spécialisé
+4. **Rôle métier spécifique** → Agent custom (code-reviewer, debugger, etc.)
+
+### 3.2 Tableau de Décision
 
 | Composant | Trigger | Contexte | Tools | Cas d'Usage |
 |-----------|---------|----------|-------|-------------|
 | **CLAUDE.md** | Toujours | Partagé | N/A | Conventions critiques, stack |
-| **Skill** | Model-invoked | Partagé | Hérité | Expertise domaine, patterns |
-| **Agent** | Model ou User | **Isolé** | Configurable | Tâches complexes, rôles spécialisés |
-| **Command** | User (`/cmd`) | Partagé | Configurable | Workflows, raccourcis |
+| **Skill** | Model-invoked | Partagé/Fork | Hérité | Expertise domaine, patterns |
+| **Agent natif** | Model | **Isolé** | Prédéfini | Exploration, plan, tâches génériques |
+| **Agent custom** | Model ou User | **Isolé** | Configurable | Tâches complexes, rôles spécialisés |
+| **Command** | User (`/cmd`) | Partagé/Fork | Configurable | Workflows, raccourcis |
 | **Hook** | Events système | N/A | N/A | Validation, automation |
 
-### 3.2 Différences Clés
+### 3.3 Différences Clés
 
 #### Skills vs Agents
 
@@ -115,14 +139,22 @@ projet/
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 3.3 Frontmatter Reference
+### 3.4 Frontmatter Reference
 
 #### Skill SKILL.md
 ```yaml
 ---
-name: skill-name                    # Requis: kebab-case
-description: This skill should be used when the user asks to "...", "...", or mentions "...".  # Requis: 3ème personne + triggers
-version: 1.0.0                      # Optionnel mais recommandé
+name: skill-name                    # Requis: kebab-case (max 64 chars)
+description: This skill should be used when...  # Requis: triggers explicites (max 1024 chars)
+# --- Optionnels ---
+allowed-tools: Read, Grep, Glob     # Restreindre les outils disponibles
+model: sonnet                       # Override du modèle
+context: fork                       # Exécution isolée (contexte séparé)
+agent: general-purpose              # Type d'agent si context: fork
+user-invocable: true                # Visible dans menu slash (défaut: true)
+disable-model-invocation: false     # Empêcher invocation auto par le modèle
+hooks:                              # Hooks spécifiques à la skill
+  PreToolUse: [...]
 ---
 ```
 
@@ -130,20 +162,17 @@ version: 1.0.0                      # Optionnel mais recommandé
 ```yaml
 ---
 name: agent-name                    # Requis: kebab-case
-description: This agent should be used when... # Requis: avec <example> blocks
-
-<example>
-Context: [situation]
-user: "[message]"
-assistant: "[response]"
-<commentary>
-[Why this triggers the agent]
-</commentary>
-</example>
-
-model: inherit                      # Optionnel: inherit, sonnet, opus, haiku
-color: blue                         # Optionnel: couleur d'affichage
-tools: ["Read", "Write", "Grep"]    # Optionnel: restriction d'outils
+description: Expert in... Use PROACTIVELY when... # Requis: avec triggers
+# --- Optionnels ---
+tools: Read, Write, Grep            # Outils autorisés (hérite tout si omis)
+disallowedTools: Bash               # Outils interdits
+model: inherit                      # inherit, sonnet, opus, haiku
+permissionMode: default             # default, acceptEdits, dontAsk, bypassPermissions, plan
+skills: skill-a, skill-b            # Skills à charger (contenu injecté)
+hooks:                              # Hooks spécifiques à l'agent
+  PreToolUse: [...]
+  PostToolUse: [...]
+  Stop: [...]
 ---
 ```
 
@@ -151,10 +180,15 @@ tools: ["Read", "Write", "Grep"]    # Optionnel: restriction d'outils
 ```yaml
 ---
 description: Brief description      # Pour /help
+# --- Optionnels ---
 allowed-tools: Read, Write, Bash(git:*)  # Restriction d'outils
 argument-hint: [arg1] [arg2]        # Documentation des arguments
-model: sonnet                       # Optionnel: override du modèle
-disable-model-invocation: true      # Optionnel: empêche invocation automatique
+model: sonnet                       # Override du modèle
+context: fork                       # Exécution isolée
+agent: general-purpose              # Type d'agent si context: fork
+disable-model-invocation: true      # Empêcher invocation via Skill tool
+hooks:                              # Hooks spécifiques
+  PreToolUse: [...]
 ---
 ```
 
@@ -169,7 +203,8 @@ disable-model-invocation: true      # Optionnel: empêche invocation automatique
 | `PreToolUse` | Avant exécution d'un outil | Validation, sécurité |
 | `PostToolUse` | Après exécution d'un outil | Logging, post-processing |
 | `Stop` | Quand l'agent principal s'arrête | Vérification de complétion |
-| `SubagentStop` | Quand un subagent s'arrête | Validation subagent |
+| `SubagentStart` | Quand un subagent démarre | Setup environnement |
+| `SubagentStop` | Quand un subagent s'arrête | Cleanup, validation |
 | `SessionStart` | Début de session | Chargement contexte |
 | `UserPromptSubmit` | Soumission d'un prompt | Guidance, warnings |
 
@@ -478,33 +513,46 @@ Lors de mises à jour Claude Code:
 ## Annexe A : Checklist de Validation
 
 ### Skill
-- [ ] `SKILL.md` en majuscules
+- [ ] `SKILL.md` en majuscules (case-sensitive)
 - [ ] `---` sur ligne 1 (pas de ligne vide avant)
-- [ ] `name`: kebab-case
-- [ ] `description`: 3ème personne + triggers explicites
-- [ ] PAS de `allowed-tools`
-- [ ] `version` présent
+- [ ] `name`: kebab-case (max 64 chars)
+- [ ] `description`: triggers explicites (max 1024 chars)
+- [ ] `allowed-tools`: optionnel, pour restreindre les outils
+- [ ] `context: fork` si isolation nécessaire
+- [ ] `user-invocable`: false si skill interne uniquement
 
 ### Agent
 - [ ] Fichier dans `.claude/agents/`
 - [ ] `name`: kebab-case
-- [ ] `description` avec `<example>` blocks
-- [ ] `model`: inherit/sonnet/opus/haiku
-- [ ] `tools`: format array si présent
+- [ ] `description`: avec "PROACTIVELY" ou triggers clairs
+- [ ] `model`: inherit (défaut), sonnet, opus, haiku
+- [ ] `tools`: liste si restriction nécessaire
+- [ ] `disallowedTools`: outils à interdire
+- [ ] `permissionMode`: si besoin de permissions spéciales
+- [ ] `skills`: si skills à charger dans l'agent
 
 ### Command
 - [ ] Fichier dans `.claude/commands/`
 - [ ] `description` présent (pour /help)
 - [ ] `allowed-tools` si restriction nécessaire
 - [ ] `$ARGUMENTS` ou `$1`, `$2` pour paramètres
+- [ ] `context: fork` si isolation nécessaire
+- [ ] `disable-model-invocation`: true si invocation manuelle uniquement
 
 ### Hook
-- [ ] Event valide: PreToolUse, PostToolUse, Stop, SubagentStop, SessionStart, UserPromptSubmit
+- [ ] Event valide: PreToolUse, PostToolUse, Stop, SubagentStart, SubagentStop, SessionStart, UserPromptSubmit
 - [ ] `type`: command ou prompt
 - [ ] `timeout` raisonnable
+- [ ] `once: true` si exécution unique par session
+
+### Agents Natifs
+- [ ] Utiliser `Explore` pour exploration (rapide, économique)
+- [ ] Utiliser `Plan` pour recherche en mode plan
+- [ ] Utiliser `general-purpose` pour tâches complexes génériques
+- [ ] Créer agent custom seulement si rôle métier spécifique
 
 ---
 
 **Document Type**: Méthodologie
-**Compatible avec**: Claude Code 2.0.45+
-**Version**: 3.0.0
+**Compatible avec**: Claude Code 2.1+
+**Version**: 3.1.0
