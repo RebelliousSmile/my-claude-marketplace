@@ -1,73 +1,109 @@
 ---
 name: code-review
 description: Perform structured code review following project checklist. Use when reviewing code changes, PRs, or branches. Covers functionality, quality, security, performance, and testing. (project)
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash, Write
+argument-hint: [branch-or-path]
 ---
 
-# Code Review - SmartLockers Client Manager
+# Code Review
 
-Perform a **quick** structured code review following the SmartLockers project standards.
+Perform structured code reviews following project-specific standards.
 
-**⚡ Quick Review (< 5 files, < 500 lines, 5 min)**
+## Prerequisites
 
-For in-depth reviews (>= 5 files or complete audits with scoring), use: `/review --depth=full`
+**MANDATORY** - Read project configuration:
+```
+Read documentation/project-config.md
+```
 
-## Instructions
+Extract:
+- Stack (language, framework)
+- Test commands (VALIDATE, TEST_UNIT)
+- Code conventions
+- Project-specific patterns
 
-When this skill is invoked, perform a structured code review using the template below.
+## Quick Start
 
-### What to do:
+1. **User provides**: Branch name, file path, or module
+2. **Skill analyzes**: Git diff, changed files, patterns
+3. **Skill generates**: Review report saved to `documentation/reviews/`
 
-1. **Identify the scope**:
-   - Ask the user for branch/PR name if not provided
-   - Use `git diff` to see changed files
-   - Use `git log` to see commit history
+## Workflow
 
-2. **Review each file** against the checklist below
+### Step 1: Identify Scope
 
-3. **Generate a structured report** using the template
+If no scope provided, ask user:
+```
+Which scope to review?
+A. Git branch (changes since main/master)
+B. Specific directory or module
+C. Specific file(s)
+D. Last N commits
+```
 
-## Review Checklist
+### Step 2: Gather Changes
 
-### Functionality
+```bash
+# For branch review
+git diff main...HEAD --name-status
+git log main...HEAD --oneline
+
+# For specific files
+git diff HEAD~1 -- path/to/file
+
+# For directory
+git diff HEAD~1 -- src/module/
+```
+
+### Step 3: Review Against Checklist
+
+Review each file against these categories:
+
+#### 1. Functionality
 - [ ] Code works as intended
 - [ ] Edge cases handled
 - [ ] Error handling appropriate
+- [ ] Return types consistent
 
-### Code Quality
-- [ ] Follows project conventions (snake_case, function prefixes: `client_`, `api_`, `provider_`, `db_`, `auth_`)
+#### 2. Code Quality
+- [ ] Follows project naming conventions (from project-config.md)
 - [ ] Clear and readable
 - [ ] No duplicated code
 - [ ] Functions are focused and small
 
-### Security
+#### 3. Security
 - [ ] No sensitive data exposed
 - [ ] Input validation present
 - [ ] Authentication/authorization correct
+- [ ] No injection vulnerabilities
 
-### Performance
+#### 4. Performance
 - [ ] No obvious performance issues
 - [ ] Database queries optimized
-- [ ] Caching used appropriately (cache-first pattern)
+- [ ] Caching used appropriately
+- [ ] No unnecessary loops
 
-### Testing
+#### 5. Testing
 - [ ] Tests cover new functionality
-- [ ] Tests pass (PHPStan level 6)
-- [ ] Manual testing completed
+- [ ] Tests pass (run VALIDATE from project-config.md)
+- [ ] Edge cases tested
 
-### SmartLockers Specific
-- [ ] Functions use proper prefixes
-- [ ] Manual `require_once` updated if new files added
-- [ ] cache-first pattern respected (only update cache on HTTP 2xx)
-- [ ] PHPDoc comments present
-- [ ] Bearer token authentication (no sessions)
-- [ ] Database schema matches `documentation/architecture/database-schema-complete.md`
+#### 6. Project Patterns
+- [ ] Follows project architecture
+- [ ] Uses existing utilities
+- [ ] Consistent with codebase style
+- [ ] Project-specific patterns respected
+
+### Step 4: Generate Report
+
+**Issue severity:**
+- **CRITICAL**: Must fix - security, data loss, broken functionality
+- **WARNING**: Should fix - bugs, bad patterns, maintainability
+- **SUGGESTION**: Nice to have - style, minor improvements
 
 ## Output Format
 
-**⚠️ CRITICAL FORMAT**: Compatible with `/review-and-fix`
-
-Provide a review report in markdown format using **EXACTLY this structure**:
+**CRITICAL FORMAT**: Compatible with `/review-and-fix`
 
 ```markdown
 # Code Review Report
@@ -75,41 +111,36 @@ Provide a review report in markdown format using **EXACTLY this structure**:
 **Branch/PR:** [name]
 **Reviewed files:** [count]
 **Date:** [today]
-**Review Type:** ⚡ Quick (Skill)
+**Review Type:** Quick (Skill)
 
 ## Summary
 [2-3 sentence overview]
 
 ## Findings
 
-### 🔴 Critical Issues
+### Critical Issues
 
-1. **[🔴] CRITICAL**: `file.php:123` - Missing cache-first (use api_resilient_call())
-2. **[🔴] CRITICAL**: `file.php:287` - Unsanitized input (use sanitize_client_name())
+1. **[CRITICAL]** `file.ext:123` - Description (suggestion)
 
-**MANDATORY FORMAT**: `**[🔴] CRITICAL**: \`file.php:line\` - Description (suggestion)`
+### Warnings
 
-### 🟡 Warnings
+1. **[WARNING]** `file.ext:180` - Description (suggestion)
 
-1. **[🟡] WARNING**: `file.php:180` - Variable $lockerId (use $lockerUuid)
-2. **[🟡] WARNING**: `file.php:202` - Incomplete PHPDoc (add @return)
+### Suggestions
 
-### 🟢 Suggestions
-
-1. **[🟢] SUGGESTION**: `file.php:345` - Extract validation logic
-2. **[🟢] SUGGESTION**: `file.php:489` - Add example in PHPDoc
+1. **[SUGGESTION]** `file.ext:345` - Description
 
 ### Positive Points
 - Good practice 1
 - Good practice 2
 
 ## Checklist Results
-- Functionality: ✅/⚠️/❌
-- Code Quality: ✅/⚠️/❌
-- Security: ✅/⚠️/❌
-- Performance: ✅/⚠️/❌
-- Testing: ✅/⚠️/❌
-- SmartLockers Patterns: ✅/⚠️/❌
+- Functionality: OK/Issues
+- Code Quality: OK/Issues
+- Security: OK/Issues
+- Performance: OK/Issues
+- Testing: OK/Issues
+- Project Patterns: OK/Issues
 
 ## Decision
 - [ ] Approve
@@ -120,27 +151,24 @@ Provide a review report in markdown format using **EXACTLY this structure**:
 [If changes requested, list specific actions]
 ```
 
+### Step 5: Save Report
+
+Save to: `documentation/reviews/review-{YYYY-MM-DD}-{scope}.md`
+
 ## Important Notes
 
-- Always reference file:line for issues
+- Always reference `file:line` for issues
 - Be specific and constructive
-- Prioritize critical issues (security, data integrity, cache-first violations)
-- Check that PHPStan passes before approving
+- Prioritize critical issues (security, data integrity)
+- Run project validation before approving
 
 ## Historical Reference
 
-**Before starting a review**, check `documentation/reviews/` for similar past reviews:
+Check `documentation/reviews/` for past reviews to maintain consistency:
 ```bash
 ls documentation/reviews/
 ```
 
-Use these as reference to:
-- Maintain consistency with project review standards
-- Learn from previously identified patterns
-- Apply same rigor as past reviews
-- Avoid repeating issues already fixed
+## Integration
 
-**Example past reviews:**
-- `code-review-async-concurrency.md` - Concurrency and locks patterns
-- `code-review-test-strategy-70-20-10.md` - Testing strategy validation
-- `code-review-client-configuration.md` - Client configuration patterns
+The report format is compatible with `/review-and-fix` command for auto-fixing issues.

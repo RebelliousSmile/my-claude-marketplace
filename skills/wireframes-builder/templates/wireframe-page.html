@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pageTitle}} - Wireframe</title>
+    <style>
+        :root {
+            /* Colors - Replace with project design-system.md values */
+            --color-primary: #2563eb;
+            --color-primary-dark: #1d4ed8;
+            --color-secondary: #64748b;
+            --color-background: #ffffff;
+            --color-surface: #f8fafc;
+            --color-text: #1e293b;
+            --color-text-muted: #64748b;
+            --color-border: #e2e8f0;
+            --color-error: #dc2626;
+            --color-success: #16a34a;
+
+            /* Typography - Replace with project style-guide.md values */
+            --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'Fira Code', Consolas, monospace;
+
+            /* Spacing - 4px base */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-12: 48px;
+
+            /* Sizing */
+            --touch-target: 48px;
+            --border-radius: 6px;
+            --max-width: 1200px;
+        }
+
+        /* Reset */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-sans);
+            font-size: 16px;
+            color: var(--color-text);
+            background: var(--color-background);
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-primary);
+            color: white;
+            padding: var(--space-2) var(--space-4);
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Layout */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--space-4);
+        }
+
+        /* Header */
+        header {
+            background: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-4) 0;
+        }
+
+        header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-4);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        /* Navigation */
+        nav ul {
+            display: flex;
+            gap: var(--space-4);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            color: var(--color-text);
+            text-decoration: none;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--border-radius);
+            min-height: var(--touch-target);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        nav a:hover,
+        nav a:focus {
+            background: var(--color-surface);
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        nav a[aria-current="page"] {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            padding: var(--space-8) 0;
+            min-height: 60vh;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            padding: var(--space-6) 0;
+            margin-top: auto;
+        }
+
+        /* Typography */
+        h1 { font-size: 2.25rem; margin: 0 0 var(--space-4); }
+        h2 { font-size: 1.5rem; margin: var(--space-6) 0 var(--space-3); }
+        h3 { font-size: 1.25rem; margin: var(--space-4) 0 var(--space-2); }
+        p { margin: 0 0 var(--space-4); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: var(--touch-target);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            border-color: var(--color-border);
+            color: var(--color-text);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+
+        label {
+            display: block;
+            margin-bottom: var(--space-1);
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            min-height: var(--touch-target);
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: -1px;
+        }
+
+        .hint {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            margin-top: var(--space-1);
+        }
+
+        .error {
+            font-size: 0.875rem;
+            color: var(--color-error);
+            margin-top: var(--space-1);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: var(--space-4);
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: var(--space-4);
+        }
+
+        @media (min-width: 640px) {
+            .grid-2 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* Utilities */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Wireframe Annotations */
+        .wireframe-note {
+            background: #fef3c7;
+            border: 1px dashed #f59e0b;
+            border-radius: var(--border-radius);
+            padding: var(--space-2) var(--space-3);
+            font-size: 0.75rem;
+            color: #92400e;
+            margin: var(--space-2) 0;
+        }
+
+        .placeholder {
+            background: var(--color-surface);
+            border: 2px dashed var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-muted);
+            min-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <header>
+        <div class="container">
+            <a href="#" class="logo">{{projectName}}</a>
+            <nav aria-label="Main navigation">
+                <ul role="list">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#" aria-current="page">{{currentPage}}</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <div class="container">
+            <h1>{{pageTitle}}</h1>
+
+            <div class="wireframe-note">
+                Wireframe Note: Replace this content with actual page structure
+            </div>
+
+            <!-- Main content sections go here -->
+            <section aria-labelledby="section-1">
+                <h2 id="section-1">Section Title</h2>
+                <p>Section content placeholder.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; {{year}} {{projectName}}. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

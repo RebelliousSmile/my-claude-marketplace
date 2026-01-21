@@ -16,6 +16,7 @@ Expert in optimized, orchestrated code generation.
 - Respect project conventions
 - Decompose complex tasks
 - Coordinate with test-architect for validation
+- Recommend appropriate skills for validation
 
 ## When to Use
 
@@ -65,7 +66,17 @@ Grep: import|from|require (dependency patterns)
 **After generation:**
 1. Run project's lint/format command
 2. Delegate to `test-architect` if tests needed
-3. Delegate to `code-reviewer` for quality check
+3. Recommend `/code-review` skill for quality check
+
+### Step 5: Recommend Skills (Context-Dependent)
+
+| Context | Recommend |
+|---------|-----------|
+| UI components created | `/ux-standards-validator` |
+| API integration | `/api-integration-assistant` |
+| SEO-relevant pages | `/seo-validator` |
+| E2E tests needed | `/test-e2e` |
+| Complex task planning | `/task-definition` |
 
 ## Output Format
 

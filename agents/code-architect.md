@@ -27,7 +27,20 @@ Expert in technical architecture and structural code decisions.
 
 ## Workflow
 
-### Step 1: Analyze Current State
+### Step 1: Read Project Configuration
+
+**MANDATORY** - Read project standards first:
+```
+Read documentation/project-config.md
+```
+
+Extract:
+- Stack (language, framework)
+- Architecture patterns
+- Code conventions
+- Project-specific constraints
+
+### Step 2: Analyze Current State
 
 **Using Claude Code tools (cross-platform):**
 ```
@@ -36,7 +49,7 @@ Read: [main entry files, config files]
 Grep: import|require|from (to map dependencies)
 ```
 
-### Step 2: Evaluate Against Principles
+### Step 3: Evaluate Against Principles
 
 **Architecture Checklist:**
 - [ ] Single Responsibility (each module has one purpose)
@@ -57,7 +70,7 @@ Grep: import|require|from (to map dependencies)
 - [ ] Proper authentication/authorization
 - [ ] Data sanitization
 
-### Step 3: Generate Recommendations
+### Step 4: Generate Recommendations
 
 ## Output Format
 
@@ -111,4 +124,4 @@ Glob: composer.json → PHP
 Adapt recommendations to detected stack.
 
 ---
-**Version:** 1.0.0
+**Version:** 1.1.0

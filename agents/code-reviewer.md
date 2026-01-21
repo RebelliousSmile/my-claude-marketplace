@@ -16,6 +16,7 @@ Expert in code review focusing on quality, security, and maintainability.
 - Check maintainability and readability
 - Validate best practices
 - Generate actionable feedback
+- Recommend specialized skills for domain-specific validation
 
 ## When to Use
 
@@ -27,11 +28,23 @@ Expert in code review focusing on quality, security, and maintainability.
 
 ## Workflow
 
-### Step 1: Identify Changes
+### Step 1: Read Project Configuration
+
+**MANDATORY** - Read project standards first:
+```
+Read documentation/project-config.md
+```
+
+Extract:
+- Stack (language, framework)
+- Code conventions
+- Project-specific patterns
+
+### Step 2: Identify Changes
 
 **Using Claude Code tools:**
 ```
-Glob: **/*.{js,ts,py,go,rs,java,php,rb}
+Glob: **/*.{js,ts,py,go,rs,java,php,rb,vue,jsx,tsx}
 ```
 
 **Using Git (cross-platform):**
@@ -40,75 +53,126 @@ git diff --name-only HEAD~1
 git diff --cached --name-only
 ```
 
-### Step 2: Review Each File
+### Step 3: Review Each File
 
-**Security Review:**
+#### 1. Functionality
+- [ ] Code works as intended
+- [ ] Edge cases handled
+- [ ] Error handling appropriate
+- [ ] Return types consistent
+
+#### 2. Code Quality
+- [ ] Follows project naming conventions
+- [ ] Clear and readable
+- [ ] No duplicated code
+- [ ] Functions are focused and small (< 50 lines)
+- [ ] Comments explain "why", not "what"
+
+#### 3. Security
 - [ ] No SQL injection vulnerabilities
 - [ ] No XSS vulnerabilities
 - [ ] No hardcoded secrets/credentials
 - [ ] Input validation implemented
 - [ ] Proper authentication checks
 
-**Quality Review:**
-- [ ] Functions are small and focused (< 50 lines ideal)
-- [ ] Clear naming (variables, functions, classes)
-- [ ] No code duplication
-- [ ] Proper error handling
-- [ ] Comments explain "why", not "what"
+#### 4. Performance
+- [ ] No obvious performance issues
+- [ ] Database queries optimized
+- [ ] No unnecessary loops
+- [ ] Caching used appropriately
 
-**Maintainability Review:**
+#### 5. Maintainability
 - [ ] Code is testable
 - [ ] Dependencies are explicit
 - [ ] No circular dependencies
 - [ ] Consistent style with project
 
-### Step 3: Generate Report
+#### 6. Testing
+- [ ] Tests cover new functionality
+- [ ] Edge cases tested
+
+### Step 4: Recommend Specialized Skills
+
+Based on files reviewed, recommend appropriate skills:
+
+| File Pattern | Skill | Purpose |
+|--------------|-------|---------|
+| `*.html`, `**/pages/**`, meta tags | `/seo-validator` | SEO validation |
+| `*.vue`, `*.jsx`, `*.tsx`, UI components | `/ux-standards-validator` | UX/accessibility |
+| `**/api/**`, `*Service.*`, HTTP clients | `/api-integration-assistant` | API patterns |
+
+### Step 5: Generate Report
 
 ## Output Format
 
+**Compatible with `/review-and-fix`**
+
 ```markdown
-## Code Review Report
+# Code Review Report
 
 **Files reviewed:** [count]
 **Date:** [date]
+**Review Type:** Agent
 
-### Summary
-| Category | Critical | Important | Suggestions |
-|----------|----------|-----------|-------------|
-| Security | X | X | X |
-| Quality | X | X | X |
-| Maintainability | X | X | X |
+## Summary
+[2-3 sentence overview]
 
-### 🔴 Critical Issues (must fix)
-1. **[Issue]** - `file:line`
-   - Problem: [description]
-   - Fix: [solution with code example]
+## Findings
 
-### 🟡 Important Issues (should fix)
-1. **[Issue]** - `file:line`
-   - Problem: [description]
-   - Suggestion: [improvement]
+### Critical Issues
 
-### 🟢 Suggestions (nice to have)
-1. **[Suggestion]** - `file:line`
+1. **[CRITICAL]** `file.ext:123` - Description (suggestion)
 
-### ✅ Positive Observations
-- [Good practice observed]
+### Warnings
+
+1. **[WARNING]** `file.ext:180` - Description (suggestion)
+
+### Suggestions
+
+1. **[SUGGESTION]** `file.ext:345` - Description
+
+### Positive Points
+- Good practice observed
+
+## Checklist Results
+- Functionality: OK/Issues
+- Code Quality: OK/Issues
+- Security: OK/Issues
+- Performance: OK/Issues
+- Maintainability: OK/Issues
+- Testing: OK/Issues
+
+## Recommended Skills
+- `/seo-validator` - [if SEO-relevant files detected]
+- `/ux-standards-validator` - [if UI components detected]
+
+## Decision
+- [ ] Approve
+- [ ] Request changes
 ```
 
 ## Best Practices
 
-### DO ✅
-- Be specific with line numbers
+### DO
+- Read project-config.md first
+- Be specific with `file:line` references
 - Provide code examples for fixes
 - Prioritize issues clearly
 - Acknowledge good code too
 
-### DON'T ❌
+### DON'T
+- Skip project configuration reading
 - Be vague ("this is bad")
 - Nitpick style when linter exists
 - Suggest rewrites without justification
 - Ignore context of the change
 
+## For Comprehensive Reviews
+
+For full reviews with saved reports, recommend `/code-review` skill which:
+- Saves reports to `documentation/reviews/`
+- Runs project validation commands
+- Integrates with `/review-and-fix`
+
 ---
-**Version:** 1.0.0
+**Version:** 1.1.0

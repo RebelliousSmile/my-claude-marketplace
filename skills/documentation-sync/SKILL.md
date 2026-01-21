@@ -1,363 +1,257 @@
 ---
 name: documentation-sync
-description: Automatically maintain documentation after code changes. Use PROACTIVELY when functions are added/modified, tables created, APIs changed, or user mentions documentation updates. Triggers on PHP file modifications, schema changes, new functions without PHPDoc.
-tools: Read, Write, Edit, Grep, Glob, Bash
-model: inherit
+description: |
+  Unified documentation management skill. Modes: sync (code->docs), clean (cleanup),
+  quick-ref (create guide), check (verify integrity), optimize (reduce tokens).
+  Use PROACTIVELY after code changes or when user mentions documentation.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+argument-hint: [mode] [target]
 ---
 
-# Documentation Sync Skill
+# Documentation Sync
 
-Automates documentation updates after code changes.
+Unified skill for all documentation operations.
 
-## Proactive Triggering
+## Prerequisites
 
-**Use this skill automatically when:**
-- PHP functions are added or modified in `code/clients/`, `code/apis/`, `code/providers/`, `database/`
-- Database tables are created or modified
-- API routes are modified
-- Missing PHPDoc detected on public functions
-- User mentions: "doc", "documentation", "update doc", "sync doc"
+**MANDATORY** - Read project configuration:
+```
+Read documentation/project-config.md
+```
 
-## Step 0: Initialize Tracking
+Extract:
+- Stack (language, framework)
+- File patterns for source code
+- Documentation structure
+- Code conventions
 
-Use TodoWrite to create a tracking todo list with these tasks:
-- Analyze recent changes (git diff)
-- Identify impacted documentation files
-- Generate necessary updates
-- Validate consistency with code
-- Create update report
+## Modes
 
-Mark each task as `in_progress` before executing and `completed` after.
+| Mode | Command | Description |
+|------|---------|-------------|
+| **sync** | `/documentation-sync` | Sync code -> docs (default) |
+| **clean** | `/documentation-sync clean` | Cleanup temporary files |
+| **quick-ref** | `/documentation-sync quick-ref <name>` | Create quick reference guide |
+| **check** | `/documentation-sync check` | Verify documentation integrity |
+| **optimize** | `/documentation-sync optimize` | Audit and reduce token usage |
 
-## Step 1: Analyze Changes
+---
 
-### 1.1 Detect Modifications
+## Mode: sync (default)
 
-Execute `git diff` to identify recent changes:
+Synchronize code changes with documentation.
+
+### Trigger Conditions (Proactive)
+
+- Source code files added/modified
+- Database schemas changed
+- API routes modified
+- User mentions: "doc", "documentation", "update doc"
+
+### Workflow
+
+1. **Detect changes**: `git diff HEAD~1 --name-status`
+2. **Map to docs**: Determine which documentation needs updating
+3. **Generate updates**: Code docs, API docs, schema docs
+4. **Validate**: Check syntax, links, consistency
+5. **Apply with confirmation**: Never auto-modify without user approval
+
+### Code-to-Docs Mapping
+
+Adapt based on project structure from project-config.md:
+
+| Code Pattern | Documentation |
+|--------------|---------------|
+| `src/**/*.ts` | `docs/api/*.md` |
+| `lib/**/*.py` | `docs/reference/*.md` |
+| `schema/*.sql` | `docs/database/*.md` |
+| `routes/*` | `docs/api/endpoints.md` |
+
+### Usage
+
 ```bash
-git diff HEAD~1 HEAD --name-status
+/documentation-sync                    # Sync recent changes
+/documentation-sync sync src/          # Sync specific directory
+/documentation-sync sync HEAD~5..HEAD  # Sync commit range
 ```
 
-If user specifies a commit or branch, use that instead.
+---
 
-### 1.2 Categorize Changes
+## Mode: clean
 
-For each modified file, identify the category:
+Cleanup temporary documentation files.
 
-**Modified PHP code** (requires documentation update):
-- `clients/*.php` → `documentation/notebooks/client/*.md`
-- `apis/*.php` → `documentation/notebooks/api/*.md`
-- `providers/*.php` → `documentation/notebooks/api/*.md`
-- `database/*.php` → `documentation/notebooks/architecture/database/*.md` + `documentation/notebooks/architecture/database-schema-complete.md`
-- `routes/*.php` → `documentation/notebooks/api/*.md`
+### What Gets Cleaned
 
-**New functions added**:
-- Extract function signatures with `grep -n "^function "`
-- Check for PHPDoc presence
-- Identify prefix (`client_`, `api_`, `provider_`, `db_`, `auth_`)
+- `documentation/reviews/` - Completed code reviews (> 30 days)
+- `documentation/tasks/` - Finished tasks
+- Backup files (`*.backup-*`)
 
-**New tables/migrations**:
-- `code/scripts/migrate.php` modified → `documentation/notebooks/architecture/database/*.md`
-- New tables → `documentation/notebooks/architecture/database-schema-complete.md`
+### Workflow
 
-## Step 2: Identify Impacted Documents
+1. **Scan** for temporary/old files
+2. **Calculate** token/disk savings
+3. **Propose** archiving or deletion
+4. **Execute** with user confirmation only
 
-### 2.1 Automatic Mapping
+### Usage
 
-For each change, determine documentation files to update:
+```bash
+/documentation-sync clean              # Interactive cleanup
+/documentation-sync clean --dry-run    # Preview only
+```
 
-| Code Change | Impacted Documentation |
-|-------------|------------------------|
-| `clients/cosyhosting.php` | `documentation/notebooks/api/guesty.md` |
-| `clients/onet.php` | `documentation/notebooks/client/onet.md`, `documentation/notebooks/api/pilotphone.md` |
-| `clients/halpades.php` | `documentation/notebooks/client/halpades.md` |
-| `apis/sync.php` | `documentation/notebooks/api/sync.md` |
-| `apis/guesty.php` | `documentation/notebooks/api/guesty.md` |
-| `database/mysql.php` | `documentation/notebooks/architecture/database-schema-complete.md` |
-| `routes/*.php` | `documentation/notebooks/api/README.md` |
-| `authentication.php` | `documentation/authentication.md` |
+---
 
-### 2.2 Cross-cutting Documentation
+## Mode: quick-ref
 
-Some changes impact multiple documents:
+Create concise quick reference guides (< 2k tokens).
 
-**Architecture modified**:
-- Structural changes → `documentation/notebooks/architecture/03-component-architecture.md`
-- New patterns → `documentation/notebooks/architecture/patterns-architecture.md`
-- Security → `documentation/notebooks/architecture/06-security-architecture.md`
+### Guide Structure
 
-**New features**:
-- User stories → `documentation/notebooks/architecture/user-stories.md`
-- User flows → `documentation/notebooks/architecture/parcours-utilisateur.md`
+1. **TL;DR** (30 seconds) - Core concept
+2. **Quick Reference** (5 minutes) - Code examples
+3. **Deep Dive** - Links to full docs
 
-## Step 3: Generate Updates
+### Workflow
 
-### 3.1 API Documentation
+1. **Consult** existing documentation
+2. **Extract** key concepts and code examples
+3. **Generate** using template
+4. **Save** to appropriate location
 
-For each modified/added API function:
+### Usage
 
-1. **Read source code** and extract:
-   - Function signature
-   - Parameters (types, PHPDoc descriptions)
-   - Return value
-   - Usage example in code
+```bash
+/documentation-sync quick-ref auth-flow
+/documentation-sync quick-ref api-patterns
+/documentation-sync quick-ref testing
+```
 
-2. **Update corresponding Markdown file**:
-   ```markdown
-   ### `api_function_name($param1, $param2, $config)`
+---
 
-   **Description**: [From PHPDoc]
+## Mode: check
 
-   **Parameters**:
-   - `$param1` (type): Description
-   - `$param2` (type): Description
-   - `$config` (array): Client configuration
+Verify documentation coherence and integrity.
 
-   **Return**: array with structure:
-   ```php
-   [
-       'status' => 'success|error',
-       'data' => [...],
-       'source' => 'api|cache'
-   ]
-   ```
+### Checks Performed
 
-   **Example**:
-   ```php
-   $result = api_function_name($data, 'cosyhosting', $config);
-   ```
-   ```
+- Referenced files exist
+- No broken internal links
+- Token estimates vs actual sizes
+- Orphaned files detection
+- Consistency with CLAUDE.md references
 
-### 3.2 Database Documentation
+### Output
 
-For each new table or schema modification:
-
-1. **Create/update** `documentation/notebooks/architecture/database/{table_name}.md`:
-   ```markdown
-   # Table `{table_name}`
-
-   ## Description
-   [Functional description]
-
-   ## Schema
-   ```sql
-   CREATE TABLE {table_name} (
-       id INT PRIMARY KEY AUTO_INCREMENT,
-       -- columns...
-   );
-   ```
-
-   ## Columns
-   | Column | Type | Description | Constraints |
-   |--------|------|-------------|-------------|
-   | id | INT | Unique identifier | PRIMARY KEY |
-
-   ## Indexes
-   - PRIMARY KEY on `id`
-   - INDEX on `{column}` (query performance)
-
-   ## Relations
-   - Foreign key to `{other_table}`
-
-   ## Usage
-   Used by: `php_function()` in `file.php`
-   ```
-
-2. **Update** `documentation/notebooks/architecture/database-schema-complete.md`:
-   - Add new table in appropriate section
-   - Update diagrams if necessary
-
-### 3.3 PHPDoc Verification
-
-For each public function without PHPDoc or with incomplete PHPDoc:
-
-1. **Auto-generate** PHPDoc:
-   ```php
-   /**
-    * [Function description from name and code]
-    *
-    * @param type $param Parameter description
-    * @param array $config Client configuration
-    * @return array Return structure
-    * @throws Exception Description of possible errors
-    */
-   function api_example($param, array $config): array
-   {
-       // code...
-   }
-   ```
-
-2. **Request validation** from user before applying
-
-## Step 4: Validate Consistency
-
-### 4.1 Automatic Checks
-
-Execute these validations:
-
-**Code-documentation consistency**:
-- All public functions documented in .md files
-- Table schemas up to date in `database-schema-complete.md`
-- Testable and functional code examples
-
-**Conventions respected**:
-- `snake_case` naming with prefixes
-- PHPDoc present on all public functions
-- Standardized return format for APIs
-
-**Architecture respected**:
-- cache-first pattern used
-- Multi-tenant isolation (prefixed tables)
-- Bearer Token authentication only
-
-### 4.2 Consistency Report
-
-Generate a report:
 ```markdown
-## Documentation Consistency Report
-
-### ✅ Successful Validations
-- X functions documented
-- Y tables up to date in schema
-- Z examples tested
-
-### ⚠️ Warnings
-- Function `xyz()` without PHPDoc
-- Table `abc` missing in database-schema-complete.md
-- Obsolete example in api/sync.md
-
-### ❌ Critical Errors
-- Cache pattern not respected in `code/apis/xyz.php:123`
-- Multi-tenant isolation violated in `code/clients/abc.php:456`
+## Documentation Health Check
+- Valid files: X/X
+- Missing files: 0
+- Broken links: 0
+- Recommendations: [...]
 ```
 
-## Step 5: Propose Updates
+### Usage
 
-### 5.1 Suggested Modifications
+```bash
+/documentation-sync check
+```
 
-For each documentation file to modify:
+---
 
-1. **Display a diff** of proposed changes
-2. **Request confirmation** from user
-3. **Apply modifications** if accepted
+## Mode: optimize
 
-### 5.2 New Files
+Audit documentation and propose token reduction.
 
-If new documentation files are needed:
+### Analysis
 
-1. **Propose creation** with appropriate template:
-   - `documentation/notebooks/api/{service}.md` for new APIs
-   - `documentation/notebooks/architecture/database/{table}.md` for new tables
-   - `documentation/notebooks/client/{client}.md` for new clients
+- Current usage (tokens, files)
+- Redundant or obsolete files
+- Consolidation opportunities
+- CLAUDE.md structure improvements
 
-2. **Auto-fill** with data extracted from code
+### Workflow
 
-## Step 6: Generate Final Report
+1. **Analyze** current state
+2. **Identify** optimization targets
+3. **Calculate** potential savings
+4. **Propose** changes (never auto-modify CLAUDE.md)
 
-Display complete report:
+### Usage
+
+```bash
+/documentation-sync optimize
+```
+
+---
+
+## Documentation Structure (Recommended)
+
+```
+documentation/
+├── memory-bank/     # Core docs (80-90% of needs)
+├── notebooks/       # Deep analysis
+├── guides/          # Step-by-step tutorials
+├── diagrams/        # Architecture visuals
+├── tasks/           # Task definitions
+├── reviews/         # Code reviews
+├── reports/         # Technical reports
+└── wireframes/      # UI mockups (if applicable)
+```
+
+---
+
+## Important Rules
+
+### NEVER
+
+- Delete documentation without explicit confirmation
+- Modify CLAUDE.md automatically
+- Overwrite manually written content
+- Create files outside documentation structure
+
+### ALWAYS
+
+- Ask confirmation before changes
+- Preserve existing business descriptions
+- Respect documentation structure
+- Calculate and show token impact
+
+---
+
+## Report Template
 
 ```markdown
 # Documentation Update Report
 
-## 📊 Summary
-
+## Summary
 - **Code files analyzed**: X files
-- **Functions added/modified**: Y functions
-- **Tables modified**: Z tables
-- **Documents updated**: W files
+- **Functions added/modified**: Y
+- **Documents updated**: Z files
 
-## 📝 Applied Changes
+## Applied Changes
+- [x] `docs/api/service.md` - Added function docs
+- [x] `docs/database/schema.md` - Updated tables
 
-### API Documentation
-- [x] `documentation/notebooks/api/sync.md` - Added function `sync_new_function()`
-- [x] `documentation/notebooks/api/guesty.md` - Updated `guesty_get_reservations()`
+## Required Actions
+- [ ] Validate code examples
+- [ ] Complete business descriptions
+- [ ] Test modified endpoints
 
-### Database Documentation
-- [x] `documentation/notebooks/architecture/database/new_table.md` - Created
-- [x] `documentation/notebooks/architecture/database-schema-complete.md` - Added table
-
-### Code Documentation
-- [x] PHPDoc added on 3 functions
-- [x] Examples updated in 2 files
-
-## ⚠️ Required Actions
-
-- [ ] Validate code examples in `documentation/notebooks/api/sync.md`
-- [ ] Complete business description of table `new_table`
-- [ ] Test modified endpoints with Bruno
-
-## 🚀 Next Steps
-
-1. Execute `php code/scripts/generate_bruno_collection.php` (if APIs modified)
-2. Test with `composer test`
-3. Validate with `composer phpstan`
-4. Commit with message: "docs: update documentation after [description changes]"
+## Next Steps
+1. Run project validation (from project-config.md)
+2. Commit with message: "docs: update documentation after [changes]"
 ```
 
-## Important Rules
+---
 
-### ❌ NEVER
+## Integration
 
-- Delete existing documentation without explicit validation
-- Modify code examples without testing them
-- Create new documentation files without asking
-- Overwrite manually written business descriptions
+This skill integrates into the development workflow:
 
-### ✅ ALWAYS
-
-- Preserve existing functional descriptions
-- Validate changes with user before applying
-- Maintain consistency with `CLAUDE.md`
-- Check cross-reference consistency between documents
-
-## Historical Reference
-
-**Before updating documentation**, consult previous updates:
-```bash
-ls documentation/reviews/
-ls documentation/tasks/
-```
-
-Use these historical examples to:
-- Maintain documentation style consistency
-- Follow patterns established in previous reviews
-- Learn from errors corrected in tasks
-- Ensure continuity with past work
-
-**Useful reference examples:**
-- Code reviews that modified documentation
-- Tasks that created new documentation sections
-- Update patterns established in the project
-
-## Technical Notes
-
-- Use `grep`, `git diff`, and `Read` for code analysis
-- Respect existing Markdown formats
-- Preserve manual comments and sections
-- Generate testable code examples
-- Validate PHP syntax of generated examples
-
-## Workflow Integration
-
-This skill integrates automatically into the development workflow:
-
-```bash
-# 1. Development
-vim apis/sync.php
-
-# 2. Tests
-composer test
-
-# 3. Documentation (AUTOMATIC via skill)
-# Skill triggers automatically
-
-# 4. Bruno collection (IF API)
-php code/scripts/generate_bruno_collection.php
-
-# 5. Validation
-composer phpstan
-
-# 6. Commit
-git add .
-git commit -m "feat: add new sync endpoint + update docs"
-```
+1. **Development** - Write code
+2. **Tests** - Run test command from project-config.md
+3. **Documentation** - This skill (automatic or manual)
+4. **Validation** - Run quality command from project-config.md
+5. **Commit** - Include documentation changes
