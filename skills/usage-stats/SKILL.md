@@ -67,7 +67,7 @@ Execute the stats script:
 
 ## Prerequisites
 
-Tracking hooks must be configured in `settings.local.json`:
+Tracking hooks must be configured in `settings.json` (not settings.local.json):
 
 ```json
 {
@@ -79,3 +79,5 @@ Tracking hooks must be configured in `settings.local.json`:
   }
 }
 ```
+
+**Note**: After modifying hooks, restart Claude Code session for changes to take effect.

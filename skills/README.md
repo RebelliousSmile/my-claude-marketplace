@@ -1,31 +1,34 @@
-# SmartLockers Client Manager - Claude Code Skills
+# methodocc - Claude Code Skills
 
 This directory contains project-specific skills for Claude Code that help with development workflows.
 
-## Available Skills
+## Available Skills (11)
 
-### 🔍 code-review
-**Usage:** When reviewing code changes, PRs, or branches
+### Code Quality
 
-Performs structured code review following SmartLockers project standards:
+#### code-review
+**Trigger:** "review code", "check code", "code quality", "PR review"
+
+Performs structured code review covering:
 - Functionality validation
 - Code quality (conventions, readability)
 - Security audit
 - Performance check
 - Testing verification
-- SmartLockers-specific rules (cache-first, function prefixes, UUID usage)
 
 **Output:** Markdown review report with findings and recommendations
 
 ---
 
-### 📋 task-definition
-**Usage:** When defining implementation tasks or technical work
+### Task Management
+
+#### task-definition
+**Trigger:** "create task", "define task", "task file"
 
 Creates comprehensive task definitions with:
 - Acceptance criteria
 - Technical requirements (files, APIs, dependencies)
-- Implementation notes (architecture, migrations, security)
+- Implementation notes
 - Definition of Done (70/20/10 testing strategy)
 - Priority and effort estimation
 
@@ -33,58 +36,141 @@ Creates comprehensive task definitions with:
 
 ---
 
-### 🔄 smartlockers-sync
-**Usage:** When implementing client integrations or data synchronization
+### Documentation
 
-Defines complete data mappings between external APIs and SmartLockers:
-- Client context and business rules
-- Source data structure analysis
-- Entity mappings (Users, Customers, Lockers, etc.)
-- Processing flow with error handling
-- Validation rules
-- Concrete examples
-- Technical implementation guide
+#### documentation-sync
+**Trigger:** "sync docs", "update documentation", "docs outdated"
 
-**Critical:** Enforces UUID usage for locker identification (not numeric IDs)
-
-**Output:** Complete sync specification document
+Synchronizes code and documentation:
+- Detects drift between code and docs
+- Updates outdated documentation
+- Creates missing documentation
+- Optimizes token usage
 
 ---
 
-### 📖 user-story
-**Usage:** When defining features from user perspective
+### Testing
 
-Creates well-structured user stories with:
-- Story format (As a... I want... So that...)
-- Acceptance criteria (Given/When/Then)
-- Business rules and constraints
-- UI/UX requirements
-- Technical considerations
-- Definition of Done
-- Priority and effort estimation
+#### test-e2e
+**Trigger:** "e2e test", "end-to-end", "integration test"
 
-**Output:** Complete user story ready for implementation
+Runs and analyzes E2E tests with:
+- Detailed error reporting
+- Screenshot/trace analysis
+- Failure categorization
+- Retry recommendations
+
+---
+
+### API Development
+
+#### api-integration-assistant
+**Trigger:** "integrate API", "add API", "new API integration", "connect to API"
+
+Guides API integration following project patterns:
+- Endpoint mapping
+- Authentication setup
+- Error handling patterns
+- Response transformations
+
+---
+
+### UI/UX
+
+#### ux-standards-validator
+**Trigger:** "UI", "UX", "design", "accessibility", "a11y", "responsive", "WCAG"
+
+Validates UI/UX against standards:
+- Ergonomics standards
+- Brand guidelines
+- Accessibility rules (WCAG AA/AAA)
+- Mobile-friendliness
+
+---
+
+#### wireframes-builder
+**Trigger:** "wireframe", "mockup", "prototype", "UI sketch"
+
+Generates HTML wireframes for prototyping:
+- Semantic, accessible HTML
+- Output in `documentation/wireframes/`
+- Responsive layouts
+
+---
+
+#### seo-validator
+**Trigger:** "SEO", "search", "Google", "meta tags", "keywords"
+
+Validates SEO implementation:
+- Meta tags validation
+- Structured data check
+- Semantic HTML analysis
+- Performance metrics
+- Mobile-friendliness
+
+---
+
+### Maintenance
+
+#### claude-audit
+**Trigger:** "audit .claude", "check configuration", "validate claude config", "maintenance claude"
+
+Audits and maintains .claude/ configuration:
+- Validates frontmatter syntax (skills, agents, commands)
+- Checks cross-references and coherence
+- Syncs with official Claude Code documentation
+- Auto-fixes safe issues with confirmation
+
+**Modes:** `audit` (default), `validate`, `sync`, `fix`
+
+---
+
+### Utilities
+
+#### billing-report
+**Trigger:** "billing", "invoice", "time tracking", "work summary"
+
+Generates billing reports from git commits:
+- Time estimation per category
+- Work summary grouped by type
+- Invoice-ready format
+
+---
+
+#### usage-stats
+**Trigger:** "usage stats", "skill usage", "agent usage"
+
+Displays skill/command and agent usage statistics:
+- Tracking logs analysis
+- Usage patterns
+- Most used components
 
 ---
 
 ## How to Use Skills
 
-### In Claude Code Chat
+### Automatic Discovery
 
-Simply mention what you need:
-- "Review this code" → Triggers `code-review` skill
-- "Create a task for..." → Triggers `task-definition` skill
-- "Define sync mapping for..." → Triggers `smartlockers-sync` skill
-- "Write a user story for..." → Triggers `user-story` skill
+Simply mention what you need - Claude Code automatically discovers and invokes the appropriate skill:
 
-Claude Code automatically discovers and invokes the appropriate skill based on your request.
-
-### Manually Invoke a Skill
-
-You can also explicitly invoke a skill using the Skill tool:
 ```
-Use the code-review skill to review my changes
+"Review this code"          → code-review skill
+"Create a task for..."      → task-definition skill
+"Check accessibility"       → ux-standards-validator skill
+"Generate wireframe for..." → wireframes-builder skill
 ```
+
+### Manual Invocation
+
+You can also explicitly invoke a skill using slash commands:
+
+```
+/code-review
+/task-definition
+/billing-report
+```
+
+---
 
 ## Skill Structure
 
@@ -92,15 +178,32 @@ Each skill is in its own directory with a `SKILL.md` file:
 
 ```
 .claude/skills/
+├── README.md                      # This file
+├── api-integration-assistant/
+│   └── SKILL.md
+├── billing-report/
+│   └── SKILL.md
+├── claude-audit/
+│   └── SKILL.md
 ├── code-review/
+│   └── SKILL.md
+├── documentation-sync/
+│   └── SKILL.md
+├── seo-validator/
 │   └── SKILL.md
 ├── task-definition/
 │   └── SKILL.md
-├── smartlockers-sync/
+├── test-e2e/
 │   └── SKILL.md
-└── user-story/
+├── usage-stats/
+│   └── SKILL.md
+├── ux-standards-validator/
+│   └── SKILL.md
+└── wireframes-builder/
     └── SKILL.md
 ```
+
+---
 
 ## Creating New Skills
 
@@ -123,28 +226,11 @@ Instructions for Claude...
 
 3. Skills are automatically discovered on next Claude Code session
 
-## SmartLockers Standards
+---
 
-All skills enforce SmartLockers project standards:
-- ✅ Architecture fonctionnelle pure (no classes)
-- ✅ Function naming with prefixes (client_, api_, provider_, db_, auth_)
-- ✅ Cache-first pattern mandatory
-- ✅ Bearer token authentication only
-- ✅ PHPStan niveau 6 compliance
-- ✅ 70/20/10 testing strategy
-- ✅ UUID usage for locker identification
-- ✅ Database schema validation
+## Related Documentation
 
-## Resources
-
-- **Documentation:** `documentation/`
-  - Architecture: `documentation/architecture/`
-  - Development: `documentation/developpement/`
-  - Functional: `documentation/fonctionnel/`
-
-- **Project Instructions:** `CLAUDE.md`
-- **Database Schema:** `documentation/architecture/database-schema-complete.md`
-
-## Version Control
-
-These skills are checked into git and automatically available to all team members working on this project.
+- **Methodology:** `.claude/methodology.md`
+- **Agents:** `.claude/agents/`
+- **Commands:** `.claude/commands/`
+- **Project Config:** `documentation/project-config.md`

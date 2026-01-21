@@ -20,7 +20,7 @@ Orchestrateur léger qui exécute le workflow défini dans `automated-workflow.m
 
 ```
 # Ordre de priorité
-1. Read documentation/memory-bank/workflows/automated-workflow.md
+1. Read documentation/memory-bank/core/automated-workflow.md
    → Si absent: Read .claude/automated-workflow.md
    → Si absent: FALLBACK (workflow minimal intégré)
 
@@ -217,9 +217,15 @@ function run_intent(intent_name):
 
 
 function auto_detect_command(intent_name):
-    
+
     # Détection par fichiers de config présents
     if exists("package.json"):
+        # Détecter le package manager
+        pm = "pnpm" if exists("pnpm-lock.yaml")
+             else "yarn" if exists("yarn.lock")
+             else "bun" if exists("bun.lockb")
+             else "npm"
+
         scripts = read_json("package.json").scripts
         mapping = {
             VALIDATE: scripts.validate OR scripts.lint,
@@ -227,7 +233,7 @@ function auto_detect_command(intent_name):
             TEST_E2E: scripts["test:e2e"],
             QUALITY: scripts.quality OR scripts.check
         }
-        return "npm run " + mapping[intent_name]
+        return pm + " run " + mapping[intent_name]
     
     if exists("pyproject.toml"):
         # Similaire pour Poetry/Python

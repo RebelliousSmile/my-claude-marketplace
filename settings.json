@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/track-skill-usage.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/track-agent-usage.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "includeCoAuthoredBy": true
+}

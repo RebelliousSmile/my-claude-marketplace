@@ -1,7 +1,7 @@
 ---
 name: documentation-architect
 description: Expert documentation technique et optimisation memory bank Claude Code. Use PROACTIVELY when user asks about documentation, memory bank, context optimization, CLAUDE.md review, or mentions "docs", "memory", "context", "tokens". Can delegate to specialized agents for decision-making.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task
+tools: Read, Write, Edit, Glob, Grep, Bash, Task
 model: inherit
 ---
 

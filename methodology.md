@@ -87,7 +87,7 @@ Claude Code inclut des agents natifs optimisés. **Utiliser en priorité avant l
 1. **Exploration** → Utiliser `Explore` (rapide, économique)
 2. **Recherche + Plan** → Utiliser `Plan`
 3. **Tâches complexes** → Utiliser `general-purpose` ou agent custom spécialisé
-4. **Rôle métier spécifique** → Agent custom (code-reviewer, debugger, etc.)
+4. **Rôle métier spécifique** → Agent custom (code-reviewer, test-architect, etc.)
 
 ### 3.2 Tableau de Décision
 
@@ -159,12 +159,15 @@ hooks:                              # Hooks spécifiques à la skill
 ```
 
 #### Agent .md
+
+> **Note**: Les agents utilisent `tools` (pas `allowed-tools`) pour restreindre les outils.
+
 ```yaml
 ---
 name: agent-name                    # Requis: kebab-case
 description: Expert in... Use PROACTIVELY when... # Requis: avec triggers
 # --- Optionnels ---
-tools: Read, Write, Grep            # Outils autorisés (hérite tout si omis)
+tools: Read, Write, Grep            # Outils autorisés (NOTE: pas "allowed-tools")
 disallowedTools: Bash               # Outils interdits
 model: inherit                      # inherit, sonnet, opus, haiku
 permissionMode: default             # default, acceptEdits, dontAsk, bypassPermissions, plan
@@ -311,19 +314,22 @@ INIT → PLAN → IMPLEMENT → REVIEW → FINALIZE
 
 Les intents abstraits sont résolus via `project-config.md`:
 
-| Intent | Description | Commande Type |
-|--------|-------------|---------------|
-| `VALIDATE` | Analyse statique | lint, typecheck |
-| `TEST_UNIT` | Tests unitaires | unit tests, contract tests |
-| `TEST_E2E` | Tests E2E | e2e tests (critiques uniquement) |
-| `QUALITY` | Validation complète | VALIDATE + TEST_UNIT |
+| Intent | Description | Commande Type | Requis |
+|--------|-------------|---------------|--------|
+| `VALIDATE` | Analyse statique | lint, typecheck | Oui |
+| `TEST_UNIT` | Tests unitaires | unit tests, contract tests | Oui |
+| `TEST_E2E` | Tests E2E | e2e tests (critiques uniquement) | Si applicable |
+| `QUALITY` | Validation complète | VALIDATE + TEST_UNIT | Oui |
+| `DEV_SERVER` | Serveur développement | dev server | Optionnel |
+| `BUILD` | Compilation/packaging | build command | Optionnel |
+| `CLEAN` | Nettoyage artifacts | cleanup command | Optionnel |
 
 ### 5.5 Checkpoints
 
 Déclencher un checkpoint quand:
 - Milestone terminé (mode step-by-step)
 - Échecs de validation répétés (> 3)
-- Context window > 80%
+- Context window > 85% (critical threshold)
 - Opération destructive imminente
 - Plus de 5 fichiers impactés
 - Changement architectural détecté
@@ -491,15 +497,36 @@ Outil pour la navigation dans le code :
 
 ## 10. Maintenance
 
-### 10.1 Checklist Mensuelle
+### 10.1 Stratégie de Partage Multi-Projets
+
+Le répertoire `.claude/` et `documentation/` peuvent être gérés comme **submodules Git** pour permettre :
+- Réutilisation de la méthodologie sur plusieurs projets
+- Mises à jour centralisées des skills, agents et workflows
+- Cohérence des pratiques entre équipes
+
+```
+projet/
+├── .claude/           ← submodule (methodology, agents, skills)
+├── documentation/     ← submodule (memory-bank, templates)
+└── code/              ← code spécifique projet
+```
+
+**Commandes utiles:**
+```bash
+git submodule update --remote    # Mettre à jour les submodules
+git submodule foreach git pull   # Pull sur tous les submodules
+```
+
+### 10.2 Checklist Mensuelle
 
 - [ ] Skills encore pertinentes ?
 - [ ] Agents utilisés ou à retirer ?
 - [ ] Hooks fonctionnels ?
 - [ ] CLAUDE.md à jour ?
+- [ ] Submodules synchronisés ?
 - [ ] Nouvelles features Claude Code à adopter ?
 
-### 10.2 Évolutions
+### 10.3 Évolutions
 
 Lors de mises à jour Claude Code:
 1. Lire changelog officiel

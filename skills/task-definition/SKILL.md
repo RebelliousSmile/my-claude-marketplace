@@ -44,7 +44,7 @@ Ask the user (via AskUserQuestion if unclear):
 5. **Acceptance Criteria** (3-5 testable criteria)
 6. **Files to Modify** (or domain if unknown)
 7. **Testing Requirements** (from project-config.md)
-8. **Implementation Strategy** (DIRECT < 2h or STEP-BY-STEP > 2h)
+8. **Implementation Strategy** (DIRECT: < 2h AND < 5 files, otherwise STEP-BY-STEP)
 9. **Dependencies & Risks**
 10. **Additional Notes**
 
@@ -131,7 +131,8 @@ Create markdown file with this structure:
 ## Definition of Done
 
 - [ ] Code implemented and working
-- [ ] Tests pass (from project-config.md VALIDATE command)
+- [ ] Validation passes (VALIDATE: lint, typecheck)
+- [ ] Tests pass (TEST_UNIT from project-config.md)
 - [ ] Code reviewed (or self-reviewed with checklist)
 - [ ] Documentation updated (if needed)
 - [ ] No new warnings or errors
@@ -172,13 +173,13 @@ Before saving, verify:
 - [ ] Acceptance criteria are testable
 - [ ] Files to modify are identified
 - [ ] DoD matches project standards
-- [ ] Scope is reasonable (< 2h for DIRECT, otherwise split)
+- [ ] Scope is reasonable (DIRECT: < 2h AND < 5 files, otherwise STEP-BY-STEP)
 
 ## Best Practices
 
 1. **Be Specific**: Vague criteria lead to unclear implementations
 2. **Plan Testing**: Include both automated and manual tests
-3. **Consider Complexity**: DIRECT for < 2h, STEP-BY-STEP for > 2h
+3. **Consider Complexity**: DIRECT for < 2h AND < 5 files, STEP-BY-STEP otherwise
 4. **Identify Risks**: List dependencies and potential blockers
 
 ## Collaboration
