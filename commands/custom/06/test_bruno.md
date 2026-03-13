@@ -10,6 +10,12 @@ argument-hint: '[folder or .bru file path, default: all]'
 
 Run Bruno API tests in CLI and iterate until all targeted tests pass.
 
+## Bruno rules
+
+```md
+@.claude/rules/custom/04-bruno.md
+```
+
 ## Rules
 
 - Run from the project root

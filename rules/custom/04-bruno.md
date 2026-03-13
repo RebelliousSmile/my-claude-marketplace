@@ -30,3 +30,4 @@ paths:
 - Public/pre-authenticated routes: `expect(res.status).to.equal(200)`
 - Create routes: `expect([201, 409]).to.include(res.status)` — gate `data.id` with `if (res.status === 201)`
 - Never assert shape unconditionally on routes that can return 401
+- Stateful routes (e.g. logout): guard all assertions with `if (!bru.getEnvVar('token')) return` — test passes silently when prerequisite is absent; Bruno has no native skip
