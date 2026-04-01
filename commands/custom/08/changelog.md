@@ -26,19 +26,16 @@ Generate or update CHANGELOG.md by extracting and grouping commits since the las
 - Most recent version at the top
 - Dates in YYYY-MM-DD format
 - If CHANGELOG.md exists, prepend new section — never overwrite previous entries
-- Never push without explicit user confirmation
+- Semver: `feat` → minor bump, `fix` → patch bump, `BREAKING CHANGE` → major bump — if both feat and fix, use the highest bump
 
 ## Steps
 
 1. Run `` `git tag --sort=-version:refname | head -1` `` to find the last tag
 2. Run `` `git log <last-tag>..HEAD --pretty="%h %s" --no-merges` `` to list commits since last tag
-3. If $ARGUMENTS provided, use it as the new version; otherwise infer next semver from commit types:
-   - `feat` → minor bump, `fix` → patch bump, `BREAKING CHANGE` → major bump
+3. If $ARGUMENTS provided, use it as the new version; otherwise infer next semver automatically — no user confirmation needed
 4. Group commits by Keep a Changelog category (Added/Fixed/Changed/Removed)
 5. If CHANGELOG.md exists, read current content
-6. Prepend new `## [version] - YYYY-MM-DD` section
-7. Show diff to user and **wait for confirmation** before writing
-8. Write updated CHANGELOG.md
-9. Commit: `` `git add CHANGELOG.md && git commit -m "chore(release): <version>"` ``
-10. Create annotated tag: `` `git tag -a <version> -m "Release <version>"` ``
-11. Show summary (version, tag, commits included) and ask user: push tag + branch? (`git push && git push origin <version>`)
+6. Write updated CHANGELOG.md directly — invoking changelog implies consent
+7. Commit: `` `git add CHANGELOG.md && git commit -m "chore(release): <version>"` ``
+8. Create annotated tag: `` `git tag -a <version> -m "Release <version>"` ``
+9. Show summary (version, tag, commits included) and ask user: push tag + branch? (`git push && git push origin <version>`)

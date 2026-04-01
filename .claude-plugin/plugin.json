@@ -1,0 +1,9 @@
+{
+  "name": "aidd-custom",
+  "description": "Custom AIDD commands, agents, rules and templates for Claude Code — extends the AIDD framework with project-agnostic workflows.",
+  "version": "1.0.0",
+  "author": {
+    "name": "François-Xavier Guillois"
+  },
+  "repository": "https://github.com/RebelliousSmile/aidd-claude-custom"
+}

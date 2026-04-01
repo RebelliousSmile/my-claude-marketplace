@@ -1,0 +1,17 @@
+{
+  "name": "aidd-custom",
+  "owner": {
+    "name": "François-Xavier Guillois"
+  },
+  "plugins": [
+    {
+      "name": "aidd-custom",
+      "source": {
+        "source": "github",
+        "repo": "RebelliousSmile/aidd-claude-custom"
+      },
+      "description": "Custom AIDD commands, agents, rules and templates for Claude Code",
+      "version": "1.0.0"
+    }
+  ]
+}
