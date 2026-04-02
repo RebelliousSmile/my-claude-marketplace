@@ -15,6 +15,7 @@
       "rules/08-agentic-branching.md"
     ],
     "templates": [
+      "templates/architecture_summary.md",
       "templates/agentic_readiness_framework.md",
       "templates/audit_score.md"
     ]
