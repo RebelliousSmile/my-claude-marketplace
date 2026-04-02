@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    {
+      "id": "aidd-claude-custom",
+      "name": "aidd-claude-custom",
+      "description": "Custom AIDD commands, agents, rules and templates for Claude Code — extends the AIDD framework with project-agnostic workflows including agentic architecture, docs migration, changelog generation, and interactive learning agent Ada.",
+      "version": "1.0.0"
+    }
+  ]
+}
