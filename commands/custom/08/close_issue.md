@@ -36,5 +36,6 @@ Wrap up a completed plan: read the plan review, then close the linked issue with
 8. Post comment then close:
    - GitHub: `` `gh issue comment <issue_id> --body "<closing-comment>"` `` then `` `gh issue close <issue_id>` ``
    - GitLab: `` `glab issue note <issue_id> --message "<closing-comment>"` `` then `` `glab issue close <issue_id>` ``
-9. Chain with `custom:08:end_plan` (defaults: parent branch `main`, `/learn` oui, delete branch local only)
-10. Chain with `custom:08:changelog` (defaults: semver auto, push tag + branch)
+9. Rename plan file from `<name>.md` to `<name>.processed.md`
+10. Chain with `custom:08:end_plan` (defaults: parent branch `main`, `/learn` oui, delete branch local only)
+11. Chain with `custom:08:changelog` with argument `push=auto` (semver auto-detected, push tag + branch without confirmation)

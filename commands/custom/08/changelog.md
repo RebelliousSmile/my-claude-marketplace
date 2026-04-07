@@ -38,4 +38,5 @@ Generate or update CHANGELOG.md by extracting and grouping commits since the las
 6. Write updated CHANGELOG.md directly — invoking changelog implies consent
 7. Commit: `` `git add CHANGELOG.md && git commit -m "chore(release): <version>"` ``
 8. Create annotated tag: `` `git tag -a <version> -m "Release <version>"` ``
-9. Show summary (version, tag, commits included) and ask user: push tag + branch? (`git push && git push origin <version>`)
+9. If `$ARGUMENTS` contains `push=auto`: push silently (`git push && git push origin <version>`) and report done
+   Otherwise: show summary (version, tag, commits included) and ask user: push tag + branch?
