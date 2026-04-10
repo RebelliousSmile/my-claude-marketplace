@@ -1,6 +1,6 @@
 # AIDD Claude Custom
 
-Collection de commandes personnalisées, agents, règles et templates pour les outils de développement agentique (Claude Code, OpenCode, Cursor, Copilot), conçus pour le framework **AIDD** (AI-Driven Development).
+Collection de commandes personnalisées, règles et templates pour les outils de développement agentique, conçus pour le framework **AIDD** (AI-Driven Development).
 
 ## Priorité d'intégration
 
@@ -16,24 +16,13 @@ Collection de commandes personnalisées, agents, règles et templates pour les o
 ```
 .
 ├── commands/custom/           # Slash commands Claude Code (/custom:...)
-├── agents/                    # Agents Claude Code
 ├── rules/custom/              # Règles Claude Code
-├── skills/                   # Skills Claude Code
 ├── templates/custom/          # Templates (copiés dans aidd_docs/)
 │
-├── .opencode/                 # OpenCode (converti depuis commands/rules)
-│   ├── commands/aidd/custom/
-│   ├── agents/custom/
-│   ├── rules/custom/
-│   └── templates/custom/
-│
-├── instructions/              # Fichiers d'instructions root
-│   ├── CLAUDE.md              # Pour Claude Code (root)
-│   ├── AGENTS.md              # Pour OpenCode (root)
-│   └── copilot-instructions.md  # Pour Copilot
-│
-├── rules-mdc/custom/         # Règles converties pour Cursor (.mdc)
-└── prompts/custom/           # Prompts convertis pour Copilot
+└── instructions/              # Fichiers d'instructions root
+    ├── CLAUDE.md              # Pour Claude Code (root)
+    ├── AGENTS.md              # Pour OpenCode (root)
+    └── copilot-instructions.md  # Pour Copilot
 ```
 
 ## Installation automatique
@@ -50,13 +39,12 @@ Détecte automatiquement : `.claude/`, `.opencode/`, `.cursor/`, `.github/`
 
 ### 1. Claude Code (priorité最高的)
 
-**Fichiers** : `commands/`, `agents/`, `rules/`, `skills/`, `CLAUDE.md`
+**Fichiers** : `commands/`, `rules/`, `templates/`, `CLAUDE.md`
 
 **Format** :
 - **Commands** : Markdown avec frontmatter YAML, sections `## Goal`, `## Instructions`, steps numérotés
-- **Agents** : Markdown avec `## Description`, `## Tools`, instructions détaillées
 - **Rules** : Bullet points concis, pas de prose
-- **Skills** : Structure libre, invoqué par l'utilisateur
+- **Templates** : Markdown avec frontmatter YAML, structure à remplir
 
 **Conventions** :
 - `$ARGUMENTS` pour les arguments
@@ -142,59 +130,45 @@ description: <description courte>
 
 | Commande | Description |
 |---|---|
-| `/custom:01:agentic_architecture` | Génère l'architecture du projet avec un audit de maturité agentique |
-| `/custom:01:migrate_docs` | Scanne les dossiers docs, classifie et reformate selon templates AIDD |
-| `/custom:02:release_to_site` | Récupère une release GitHub et traduit en contenu marketing |
-| `/custom:03:site_section` | Planifie et implémente une section sur le site (Nuxt + Vue + UnoCSS) |
+| `/custom:01:migrate_docs` | Migre la documentation existante dans la memory bank AIDD |
+| `/custom:02:decompose_mikado` | Décompose un objectif en graphe de dépendances Mikado |
+| `/custom:02:previously` | Snapshot synthétique du projet — tests, couverture, activité récente, santé |
+| `/custom:06:journey` | Exécute un parcours utilisateur depuis une issue, log les résultats étape par étape |
 | `/custom:07:project_status` | Exporte un rapport de statut projet avec audit, sécurité et plan d'action 7 jours |
 | `/custom:08:changelog` | Génère ou met à jour CHANGELOG.md à partir de git |
+| `/custom:08:close_issue` | Review du plan, génère une entrée changelog, puis ferme l'issue liée |
 | `/custom:08:end_plan` | Archive le plan en cours, exécute /learn, retourne sur la branche parente |
-
-## Agents
-
-| Agent | Description |
-|---|---|
-| `ada` | Agent d'apprentissage interactif — quiz sur le codebase et la memory bank |
-
-Déclenchement : "quiz me", "test my knowledge", "learn the codebase", "Ada"
 
 ## Règles
 
 | Règle | Description |
 |---|---|
-| `04-agentic-tooling` | Pratiques de tooling agentique (ARF Principle 3) |
 | `04-git-main-protection` | Interdit git commit/push sur main sans validation |
 | `04-rules-namespace` | Namespace custom/ pour règles projet |
-| `06-agentic-tests` | Pratiques de tests agentiques (ARF Principle 1) |
-| `07-agentic-type-safety` | Pratiques de typage agentique (ARF Principle 2) |
-| `08-agentic-branching` | Pratiques de branching agentique |
-| `08-issue-closing` | Protocol de cloture de ticket avec plan & review |
-| `09-aidd-workflow` | Workflow AIDD complet |
+| `08-issue-closing` | Protocole de clôture de ticket avec plan & review |
+| `09-challenge-plan` | Challenge le plan jusqu'à 0 deal breakers |
+| `09-double-review-after-implement` | Double review après implémentation |
+| `09-plan-before-implement` | Exige un plan avant toute implémentation |
 
 ## Templates (`aidd_docs/`)
 
 | Template | Description |
 |---|---|
-| `agentic_readiness_framework.md` | Framework d'évaluation de la maturité agentique |
-| `architecture_summary.md` | Résumé de l'architecture technique |
-| `audit_score.md` | Grille de scoring pour l'audit agentique |
+| `close-issue.md` | Commentaire de clôture d'issue — résumé, changelog et checklist |
+| `journey.md` | Rapport de test de parcours utilisateur lié à une issue |
+| `previously.md` | Snapshot synthétique pour la commande /previously |
 | `project_status.md` | Rapport de statut projet avec audit, sécurité et plan d'action |
-| `quiz_report.md` | Rapport de session de quiz Ada |
 
 ## Ajout de nouveau contenu
 
-Pour ajouter une nouvelle règle/command/agent :
+Pour ajouter une nouvelle commande ou règle :
 
-1. **Créer le fichier source** pour Claude Code :
+1. **Créer le fichier source** :
    - Commandes → `commands/custom/<phase>/<nom>.md`
    - Règles → `rules/custom/<catégorie>-<nom>.md`
-   - Agents → `agents/<nom>.md`
+   - Templates → `templates/custom/<nom>.md`
 
-2. **Exporter vers les autres outils** :
-   - Copier dans `.opencode/` pour OpenCode
-   - Lancer la conversion automatique vers `rules-mdc/` (Cursor) et `prompts/` (Copilot)
-
-3. **Mettre à jour ce README** avec la nouvelle entrée dans le tableau correspondant
+2. **Mettre à jour ce README** avec la nouvelle entrée dans le tableau correspondant
 
 ## Prérequis
 
