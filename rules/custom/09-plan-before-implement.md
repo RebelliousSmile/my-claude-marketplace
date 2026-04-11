@@ -3,7 +3,8 @@
 ## Triggers
 
 - New feature, behavior change, refactoring, restructuring
-- Does NOT apply: typo fix, trivial rename, isolated value change
+- Bug fix touching 2+ files
+- Does NOT apply: typo fix, trivial rename, isolated value change in a single file
 
 ## Agentic mode (autonomous skills, sub-agents)
 
