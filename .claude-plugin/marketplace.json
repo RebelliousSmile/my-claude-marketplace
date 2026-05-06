@@ -1,5 +1,5 @@
 {
-  "name": "aidd-custom",
+  "name": "aidd-overlay",
   "owner": {
     "name": "François-Xavier Guillois"
   },
@@ -8,7 +8,7 @@
       "name": "aidd-custom",
       "source": {
         "source": "github",
-        "repo": "RebelliousSmile/aidd-claude-custom"
+        "repo": "RebelliousSmile/aidd-overlay"
       },
       "description": "Custom AIDD commands, agents, rules and templates for Claude Code",
       "version": "1.0.0"
