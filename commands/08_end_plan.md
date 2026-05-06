@@ -12,25 +12,25 @@ After a PR/MR has been created on a plan branch, archive the plan and cleanly re
 - Never force-delete a branch with uncommitted changes
 - Never push anything
 - Always pull after checkout
-- Confirm branch deletion with user before executing
+- Only delete the local branch — never touch the remote
+
+## Arguments
+
+- `$TARGET_BRANCH` (optional): branch to merge into. Defaults to detected parent branch.
 
 ## Steps
 
 1. Get current task branch name: `` `git branch --show-current` ``
-2. Detect parent branch:
-   - `` `git log --oneline --decorate HEAD` `` to find branch point
+2. Determine target branch:
+   - If `$TARGET_BRANCH` was provided as argument: use it directly
+   - Otherwise: detect parent branch via `` `git log --oneline --decorate HEAD` ``
    - Fallback: ask user to confirm parent branch name
-3. Confirm: display task branch → parent branch in a single AskUserQuestion
-   - First option (Recommended): detected parent branch (e.g. "main")
-   - Second option: ask user to specify another branch
-4. Find the plan file: search `aidd_docs/tasks/` for a `.md` file (not `.processed.md`, not `.review.md`) whose content contains `` **Branch name**: `<current-branch>` ``
+3. Find the plan file: search `aidd_docs/tasks/` for a `.md` file (not `.processed.md`, not `.review.md`) whose content contains `` **Branch name**: `<current-branch>` ``
    - If not found: ask user to identify the plan file
-5. Rename plan file from `<name>.md` to `<name>.processed.md`
-6. Ask user: run `/learn`? — first option (Recommended): "Oui"
-7. Checkout parent: `` `git checkout <parent>` ``
-8. Merge plan branch: `` `git merge --no-ff <plan-branch>` ``
-9. Push: `` `git push` ``
-10. Ask user: delete plan branch? — first option (Recommended): "Local + remote"
-    - Local: `` `git branch -D <plan-branch>` ``
-    - Remote: `` `git push origin --delete <plan-branch>` ``
-11. Report final state: current branch, last commit, renamed plan file, deleted branches
+4. Rename plan file from `<name>.md` to `<name>.processed.md`
+5. Run `/learn` automatically (no confirmation needed)
+6. Checkout target branch: `` `git checkout <target>` ``
+7. Merge plan branch: `` `git merge --no-ff <plan-branch>` ``
+8. Push: `` `git push` ``
+9. Delete local plan branch: `` `git branch -D <plan-branch>` ``
+10. Report final state: current branch, last commit, renamed plan file, deleted branch

@@ -1,5 +1,4 @@
 # Git main branch protection
 
-- Never `git commit` on `main` without explicit user validation
-- Never `git push` on `main` without explicit user validation
-- Always ask confirmation before any git write operation on `main`
+- Always explain the git write operation you intend to do on `main` before executing it
+- Wait for explicit user confirmation before any `git commit` or `git push` on `main`
