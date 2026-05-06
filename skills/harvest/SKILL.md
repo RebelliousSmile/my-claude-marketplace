@@ -363,7 +363,7 @@ Résoudre d'abord les lignes **à clarifier** en posant les questions groupées.
 Remplir le template de rapport :
 
 ```
-aidd_docs/templates/custom/harvest.md
+aidd_docs/templates/harvest.md
 ```
 
 Écrire le rapport dans :
