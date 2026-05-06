@@ -24,7 +24,7 @@ model: opus
 ### Agentic Readiness Framework
 
 ```markdown
-@aidd_docs/templates/custom/agentic_readiness_framework.md
+@aidd_docs/templates/agentic_readiness_framework.md
 ```
 
 ### Generate architecture instructions
@@ -36,13 +36,13 @@ model: opus
 ### Audit score template
 
 ```markdown
-@aidd_docs/templates/custom/audit_score.md
+@aidd_docs/templates/audit_score.md
 ```
 
 ### Architecture summary template
 
 ```markdown
-@aidd_docs/templates/custom/architecture_summary.md
+@aidd_docs/templates/architecture_summary.md
 ```
 
 ### Arguments
