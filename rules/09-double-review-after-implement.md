@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Double review after implementation
 
 - After every implementation, run both reviews in parallel:

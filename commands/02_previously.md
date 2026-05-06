@@ -13,7 +13,7 @@ Produce a concise, analyzed snapshot of the project state so the user can resume
 ## Output template
 
 ```markdown
-@aidd_docs/templates/custom/previously.md
+@aidd_docs/templates/previously.md
 ```
 
 ## Steps

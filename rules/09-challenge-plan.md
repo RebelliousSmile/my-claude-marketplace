@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Challenge plan until 0 deal breakers
 
 - After `aidd:03:plan` completes, always run `aidd:02:challenge`

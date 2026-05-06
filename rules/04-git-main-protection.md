@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Git main branch protection
 
 - Always explain the git write operation you intend to do on `main` before executing it

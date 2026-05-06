@@ -16,7 +16,7 @@ description: 'Synthesize project memory files and decisions into a single export
 ### Output template
 
 ```markdown
-@aidd_docs/templates/custom/project_memory.md
+@aidd_docs/templates/project_memory.md
 ```
 
 ## Goal

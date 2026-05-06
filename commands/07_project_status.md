@@ -22,7 +22,7 @@ description: 'Export a full project status report with targeted audit, security 
 ### Output template
 
 ```markdown
-@aidd_docs/templates/custom/project_status.md
+@aidd_docs/templates/project_status.md
 ```
 
 ## Goal

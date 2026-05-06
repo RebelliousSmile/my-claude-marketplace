@@ -45,7 +45,7 @@ Input: `$ARGUMENTS`
 
 3. Derive journey report path from plan filename:
    `{plan_file_stem}.journey.md` in the same `aidd_docs/tasks/{yyyy_mm}/` folder
-   Initialize report using `@aidd_docs/templates/custom/journey.md`
+   Initialize report using `@aidd_docs/templates/journey.md`
    Fill header: issue URL, plan path, date, current branch
 
 4. Parse issue body → extract ordered journey steps with expected outcomes

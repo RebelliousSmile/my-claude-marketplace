@@ -53,7 +53,7 @@ $ARGUMENTS
 4. Announce: "5 questions, let's go!"
 5. Scan source files with Glob (filter by project language extensions or `.md` depending on the source)
 6. Select **5 distinct files** from the results (or filter by theme if specified) — assign a different file to each question, **never two questions from the same file**
-7. Create the session report from template `@aidd_docs/templates/custom/quiz_report.md`, save to `aidd_docs/tasks/<YYYY_MM>/<YYYY_MM_DD>-quiz-<N>.md` (N = incremental quiz number for the day, check existing files to determine N). Update after each question.
+7. Create the session report from template `@aidd_docs/templates/quiz_report.md`, save to `aidd_docs/tasks/<YYYY_MM>/<YYYY_MM_DD>-quiz-<N>.md` (N = incremental quiz number for the day, check existing files to determine N). Update after each question.
 
 ### For each question (repeat 5 times)
 

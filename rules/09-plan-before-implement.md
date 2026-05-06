@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Plan before implement
 
 ## Triggers
