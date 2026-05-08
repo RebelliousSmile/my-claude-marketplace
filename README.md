@@ -17,6 +17,7 @@ Collection de commandes personnalisées, règles et templates pour les outils de
 .
 ├── agents/                    # Agents Claude Code
 ├── commands/                  # Slash commands Claude Code (/...)
+├── memory/                    # Mémoire externe (injectée dans aidd_docs/memory/external/)
 ├── misc/                      # Ressources optionnelles (non installées par défaut)
 │   ├── commands/
 │   ├── rules/
@@ -184,6 +185,14 @@ description: <description courte>
 | `quiz_report.md` | Rapport de session quiz avec score et détail par question |
 | `dev/perf_checklist_nuxt.md` | Checklist d'audit perf Nuxt 3 (LCP, CLS, INP, bundle, render-blocking) — utilisée par /web-optimize |
 
+## Memory (mémoire externe)
+
+Fichiers injectés dans `aidd_docs/memory/external/` du projet cible — chargés uniquement sur demande explicite (pas en auto-load), pour transmettre des intentions de gouvernance ou raisonnements LLM réutilisables entre projets.
+
+| Fichier | Description |
+|---|---|
+| `llm-thoughts.md` | Intentions de gouvernance mémoire — load probability, triage binaire, risques de bloat |
+
 ## Misc (ressources optionnelles)
 
 Fichiers non installés par défaut — à copier manuellement selon les besoins du projet.
@@ -218,6 +227,7 @@ Pour ajouter une nouvelle commande ou règle :
    - Templates → `templates/<nom>.md`
    - Agents → `agents/<nom>.md`
    - Skills → `skills/<nom>/SKILL.md`
+   - Mémoire externe → `memory/<nom>.md`
    - Ressources optionnelles → `misc/rules/`, `misc/templates/`, `misc/commands/`
 
 2. **Mettre à jour ce README** avec la nouvelle entrée dans le tableau correspondant
