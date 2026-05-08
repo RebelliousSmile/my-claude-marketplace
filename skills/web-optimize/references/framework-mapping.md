@@ -4,7 +4,7 @@
 
 ## Schéma général
 
-Une checklist perf web tient en 10 sections, identiques quel que soit le stack :
+Une checklist perf web tient en 12 sections, identiques quel que soit le stack :
 
 0. Pre-flight (deterministic baseline + 3-5 PSI runs to characterize variance)
 1. Render-blocking critical path
@@ -12,11 +12,12 @@ Une checklist perf web tient en 10 sections, identiques quel que soit le stack :
 3. CLS
 4. JS bundle size & lazy-loading
 5. CSS
-6. Caching & hosting
+6. Caching & hosting (HTTP / CDN)
 7. SSR / prerender / hydration
 8. Render performance (INP / TBT)
 9. Backend / DB perf (TTFB) — *spécifique au type de stack*
-10. Verification & non-regression
+10. Client-side storage (localStorage / sessionStorage / IndexedDB / Cache API / Cookies) — *transverse, applicable à tout stack JS*
+11. Verification & non-regression
 
 Les pivots ci-dessous remplacent les items section-par-section selon le framework cible.
 
@@ -27,10 +28,12 @@ Les pivots ci-dessous remplacent les items section-par-section selon le framewor
 Voir `aidd_docs/templates/dev/perf_checklist_nuxt.md`. Pivots clés :
 
 - §0 : caractériser le noise floor PSI (DEC-030 — variance ±29 sur build identique) ; baseline déterministe (bytes/chunks) primaire
+- §2 LCP : above-fold hero → `<img :src="webp">` DIRECT sans `<picture>` (DEC-033 — Chrome preload scanner fetch `<img src>` avant `<picture>` → ERR_ABORTED sur JPG fallback → Inspector Issue → Bonnes pratiques -4%) ; responsive → `srcset`/`sizes` sur `<img>` directement
 - §4 : `useFirebase()` lazy, Vite `dynamic import will not move` warning load-bearing, modulepreload Nitro stripper avec signatures dans `shared/<sdk>SdkSignatures.js` source unique + tripwire postbuild `verify-marketing-strip.mjs` (DEC-029, DEC-032)
 - §6 : Firebase Hosting `firebase.json` `trailingSlash`, `routeRules` Nuxt
 - §7 : `<ClientOnly>`, hydration mismatches, prerender list, routes `ssr: false` → fallback `200.html` (vérifier le strip sur le bon fichier)
-- §10 : succès = delta déterministe (bytes, chunks) primaire ; médiane PSI > max baseline = secondaire
+- §10 (storage) : pas de `localStorage` top-level (SSR crash + sync read) ; auth via Firebase Auth (HttpOnly cookie côté custom claims, jamais `document.cookie` token) ; Pinia store avec TTL pour cache reference data plutôt que localStorage brut
+- §11 : succès = delta déterministe (bytes, chunks) primaire ; médiane PSI > max baseline = secondaire
 
 ---
 
@@ -84,6 +87,13 @@ Combine les pivots Django (§9 critique) + ces ajouts spécifiques Alpine :
   - Auditer les `x-init` lourds (préférer `x-intersect` du plugin Intersect pour défer)
   - `x-show` vs `x-if` : `x-if` retire du DOM (mieux pour LCP), `x-show` garde les nodes (mieux pour CLS si toggle fréquent)
 - §1 : Alpine.js doit être loadé APRÈS le HTML qu'il anime (sinon flash unstyled : ajouter `[x-cloak]{display:none}` dans le CSS critique)
+- §10 (storage spécifique Alpine) :
+  - **Items SSR-guard du template Nuxt → N/A** : Alpine tourne uniquement côté browser, le HTML est rendu par Django (pas de `window undefined`)
+  - **`Alpine.$persist` plugin** : magie qui synchronise une variable `x-data` avec localStorage → auditer chaque `$persist(...)`. Risques : quota silencieuse (échec écriture non géré), pas de TTL natif, sérialisation JSON sur chaque mutation (coût CPU sur listes)
+  - Préfixer la clé `$persist` avec un namespace : `Alpine.data('cart', () => ({ items: Alpine.$persist([]).as('shop:cart') }))` — défaut Alpine est `_x_<expr>`, collision possible
+  - Cookies session/CSRF Django : `HttpOnly` + `Secure` + `SameSite=Lax` ; **ne JAMAIS lire le csrftoken depuis Alpine `document.cookie`** si le cookie est `HttpOnly` (ne sera pas accessible) — Django expose `csrftoken` non-HttpOnly par défaut, à durcir si besoin
+  - État UI léger (accordéons, tabs, filtres) : `x-data` éphémère suffit, `$persist` seulement si la persistence cross-page est explicitement demandée
+  - IndexedDB en Django+Alpine : très rare ; si besoin offline-first → revoir l'architecture (PWA dédiée plutôt que Alpine)
 
 ---
 
@@ -139,6 +149,49 @@ Pivots simplifiés :
 - §6 : CDN + immutable cache obligatoire ; HTML peut avoir `s-maxage` long (revalidation par déploiement)
 - §7 : SSG → pas d'hydratation JS de tout le HTML
 - §9 : N/A backend
+
+---
+
+## Section §10 transverse — Client-side storage (tous stacks)
+
+S'applique partout, mais les **items SSR-guard** sont N/A sur les stacks où le HTML est rendu côté serveur sans hydratation JS (WordPress, Django templates pur, PHP vanilla, Astro static). Toujours conserver : quota, XSS, cookies, IndexedDB, Cache API, BroadcastChannel.
+
+### Nuxt 3 / Next.js / SvelteKit (SSR JS isomorphic)
+
+- `localStorage` / `sessionStorage` / `indexedDB` interdits au top-level d'un module — `window` undefined côté serveur → crash build/render
+- Garder dans `onMounted` / `useEffect` / `onMount` ou guard `if (process.client)` / `if (typeof window !== 'undefined')`
+- Composables/hooks : exposer une fonction lazy, pas une valeur initiale lue depuis storage
+- Pinia/Zustand + persist plugin : config par store, jamais global ; sérialiseur custom si valeurs non-JSON
+- **Plugin custom de persistence Pinia** : auditer chaque store sérialisé pour PII (email, phone, profile, address). Si présent, F2-priorité — options : (a) allowlist par store filtrant `$state`, (b) déplacement vers IndexedDB chiffré, (c) suppression + re-fetch au mount via Firestore, (d) sessionStorage scope-tab si UX accepte
+- **Firebase Auth** (si présent) stocke son token en IndexedDB interne (`firebaseLocalStorageDb`), PAS en localStorage. L'absence de `document.cookie` / `localStorage.token` au grep n'est PAS un faux négatif — c'est le comportement attendu
+- Hydratation : si la valeur localStorage diffère du HTML rendu côté serveur → mismatch warning. Initialiser à valeur neutre, lire depuis storage post-mount. Hors plugins `.client.*` (skip SSR par contrat Nuxt → règle hydration N/A)
+
+### Vue SPA / React SPA / Astro Islands hydratées (CSR pur)
+
+- **Pas de SSR JS → guards `process.client` inutiles**, mais quota et XSS toujours valides
+- Astro Islands `client:visible` : initialiser le storage dans le composant hydraté, pas dans le module global Astro (le module global tourne côté Astro build = Node, pas browser)
+
+### WordPress / PHP vanilla / Django templates (PHP/Python-rendered HTML, pas de SSR JS)
+
+- **Items SSR-guard inapplicables** : pas de `window undefined` au build, le JS n'existe que dans le navigateur. Les bullets `process.client` / `typeof window` du template Nuxt §10 → marquer **N/A**
+- Storage côté client utilisé pour l'état UI (filtres, tri, pagination, état accordéon) ; backend ignore localStorage
+- **Cookies** = canal de partage serveur/client (CSRF, session WP, panier WooCommerce) — `HttpOnly` + `Secure` + `SameSite=Lax` obligatoires sur cookies sensibles
+- **WordPress** : auditer les plugins qui écrivent dans localStorage (cookie banners, A/B testing, sliders) — chaque plugin = vecteur XSS supplémentaire
+- IndexedDB rare en WP/Django — si présent, vient quasi toujours d'un plugin tiers ; auditer avant d'accepter
+- BroadcastChannel applicable si plusieurs onglets WP-admin ouverts (ex. logout multi-tab)
+- **Si Alpine.js / Stimulus / htmx présent** → voir la section dédiée `## Django + Alpine.js (hybride classique)` plus haut, qui ajoute le pivot `$persist`, namespace de clés, et coût sérialisation par mutation
+
+### Laravel + Inertia / Livewire (hybride PHP + JS)
+
+- Inertia : SPA-like côté client, hydratation Vue/React → **traiter comme Vue SPA / React SPA**
+- Livewire : DOM patché par requêtes serveur → storage purement décoratif, jamais source de vérité (sera écrasé au prochain render Livewire)
+
+### PWA / offline-first (transverse à tout stack JS)
+
+- Service Worker + Cache API → cache name versionné par déploiement (sinon `pnpm build` n'invalide rien chez les clients)
+- IndexedDB pour données persistantes offline ; `navigator.storage.persist()` pour éviter eviction
+- Background Sync API pour rejouer les writes offline ; idempotency keys côté backend
+- **WordPress + PWA** : plugins type Super PWA / PWA for WP — auditer la stratégie de cache HTML, conflit avec page-cache plugins (W3 Total Cache)
 
 ---
 

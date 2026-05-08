@@ -134,7 +134,7 @@ flowchart LR
    > "No perf checklist exists for `<stack>`. Should I generate `perf_checklist_<stack>.md` from official best practices adapted to this project? (yes / no / use the Nuxt checklist as a base)"
 
 5. **If user accepts generation:**
-   - Use `perf_checklist_nuxt.md` as a structural model: 11 numbered sections (0 Pre-flight → 10 Verification & non-regression) **plus** a `## Common anti-patterns (rejected)` table **plus** a `## Quick verification commands` block. The last two sections are part of the scaffold but NOT numbered
+   - Use `perf_checklist_nuxt.md` as a structural model: 12 numbered sections (0 Pre-flight → 10 Client-side storage → 11 Verification & non-regression) **plus** a `## Common anti-patterns (rejected)` table **plus** a `## Quick verification commands` block. The last two sections are part of the scaffold but NOT numbered. Section §10 (Client-side storage) is transverse — applies to all JS stacks; see `references/framework-mapping.md` for stack-specific pivots
    - Adapt items via `references/framework-mapping.md`
    - Write to `aidd_docs/templates/dev/perf_checklist_<stack>.md` (or `docs/perf-templates/<stack>.md`)
    - **If `aidd_docs/internal/decisions/` exists:** create a DEC documenting the convention choices
@@ -203,6 +203,27 @@ flowchart LR
 6. **Per-fix success criterion**: define primary (deterministic delta) + secondary (PSI median). Declare "real gain" only if PSI **median post-fix > maximum pre-fix**, else: "fix shipped, PSI variance dominates, deterministic delta is the trustable signal" (DEC-030, iteration 5 pattern)
 
 **Success criteria:** User can execute Phase F0 from the report alone, no further questions. Each fix has a deterministic primary success criterion.
+
+### Step 6: Self-audit & skill feedback
+
+**Do:**
+
+1. After the audit report is written, walk §12 of the checklist (Checklist self-audit) — this is mandatory, not optional
+2. Append a `## Checklist learnings` section at the top of the audit report capturing:
+   - Gaps (issues found outside the checklist) — formatted `[gap] §N: <missing bullet>`
+   - False positives (items N/A on this stack) — formatted `[fp] §N: <bullet> — reason`
+   - Ambiguous items reformulated — formatted `[reword] §N: <before> → <after>`
+   - Anti-patterns surfaced ≥ 2× — formatted `[antipattern] <pattern> | <why rejected>`
+   - Useful ad-hoc commands — formatted `[grep] <command> — <what it surfaces>`
+   - Missing pivots in `framework-mapping.md` — formatted `[pivot] <stack>: <missing pivot>`
+3. **Trigger threshold**: if learnings count ≥ 3 gaps OR ≥ 1 anti-pattern OR ≥ 1 missing pivot → propose patches to the user explicitly (do NOT silently edit):
+   - Diff for `aidd_docs/templates/dev/perf_checklist_<stack>.md`
+   - Diff for `references/framework-mapping.md`
+   - Diff for `tests.md` if a new detection case emerged
+4. On user accept → apply patches; on reject → archive the learnings in the audit report only (next iteration will re-surface them)
+5. Below the trigger threshold → keep `## Checklist learnings` in the report; future audits aggregate
+
+**Success criteria:** Every audit ends with a `## Checklist learnings` section, even if empty (`[none]` line). The skill gets monotonically better project-by-project.
 
 ## Resources
 
