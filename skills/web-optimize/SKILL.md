@@ -201,8 +201,13 @@ flowchart LR
 4. Each phase: estimated effort + risk + reference (DEC-N or rule path)
 5. End with **Quick wins prioritaires** (≤ 4 items doable next week)
 6. **Per-fix success criterion**: define primary (deterministic delta) + secondary (PSI median). Declare "real gain" only if PSI **median post-fix > maximum pre-fix**, else: "fix shipped, PSI variance dominates, deterministic delta is the trustable signal" (DEC-030, iteration 5 pattern)
+7. **Bugs found during audit → issue, not normative patch**: a single-occurrence bug (e.g. `setInterval` handle not stored, off-by-one in pagination, missing `await`) belongs in:
+   - The audit report's roadmap (F1/F2 with file:line + fix recipe), AND
+   - A new tracker issue created via `gh issue create` (or equivalent) so the fix has a follow-up owner
+   - **Never** in the checklist's anti-patterns table, the framework-mapping pivots, or `.claude/rules/` — those files codify recurring patterns, not point fixes. A bug ≠ an anti-pattern.
+   - Threshold for normative elevation: see Step 6 (≥ 2 distinct occurrences OR a known generic class — OWASP, Web.dev, MDN)
 
-**Success criteria:** User can execute Phase F0 from the report alone, no further questions. Each fix has a deterministic primary success criterion.
+**Success criteria:** User can execute Phase F0 from the report alone, no further questions. Each fix has a deterministic primary success criterion. Each bug has either a roadmap entry + tracker issue, or is silently fixed in the same PR if trivial — never normative pollution.
 
 ### Step 6: Self-audit & skill feedback
 
@@ -216,6 +221,7 @@ flowchart LR
    - Anti-patterns surfaced ≥ 2× — formatted `[antipattern] <pattern> | <why rejected>`
    - Useful ad-hoc commands — formatted `[grep] <command> — <what it surfaces>`
    - Missing pivots in `framework-mapping.md` — formatted `[pivot] <stack>: <missing pivot>`
+   - **Bugs found ≠ anti-patterns**: a single-occurrence bug goes to the roadmap + tracker issue (see Step 5.7), NOT into `[antipattern]`. Only elevate to anti-pattern if you can cite ≥ 2 distinct occurrences in the codebase OR a recognized generic class (OWASP, MDN, Web.dev).
 3. **Trigger threshold**: if learnings count ≥ 3 gaps OR ≥ 1 anti-pattern OR ≥ 1 missing pivot → propose patches to the user explicitly (do NOT silently edit):
    - Diff for `aidd_docs/templates/dev/perf_checklist_<stack>.md`
    - Diff for `references/framework-mapping.md`
