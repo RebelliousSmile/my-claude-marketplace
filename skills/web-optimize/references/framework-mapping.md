@@ -29,9 +29,12 @@ Voir `aidd_docs/templates/dev/perf_checklist_nuxt.md`. Pivots clés :
 
 - §0 : caractériser le noise floor PSI (DEC-030 — variance ±29 sur build identique) ; baseline déterministe (bytes/chunks) primaire
 - §2 LCP : above-fold hero → `<img :src="webp">` DIRECT sans `<picture>` (DEC-033 — Chrome preload scanner fetch `<img src>` avant `<picture>` → ERR_ABORTED sur JPG fallback → Inspector Issue → Bonnes pratiques -4%) ; responsive → `srcset`/`sizes` sur `<img>` directement
+- §2 LCP : hero LCP = `<img>` obligatoire — jamais `div:style="background-image"` (WICG LCP API — background-image invisible au preload scanner → LCP dégradé) ; background-image acceptable uniquement pour éléments décoratifs below-fold
 - §4 : `useFirebase()` lazy, Vite `dynamic import will not move` warning load-bearing, modulepreload Nitro stripper avec signatures dans `shared/<sdk>SdkSignatures.js` source unique + tripwire postbuild `verify-marketing-strip.mjs` (DEC-029, DEC-032)
 - §6 : Firebase Hosting `firebase.json` `trailingSlash`, `routeRules` Nuxt
 - §7 : `<ClientOnly>`, hydration mismatches, prerender list, routes `ssr: false` → fallback `200.html` (vérifier le strip sur le bon fichier)
+- §9 Firebase : items Firestore N/A si stack Prisma/SQL — utiliser les pivots Prisma du template (`§9 Prisma / SQL`)
+- §9 Prisma : SSR critical path ≤ 3 queries séquentielles (`Promise.all`) ; N+1 via `include`/`select` Prisma ; profiler avec `$queryRaw EXPLAIN ANALYZE` si TTFB > 800ms ; cache Pinia TTL sur données semi-statiques (rooms, locations)
 - §10 (storage) : pas de `localStorage` top-level (SSR crash + sync read) ; auth via Firebase Auth (HttpOnly cookie côté custom claims, jamais `document.cookie` token) ; Pinia store avec TTL pour cache reference data plutôt que localStorage brut
 - §11 : succès = delta déterministe (bytes, chunks) primaire ; médiane PSI > max baseline = secondaire
 

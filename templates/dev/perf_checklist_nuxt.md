@@ -32,6 +32,7 @@ description: Reusable performance checklist for Nuxt 3 routes (LCP/CLS/INP/TBT).
 - [ ] Hero image has `<link rel="preload" as="image" fetchpriority="high">` (DEC-025) — `fetchpriority` is mandatory, not optional
 - [ ] Responsive hero uses `imagesrcset` + `imagesizes` in preload (NOT plain `href` — browser preloads largest variant otherwise)
 - [ ] Hero `<img>` carries `fetchpriority="high"` `loading="eager"` `decoding="async"`
+- [ ] **Above-fold hero MUST be an `<img>` — NEVER a `div:style="background-image"` or `div:style="backgroundImage"`** (WICG LCP API): background-image is invisible to the browser's preload scanner → LCP image loaded late → LCP degraded. `background-image` is acceptable only for decorative below-fold elements
 - [ ] **Above-fold hero uses `<img :src="webp">` directly — NO `<picture>` wrapper** (DEC-033): Chrome preload scanner fetches `<img src>` before `<picture>` is evaluated → fallback JPG is requested then aborted (`net::ERR_ABORTED`) → Inspector Issue → Bonnes pratiques -4%
 - [ ] Below-fold images: keep `<picture><source webp><img jpg></picture>` pattern (preload scanner does not aggressively fetch lazy images)
 - [ ] Responsive above-fold: `srcset`/`sizes` on `<img>` directly (not on `<source>`)
@@ -97,13 +98,25 @@ description: Reusable performance checklist for Nuxt 3 routes (LCP/CLS/INP/TBT).
 - [ ] Event handlers debounced for input/scroll (`useDebounceFn` from VueUse)
 - [ ] No layout thrashing patterns (read-then-write DOM in same frame)
 
-## 9. Firebase / Firestore quota & perf
+## 9. Backend / DB perf (TTFB)
+
+> **[Firebase stack]** items below apply only if the project uses Firebase/Firestore. Mark entire section **N/A** for Prisma / Drizzle / Supabase / other SQL stacks and replace with the Prisma pivots.
+
+### Firebase / Firestore (mark N/A if stack is Prisma/SQL)
 
 - [ ] All `query()` carry `limit()` (rule `03-firebase-resources.md`)
 - [ ] Counts via `getAggregateFromServer(count())`, never `getDocs().length`
 - [ ] No Firestore call inside `for` loops — batch with `documentId() in [...]` (chunk by 30)
 - [ ] Static reference data cached in Pinia store with TTL (5min default)
 - [ ] `onSnapshot` always unsubscribed in `onUnmounted`
+
+### Prisma / SQL (mark N/A if stack is Firebase)
+
+- [ ] SSR critical path: ≤ 3 sequential Prisma queries (use `Promise.all` for parallel fetches)
+- [ ] No N+1: relations loaded via `include` / `select`, never inside a loop
+- [ ] Slow queries profiled via `$queryRaw EXPLAIN ANALYZE` if TTFB > 800ms (spec Navigation Timing L2)
+- [ ] Static/semi-static reference data (rooms, locations, jobs) cached in Pinia store with TTL — never re-fetched on every SSR request
+- [ ] DB connection pool sized for concurrent SSR requests (Prisma default pool = CPU count × 2 + 1)
 
 ## 10. Client-side storage (localStorage / sessionStorage / IndexedDB / Cache API / Cookies)
 
