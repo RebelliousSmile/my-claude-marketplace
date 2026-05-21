@@ -33,6 +33,10 @@ Run a structured performance audit on a web project, picking the right checklist
 - **Primary deterministic metric** (bytes saved, chunks blocked, SQL queries removed, requests removed) is load-bearing for success. PSI score is a secondary noisy signal — report it but never anchor success solely on it
 - PSI variance can dominate any single fix: capture **3-5 baseline runs** before attributing changes (single-run baseline is unfalsifiable). Anonymous Google PSI API rate-limits at ~25/day → for 5+ programmatic runs use https://pagespeed.web.dev/ web UI manually OR a Google API key
 
+## Pre-implementation quick check
+
+Before shipping a component that touches DOM rendering, network requests, or JS execution, load `references/w3c-perf-specs.md` and verify the relevant spec entries (§1 LCP if adding hero image, §2 CLS if adding media, §3 INP if adding event handlers, etc.). This prevents regressions before they appear in PSI.
+
 ## Quick Start
 
 ```bash
@@ -182,7 +186,8 @@ flowchart LR
    ls -lh .output/public/_nuxt/*.js public/build/assets/*.js dist/assets/*.js 2>/dev/null | sort -k5 -h | tail -10
    ```
 
-4. Group fixes by ROI (quick wins / structural / monitoring)
+4. For each LCP / CLS / INP / TBT / TTFB finding, cross-check the criterion against `references/w3c-perf-specs.md` — confirm the fix is grounded in the spec, not just a Lighthouse convention
+5. Group fixes by ROI (quick wins / structural / monitoring)
 5. **Null result handling**: an audit step can produce zero actionable findings (e.g. grep for static imports of a heavy lib returns 0 — gisement already exhausted by a previous iteration). Record null results explicitly in the report ("Phase 2 audit: 0 static firebase imports in entry chunk — gisement exhausted by commit 440b248") so the next iteration doesn't redo the same audit
 
 **Success criteria:** Every checklist line has a status; no `[ ]` left unchecked. Null results documented with the reason.
@@ -238,5 +243,6 @@ flowchart LR
 | Template  | `aidd_docs/templates/dev/perf_checklist_nuxt.md`    | Reference checklist (Nuxt 3); model for new stack templates                            |
 | Template  | `aidd_docs/templates/dev/perf_checklist_<stack>.md` | Auto-generated on first audit when missing (e.g. `vue-spa`, `django`, `laravel`)       |
 | Reference | `references/framework-mapping.md`                   | Pivots LCP/CLS/INP/TTFB/N+1 per stack (Nuxt, Vue SPA, Django, Alpine, PHP, static)     |
+| Reference | `references/w3c-perf-specs.md`                      | W3C/WICG specs that underpin PSI metrics — use as pre-implementation checklist or to verify audit findings against spec criteria |
 | Output    | `aidd_docs/tasks/audits/<yyyy_mm_dd>_perf-<framework>-<scope-slug>.md` | Audit report destination (fallback `docs/perf-audits/...` if no `aidd_docs/`) |
 | Tests     | `.claude/skills/web-optimize/tests.md`              | Smoke test cases for stack detection — run before trusting the skill on new stacks     |
