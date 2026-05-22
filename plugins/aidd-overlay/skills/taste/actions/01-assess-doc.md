@@ -17,6 +17,9 @@ Verdict: Current | Partial | Obsolete
 |-------|---------------|--------|
 | {claim} | {file:line or "not found"} | ✅ Current / ⚠️ Modified / ❌ Obsolete |
 
+Stale passages:
+- §{section title} — "{quoted passage}" → {reason it is stale}
+
 Suggested actions:
 - {delete | update | keep} — {reason, stale claims listed if update}
 ```
@@ -26,16 +29,21 @@ Suggested actions:
 ```
 Scan complete — {N} files assessed
 
-| File | Verdict | Stale claims | Suggested action |
-|------|---------|--------------|-----------------|
-| {path} | Current / Partial / Obsolete | {N} | delete / update / keep |
+| File | Verdict | Stale claims | Stale passages | Suggested action |
+|------|---------|--------------|----------------|-----------------|
+| {path} | Current / Partial / Obsolete / N/A | {N} | {list or —} | delete / update / keep / — |
 
-Summary: {N} obsolete, {N} partial, {N} current
+Summary: {N} obsolete, {N} partial, {N} current, {N} N/A
 ```
 
 ## Claim types reference
 
 @../assets/claim-types.md
+
+## Ground rule
+
+**Taste verifies claims against the live codebase only — never against other documents.**
+Cross-document coherence (does doc A agree with doc B?) is not in scope here; that belongs to `reconcile-normative` or `foresee`. Any finding that cannot be verified by reading a file, running a grep, or querying git must be skipped.
 
 ## Process
 
@@ -44,7 +52,7 @@ Summary: {N} obsolete, {N} partial, {N} current
 1. Read the target file at `$ARGUMENTS`.
 2. Extract all verifiable claims of the types listed in `@../assets/claim-types.md`.
 3. If no extractable claims are found, output `Verdict: N/A — conceptual document, no verifiable claims` and stop.
-4. For each claim, verify against the codebase using the appropriate method:
+4. For each claim, verify against the **live codebase** using the appropriate method:
    - **File path**: read the referenced file — confirm it exists and the referenced element is present.
    - **Function / class / component name**: grep the codebase for the identifier.
    - **Branch name**: `git branch -a | grep <branch>`.
@@ -56,9 +64,10 @@ Summary: {N} obsolete, {N} partial, {N} current
    - ✅ **Current** — exact match
    - ⚠️ **Modified** — element exists but content differs from the claim
    - ❌ **Obsolete** — not found
-6. Compute match percentage: Current claims / total claims.
+6. Identify **stale passages**: for each ⚠️ or ❌ claim, locate the section or paragraph it belongs to. Quote the passage (≤ 2 sentences) and state why it is stale.
+7. Compute match percentage: Current claims / total claims.
    - ≥80% → **Current** | 20–79% → **Partial** | <20% → **Obsolete**
-7. Output the verdict line, the full claim table, and the suggested actions block.
+8. Output the verdict line, the full claim table, the stale passages block, and the suggested actions block.
 
 ### Scan mode (no argument)
 
@@ -76,9 +85,10 @@ Summary: {N} obsolete, {N} partial, {N} current
      Sort-Object LastWriteTime | Select-Object -ExpandProperty FullName
    ```
 2. Sort by modification date ascending (oldest first).
-3. For each file, run the single-file process (steps 1–7 above).
-4. Aggregate results into the scan output table.
-5. If invoked as a sub-phase of `harvest`, return the summary metrics to the orchestrator. Otherwise, display the full table.
+3. For each file, run the single-file process (steps 1–8 above). Files with no verifiable claims → `N/A`, no further processing.
+4. For Partial and Obsolete files, populate the `Stale passages` column with a compact list of the affected section titles (e.g. `§Auth flow, §Dependencies`).
+5. Aggregate results into the scan output table.
+6. If invoked as a sub-phase of `harvest`, return the summary metrics to the orchestrator. Otherwise, display the full table.
 
 ## Test
 
