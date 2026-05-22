@@ -1,0 +1,8 @@
+[
+  { "prompt": "quiz me on the codebase", "expect_action": "launch" },
+  { "prompt": "les tests vont prendre un moment, on révise le projet ?", "expect_action": "launch" },
+  { "prompt": "dig into the auth module while CI runs", "expect_action": "launch" },
+  { "prompt": "Ada, test my knowledge of the memory bank", "expect_action": "launch" },
+  { "prompt": "un agent tourne en background sur le refactor, quiz moi pendant ce temps", "expect_action": "launch" },
+  { "prompt": "crée un nouveau fichier de test", "expect_action": null }
+]

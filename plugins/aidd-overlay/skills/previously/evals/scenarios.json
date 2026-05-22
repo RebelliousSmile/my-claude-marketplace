@@ -1,0 +1,6 @@
+[
+  { "prompt": "where are we in the project?", "expect_action": "generate" },
+  { "prompt": "catch me up on recent activity", "expect_action": "generate" },
+  { "prompt": "what's the current project state?", "expect_action": "generate" },
+  { "prompt": "deploy the app to production", "expect_action": null }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "prompt": "taste this plan",
+    "expect_action": "assess-doc"
+  },
+  {
+    "prompt": "/taste aidd_docs/tasks/2026_05/my-plan.md",
+    "expect_action": "assess-doc"
+  },
+  {
+    "prompt": "is this doc still relevant?",
+    "expect_action": "assess-doc"
+  },
+  {
+    "prompt": "/taste",
+    "expect_action": "assess-doc"
+  },
+  {
+    "prompt": "scan the project for outdated docs",
+    "expect_action": "assess-doc"
+  },
+  {
+    "prompt": "/taste src/composables/useAuth.ts",
+    "expect_action": "assess-code"
+  },
+  {
+    "prompt": "check this component for obsolete patterns",
+    "expect_action": "assess-code"
+  },
+  {
+    "prompt": "are there stale TODOs in src/api/?",
+    "expect_action": "assess-code"
+  },
+  {
+    "prompt": "/taste app/Http/Controllers/",
+    "expect_action": "assess-code"
+  },
+  {
+    "prompt": "create a new component",
+    "expect_action": null
+  }
+]

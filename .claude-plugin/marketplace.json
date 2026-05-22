@@ -1,17 +1,46 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "aidd-overlay",
+  "version": "1.0.0",
+  "description": "Local marketplace — personal overlay on the AIDD framework",
   "owner": {
     "name": "François-Xavier Guillois"
   },
   "plugins": [
     {
-      "name": "aidd-custom",
-      "source": {
-        "source": "github",
-        "repo": "RebelliousSmile/aidd-overlay"
-      },
-      "description": "Custom AIDD commands, agents, rules and templates for Claude Code",
-      "version": "1.0.0"
+      "name": "aidd-overlay",
+      "version": "1.0.0",
+      "source": "./plugins/aidd-overlay",
+      "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize.",
+      "recommended": true
+    },
+    {
+      "name": "gamedesign",
+      "version": "0.1.0",
+      "source": "./plugins/gamedesign",
+      "description": "Game design skills and workflows.",
+      "recommended": false
+    },
+    {
+      "name": "writing",
+      "version": "0.1.0",
+      "source": "./plugins/writing",
+      "description": "Writing skills and workflows.",
+      "recommended": false
+    },
+    {
+      "name": "obsidian",
+      "version": "0.1.0",
+      "source": "./plugins/obsidian",
+      "description": "Obsidian project management integration: export project memory and status reports to Obsidian-compatible format.",
+      "recommended": false
+    },
+    {
+      "name": "sc-php",
+      "version": "0.1.0",
+      "source": "./plugins/sc-php",
+      "description": "PHP-specific skills and workflows.",
+      "recommended": false
     }
   ]
 }

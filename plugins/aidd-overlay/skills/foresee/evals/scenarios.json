@@ -1,0 +1,54 @@
+[
+  {
+    "prompt": "foresee this plan: aidd_docs/tasks/2026_01/some-plan.md",
+    "expect_action": "analyze-doc"
+  },
+  {
+    "prompt": "prospective analysis of this skill",
+    "expect_action": "analyze-doc"
+  },
+  {
+    "prompt": "/foresee plugins/aidd-overlay/skills/harvest/SKILL.md",
+    "expect_action": "analyze-doc"
+  },
+  {
+    "prompt": "what issues might arise from this brainstorm?",
+    "expect_action": "analyze-doc"
+  },
+  {
+    "prompt": "/foresee #42",
+    "expect_action": "analyze-doc"
+  },
+  {
+    "prompt": "/foresee src/composables/useAuth.ts",
+    "expect_action": "analyze-code"
+  },
+  {
+    "prompt": "/foresee src/api/ --discuss",
+    "expect_action": "analyze-code"
+  },
+  {
+    "prompt": "analyze the auth module for future problems",
+    "expect_action": "analyze-code"
+  },
+  {
+    "prompt": "/foresee firebase",
+    "expect_action": "analyze-dep"
+  },
+  {
+    "prompt": "analyze package.json dependencies",
+    "expect_action": "analyze-dep"
+  },
+  {
+    "prompt": "what are the risks of using laravel/framework?",
+    "expect_action": "analyze-dep"
+  },
+  {
+    "prompt": "run the test suite",
+    "expect_action": null
+  },
+  {
+    "prompt": "implement the auth feature",
+    "expect_action": null
+  }
+]
