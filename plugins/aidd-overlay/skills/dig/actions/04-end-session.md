@@ -49,9 +49,19 @@ Finalized session report at `report_path` with `## Score` header and `## Key tak
    - `## Inconsistencies detected` — task file links from any `03-flag-inconsistency` calls, or "none".
    - `## Plans generated` — plan outlines noted during the session, or "none".
    - `## Key takeaways` — 2–3 bullet points summarizing the session (main findings, weak areas, anomalies detected).
-8. Offer replay:
+8. **Corrections handoff** — if `corrections[]` in session context is non-empty:
+   a. Display a consolidated corrections block before the replay offer:
+      ```
+      ─── Corrections détectées ───
+      {N} correction(s) à appliquer
+      · {severity} — {file} — {description}
+      ```
+   b. Ask: "On applique les corrections maintenant ?"
+   c. If **yes**: invoke `aidd-dev:plan` — pass the corrections list as planning input, wait for plan approval, then invoke `aidd-dev:implement`, then commit via `aidd-vcs:commit`.
+   d. If **later**: log the corrections list in the session report under `## Plans generated` so they are not lost.
+9. Offer replay:
    > "Play again? `same theme` / `new theme` / `other source`"
 
 ## Test
 
-Complete a full 5-question session; verify that: (1) the final score is displayed with the correct grade label, (2) at least one weak point is listed if any question scored < 4/4, and (3) the session report's `## Key takeaways` section is non-empty after the action completes.
+Complete a full 5-question session; verify that: (1) the final score is displayed with the correct grade label, (2) at least one weak point is listed if any question scored < 4/4, (3) the session report's `## Key takeaways` section is non-empty after the action completes, and (4) if any corrections were accumulated during the session, the "Corrections détectées" block appears before the replay offer and the user is prompted to apply them.
