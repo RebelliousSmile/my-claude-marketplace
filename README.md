@@ -4,7 +4,7 @@ Marketplace personnelle de plugins Claude Code, construite comme overlay du fram
 
 ## Installation
 
-### Socle commun (tous les projets)
+### 1. Enregistrer le marketplace (une seule fois, global)
 
 Ajouter dans `~/.claude/settings.json` :
 
@@ -24,23 +24,34 @@ Ajouter dans `~/.claude/settings.json` :
 }
 ```
 
-### Par projet (plugins optionnels)
+> **Si Claude Code demande « Enter marketplace source »**, saisir : `RebelliousSmile/my-claude-marketplace`
+
+### 2. Activer des plugins par projet (optionnel)
 
 Ajouter dans `.claude/settings.json` à la racine du projet :
 
 ```json
 {
-  "plugins": [
-    "gamedesign@github:RebelliousSmile/my-claude-marketplace"
-  ]
+  "enabledPlugins": {
+    "gamedesign@my-marketplace": true
+  }
 }
 ```
 
-Ou via commande :
+Ou via commande dans le projet :
 
 ```
-/plugin install gamedesign@github:RebelliousSmile/my-claude-marketplace
+/plugin install gamedesign@my-marketplace
 ```
+
+**Référence rapide par type de projet :**
+
+| Type de projet | Plugin à activer |
+|---|---|
+| Web PHP | `sc-php@my-marketplace` |
+| Jeu vidéo | `gamedesign@my-marketplace` |
+| Projet avec Obsidian | `obsidian@my-marketplace` |
+| Projet rédactionnel | `writing@my-marketplace` |
 
 ---
 
