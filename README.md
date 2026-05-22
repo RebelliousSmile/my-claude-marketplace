@@ -8,6 +8,24 @@ Marketplace personnelle de plugins Claude Code, construite comme overlay du fram
 
 Ajouter dans `~/.claude/settings.json` :
 
+**Machine de développement** (répertoire local, modifications prises en compte sans push) :
+```json
+{
+  "extraKnownMarketplaces": {
+    "my-marketplace": {
+      "source": {
+        "source": "directory",
+        "path": "/chemin/absolu/vers/my-claude-marketplace"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "aidd-overlay@my-marketplace": true
+  }
+}
+```
+
+**Autres machines** (depuis GitHub) :
 ```json
 {
   "extraKnownMarketplaces": {
