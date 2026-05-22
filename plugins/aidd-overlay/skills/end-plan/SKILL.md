@@ -1,5 +1,6 @@
 ---
 name: end-plan
+model: haiku
 description: Archives a plan file as processed, merges the current plan branch into the target branch, and deletes the local plan branch. Use when a user finishes a plan and wants to close it out: "end plan", "close this plan", "merge the plan branch", "archive the plan", "finish the plan branch". Do NOT use for pushing to remote automatically, force-deleting branches with uncommitted changes, creating new plans, or any task that is not about archiving a completed plan branch.
 ---
 

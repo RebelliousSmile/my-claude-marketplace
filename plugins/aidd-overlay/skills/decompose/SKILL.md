@@ -1,5 +1,6 @@
 ---
 name: decompose
+model: opus
 description: Applies the Mikado method to decompose a user-supplied goal into a dependency graph via iterative Q&A, then generates YAML node files in mikado/<graphName>/. Use when a user wants to break down a complex goal into safe, incremental steps: "decompose this goal", "apply Mikado to", "break this into steps", "create a Mikado graph for", "how do I safely tackle". Do NOT use for generating implementation code, writing tests, managing tasks in aidd_docs/tasks/, or any task that does not involve decomposing a goal into a dependency graph.
 ---
 

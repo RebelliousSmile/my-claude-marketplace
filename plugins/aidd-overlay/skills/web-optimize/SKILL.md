@@ -1,5 +1,6 @@
 ---
 name: web-optimize
+model: sonnet
 description: >-
   Audits a web application's performance against a framework-aware checklist
   (LCP, CLS, INP, TBT, TTFB, bundle size, render-blocking resources, N+1

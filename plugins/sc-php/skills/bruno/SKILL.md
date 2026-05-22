@@ -1,5 +1,6 @@
 ---
 name: bruno
+model: haiku
 description: Runs Bruno API tests in CLI mode and iterates until all targeted tests pass. Use when a user wants to run or fix API tests written in Bruno: "run Bruno tests", "test the API with Bruno", "run bruno/", "fix the Bruno tests", "bru run". Do NOT use for writing new Bruno test files from scratch, running Playwright tests, unit tests, or any testing that does not use the bru CLI.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: bank
+model: haiku
 description: Manages the 8-MINE resource registry (bank.yml). Use when initializing the project bank, refreshing resource paths after adding lore or code files, or auditing lore-vs-code integrity. Do NOT use for writing timelines or arc specs - use `dialogic-draft` instead.
 ---
 

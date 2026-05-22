@@ -1,5 +1,6 @@
 ---
 name: project-status
+model: sonnet
 description: Provides three independent project health actions: synthesize and export project memory (memory), generate a full project status report with audit, security findings, and a 7-day plan (report), and audit memory files for quality, freshness, and contradictions (audit). Triggers vary per action — "project memory / memory export / synthesize memory" maps to memory; "project status / status report / project health" maps to report; "audit memory / memory quality / check memory files" maps to audit. Do NOT use for implementing features, writing application code, running tests, or modifying non-memory project files.
 ---
 

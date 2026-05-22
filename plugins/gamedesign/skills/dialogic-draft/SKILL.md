@@ -1,5 +1,6 @@
 ---
 name: dialogic-draft
+model: sonnet
 description: Sequential writing pipeline for 8-MINE Dialogic timelines. Two models coexist — Scene model (primary, recurring scenes) and Node model (legacy, linear scripted scenes). Use when writing a new scene spec, formalizing a PNJ behavior, writing a recurring .dtl (scene model), decomposing an arc into nodes, writing a scripted .dtl (node model), or applying review feedback. Do NOT use for reviewing timelines - use `dialogic-review` instead.
 ---
 

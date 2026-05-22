@@ -1,5 +1,6 @@
 ---
 name: dialogic-review
+model: opus
 description: Reviews and validates 8-MINE Dialogic timelines and narrative graph. Use when running a persona review on a .dtl (light or full), auditing the narrative graph structure, or managing node lifecycle (list/status/update/retire). Do NOT use for rewriting timelines - use `dialogic-draft fix` or `dialogic-draft write-scene --feedback` instead.
 ---
 

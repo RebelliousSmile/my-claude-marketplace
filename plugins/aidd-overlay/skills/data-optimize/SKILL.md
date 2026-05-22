@@ -1,5 +1,6 @@
 ---
 name: data-optimize
+model: sonnet
 description: >-
   Audits a project's data layer (client + server) against a stack-aware
   checklist (N+1, query count, pagination, real-time listeners, payload size,

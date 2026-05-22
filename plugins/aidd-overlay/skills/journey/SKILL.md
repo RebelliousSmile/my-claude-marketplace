@@ -1,5 +1,6 @@
 ---
 name: journey
+model: sonnet
 description: Executes a user journey from a GitHub or GitLab issue, logs step-by-step Playwright results to a <plan>.journey.md report, and posts Summary and Conclusion to the issue. Use when a user wants to validate a feature end-to-end against an issue: "run the journey for issue #N", "test issue #N", "execute journey", "validate this issue with Playwright". Do NOT use for unit tests, API tests, non-Playwright testing, creating issues, or any task not linked to an existing GitHub/GitLab issue with a matching plan file.
 ---
 

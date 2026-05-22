@@ -56,7 +56,7 @@ Repeat the following block for each question `i` from 1 to 5:
 10. **Adapt difficulty**:
     - 2 consecutive full marks (4/4) → increase difficulty (easy → intermediate → hard)
     - 2 consecutive low scores (≤ 2/4) → decrease difficulty (hard → intermediate → easy)
-11. If a risk or security issue was found during the coherence audit (step 2): mention it alongside the answer feedback, ask the user if they want to brainstorm it now or note it for later. If yes or if the risk is critical: write a plan outline in the session report under `## Plans generated`. Tell the user to invoke `/plan` for a full plan — Ada cannot launch skills herself.
+11. If a correction, risk, or inconsistency was found during the coherence audit (step 2): mention it alongside the answer feedback. Append to `corrections[]` in session context: `{ file, description, severity: critical | warning }`. Do not attempt to fix anything during the quiz.
 
 ## Test
 
