@@ -21,12 +21,8 @@ Repeat the following block for each question `i` from 1 to 5:
 ### Per-question loop
 
 1. Read the source file `files[i]` entirely.
-2. **Coherence audit** — cross-reference the file against:
-   - `.claude/rules/` — does the code follow declared conventions?
-   - `aidd_docs/` (user stories, decisions) — is the behavior consistent with requirements?
-   - `aidd_docs/memory/` — is the documentation accurate?
-   Log each finding in the session report under `## Coherence checks` immediately.
-3. **Inconsistency check** — if this file contradicts a previously read file in the same session, invoke `03-flag-inconsistency` with the two conflicting paths and a description. Do not block the quiz loop.
+2. **Inline coherence observation** — while reading, note any obvious finding against `rules_summary` from the session context (no extra file reads). A finding is: a clear rule violation, a contradiction with another already-read file in this session, or a suspicious pattern. If nothing stands out: skip — leave the coherence row blank. Log only real findings in `## Coherence checks`; do not force a row per file.
+3. **Inconsistency check** — if this file directly contradicts a previously read file in the same session, invoke `03-flag-inconsistency`. Do not block the quiz loop.
 4. Generate a question based on the file content:
    - Odd questions (1, 3, 5): **MCQ** — 4 options, one correct, short labels.
    - Even questions (2, 4): **Open** — precise question, expected answer in 1–3 sentences.
