@@ -26,9 +26,9 @@ If no findings: `All clear — no obsolescence signals detected.`
 
 ## Process
 
-1. If `$ARGUMENTS` is a directory, collect all code files recursively (exclude `node_modules`, `.git`, `vendor`, `dist`, `build`, `.venv`, `venv`). If a single file, process that file only.
+### Single-file mode
 
-2. For each file, detect its language by extension. Load the matching language reference **before** running Detectors A and B:
+1. Detect the file's language by extension. Load the matching language reference **before** running Detectors A and B:
 
    | Extension | Reference to load |
    |---|---|
@@ -40,7 +40,22 @@ If no findings: `All clear — no obsolescence signals detected.`
    | `.rs` | `@../references/lang-rust.md` |
    | Other | Skip A and B; run C and D only |
 
-3. Run the four detectors below.
+2. Run the four detectors (A, B, C, D) defined below.
+3. Output the findings table and summary line.
+
+### Directory mode
+
+1. Collect all code files recursively under `$ARGUMENTS` (exclude `node_modules`, `.git`, `vendor`, `dist`, `build`, `.venv`, `venv`).
+2. Group files by language extension (one group per language family: ts/tsx, js/jsx/mjs/cjs, vue, php, py, rs, other).
+3. **Spawn one haiku sub-agent per language group in parallel** (background: true). Each agent receives its file list and:
+   - Loads the language reference once for the group.
+   - Runs Detectors A, B, C, D on every file in the group.
+   - Returns:
+     ```json
+     [{ "file": "<path>", "line": N, "finding": "<description>", "type": "A|B|C|D", "action": "<suggested action>" }, …]
+     ```
+4. Wait for all agents to complete.
+5. Merge all returned findings into a single table. Output the findings table and aggregate summary line.
 
 ---
 

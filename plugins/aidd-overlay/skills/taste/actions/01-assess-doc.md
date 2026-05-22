@@ -85,9 +85,12 @@ Cross-document coherence (does doc A agree with doc B?) is not in scope here; th
      Sort-Object LastWriteTime | Select-Object -ExpandProperty FullName
    ```
 2. Sort by modification date ascending (oldest first).
-3. For each file, run the single-file process (steps 1–8 above). Files with no verifiable claims → `N/A`, no further processing.
-4. For Partial and Obsolete files, populate the `Stale passages` column with a compact list of the affected section titles (e.g. `§Auth flow, §Dependencies`).
-5. Aggregate results into the scan output table.
+3. **Spawn one haiku sub-agent per file in parallel** (background: true). Each agent receives the file path and runs the single-file process (steps 1–8 above). Each agent returns:
+   ```json
+   { "file": "<path>", "verdict": "Current|Partial|Obsolete|N/A", "stale_claims": N, "stale_passages": ["§Title", …], "suggested_action": "keep|update|delete|—" }
+   ```
+4. Wait for all agents to complete.
+5. Aggregate all returned results into the scan output table, sorted by verdict severity (Obsolete → Partial → Current → N/A).
 6. If invoked as a sub-phase of `harvest`, return the summary metrics to the orchestrator. Otherwise, display the full table.
 
 ## Test
