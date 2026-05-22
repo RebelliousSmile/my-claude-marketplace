@@ -79,9 +79,9 @@ Plugin principal, installé globalement. Étend le framework AIDD avec des workf
 |---|---|---|
 | `harvest` | `/harvest` | Maintenance globale — réconcilie le tracker, extrait les décisions, purge les éphémères, appelle taste |
 | `reconcile-normative` | `/reconcile-normative` | Détecte doublons, contradictions et règles obsolètes entre archives, mémoire et règles actives |
-| `taste` | `/taste [fichier]` | Détecte les contenus obsolètes — assess-doc (claims vs codebase), assess-code (imports, symboles, règles, TODOs) |
-| `foresee` | `/foresee <cible>` | Analyse prospective — problèmes à moyen terme sur docs, code ou dépendances |
-| `dig` | `/dig` | Quiz interactif sur le codebase ou la memory bank |
+| `taste` | `/taste [fichier]` | Détecte les contenus obsolètes — assess-doc (claims vs codebase, scan global si pas d'argument), assess-code (imports, symboles, règles, TODOs) |
+| `foresee` | `/foresee <cible> [--depth N]` | Analyse prospective — problèmes à moyen terme sur docs, code (≤10 fichiers par défaut) ou dépendances |
+| `dig` | `/dig` | Quiz interactif sur le codebase ou la memory bank — 5 questions, /20, correction en fin de session |
 | `web-optimize` | `/web-optimize` | Audit perf web (LCP, CLS, INP, bundle, N+1) avec roadmap priorisée |
 | `data-optimize` | `/data-optimize` | Audit perf données (N+1, index, pagination, cache) |
 | `decompose` | `/decompose` | Décompose un objectif en graphe Mikado |
