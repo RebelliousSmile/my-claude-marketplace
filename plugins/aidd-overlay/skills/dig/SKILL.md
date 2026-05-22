@@ -1,5 +1,6 @@
 ---
 name: dig
+model: sonnet
 description: Runs an interactive 5-question quiz on the project codebase or memory bank, embodied as Ada (Ada Lovelace persona), with adaptive difficulty, /20 scoring, coherence auditing, and automatic inconsistency task creation. Use when idle — waiting for tests, CI, or a background agent — and you want to learn or review the project: "quiz me", "dig into the codebase", "test my knowledge", "Ada, quiz me", "on révise le projet ?". Do NOT use for writing code, creating documentation, or managing tasks — use `aidd-dev:02-implement` or `aidd-dev:01-plan` instead.
 ---
 
