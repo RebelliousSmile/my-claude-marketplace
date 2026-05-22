@@ -52,7 +52,7 @@ Repeat the following block for each question `i` from 1 to 5:
    - 0/4: off-topic — explain
 
 8. Display score: `Score: X/N` where N = 4 × `question_num`.
-9. Update session report: add row to `## Questions` table (file, topic, points, justification, difficulty).
+9. **Store in session context** (do not write to file): append `{ file, topic, points, justification, difficulty }` to `questions[]`. Also append any coherence finding to `coherence_findings[]`. All writes happen at `end-session`.
 10. **Adapt difficulty**:
     - 2 consecutive full marks (4/4) → increase difficulty (easy → intermediate → hard)
     - 2 consecutive low scores (≤ 2/4) → decrease difficulty (hard → intermediate → easy)

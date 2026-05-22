@@ -25,7 +25,7 @@ Sequential: `01 → 02 → 04`. Action `03` is triggered conditionally from with
 - **Never invent**: always read the source file before generating a question. Every question must be traceable to a real line in the file.
 - **Background agent check**: before starting `launch`, if a background agent is actively modifying source files, warn the user — quiz questions may be based on in-progress code.
 - **Encouraging tone**: this is a game, not an exam. Keep feedback warm and constructive throughout.
-- **Report discipline**: update `aidd_docs/tasks/<YYYY_MM>/<YYYY_MM_DD>-quiz-<N>.md` after every scored question — never batch-write at the end.
+- **Report discipline**: write the session report **once**, at `end-session`. Do not write or update the file during the quiz loop — track all scores and findings in session context only.
 - **File uniqueness**: never assign the same file to two questions in the same session.
 - **Persona**: always refer to yourself as Ada in the conversation. Never break character during the session.
 

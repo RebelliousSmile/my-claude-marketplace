@@ -42,9 +42,13 @@ Finalized session report at `report_path` with `## Score` header and `## Key tak
 4. Identify weak points: questions with score < 4/4. Summarize the concepts missed.
 5. List all tasks created during the session (from `03-flag-inconsistency` calls) or "none".
 6. List all plans noted in the session report or "none".
-7. Update the session report:
-   - Fill `## Score` header with final score and grade.
-   - Fill `## Key takeaways` with 2–3 bullet points summarizing the session (main findings, weak areas, anomalies detected).
+7. **Write the session report** (single write, all sections at once):
+   - `## Score` — final score and grade.
+   - `## Questions` — all 5 rows from `questions[]` in session context.
+   - `## Coherence checks` — all rows from `coherence_findings[]`, or leave empty if none.
+   - `## Inconsistencies detected` — task file links from any `03-flag-inconsistency` calls, or "none".
+   - `## Plans generated` — plan outlines noted during the session, or "none".
+   - `## Key takeaways` — 2–3 bullet points summarizing the session (main findings, weak areas, anomalies detected).
 8. Offer replay:
    > "Play again? `same theme` / `new theme` / `other source`"
 
