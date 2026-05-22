@@ -1,13 +1,18 @@
 # Analyze-code
 
-Reads a code file, module, or directory, identifies the key elements to analyze, scores three dimensions, and surfaces improvements ranked by impact with prior-run comparison.
+Reads a code file, module, or bounded set of files in a directory, identifies the key elements to analyze, scores three dimensions, and surfaces improvements ranked by impact with prior-run comparison.
 
 ## Inputs
 
-- `$ARGUMENTS` (required) — string: `<target> [--discuss | --plan]`
+- `$ARGUMENTS` (required) — string: `<target> [--depth <N>] [--discuss | --plan]`
   - `target`: path to a code file, directory, or informal module description ("the auth module", "src/api/")
+  - `--depth <N>` (optional, default: 10) — maximum number of files to analyze when target is a directory
   - `--discuss`: optional — present each finding interactively, no file created
   - `--plan`: optional — create a correction plan in `aidd_docs/tasks/` after inline output
+
+## Scope rule
+
+**Foresee is not a full-codebase scanner.** When given a directory, it selects a bounded set of the most impactful files and analyzes them deeply. Breadth is deliberately capped; depth is the value.
 
 ## Scoring dimensions
 
@@ -30,8 +35,8 @@ Reads a code file, module, or directory, identifies the key elements to analyze,
 Last run: YYYY-MM-DD — N improvements: X resolved ✅, Y persistent ⚠️, Z new 🆕
 (Omit if no prior run found)
 
-### Key elements analyzed
-- {element name} ({type: function / class / module / file}) — {one-line role}
+### Files analyzed (N / budget)
+- {file path} — {one-line role}
 
 ### Scores
 | Dimension       | Score | Justification |
@@ -50,21 +55,33 @@ Last run: YYYY-MM-DD — N improvements: X resolved ✅, Y persistent ⚠️, Z 
 
 ### Step 1 — Parse arguments
 
-Extract the target and any flags from `$ARGUMENTS`. If the target is an informal description, locate the corresponding files via grep/find before proceeding.
+Extract the target, `--depth` value (default: 10), and any flags from `$ARGUMENTS`.
 
 ### Step 2 — Load prior run
 
 Compute slug from the target path. Search `aidd_docs/foresee/` for files matching `*-<slug>.md`, sorted by date descending. Load the most recent if found.
 
-### Step 3 — Collect files
+### Step 3 — Select files (bounded)
 
-- **Single file**: read directly.
-- **Directory**: list all code files recursively (exclude `node_modules`, `.git`, `vendor`, `dist`, `build`, `.venv`).
-- **Informal description**: identify the relevant directory or file set via grep for the described concept.
+- **Single file**: use it directly. Skip selection.
+- **Informal description**: locate the corresponding directory or file set via grep for the described concept, then apply directory selection below.
+- **Directory**: collect all code files recursively (exclude `node_modules`, `.git`, `vendor`, `dist`, `build`, `.venv`). Then **select up to `--depth` files** using this priority order:
+  1. Entry points (`index.*`, `main.*`, `app.*`, `server.*` at the root of the directory)
+  2. Files with the highest inbound import count (grep `from .* <filename>` across the codebase — most-imported first)
+  3. Files modified most recently (`git log --oneline -- <file>` date descending)
+  4. Largest files (line count)
+  
+  Stop as soon as the budget is reached. Display "Files analyzed (N / budget)" in the output.
 
-### Step 4 — Identify key elements
+### Step 4 — Analyze files in parallel
 
-For each file, extract the most significant elements: exported functions, classes, composables, controllers, modules. Prioritize by size and outgoing coupling (most-called first). Focus depth on the top 5–10 elements to avoid dilution.
+**Spawn one opus sub-agent per selected file in parallel** (background: true). Each agent:
+- Reads the file.
+- Extracts the most significant elements: exported functions, classes, composables, controllers, modules (top 5 per file).
+- Identifies improvement candidates against `@../references/improvement-patterns.md`.
+- Returns: `{ file, key_elements[], improvements[] }`
+
+Wait for all agents to complete.
 
 ### Step 5 — Load adjacent context
 
@@ -72,30 +89,24 @@ Follow the context map for code artifacts:
 
 @../assets/context-map.md
 
-### Step 6 — Detect improvement patterns
+### Step 6 — Score at module level
 
-Consult the improvement pattern catalogue for common code anti-patterns:
+Using the aggregated findings from all file agents, score the **module as a whole** (not per file) on each dimension using `@../assets/scoring-rubrics.md`. Include a one-line justification per score.
 
-@../references/improvement-patterns.md
+### Step 7 — List improvements
 
-### Step 7 — Score
+Merge all per-file improvements. Deduplicate cross-file patterns (e.g., repeated coupling issue). Rank by impact (🔴 first). Classify each against the prior run if available (✅ Resolved / ⚠️ Persistent / 🆕 New).
 
-Rate each dimension 1–10 using the rubric in `@../assets/scoring-rubrics.md`. Score at the module/directory level when analyzing multiple files — do not aggregate individual file scores arithmetically.
-
-### Step 8 — List improvements
-
-List all improvements ranked by impact. Classify each against the prior run if available (✅ Resolved / ⚠️ Persistent / 🆕 New).
-
-### Step 9 — Handle flags
+### Step 8 — Handle flags
 
 - **`--discuss`**: pause on each 🔴 item and ask "Address this now?" before moving on. No file created.
 - **`--plan`**: after inline output, create `aidd_docs/tasks/YYYY_MM_DD-foresee-<slug>.md` with each improvement as a task with acceptance criteria.
 - **Default**: inline output only.
 
-### Step 10 — Write run file
+### Step 9 — Write run file
 
 Write output to `aidd_docs/foresee/YYYY-MM-DD-<slug>.md`. Create `aidd_docs/foresee/` if absent.
 
 ## Test
 
-Invoke with a path to any existing code file or directory; verify the output contains a "Key elements analyzed" section, a Scores table with all three dimensions rated and justified, at least one improvement item, and a run file written to `aidd_docs/foresee/`.
+Invoke with a path to any existing code file or directory; verify the output contains a "Files analyzed" section (≤ 10 files), a Scores table with all three dimensions rated and justified, at least one improvement item, and a run file written to `aidd_docs/foresee/`.

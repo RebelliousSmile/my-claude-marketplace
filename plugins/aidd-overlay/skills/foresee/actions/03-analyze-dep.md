@@ -57,7 +57,7 @@ Last run: YYYY-MM-DD — N signals: X resolved ✅, Y persistent ⚠️, Z new �
 ```
 
 **All dependencies (manifest mode):**
-Summary table of all packages, sorted by composite risk (lowest Maintenance + Security + Lock-in first). Full profiles only for the top 5 riskiest packages.
+Summary table of all packages sorted by composite risk (lowest Maintenance + Security + Lock-in first). Full profiles only for the top 5 riskiest packages.
 
 ## Risk signals reference
 
@@ -75,7 +75,7 @@ Compute slug from the package name or manifest path. Search `aidd_docs/foresee/`
 
 ### Step 3 — Collect dependency data
 
-**Single package:**
+**Single package — sequential:**
 
 1. Read the project manifest (`package.json`, `composer.json`, `pyproject.toml`, `Cargo.toml`) to find the currently pinned version.
 2. Fetch package metadata using available CLI tools:
@@ -97,7 +97,7 @@ Compute slug from the package name or manifest path. Search `aidd_docs/foresee/`
 
 3. Check for known CVEs:
    ```bash
-   # Node (npm audit for a specific package)
+   # Node
    npm audit --json 2>/dev/null | jq '.vulnerabilities.<package>'
 
    # Composer
@@ -109,11 +109,15 @@ Compute slug from the package name or manifest path. Search `aidd_docs/foresee/`
    rg -c "import.*<package>|require.*<package>|use .*<namespace>" --glob "**/*.{ts,js,php,py,rs,vue}"
    ```
 
-**Manifest mode:**
+**Manifest mode — parallel metadata collection then opus synthesis:**
 
 1. Read all `dependencies` and `devDependencies` (or equivalent) from the manifest.
-2. Run steps 2–4 for each package (batch where possible).
-3. Sort by composite risk and present the summary table.
+2. **Spawn one haiku sub-agent per package in parallel** (background: true). Each agent:
+   - Fetches package metadata (steps 2–4 above for the package's ecosystem).
+   - Returns: `{ name, pinned_version, latest_version, last_release, maintainers, cve_count, usage_count }`
+3. Wait for all agents to complete.
+4. **Opus synthesizes**: compute composite risk score per package (raw signal aggregation — no deep analysis yet). Sort ascending. Identify top 5 riskiest.
+5. For the top 5 riskiest packages only: run the full single-package analysis (Steps 4–6 below).
 
 ### Step 4 — Assess against risk signal catalogue
 
