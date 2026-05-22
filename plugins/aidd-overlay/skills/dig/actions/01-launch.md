@@ -41,7 +41,7 @@ Session report file created at `report_path` from `@../assets/quiz_report.md`.
    - `code`: filter by project language extensions (`.ts`, `.tsx`, `.js`, `.py`, etc. per stack)
    - `docs`: `aidd_docs/memory/**/*.md`
    - Apply theme filter if specified.
-8. Select **5 distinct files** at random (or filtered by theme). Never assign the same file twice.
+8. Select **5 distinct files** at random (or filtered by theme). Never assign the same file twice. **Do not display the selected files — the selection is internal context only.**
 9. Determine report number N: list existing `aidd_docs/tasks/<YYYY_MM>/<YYYY_MM_DD>-quiz-*.md` files, set N = count + 1.
 10. Create the session report by copying `@../assets/quiz_report.md` to `aidd_docs/tasks/<YYYY_MM>/<YYYY_MM_DD>-quiz-<N>.md`. Fill in the header: date and quiz number.
 11. Announce: `"5 questions — let's go! 🚀"`
