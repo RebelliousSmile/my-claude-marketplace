@@ -1,6 +1,6 @@
 # Overview Completeness Checklist
 
-Exit criteria for the `brainstorm` skill. Propose the transition to `plan generate-toc` only when:
+Exit criteria for the `brainstorm` skill. Propose the transition to `toc generate-toc` only when:
 - All **Required** elements for the project type are present in the overview, AND
 - The last 2–3 iterations produced only minor adjustments (no structural changes).
 
@@ -77,5 +77,5 @@ When all required items are checked and the last 2–3 rounds were adjustments o
 
 ```
 Overview complete. All required elements for <type> are present.
-Suggested next step: plan generate-toc <project_path>
+Suggested next step: toc generate-toc <project_path>
 ```

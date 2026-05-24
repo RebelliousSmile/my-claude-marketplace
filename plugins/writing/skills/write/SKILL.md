@@ -1,6 +1,7 @@
 ---
 name: write
-description: Writes narrative chapters (novel or RPG) in Markdown, following TOC specifications, output-style, and universe documentation. Use when writing a new chapter, rewriting a chapter from persona feedback (--feedback mode), writing narrative fiction, or writing RPG game documents (scenarios, rulebooks, calling sheets). Do NOT use for correcting existing chapters — use `review` instead; do NOT use for planning the TOC — use `plan` instead.
+model: opus
+description: Writes narrative chapters (novel or RPG) in Markdown, following TOC specifications, output-style, and universe documentation. Use when writing a new chapter, rewriting a chapter from persona feedback (--feedback mode), writing narrative fiction, or writing RPG game documents (scenarios, rulebooks, calling sheets). Do NOT use for correcting existing chapters — use `review` instead; do NOT use for planning the TOC — use `toc` instead.
 ---
 
 # Write

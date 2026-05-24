@@ -1,5 +1,6 @@
 ---
 name: persona
+model: sonnet
 description: Creates and refines reader persona YAML files used by the review pipeline. Use when creating a new reader persona for a specific project or universe, or refining an existing persona based on accumulated comment feedback. Do NOT use for running the review itself — use `review` instead; do NOT use for generating project configuration — use `setup` instead.
 ---
 

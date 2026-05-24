@@ -1,5 +1,6 @@
 ---
 name: review
+model: opus
 description: Quality review pipeline for writing chapters — persona-based qualitative analysis (comment) and technical correction (doctor). Use when evaluating a written chapter through reader personas, applying grammar/typography/terminology corrections, or preparing triage decisions (rewrite vs patch). Do NOT use for code review — use `aidd-dev:review` instead; do NOT use for rewriting chapters — use `write --feedback` instead.
 ---
 

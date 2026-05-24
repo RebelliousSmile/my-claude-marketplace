@@ -1,5 +1,6 @@
 ---
 name: tone-finder
+model: sonnet
 description: Generates or updates an output-style file for a writing universe — from source texts (source mode), structured questionnaire (questionnaire mode), or by analyzing patterns in review feedback (improve mode). Use when defining the writing style for a new universe, updating a style based on persona feedback, or enriching an existing style with source material. Do NOT use for correcting chapter content — use `review` instead; do NOT use for generating chapters — use `write` instead.
 ---
 

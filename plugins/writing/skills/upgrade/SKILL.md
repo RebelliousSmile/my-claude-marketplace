@@ -1,5 +1,6 @@
 ---
 name: upgrade
+model: sonnet
 description: Iteratively improves a piece of writing or a workshop prompt through structured analysis, targeted suggestions, and validated rewrites. Use when improving an existing chapter draft, refining a workshop prompt file, or iterating on any written artifact. Do NOT use for persona-based chapter review — use `review` instead; do NOT use for full chapter rewrites from TOC — use `write --feedback` instead.
 ---
 

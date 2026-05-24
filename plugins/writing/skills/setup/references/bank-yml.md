@@ -1,6 +1,6 @@
 # bank.yml — Schema and Field Reference
 
-`bank.yml` is the canonical configuration file for a writing project. It declares all resources consumed by the workshop pipeline (brainstorm, plan, write, review, tone-finder, persona, research, extract-pdf).
+`bank.yml` is the canonical configuration file for a writing project. It declares all resources consumed by the workshop pipeline (brainstorm, toc, write, review, tone-finder, persona, research, extract-pdf).
 
 Location: `<univers>/<projet>/bank.yml`
 
@@ -116,8 +116,8 @@ For `output-style` files: additionally check that each has at least a `## Philos
 | Skill | Fields read |
 |-------|------------|
 | `brainstorm` | `overview`, `docs`, `output-style`, `document.type` |
-| `plan generate-toc` | `overview`, `docs`, `toc`, `document.type`, `output-style` |
-| `plan write-toc-chapter` | `toc.fichier`, `docs`, `output-style` |
+| `toc generate-toc` | `overview`, `docs`, `toc`, `document.type`, `output-style` |
+| `toc write-toc-chapter` | `toc.fichier`, `docs`, `output-style` |
 | `write` | All fields |
 | `review comment` | `personas`, `output-style`, `docs` |
 | `review doctor` | `output-style`, `docs.terminologie`, `rules-files` |
