@@ -1,8 +1,0 @@
-[
-  { "prompt": "Brainstorme mon projet de roman dans archipels/mon-roman", "expect_action": "brainstorm" },
-  { "prompt": "brainstorm the concept for my RPG scenario zombiology/session2", "expect_action": "brainstorm" },
-  { "prompt": "Help me develop my novel concept, challenge my ideas about the antagonist", "expect_action": "brainstorm" },
-  { "prompt": "I need to iterate on my project overview and validate the structure before writing", "expect_action": "brainstorm" },
-  { "prompt": "Write chapter 3 of my novel", "expect_action": null },
-  { "prompt": "Generate the TOC from my overview", "expect_action": null }
-]

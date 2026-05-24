@@ -1,25 +1,25 @@
 ---
-name: brainstorm
+name: forge
 model: sonnet
-description: Iterates on a narrative writing project's overview — challenges concepts, proposes alternatives, and validates structure until the project is ready for TOC generation. Use when developing a novel, RPG scenario, or guide concept; when the overview is empty or needs challenging; when stuck on narrative structure. Do NOT use for software feature brainstorming — use `aidd-refine:brainstorm` instead; do NOT use once the overview is complete and validated — use `toc` instead.
+description: Iterates on a narrative writing project's overview — challenges concepts, proposes alternatives, and validates structure until the project is ready for TOC generation. Use when developing a novel, RPG scenario, or guide concept; when the overview is empty or needs challenging; when stuck on narrative structure. Do NOT use for software or code brainstorming — use aidd-refine:brainstorm instead; do NOT use once the overview is complete and validated — use toc instead.
 ---
 
-# Brainstorm
+# Forge
 
 Conversational partner for narrative concept development. Reads the project's `bank.yml` and overview file, then enters a challenge loop: analyze → challenge → propose alternatives → update. Exits when the overview satisfies all required narrative elements (pitch, structure, characters, stakes, tone).
 
 ## Available actions
 
-| #   | Action      | Role                                                      | Input                         |
-| --- | ----------- | --------------------------------------------------------- | ----------------------------- |
-| 01  | `brainstorm` | Challenge and iterate on a writing project's overview   | project path `<univers>/<projet>` |
+| #   | Action  | Role                                                      | Input                             |
+| --- | ------- | --------------------------------------------------------- | --------------------------------- |
+| 01  | `forge` | Challenge and iterate on a writing project's overview    | project path `<univers>/<projet>` |
 
 ## Default flow
 
 Single action: `01 → repeat until exit criteria met`.
 
 Trigger-to-action mapping:
-- "brainstorm my novel", "brainstorm the concept", "brainstorm my scenario", "brainstorm my RPG project", "iterate on my overview", "challenge my concept" → `brainstorm`
+- "forge my novel", "forge the concept", "forge my scenario", "iterate on my overview", "challenge my concept", "brainstorm my writing project", "travaille mon synopsis" → `forge`
 
 ## Transversal rules
 

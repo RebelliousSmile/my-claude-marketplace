@@ -1,7 +1,7 @@
 ---
 name: toc
 model: sonnet
-description: Generates a table of contents (TOC) for a writing project from a source document, producing .toc/INDEX.md with chapter synopses and key points; optionally generates detailed per-chapter spec files. Use when starting a new project structure, planning chapters from a synopsis or overview, or detailing an existing chapter entry. Do NOT use for writing chapter content — use `write` instead; do NOT use for concept development — use `brainstorm` instead.
+description: Generates a table of contents (TOC) for a writing project from a source document, producing .toc/INDEX.md with chapter synopses and key points; optionally generates detailed per-chapter spec files. Use when starting a new project structure, planning chapters from a synopsis or overview, or detailing an existing chapter entry. Do NOT use for writing chapter content — use `write` instead; do NOT use for concept development — use forge instead.
 ---
 
 # TOC
