@@ -12,6 +12,9 @@ description: 'Project file language and style depend on audience. LLM-consumed f
 
 ## LLM-consumed paths
 
+> **Note d'installation** : les chemins `aidd_docs/` ci-dessous sont propres à la structure AIDD.
+> Ajustez-les si votre projet utilise une arborescence différente.
+
 - `.claude/**` (skills, rules, agents, commands)
 - `aidd_docs/templates/**`
 - `aidd_docs/memory/**` (auto-loaded into context)
