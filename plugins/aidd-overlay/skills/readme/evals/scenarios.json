@@ -1,0 +1,102 @@
+[
+  {
+    "prompt": "rédige le README de mon projet",
+    "expect_action": "write",
+    "expect_scope": "full"
+  },
+  {
+    "prompt": "crée un README pour ce projet",
+    "expect_action": "write",
+    "expect_scope": "full"
+  },
+  {
+    "prompt": "write a README for my CLI tool",
+    "expect_action": "write",
+    "expect_scope": "full"
+  },
+  {
+    "prompt": "écris le README de mon projet",
+    "expect_action": "write",
+    "expect_scope": "full"
+  },
+  {
+    "prompt": "/readme",
+    "expect_action": "write",
+    "expect_scope": "full"
+  },
+  {
+    "prompt": "fais-moi un draft du README, je verrai les détails plus tard",
+    "expect_action": "write",
+    "expect_scope": "draft"
+  },
+  {
+    "prompt": "première version du README pour itérer",
+    "expect_action": "write",
+    "expect_scope": "draft"
+  },
+  {
+    "prompt": "draft README, je compléterai ensuite",
+    "expect_action": "write",
+    "expect_scope": "draft"
+  },
+  {
+    "prompt": "rédige la section État du projet",
+    "expect_action": "write",
+    "expect_scope": "fragment"
+  },
+  {
+    "prompt": "écris-moi juste la section Démarrage rapide",
+    "expect_action": "write",
+    "expect_scope": "fragment"
+  },
+  {
+    "prompt": "rédige uniquement la section Pourquoi / Pour qui",
+    "expect_action": "write",
+    "expect_scope": "fragment"
+  },
+  {
+    "prompt": "write the Prerequisites section",
+    "expect_action": "write",
+    "expect_scope": "fragment"
+  },
+  {
+    "prompt": "améliore ce README",
+    "expect_action": "write",
+    "expect_scope": "revision"
+  },
+  {
+    "prompt": "challenge cette version du README",
+    "expect_action": "write",
+    "expect_scope": "revision"
+  },
+  {
+    "prompt": "review my README and improve it",
+    "expect_action": "write",
+    "expect_scope": "revision"
+  },
+  {
+    "prompt": "ce README est trop long, coupe-le",
+    "expect_action": "write",
+    "expect_scope": "revision"
+  },
+  {
+    "prompt": "génère le CHANGELOG depuis le dernier tag",
+    "expect_action": null
+  },
+  {
+    "prompt": "rédige le CONTRIBUTING.md",
+    "expect_action": null
+  },
+  {
+    "prompt": "écris les release notes pour la v2.0",
+    "expect_action": null
+  },
+  {
+    "prompt": "génère la doc depuis les commentaires JSDoc",
+    "expect_action": null
+  },
+  {
+    "prompt": "crée un fichier LICENCE",
+    "expect_action": null
+  }
+]
