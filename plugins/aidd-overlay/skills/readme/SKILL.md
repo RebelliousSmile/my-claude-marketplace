@@ -1,7 +1,7 @@
 ---
 name: readme
 model: sonnet
-description: Writes or updates a README.md following a structured guideline — `write` creates from scratch (full / draft / fragment when no README exists); `update` revises an existing README globally or section by section. Triggers on "rédige le README", "crée un README pour", "write a README", "améliore ce README", "challenge cette version", "mets à jour la section X", "draft README", "écris le README de mon projet". Do NOT use for CONTRIBUTING, CHANGELOG, release notes, API docs, or code documentation.
+description: Writes or updates a README.md following a structured guideline — action write creates from scratch (full / draft / fragment when no README exists); action update revises an existing README globally or section by section. Triggers on "rédige le README", "crée un README pour", "write a README", "améliore ce README", "challenge cette version", "mets à jour la section X", "draft README", "écris le README de mon projet". Do NOT use for CONTRIBUTING, CHANGELOG, release notes, API docs, or code documentation.
 ---
 
 # Readme
