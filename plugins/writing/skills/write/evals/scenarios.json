@@ -1,0 +1,10 @@
+[
+  { "prompt": "Write chapter 3 of my novel", "expect_action": "write-novel" },
+  { "prompt": "Write the next novel chapter following the TOC", "expect_action": "write-novel" },
+  { "prompt": "Rewrite chapter 5 with persona feedback", "expect_action": "write-novel" },
+  { "prompt": "Write roleplaying chapter 2, the calling sheet for the Guardian", "expect_action": "write-roleplaying" },
+  { "prompt": "Write the scenario introduction chapter for my RPG document", "expect_action": "write-roleplaying" },
+  { "prompt": "Write the rules chapter for the Gardien du Temple calling", "expect_action": "write-roleplaying" },
+  { "prompt": "Review chapter 3 with my personas", "expect_action": null },
+  { "prompt": "Generate the table of contents from my overview", "expect_action": null }
+]

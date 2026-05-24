@@ -1,0 +1,9 @@
+[
+  { "prompt": "Upgrade the opening of chapter 3", "expect_action": "upgrade" },
+  { "prompt": "Improve the tone-finder prompt file", "expect_action": "upgrade" },
+  { "prompt": "Make this overview better — it feels vague", "expect_action": "upgrade" },
+  { "prompt": "Refine and improve what you just wrote", "expect_action": "upgrade" },
+  { "prompt": "Iterate on this text and make it stronger", "expect_action": "upgrade" },
+  { "prompt": "Review chapter 3 with my personas", "expect_action": null },
+  { "prompt": "Write chapter 4 of my novel", "expect_action": null }
+]

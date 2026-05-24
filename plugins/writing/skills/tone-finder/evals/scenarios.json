@@ -1,0 +1,10 @@
+[
+  { "prompt": "Create an output-style for my wot universe", "expect_action": "analyze" },
+  { "prompt": "Define the writing style for my zombie universe from the source PDF", "expect_action": "analyze" },
+  { "prompt": "Find the tone for my universe through the questionnaire", "expect_action": "analyze" },
+  { "prompt": "Tone finder for archipels — I have some source texts", "expect_action": "analyze" },
+  { "prompt": "Improve my output-style from persona feedback", "expect_action": "improve" },
+  { "prompt": "Update the writing style from the comment reports", "expect_action": "improve" },
+  { "prompt": "Review chapter 3 with personas", "expect_action": null },
+  { "prompt": "Write chapter 2 of my novel", "expect_action": null }
+]

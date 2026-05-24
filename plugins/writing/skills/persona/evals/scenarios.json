@@ -1,0 +1,9 @@
+[
+  { "prompt": "Create a persona for a WoT fan reader", "expect_action": "generate" },
+  { "prompt": "Generate a reader persona for an experienced RPG game master", "expect_action": "generate" },
+  { "prompt": "Build a persona for a casual reader unfamiliar with the genre", "expect_action": "generate" },
+  { "prompt": "Train the fan-wot persona from my comment feedback files", "expect_action": "train" },
+  { "prompt": "Refine the gm-practitioner persona using .wip/comments/gm-practitioner-*.md", "expect_action": "train" },
+  { "prompt": "Review chapter 3 with personas", "expect_action": null },
+  { "prompt": "Write a chapter following the TOC", "expect_action": null }
+]

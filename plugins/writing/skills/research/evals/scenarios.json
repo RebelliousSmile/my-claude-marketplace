@@ -1,0 +1,10 @@
+[
+  { "prompt": "Research the Haitian voodoo ceremonies for my novel", "expect_action": "research" },
+  { "prompt": "Look up the historical context of Saint-Domingue for my scenario", "expect_action": "research" },
+  { "prompt": "Find documentation about demon slayer breathing techniques", "expect_action": "research" },
+  { "prompt": "Extract terminology from the extracted PDF for my wot universe", "expect_action": "extract-terminology" },
+  { "prompt": "Build the terminologie.md from the universe lore sources", "expect_action": "extract-terminology" },
+  { "prompt": "Univers-extract wot from engrenages-regles.txt", "expect_action": "extract-terminology" },
+  { "prompt": "Write chapter 3 of my novel", "expect_action": null },
+  { "prompt": "Review chapter 1 with personas", "expect_action": null }
+]
