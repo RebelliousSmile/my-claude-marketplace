@@ -22,7 +22,13 @@
   {
     "prompt": "/readme",
     "expect_action": "write",
-    "expect_scope": "full"
+    "expect_scope": "full",
+    "note": "dispatch vers write — pas de README existant"
+  },
+  {
+    "prompt": "/readme",
+    "expect_action": "update",
+    "note": "dispatch vers update — README existant détecté"
   },
   {
     "prompt": "fais-moi un draft du README, je verrai les détails plus tard",
@@ -42,42 +48,60 @@
   {
     "prompt": "rédige la section État du projet",
     "expect_action": "write",
-    "expect_scope": "fragment"
+    "expect_scope": "fragment",
+    "note": "dispatch vers write — pas de README existant"
   },
   {
     "prompt": "écris-moi juste la section Démarrage rapide",
     "expect_action": "write",
-    "expect_scope": "fragment"
-  },
-  {
-    "prompt": "rédige uniquement la section Pourquoi / Pour qui",
-    "expect_action": "write",
-    "expect_scope": "fragment"
+    "expect_scope": "fragment",
+    "note": "dispatch vers write — pas de README existant"
   },
   {
     "prompt": "write the Prerequisites section",
     "expect_action": "write",
-    "expect_scope": "fragment"
+    "expect_scope": "fragment",
+    "note": "dispatch vers write — pas de README existant"
   },
   {
     "prompt": "améliore ce README",
-    "expect_action": "write",
-    "expect_scope": "revision"
+    "expect_action": "update",
+    "expect_scope": "global"
   },
   {
     "prompt": "challenge cette version du README",
-    "expect_action": "write",
-    "expect_scope": "revision"
+    "expect_action": "update",
+    "expect_scope": "global"
   },
   {
     "prompt": "review my README and improve it",
-    "expect_action": "write",
-    "expect_scope": "revision"
+    "expect_action": "update",
+    "expect_scope": "global"
   },
   {
     "prompt": "ce README est trop long, coupe-le",
-    "expect_action": "write",
-    "expect_scope": "revision"
+    "expect_action": "update",
+    "expect_scope": "global"
+  },
+  {
+    "prompt": "mets à jour la section Utilisation",
+    "expect_action": "update",
+    "expect_scope": "section"
+  },
+  {
+    "prompt": "améliore la section État du projet",
+    "expect_action": "update",
+    "expect_scope": "section"
+  },
+  {
+    "prompt": "ajoute la section Prérequis au README",
+    "expect_action": "update",
+    "expect_scope": "section"
+  },
+  {
+    "prompt": "update the Contributing section",
+    "expect_action": "update",
+    "expect_scope": "section"
   },
   {
     "prompt": "génère le CHANGELOG depuis le dernier tag",

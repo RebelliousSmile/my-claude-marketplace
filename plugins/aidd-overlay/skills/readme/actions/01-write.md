@@ -1,30 +1,31 @@
 # 01 - Write
 
-Détecte le périmètre de la demande, collecte les inputs bloquants, rédige le README, s'auto-vérifie, puis rend le résultat.
+Crée un README de zéro. S'applique quand aucun `README.md` n'existe, ou quand l'utilisateur demande explicitement une réécriture complète. Collecte les inputs bloquants, rédige, s'auto-vérifie, puis rend le résultat.
+
+> Si un `README.md` existe déjà et que la demande est une amélioration ou une mise à jour → dispatcher vers `update`.
 
 ## Inputs
 
-- Texte de la demande (required) — détermine le périmètre (full, fragment, revision, draft)
+- Texte de la demande (required) — détermine le périmètre (full, draft, fragment)
 - Inputs bloquants — collectés en une seule liste numérotée si manquants
 
 ## Outputs
 
 - Markdown brut imprimé dans la réponse (défaut — pas de wrapper ` ```markdown ``` `)
-- `README.md` à la racine si l'utilisateur a explicitement demandé l'écriture d'un fichier (avec confirmation si fichier existant)
+- `README.md` à la racine si l'utilisateur a explicitement demandé l'écriture d'un fichier (demander confirmation si le fichier existe déjà)
 - Bloc d'audit après le contenu, uniquement si applicable
 
 ## Process
 
 ### Étape 1 — Détection du périmètre
 
-Identifier lequel des quatre périmètres s'applique :
+Identifier lequel des trois périmètres s'applique :
 
 | Périmètre | Déclencheurs | Comportement |
 |---|---|---|
 | **Full** | "rédige le README de mon projet", "crée un README pour…" | Appliquer la procédure complète |
-| **Fragment** | "rédige la section X", "écris-moi juste l'État du projet" | Appliquer uniquement les règles de la section concernée, sans collecte globale |
-| **Revision** | "améliore ce README", "challenge cette version" | Utiliser le document existant comme base ; ne pas réécrire de zéro sauf demande explicite |
 | **Draft** | "fais-moi un draft", "première version pour itérer" | Faire des hypothèses raisonnables ; les lister dans le bloc d'audit plutôt que de bloquer |
+| **Fragment** | "rédige la section X", "écris-moi juste l'État du projet" (sans README existant) | Appliquer uniquement les règles de la section concernée, sans collecte globale |
 
 ### Étape 2 — Inputs bloquants
 
@@ -42,8 +43,6 @@ Pour les périmètres **Full** et **Draft** : vérifier les quatre inputs bloqua
 4. **Commandes d'installation effectives** (pas inventées), ou indication explicite "build from source uniquement, voir CONTRIBUTING"
 
 Pour le périmètre **Fragment** : collecter uniquement les inputs requis par la section concernée (voir `@references/sections.md` → "Inputs bloquants pour leur section").
-
-Pour le périmètre **Revision** : lire le README existant — aucun input bloquant à collecter sauf si la cible de révision est ambiguë.
 
 **Exception Draft** : pour les inputs bloquants manquants, formuler des hypothèses raisonnables et les lister dans le bloc d'audit au lieu de bloquer.
 
