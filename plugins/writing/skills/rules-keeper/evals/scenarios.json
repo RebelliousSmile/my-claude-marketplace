@@ -1,0 +1,34 @@
+[
+  {
+    "prompt": "rules-keeper nadir/.docs/sources/nadir-regles-v5.md",
+    "expect_action": "01-restructure"
+  },
+  {
+    "prompt": "restructurer les règles Spire pour l'écriture",
+    "expect_action": "01-restructure"
+  },
+  {
+    "prompt": "rules-keeper --all",
+    "expect_action": "02-restructure-all"
+  },
+  {
+    "prompt": "optimiser tous les fichiers rules-files du projet",
+    "expect_action": "02-restructure-all"
+  },
+  {
+    "prompt": "rules-keeper --update spire.md strata-supplement.md",
+    "expect_action": "03-update"
+  },
+  {
+    "prompt": "intégrer le supplément Strata dans les règles Spire",
+    "expect_action": "03-update"
+  },
+  {
+    "prompt": "rules-keeper --local nadir",
+    "expect_action": "04-local"
+  },
+  {
+    "prompt": "générer les règles locales du document nadir",
+    "expect_action": "04-local"
+  }
+]

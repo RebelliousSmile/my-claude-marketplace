@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "lore-extract spire sources/raw-notes.md",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "extraire le lore depuis cette extraction PDF vers les fichiers thématiques",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "organise ces fichiers sources en terminologie, factions et histoire pour l'univers archipels",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "lore-extract wot setting.txt --update",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "je veux transformer mes notes brutes en fichiers .docs structurés",
+    "expect_action": "extract"
+  }
+]
