@@ -1,53 +1,64 @@
 # 01 - Setup
 
-Session 1 of the PDF extraction pipeline: validate environment, read and chunk the PDF, write `progress.md`.
+Session 1 du pipeline d'extraction PDF : valider l'environnement, découper le PDF en chunks via `split-pdf.py`, écrire `progress.md`.
 
 ## Inputs
 
 - `project_path` (required) — string, format `<univers>/<projet>`
-- `source_document` (required) — path to the PDF or source file to extract
+- `source_document` (required) — chemin vers le PDF source
 
 ## Outputs
 
 ```
 docs/extraction/<source-name>/
-  progress.md       — tracking file with chunk list and status
+  progress.md         — fichier de tracking avec liste des chunks et statuts
   chunks/
-    chunk-01.txt    — first chunk (raw extracted text)
-    chunk-02.txt
+    chunk_01.pdf      — premier chunk (PDF découpé, 25 pages max)
+    chunk_02.pdf
     ...
+  raw/                — dossier créé vide, rempli lors de process-chunk
+  classified/         — dossier créé vide, rempli lors de process-chunk
 ```
 
-`progress.md` format:
+Format `progress.md` :
 ```markdown
 # Extraction Progress: <source-name>
 
+**Source:** <source_document>
 **Project:** <univers>/<projet>
-**Source:** <source-document>
+**Univers:** <univers>
 **Total chunks:** N
 **Date started:** YYYY-MM-DD
 
 ## Chunks
 
-| Chunk | Pages | Status | Session |
-|-------|-------|--------|---------|
-| 01    | 1-25  | TODO   | -       |
-| 02    | 26-50 | TODO   | -       |
+| Chunk | Pages | Chars | Status | Session |
+|-------|-------|-------|--------|---------|
+| chunk_01.pdf | 1-25 | ~12500 | pending | - |
+| chunk_02.pdf | 26-50 | ~12500 | pending | - |
 ```
+
+> Statuts valides : **`pending`** / **`done`** / **`failed`**. Jamais `TODO` ni `DONE`.
 
 ## Process
 
-1. Validate `bank.yml` exists at `<project_path>/bank.yml`. If not → STOP: "Run `setup init <project_path>` first."
-2. Extract from bank.yml: `univers`, `document.name`.
-3. Verify the source file exists and is readable.
-4. Store `<source-name>` = source filename without extension (e.g. `engrenages-regles.txt`).
-5. **Validate available tools**: check if PDF text extraction is possible (note: Claude can read PDFs directly; for very large files, chunking is required).
-6. Determine chunk size: for PDFs ≤50 pages → 1 chunk (process entirely in this session); for larger files → 25-page chunks.
-7. Create directory `docs/extraction/<source-name>/chunks/`.
-8. Read and chunk the source document. Save each chunk as `chunks/chunk-<NN>.txt`. For PDFs, extract text preserving structure (headings, tables, lists).
-9. Write `docs/extraction/<source-name>/progress.md` with the chunk table (all chunks set to `TODO`).
-10. Report: "Session 1 complete. N chunks created. Run `extract-pdf process-chunk <project_path> <chunk-id>` to process each chunk in subsequent sessions."
+1. Vérifier que `bank.yml` existe dans le répertoire courant. Sinon → STOP : "Lancer le skill depuis le répertoire du projet (`<univers>/<projet>/`) ou exécuter `setup init` d'abord."
+2. Extraire depuis `bank.yml` : `document.univers`, `document.name`.
+3. Vérifier que `<source_document>` existe et est lisible (header `%PDF-`).
+4. `<source-name>` = nom du fichier sans extension.
+5. Vérifier les outils disponibles : `pdftotext`, `tesseract`, `pdfplumber`, `pypdf`. Vérifier que les scripts existent :
+   - `scripts/split-pdf.py` — **requis** pour cette session. Si absent → STOP : "Script manquant : scripts/split-pdf.py. Copiez-le depuis le dossier `scripts/` du skill `extract-pdf` dans l'overlay."
+   - `scripts/normalize-text.py` — utilisé lors de `process-chunk`. Si absent → WARN : "scripts/normalize-text.py manquant — l'étape de normalisation sera ignorée lors des extractions." Ne pas bloquer le setup.
+6. Créer les dossiers `chunks/`, `raw/`, `classified/` sous `docs/extraction/<source-name>/`.
+7. Estimer le découpage : `python scripts/split-pdf.py <source_document> --estimate`
+8. Découper le PDF : `python scripts/split-pdf.py <source_document> --pages-per-chunk 25 --output-dir docs/extraction/<source-name>/chunks/`
+9. Pour chaque chunk créé, noter pages et caractères estimés (~2500/page).
+10. Écrire `docs/extraction/<source-name>/progress.md` avec le format exact ci-dessus.
+11. Vérifier que `docs/prompts/workshop/` contient `extract.prompt.md`, `extract-chunk.prompt.md`, `extract-distribute.prompt.md`, `extract-debug.prompt.md`. Si des fichiers manquent → signaler : "Les prompts suivants sont manquants : [liste]. Copiez-les depuis le dossier `prompts/` du skill `extract-pdf` dans l'overlay." Ne pas tenter de les copier automatiquement.
+12. Rapport : "Phase A terminée. N chunks créés. Lancer `extract-pdf process-chunk <project_path> <source_name> 01`."
 
 ## Test
 
-After `setup <project_path> <source-document>`, verify that `docs/extraction/<source-name>/progress.md` exists and lists at least 1 chunk with status `TODO`.
+Après `setup <project_path> <source_document>`, vérifier que :
+- `docs/extraction/<source-name>/progress.md` existe avec au moins 1 chunk en statut `pending`
+- `docs/extraction/<source-name>/chunks/chunk_01.pdf` existe

@@ -1,11 +1,12 @@
 # 04 - Debug
 
-Diagnose anomalies in the PDF extraction pipeline: missing chunks, garbled text, classification errors, progress inconsistencies.
+Diagnostiquer les anomalies du pipeline d'extraction : chunks manquants, texte garbled, erreurs de classification, incohérences de `progress.md`.
 
 ## Inputs
 
 - `project_path` (required) — string, format `<univers>/<projet>`
-- `chunk_id` (optional) — specific chunk to debug (e.g. `03`); if omitted, audits the full extraction
+- `source_name` (required) — nom du PDF source sans extension (ex. `engrenages-regles`). Si plusieurs extractions existent dans `docs/extraction/`, lister les dossiers disponibles et demander à l'utilisateur.
+- `chunk_id` (optional) — chunk spécifique à débugger (ex. `03`) ; si omis, audit complet
 
 ## Outputs
 
@@ -15,46 +16,69 @@ Diagnose anomalies in the PDF extraction pipeline: missing chunks, garbled text,
 **Date:** YYYY-MM-DD
 **Scope:** [Full audit / Chunk 03]
 
-## Progress State
-- Total chunks: N
-- Done: M
-- TODO: P
-- Missing chunk files: [list]
+## Environment
+- pdftotext: [available/missing]
+- tesseract: [available/missing]
+- pdfplumber: [available/missing]
+- pypdf: [available/missing]
 
-## Anomalies Found
+## Progress Status
+- Chunks: X done, Y pending, Z failed
+- Last activity: [date]
 
-### [CHUNK-03] Garbled text
-- Lines 15-42: encoding issue detected (likely scanned image page)
-- Recommendation: manually extract or skip
+## Issues Found
 
-### [CLASSIFIED] Duplicate entries
-- "saidin" appears in terminology.md lines 12 AND 47 with conflicting definitions
-- Recommendation: merge, keeping longer definition
+### [CHUNK-03] Texte garbled
+- >30% caractères non-printable détectés
+- Recommandation : utiliser tesseract OCR
 
-### [PROGRESS] Inconsistency
-- chunk-03 marked DONE in progress.md but chunks/chunk-03.txt is empty
-- Recommendation: re-process chunk 03
+### [CLASSIFIED] Doublons
+- "saidin" dans terminology.md lignes 12 ET 47 avec définitions différentes
+- Recommandation : fusionner en gardant la définition la plus longue
+
+### [PROGRESS] Incohérence
+- chunk_03.pdf marqué `done` mais raw/chunk_03.txt est vide
+- Recommandation : réinitialiser à `pending` et retraiter
 
 ## Recommended Actions
-1. [action with exact command]
+1. [action avec commande exacte]
 2. [action]
 ```
 
 ## Process
 
-1. Read `docs/extraction/<source-name>/progress.md`. Parse chunk table: list all chunks, their status, and session notes.
-2. If `chunk_id` specified → focus debug on that chunk. Else → full audit.
-3. **Check file integrity**:
-   - For each chunk marked `DONE`, verify the chunk file (`chunks/chunk-<NN>.txt`) exists and is non-empty.
-   - For each chunk marked `TODO`, verify the chunk file exists (may be empty for text TBD).
-4. **Check classified files**:
-   - For each `classified/*.md` file, scan for duplicate entries (same term/name appearing twice with different descriptions).
-   - Check for obviously garbled text (encoding artifacts, repeated characters, missing words).
-5. **Check progress consistency**: compare progress.md statuses against actual file states. Flag any mismatch.
-6. **Check merge readiness**: if all chunks are DONE, verify classified files are non-empty for at least the major categories (terminology, lore).
-7. Produce the debug report with all anomalies found and recommended actions.
-8. If specific fix actions are possible (e.g., re-processing a chunk, merging duplicates) → offer to execute them.
+1. Vérifier les outils disponibles (pdftotext, tesseract, pdfplumber, pypdf).
+2. Lire `bank.yml` → extraire `document.univers` → construire `<univers-path>` = `../\<univers-slug\>` depuis le CWD. Tester si même dépôt : `git -C "<univers-path>" rev-parse --show-toplevel` vs `git rev-parse --show-toplevel`.
+3. Lire `docs/extraction/<source-name>/progress.md`. Parser le tableau : statuts `pending/done/failed`, dates.
+4. Vérifier les stashes git suspects :
+   ```bash
+   git -C "<univers-path>" stash list
+   git stash list   # projet (CWD) ; inutile si same_repo = true
+   ```
+5. **Si `chunk_id` spécifié** → focus sur ce chunk. Sinon → audit complet.
+6. **Intégrité des fichiers** :
+   - Pour chaque chunk `done` : vérifier que `docs/extraction/<source-name>/chunks/chunk_XX.pdf` ET `docs/extraction/<source-name>/raw/chunk_XX.txt` existent et sont non-vides.
+   - Pour chaque chunk `pending` : vérifier que `docs/extraction/<source-name>/chunks/chunk_XX.pdf` existe.
+   - Pour chaque chunk `failed` : noter l'erreur connue.
+7. **Qualité du texte brut** :
+   ```python
+   from pathlib import Path
+   txt = Path('docs/extraction/<source-name>/raw/chunk_XX.txt').read_text(encoding='utf-8')
+   non_print = sum(1 for c in txt if not c.isprintable() and c not in '\n\r\t')
+   ratio = non_print / len(txt) if txt else 0
+   print(f'Non-printable ratio: {ratio:.1%}')
+   ```
+8. **Fichiers classifiés** :
+   - Lister les fichiers, leur taille et le nombre de marqueurs YAML (`chunk:` count).
+   - Détecter les doublons de sections.
+9. **Cohérence progress.md** : comparer les statuts avec l'état réel des fichiers. Signaler tout écart.
+10. **Actions de réparation** proposées :
+    - Réinitialiser un chunk `failed` → `pending` : modifier `progress.md` manuellement.
+    - Re-extraire un chunk : supprimer `docs/extraction/<source-name>/raw/chunk_XX.txt`, remettre `pending`, relancer.
+    - Nettoyer un stash obsolète : `git -C "<univers-path>" stash drop` ou `git stash drop`.
+    - Repartir de zéro : `python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>')"`.
+11. Produire le rapport de debug avec toutes les anomalies et actions recommandées.
 
 ## Test
 
-After `debug <project_path>` on an extraction with a known inconsistency (e.g., a chunk marked DONE but with empty file), verify that the report flags the inconsistency and recommends the correct fix command.
+Après `debug <project_path> <source_name>` sur une extraction avec une incohérence connue (chunk `done` avec `raw/` vide), vérifier que le rapport signale l'incohérence et recommande la commande de correction.
