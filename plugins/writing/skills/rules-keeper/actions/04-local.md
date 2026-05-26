@@ -22,6 +22,8 @@ Read `bank.yml` from `<project-path>`. Extract:
 
 If no `rules-files` declared: warn that local rules won't be able to reference the system rules.
 
+If `rules-files` paths are present in bank.yml: load their content now — required for cross-referencing in Step 3 ("Interactions avec les Règles Système").
+
 Read source file (argument or `overview.md`).
 
 ### Step 2 — Identify local rules
@@ -32,12 +34,25 @@ Extract only rules that are **specific to this document**:
 - Document-specific NPCs with unique capabilities
 - Special items with mechanical effects
 
-**Distinguish from system rules:**
+**Classify each candidate rule using this decision table:**
 
-| Type | Destination | Example |
-|------|-------------|---------|
-| System mechanic (generic) | `.rules-files/` — already handled | "2d6 roll" |
-| Document-local mechanic | `.docs/document-rules.md` | "The Veil token: +1 on deception rolls" |
+| Test | → Local (`document-rules.md`) | → System (already in `rules-files/`) |
+|------|-------------------------------|---------------------------------------|
+| Applies only in this document? | ✓ | ✗ |
+| References a named entity specific to this document? | ✓ | ✗ |
+| Would change how the base system works if exported to another project? | ✗ | ✓ |
+| Could appear verbatim in any other project using the same system? | ✗ | ✓ |
+
+**Examples:**
+
+| Mechanic | Classification | Reason |
+|----------|----------------|--------|
+| "La Coche de lien de Toravel donne accès à Pelive" | Local | References a document-specific NPC and merveille |
+| "Un jet de Sang difficile se coche en astral" | System | General astral stress rule, applies in any Nadir game |
+| "En acte I, le Seuil force un Contrecoup supplémentaire" | Local | Specific to this campaign's act structure |
+| "2d6 + compétence vs difficulté" | System | Core resolution — already in rules-files |
+
+If a candidate is ambiguous: present it to the user with the two options rather than deciding unilaterally.
 
 If a "local" rule is actually a general mechanic: flag it and suggest running `rules-keeper restructure` on the system file instead.
 

@@ -33,6 +33,13 @@ Read the file. Identify:
 - Character components (stats, skills, HP equivalents, resources)
 - Complexity level: light / medium / crunchy
 
+**Derive `<system>` name** — used for all template filenames and frontmatter:
+1. If the file contains a YAML frontmatter `name:` field → use that value.
+2. Else → derive from filename: strip path and extension, then strip trailing version suffix (`-vN`, `-v1.2`…), then strip trailing descriptive suffixes (`-regles`, `-rules`, `-core`, `-base`, `-system`) — keep the root identifier (e.g. `nadir-regles-v5.md` → `nadir`, `pbta-world-regles-v2.md` → `pbta-world`, `spire-core.md` → `spire`).
+3. If still ambiguous → ask the user: `"Nom du système pour les templates (ex: spire, pbta, d&d5e) ?"`
+
+All subsequent `<system>` placeholders refer to this derived value.
+
 If the file content does not appear to be game mechanics (no dice, resolution, or stat block): stop and report.
 If key mechanics are ambiguous: ask for clarification before proceeding.
 

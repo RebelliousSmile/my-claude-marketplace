@@ -4,7 +4,7 @@
     "expect_action": "01-restructure"
   },
   {
-    "prompt": "restructurer les règles Spire pour l'écriture",
+    "prompt": "rules-keeper sur un fichier qui a déjà un backup .original.md",
     "expect_action": "01-restructure"
   },
   {

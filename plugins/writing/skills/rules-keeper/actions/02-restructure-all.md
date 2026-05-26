@@ -10,7 +10,9 @@ Restructure all rules files in the project's rules-files directory.
 
 ### Step 1 — Locate rules files
 
-Read `bank.yml`. Extract all paths under `rules-files`.
+Locate `bank.yml` by searching in order: current working directory → parent directories up to project root. Use the first `bank.yml` found.
+
+Read `bank.yml`. Extract all paths under `rules-files` (including nested keys — collect all string values that are `.md` paths).
 List files found. If none: stop and report.
 
 ### Step 2 — Filter

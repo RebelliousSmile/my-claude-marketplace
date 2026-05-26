@@ -31,7 +31,7 @@ Trigger-to-action mapping:
 - **Preserve ALL game mechanics** — only the structure changes, not the content.
 - Backup the original file as `<file>.original.md` before overwriting (skip if backup already exists).
 - CHEATSHEET section must stay under 500 tokens (~2000 characters).
-- LEXICON bridges source-language terms (often English) → French writing equivalents.
+- **LEXICON is always required** — even if the source is already in French. It maps game jargon to the exact French terms used in writing output. A source in French still contains system-specific jargon that must be normalized.
 - Template files (PC, NPC, obstacle, asset) are created as side artifacts in `.templates/`.
 - On conflict between base file and supplement: always ask — never silently resolve.
 
