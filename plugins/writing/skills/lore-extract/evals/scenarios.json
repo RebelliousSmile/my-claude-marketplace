@@ -1,6 +1,6 @@
 [
   {
-    "prompt": "lore-extract spire sources/raw-notes.md",
+    "prompt": "lore-extract sources/raw-notes.md",
     "expect_action": "extract"
   },
   {
@@ -12,7 +12,7 @@
     "expect_action": "extract"
   },
   {
-    "prompt": "lore-extract wot setting.txt --update",
+    "prompt": "lore-extract setting.txt --update",
     "expect_action": "extract"
   },
   {
