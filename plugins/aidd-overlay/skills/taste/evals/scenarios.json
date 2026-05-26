@@ -38,5 +38,30 @@
   {
     "prompt": "create a new component",
     "expect_action": null
+  },
+  {
+    "prompt": "are there broken imports in src/?",
+    "expect_action": "assess-code",
+    "expect_detector": "E"
+  },
+  {
+    "prompt": "/taste src/views/AddSongView.vue",
+    "expect_action": "assess-code",
+    "expect_detector": "E"
+  },
+  {
+    "prompt": "check for broken links in this doc",
+    "expect_action": "assess-doc",
+    "expect_claim_type": "markdown_hyperlink"
+  },
+  {
+    "prompt": "/taste README.md",
+    "expect_action": "assess-doc",
+    "expect_claim_type": "markdown_hyperlink"
+  },
+  {
+    "prompt": "scan and give me a fix plan",
+    "expect_action": "assess-doc",
+    "expect_output_sections": ["Root causes", "Fix plan"]
   }
 ]

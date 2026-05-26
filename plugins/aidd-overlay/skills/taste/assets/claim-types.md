@@ -51,10 +51,21 @@ Reference catalogue of verifiable claim types extracted from `.md` files.
 | Slash command / skill name | `/harvest`, `/taste`, `/end-plan` | Skill exists in any loaded plugin's `skills/` directory |
 | CLI command | `gh`, `glab`, `bru` | Command available in PATH (`which <cmd>`) |
 
+## Markdown hyperlinks
+
+Applies to **relative** links only. External URLs (`http://`, `https://`, `ftp://`) are excluded.
+
+| Pattern | Example | Verification method |
+|---------|---------|---------------------|
+| Relative Markdown link | `[Guide](../docs/guide.md)` | Resolve path relative to the file's directory; check that the target file exists |
+| Relative link without extension | `[README](./README)` | Try appending `.md`, `.txt`, none; check that one of the candidates exists |
+| Anchor-only link | `[Section](#heading)` | Skip — heading anchors are not verified |
+
 ## Exclusions
 
 Do NOT attempt to verify:
 - Conceptual or explanatory statements ("Auth is handled via JWT")
 - Rationale and opinion ("We chose Prisma because…")
-- Future intent ("We will migrate to…")
-- External URLs (too volatile; skip unless explicitly asked)
+- Future intent ("We will migrate to…") — phrased as `(nouveau)`, `(à créer)`, `TODO`, `will`, `à venir`
+- External URLs (`http://`, `https://`, `ftp://`) — too volatile; skip unless explicitly asked
+- Anchor-only Markdown links (`#heading`)

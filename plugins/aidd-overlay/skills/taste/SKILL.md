@@ -1,6 +1,6 @@
 ---
 name: taste
-description: Detects obsolete content in documents and source code. assess-doc: extracts and verifies claims in .md files against the codebase, with an optional full-project scan mode (/taste with no argument). assess-code: detects deprecated imports, removed function calls, rule violations, and stale TODO/FIXME comments in code files. Triggers on "is this doc outdated", "taste this file", "/taste <path>", "/taste" (scan mode), "check this code for obsolete patterns". Do NOT use for creating files, generating code, or running tests.
+description: Detects obsolete content in documents and source code. assess-doc: extracts and verifies claims in .md files against the codebase (including relative Markdown links), scan mode groups findings by root cause and produces an ordered fix plan (/taste with no argument). assess-code: detects deprecated imports, broken relative imports (Detector E), removed function calls, rule violations, and stale TODO/FIXME comments in code files. Triggers on "is this doc outdated", "taste this file", "/taste <path>", "/taste" (scan mode), "check this code for obsolete patterns", "are there broken imports". Do NOT use for creating files, generating code, or running tests.
 model: haiku
 ---
 
@@ -12,8 +12,8 @@ Assesses documents and source code for obsolescence. Reads the target, extracts 
 
 | #  | Action        | Role                                                               | Input                              |
 |----|---------------|--------------------------------------------------------------------|------------------------------------|
-| 01 | `assess-doc`  | Verify claims in a .md file; or scan all .md files in the project | File path (optional — scan if omitted) |
-| 02 | `assess-code` | Detect obsolete patterns, broken imports, violations, stale TODOs | File or directory path (required)  |
+| 01 | `assess-doc`  | Verify claims in a .md file (incl. relative Markdown links); scan mode groups findings by root cause and produces an ordered fix plan | File path (optional — scan if omitted) |
+| 02 | `assess-code` | Detect obsolete imports, broken relative imports (E), removed symbols, rule violations, stale TODOs | File or directory path (required)  |
 
 ## Default flow
 

@@ -34,6 +34,18 @@ Scan complete — {N} files assessed
 | {path} | Current / Partial / Obsolete / N/A | {N} | {list or —} | delete / update / keep / — |
 
 Summary: {N} obsolete, {N} partial, {N} current, {N} N/A
+
+Root causes (stale values shared across ≥2 files):
+
+| Root cause | Stale value | Correct value (if known) | Files impacted |
+|-----------|-------------|--------------------------|----------------|
+| {description} | {wrong value} | {right value or —} | {N} — {list} |
+
+Fix plan (ordered by impact, highest first):
+
+| # | Action | Reason | Files |
+|---|--------|--------|-------|
+| 1 | {delete/rewrite/update} | {root cause or local reason} | {file list} |
 ```
 
 ## Claim types reference
@@ -54,6 +66,8 @@ Cross-document coherence (does doc A agree with doc B?) is not in scope here; th
 3. If no extractable claims are found, output `Verdict: N/A — conceptual document, no verifiable claims` and stop.
 4. For each claim, verify against the **live codebase** using the appropriate method:
    - **File path**: read the referenced file — confirm it exists and the referenced element is present.
+   - **Directory path**: check the directory exists.
+   - **Markdown hyperlink** (relative only): resolve the link path relative to the file's directory; check the target exists. Skip anchor-only links (`#…`) and external URLs.
    - **Function / class / component name**: grep the codebase for the identifier.
    - **Branch name**: `git branch -a | grep <branch>`.
    - **Issue / PR reference**: `gh issue view <n>` or `glab issue view <n>` (skip if no tracker CLI).
@@ -91,8 +105,22 @@ Cross-document coherence (does doc A agree with doc B?) is not in scope here; th
    ```
 4. Wait for all agents to complete.
 5. Aggregate all returned results into the scan output table, sorted by verdict severity (Obsolete → Partial → Current → N/A).
-6. If invoked as a sub-phase of `harvest`, return the summary metrics to the orchestrator. Otherwise, display the full table.
+6. **Root-cause grouping** — after all files are assessed:
+   a. Collect all ❌ Obsolete claims across every file.
+   b. Normalise each stale value (trim, lowercase). Group claims that share the same normalised stale value or the same wrong identifier.
+   c. For each group with ≥2 impacted files, emit one **Root cause** row: stale value, correct value if determinable from the verification step, list of impacted files.
+   d. Root causes with more impacted files rank first.
+7. **Fix plan** — produce an ordered action list:
+   a. `delete` entries first — files where every claim is ❌ Obsolete and no salvageable content exists.
+   b. `rewrite` entries — files driven by a root cause that touches ≥3 claims.
+   c. `update` entries — files with 1–2 localised stale claims.
+   d. Within each tier, order by number of stale claims descending.
+8. If invoked as a sub-phase of `harvest`, return the summary metrics to the orchestrator. Otherwise, display the full output (table + root causes + fix plan).
 
 ## Test
 
 Invoke with a known `.md` file containing at least one file path reference; verify the output includes a Verdict line, a populated claim table with at least one row, and a Suggested actions block.
+
+Invoke with a `.md` file containing a relative Markdown link to a non-existent file; verify that link appears as ❌ Obsolete in the claim table.
+
+Invoke in scan mode; verify the output includes the scan table, the Summary line, a Root causes section (even if empty: `No shared root causes detected`), and a Fix plan section.
