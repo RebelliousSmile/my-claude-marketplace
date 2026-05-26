@@ -4,24 +4,32 @@ Transform raw source files into structured thematic `.docs/` files for a univers
 
 ## Inputs
 
-- `univers` (required) — universe identifier (e.g. `spire`, `archipels`, `wot`)
-- `sources` (required) — one or more file paths to process
+- `sources` (required) — one or more file paths to process (relative to current directory)
 - `--update` (optional) — incremental mode: enrich existing files, skip already-processed sources
 - `--force` (optional) — regenerate all files even if they already exist
 
 ## Outputs
 
-Files written to `<univers>/.docs/`:
-- `terminologie.md` (always)
-- One file per detected theme (histoire, géographie, factions, personnages, + optional)
+Paths resolved from `bank.yml` (current directory):
+- `bank.yml#docs.terminologie` — always written
+- One file per detected theme alongside `terminologie` in the same `.docs/` directory
 
-If run at project level (`<univers>/<projet>/`): may also generate `<projet>/.docs/document-rules.md` for rules specific to this document.
+If `bank.yml` is absent: write to `.docs/` in the current directory and warn.
 
 Templates for all themes: see `@references/templates-standard.md` and `@references/templates-optional.md`.
 
 ## Process
 
-### Step 0 — Validate sources
+### Step 0 — Load context
+
+1. Read `bank.yml` from the current directory.
+   - Extract `document.univers` → universe slug
+   - Extract `docs.terminologie` → output path for terminology
+   - Extract remaining `docs.*` paths → output paths for other themes
+   - If `bank.yml` absent → warn "bank.yml not found, outputs will go to .docs/", continue.
+2. All source paths and output paths are resolved relative to the current directory.
+
+### Step 1 — Validate sources
 
 For each source file:
 - [ ] File exists and is accessible
@@ -41,7 +49,7 @@ Mode : [création / mise à jour]
 Fichiers existants : [liste if --update]
 ```
 
-### Step 1 — Read and analyze sources
+### Step 2 — Read and analyze sources
 
 Read all validated files. Note:
 - Total volume
@@ -50,13 +58,13 @@ Read all validated files. Note:
 
 **Multilingual handling:** target language is French. Universe-specific terms: keep original in parentheses on first mention. Ex: `Le Pouvoir Unique (*One Power*) permet de canaliser…`
 
-### Step 2 — Detect themes
+### Step 3 — Detect themes
 
 For each standard theme, evaluate: present (yes/no), estimated volume (low <50 / medium 50-150 / high >150), relevance.
 
 **Custom theme:** propose one if content doesn't fit any standard theme AND volume > 50 lines.
 
-### Step 3 — Validate themes with user
+### Step 4 — Validate themes with user
 
 ```
 Thèmes détectés dans les sources :
@@ -73,7 +81,7 @@ Thèmes détectés dans les sources :
 Valides-tu cette liste ? (oui / modifier)
 ```
 
-### Step 4 — Extract by theme (in priority order)
+### Step 5 — Extract by theme (in priority order)
 
 **Keep (high priority):**
 1. Proper names, universe-unique terms
@@ -98,7 +106,7 @@ Valides-tu cette liste ? (oui / modifier)
 | Event involving faction | histoire.md | factions.md (consequences) |
 | Technical term | terminologie.md | Never duplicated |
 
-### Step 5 — Detect contradictions
+### Step 6 — Detect contradictions
 
 When two sources give conflicting information:
 
@@ -114,7 +122,7 @@ Fichier cible : [factions.md]
 Quelle source fait autorité ? (A / B / fusionner / ignorer)
 ```
 
-### Step 6 — Preview before synthesis
+### Step 7 — Preview before synthesis
 
 ```
 Extraction brute terminée :
@@ -131,7 +139,7 @@ Ordre : factions.md (priorité 2), puis histoire.md (priorité 4)
 Continuer vers la synthèse ? (oui / voir détails [fichier])
 ```
 
-### Step 7 — Synthesize oversized files
+### Step 8 — Synthesize oversized files
 
 For each file > 250 lines (in priority order):
 
@@ -160,7 +168,7 @@ Je dois choisir quoi retirer. Options :
 Que préfères-tu ? (1 / 2 / 3 / autre suggestion)
 ```
 
-### Step 8 — Write files
+### Step 9 — Write files
 
 Use templates from `@references/templates-standard.md` (terminologie, histoire, factions, géographie, personnages) and `@references/templates-optional.md` (magie, technologie, créatures, religions, économie).
 
@@ -179,7 +187,7 @@ If `--update`, also add:
 - [date2] : Ajout depuis [nouvelles sources]
 ```
 
-### Step 9 — Final report
+### Step 10 — Final report
 
 ```
 Extraction terminée pour [univers].
