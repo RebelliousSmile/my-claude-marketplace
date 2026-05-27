@@ -4,7 +4,7 @@
       "id": "aidd-overlay",
       "name": "aidd-overlay",
       "description": "Extends the AIDD framework with project-agnostic workflows: interactive codebase quiz (dig), memory maintenance (harvest, reconcile-normative), obsolescence detection (taste), prospective analysis (foresee), performance audits (data-optimize, web-optimize), and planning utilities (decompose, journey, changelog, end-plan, previously).",
-      "version": "1.3.0"
+      "version": "1.4.0"
     },
     {
       "id": "gamedesign",
