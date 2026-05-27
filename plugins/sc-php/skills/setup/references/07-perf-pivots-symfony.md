@@ -22,6 +22,26 @@ Stack-specific overrides applied when `symfony/framework-bundle` is present. Loa
 - Webpack Encore / AssetMapper / Vite : choix dépend du projet — vérifier que les hashes asset existent en prod
 - Twig blocks `{% block stylesheets %}` → bundle CSS critique inline OU `<link rel="preload">` avant le reste
 
+## §2 — LCP
+
+- Image hero above-fold dans Twig :
+  ```twig
+  <img src="{{ asset('images/hero.webp') }}" fetchpriority="high" loading="eager" width="1440" height="800" alt="...">
+  ```
+- AssetMapper / Encore hashent les URLs → utiliser `{{ asset() }}` toujours, jamais de chemin relatif direct
+- Preload hero via extension Twig ou template parent :
+  ```twig
+  <link rel="preload" as="image" href="{{ asset('images/hero.webp') }}">
+  ```
+  Avec le helper `preload()` de Symfony WebpackEncoreBundle si disponible
+- `<picture>` INTERDIT above-fold — source switching ajoute de la latence de négociation
+
+## §3 — CLS
+
+- `width` et `height` explicites obligatoires sur tout `<img>` dans les templates Twig
+- FOUT : ajouter `font-display: swap` dans `assets/styles/app.css` pour toute `@font-face` custom
+- Turbo Frames : utiliser `data-turbo-preview` avec skeleton ou `min-height` CSS sur les frames pour éviter le layout shift pendant le chargement
+
 ## §4 — Bundle
 
 - AssetMapper (Symfony 6.4+) → import maps, pas de bundling JS, fingerprinting natif
@@ -49,6 +69,8 @@ Stack-specific overrides applied when `symfony/framework-bundle` is present. Loa
 ## §8 — INP / TBT
 
 - Symfony UX Turbo / Stimulus : auditer les `data-controller` (chaque controller hydrate à la connexion DOM)
+- Stimulus `connect()` synchrone → déplacer les initialisations non-critiques dans `requestIdleCallback()` ou via `afterConnect()` pattern
+- Live Components : debounce obligatoire sur les champs texte — `debounce(300)` sur les `#[LiveProp(writable: true)]` pour éviter les requêtes trop fréquentes
 - Live components : voir `wire:loading` équivalents Symfony — `data-loading-state`
 
 ## §9 — Backend / runtime
