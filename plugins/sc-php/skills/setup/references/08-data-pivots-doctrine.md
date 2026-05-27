@@ -82,3 +82,65 @@ Stack-specific overrides for data audits when `doctrine/orm` is detected. Loaded
 
 - `#[HasLifecycleCallbacks]` + `#[PrePersist]` → coût caché à chaque save
 - Préférer des event subscribers découplés (`Doctrine\Bundle\DoctrineBundle\EventSubscriber\*`) pour visibilité
+
+## §3 — Real-time (contrat data-optimize)
+
+- **N/A** — Doctrine est un ORM request/response synchrone, sans support natif des subscriptions ou streams
+- Pour du real-time avec Symfony : utiliser **Symfony Mercure** (Server-Sent Events) ou **API Platform** avec Mercure intégré ; Doctrine reste l'ORM pour les lectures/écritures DB classiques
+- Les Doctrine events (`postPersist`, `postUpdate`) peuvent déclencher un broadcast Mercure mais ce n'est pas du real-time ORM natif
+
+## §6 — Quota & cost (contrat data-optimize)
+
+- PostgreSQL/MySQL auto-hébergé : pas de facturation par query ; le coût est CPU/IO serveur
+- **Blackfire.io** pour profiling APM complet : timeline, query breakdown, comparaison entre versions
+- **`pg_stat_statements`** (PostgreSQL) : `SELECT query, calls, total_exec_time FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 20` pour identifier les requêtes les plus coûteuses
+- **Symfony Profiler → panel Doctrine** : query count, temps d'hydratation, duplicates — accessible via `/_profiler` en dev
+- `doctrine.dbal.logging: false` en prod OBLIGATOIRE (logging = overhead + mémoire pour chaque requête)
+
+## §7 — Security (contrat data-optimize)
+
+- QueryBuilder fluide pour conditions dynamiques (filters search)
+- DQL string pour requêtes complexes mais stables (rapport, dashboard)
+- `NativeQuery` + `ResultSetMapping` quand SQL spécifique BDD (CTE Postgres, MATCH AGAINST MySQL)
+- **DQL paramétrique toujours** : `->setParameter('userId', $userId)` — JAMAIS de concaténation string en DQL ou SQL natif
+- **Doctrine Filters** pour row-level security (soft delete, multi-tenant) :
+  ```php
+  class TenantFilter extends SQLFilter {
+      public function addFilterConstraint(ClassMetadata $meta, $alias): string {
+          return "$alias.tenant_id = " . $this->getParameter('tenant_id');
+      }
+  }
+  ```
+- Scope obligatoire par userId/tenantId : `->where('e.userId = :userId')->setParameter('userId', $this->security->getUser()->getId())`
+
+## §9 — Background jobs (contrat data-optimize)
+
+- Doctrine dans les jobs Symfony Messenger : toujours `EntityManager::clear()` après chaque batch pour éviter la saturation mémoire de l'UnitOfWork
+- **Symfony Messenger** : `$this->bus->dispatch(new ProcessImportMessage($data))` — le handler implémente `MessageHandlerInterface`
+- Idempotence : utiliser `INSERT ... ON CONFLICT DO NOTHING` via NativeQuery ou `updateOrCreate` équivalent DQL
+- Retry policy dans `messenger.yaml` :
+  ```yaml
+  framework:
+    messenger:
+      transports:
+        async:
+          retry_strategy:
+            max_retries: 3
+            delay: 1000
+            multiplier: 2
+  ```
+- `flush()` par batch (tous les 100 items) en import, jamais flush par insert
+
+## §10 — Verification (contrat data-optimize)
+
+- Critère déterministe : query count via **Symfony Profiler** (`/_profiler` → Doctrine panel) — documenter la baseline avant fix
+- **`pg_stat_statements`** pour baseline en production : compter les `calls` d'une requête problématique avant/après fix
+- Médiane post-fix via Profiler Symfony : comparer query count et temps d'hydratation avec la baseline
+- Test de non-régression : `$this->assertCount(N, $this->getQueryLog())` en test fonctionnel Symfony (via `DoctrineExtension`)
+
+## §11 — Self-audit (contrat data-optimize)
+
+- `#[HasLifecycleCallbacks]` + `#[PrePersist]` → coût caché à chaque save
+- Préférer des event subscribers découplés (`Doctrine\Bundle\DoctrineBundle\EventSubscriber\*`) pour visibilité
+- **Faux positifs** : `NativeQuery` est valide pour les cas SQL spécifiques BDD — ne pas signaler comme dette technique sans contexte
+- **Gaps candidats** : patterns d'invalidation du Doctrine Cache (`query cache`, `result cache`) non documentés → stale data silencieux après flush/update
