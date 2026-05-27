@@ -39,7 +39,35 @@
       "name": "sc-php",
       "version": "0.1.0",
       "source": "./plugins/sc-php",
-      "description": "PHP-specific skills and workflows.",
+      "description": "PHP ecosystem skills: Laravel/Symfony/WordPress perf pivots, HTMX hybrid, Eloquent + Doctrine data pivots.",
+      "recommended": false
+    },
+    {
+      "name": "sc-js",
+      "version": "0.1.0",
+      "source": "./plugins/sc-js",
+      "description": "JavaScript ecosystem: Nuxt/Vue SPA/Vite/Alpine/Astro coding rules + perf pivots + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots.",
+      "recommended": false
+    },
+    {
+      "name": "sc-tiers",
+      "version": "0.1.0",
+      "source": "./plugins/sc-tiers",
+      "description": "Third-party SaaS consumption rules: Firebase coding + Firebase/Supabase/DynamoDB/Hasura data pivots.",
+      "recommended": false
+    },
+    {
+      "name": "sc-python",
+      "version": "0.1.0",
+      "source": "./plugins/sc-python",
+      "description": "Python ecosystem: Django/FastAPI perf pivots + Django ORM/SQLAlchemy data pivots.",
+      "recommended": false
+    },
+    {
+      "name": "sc-rust",
+      "version": "0.1.0",
+      "source": "./plugins/sc-rust",
+      "description": "Rust ecosystem: Axum/Actix-web perf pivots + SQLx/Diesel data pivots.",
       "recommended": false
     }
   ]

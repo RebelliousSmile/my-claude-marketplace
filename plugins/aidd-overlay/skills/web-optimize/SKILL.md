@@ -2,11 +2,12 @@
 name: web-optimize
 model: sonnet
 description: >-
-  Audits a web application's performance against a framework-aware checklist
+  Audits a web application's performance against a stack-aware checklist
   (LCP, CLS, INP, TBT, TTFB, bundle size, render-blocking resources, N+1
-  queries) and produces a ranked roadmap. Detects the stack (Nuxt 3, Vue SPA,
-  Django, Django+Alpine, PHP/Laravel/Symfony, WordPress, static/Astro) and
-  reuses an existing template or proposes generating a new one.
+  queries) and produces a ranked roadmap. Detects the stack and loads
+  stack-specific pivots from installed `sc-*` plugins
+  (`.claude/rules/07-quality/perf-pivots-*.md`); falls back to a generic
+  12-section schema otherwise.
   Use when the user mentions perf, PSI, PageSpeed, Lighthouse, Core Web
   Vitals, LCP, CLS, INP, TBT, TTFB, bundle size, chunks, code-split,
   render-blocking, N+1, "site lent", "page lente", "Lighthouse 50",
@@ -23,7 +24,8 @@ Run a structured performance audit on a web project, picking the right checklist
 
 ## Rules
 
-- Detect the stack BEFORE picking a checklist — never assume Nuxt
+- Detect the stack BEFORE picking a checklist — never assume any specific framework
+- **After detecting the stack, look for installed pivot rules** at `.claude/rules/07-quality/perf-pivots-<stack>.md` (provided by `sc-*` plugins: sc-js, sc-php, sc-python, sc-tiers, sc-rust). If found → load as the primary source for §1–§11. If not found → fall back to `references/framework-mapping.md` + its fallback procedure. For hybrid stacks, load every matching `perf-pivots-*.md` and concatenate
 - Capture a baseline (PSI / Lighthouse / build output / DB query count) BEFORE recommending changes — without baseline, gains are unfalsifiable
 - If no template matches the detected stack, **propose** generating one — never silently fall back to a stack-mismatched checklist
 - Recommend changes only after reading at least these 3 files of the actual codebase: (a) the framework config (`nuxt.config.ts` / `vite.config.ts` / `settings.py` / `routes/web.php` / equivalent), (b) the entry point (`app.vue` / `urls.py` / `bootstrap/app.php` / equivalent), (c) one hot route — typically the LCP target. Generic advice without this evidence is rejected
@@ -131,19 +133,20 @@ flowchart LR
 
 **Do:**
 
-1. Look for matching template under `aidd_docs/templates/dev/perf_checklist_*.md` (or `docs/perf-templates/` if no `aidd_docs/`)
-2. **If found** (e.g. `perf_checklist_nuxt.md`): load it and proceed to Step 3
-3. **If hybrid stack** (e.g. `django+alpine`): load primary template (`django`) **and** read the matching hybrid section in `references/framework-mapping.md` — for `django+alpine`, the section header is `## Django + Alpine.js (hybride classique)`. For `php+alpine`, refer to `## PHP — Laravel` plus the Alpine pivots from the Django+Alpine section. For WordPress, use `## PHP vanilla / WordPress / autres` plus its plugin-cache notes. Concatenate items in the audit. No new template generated.
-4. **If no template matches the stack:** halt the workflow and ask the user before proceeding:
+1. **Check installed plugin pivots first** — scan `.claude/rules/07-quality/perf-pivots-*.md` for files matching the detected stack(s). These are installed by `sc-*` plugins via their `setup` skill and are the authoritative source when present.
+2. **If matching pivot(s) found**: load them as the primary checklist source and proceed to Step 3. For hybrid stacks (e.g. `django+alpine`, `firebase+prisma`), load every matching `perf-pivots-*.md` and concatenate items.
+3. **If no pivot rule found**, look for matching template under `aidd_docs/templates/dev/perf_checklist_*.md` (or `docs/perf-templates/` if no `aidd_docs/`).
+4. **If neither pivot nor template matches the stack:** halt the workflow and ask the user before proceeding:
 
-   > "No perf checklist exists for `<stack>`. Should I generate `perf_checklist_<stack>.md` from official best practices adapted to this project? (yes / no / use the Nuxt checklist as a base)"
+   > "No perf pivot or checklist exists for `<stack>`. Options: (a) install a `sc-*` plugin that covers this stack (recommended if the stack will be reused), (b) generate `perf_checklist_<stack>.md` from `references/framework-mapping.md` fallback procedure for one-off use, or (c) abort."
 
 5. **If user accepts generation:**
-   - Use `perf_checklist_nuxt.md` as a structural model: 12 numbered sections (0 Pre-flight → 10 Client-side storage → 11 Verification & non-regression) **plus** a `## Common anti-patterns (rejected)` table **plus** a `## Quick verification commands` block. The last two sections are part of the scaffold but NOT numbered. Section §10 (Client-side storage) is transverse — applies to all JS stacks; see `references/framework-mapping.md` for stack-specific pivots
-   - Adapt items via `references/framework-mapping.md`
+   - Follow the fallback procedure in `references/framework-mapping.md`
+   - Use the 12 numbered sections (0 Pre-flight → 10 Client-side storage → 11 Verification & non-regression) **plus** a `## Common anti-patterns (rejected)` table **plus** a `## Quick verification commands` block
    - Write to `aidd_docs/templates/dev/perf_checklist_<stack>.md` (or `docs/perf-templates/<stack>.md`)
    - **If `aidd_docs/internal/decisions/` exists:** create a DEC documenting the convention choices
    - **Otherwise:** inline the chosen conventions in the new template's header
+   - Suggest packaging the produced template as a `sc-<stack>` plugin if reuse is likely
    - Continue to Step 3
 
 **Success criteria:** A checklist source is loaded into context, stack-appropriate.

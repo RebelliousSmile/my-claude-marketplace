@@ -5,15 +5,16 @@ description: >-
   Audits a project's data layer (client + server) against a stack-aware
   checklist (N+1, query count, pagination, real-time listeners, payload size,
   cache strategy, quota/cost, indexing, security rules, observability) and
-  produces a ranked roadmap. Detects the data-layer stack (Firebase, Supabase,
-  Prisma, Drizzle, TypeORM, Sequelize, Mongoose, Django ORM, Laravel Eloquent,
-  Doctrine, DynamoDB, GraphQL, tRPC, Hasura, raw REST) and reuses an existing
-  template or proposes generating a new one. Use when the user mentions data
-  perf, API perf, slow query, data-layer N+1 (queries répétées sur même
-  collection/table — distinct from web-optimize's render-time N+1), Firestore
-  quota, "trop de reads", "trop de requêtes", egress, rate limit, cold start,
-  connection pool, réplication, read replica, sharding, "API lente", "backend
-  lent", "DB perf", "audit data", "audit backend", or invokes /data-optimize.
+  produces a ranked roadmap. Detects the data-layer stack and loads
+  stack-specific pivots from installed `sc-*` plugins
+  (`.claude/rules/07-quality/data-pivots-*.md`); falls back to a generic
+  12-section schema + REST vanilla pivots otherwise.
+  Use when the user mentions data perf, API perf, slow query, data-layer N+1
+  (queries répétées sur même collection/table — distinct from web-optimize's
+  render-time N+1), quota, "trop de reads", "trop de requêtes", egress, rate
+  limit, cold start, connection pool, réplication, read replica, sharding,
+  "API lente", "backend lent", "DB perf", "audit data", "audit backend", or
+  invokes /data-optimize.
 argument-hint: <route, action or scope to audit (optional)>
 version: 1.0.0
 ---
@@ -27,6 +28,7 @@ Run a structured data-layer audit on a project — covering both the calls emitt
 ## Rules
 
 - Detect the data-layer stack BEFORE picking a checklist — never assume Firebase/Postgres/etc.
+- **After detecting the stack, look for installed pivot rules** at `.claude/rules/07-quality/data-pivots-<stack>.md` (provided by `sc-*` plugins: sc-js, sc-php, sc-python, sc-tiers, sc-rust). If found → load as the primary source for §1–§10. If not found → fall back to `references/api-mapping.md` (generic schema + REST vanilla pivots + fallback procedure). For hybrid stacks, load every matching `data-pivots-*.md` and concatenate
 - Capture a baseline (request count per route, query count per request, payload bytes, p50/p95 latency, quota usage) BEFORE recommending changes — without baseline, gains are unfalsifiable
 - If no template matches the detected stack, **propose** generating one — never silently fall back to a stack-mismatched checklist
 - Recommend changes only after reading at least these 3 files of the actual codebase: (a) the data-layer entry (`firebase config` / `prisma/schema.prisma` / `models.py` / `Models/*.php` / `drizzle.config.ts` / equivalent), (b) one hot read path (composable, controller, repository, GraphQL resolver), (c) one hot write path. Generic advice without this evidence is rejected
@@ -152,20 +154,21 @@ flowchart LR
 
 **Do:**
 
-1. Look for matching template under `aidd_docs/templates/dev/data_checklist_*.md` (or `docs/data-templates/` if no `aidd_docs/`)
-2. **If found** (e.g. `data_checklist_firebase.md`): load it and proceed to Step 3
-3. **If hybrid stack** (e.g. `firebase + prisma`): load primary template (`firebase`) **and** read the matching hybrid sections in `references/api-mapping.md`. Concatenate items in the audit. No new template generated.
-4. **If no template matches the stack:** halt the workflow and ask the user before proceeding:
+1. **Check installed plugin pivots first** — scan `.claude/rules/07-quality/data-pivots-*.md` for files matching the detected stack(s). These are installed by `sc-*` plugins via their `setup` skill and are the authoritative source when present.
+2. **If matching pivot(s) found**: load them as the primary checklist source and proceed to Step 3. For hybrid stacks (e.g. `firebase + prisma`), load every matching `data-pivots-*.md` and concatenate items.
+3. **If no pivot rule found**, look for matching template under `aidd_docs/templates/dev/data_checklist_*.md` (or `docs/data-templates/` if no `aidd_docs/`).
+4. **If neither pivot nor template matches the stack:** halt the workflow and ask the user before proceeding:
 
-   > "No data checklist exists for `<stack>`. Should I generate `data_checklist_<stack>.md` from official best practices adapted to this project? (yes / no / use the Firebase checklist as a base)"
+   > "No data pivot or checklist exists for `<stack>`. Options: (a) install a `sc-*` plugin that covers this stack (recommended if reused), (b) generate `data_checklist_<stack>.md` from `references/api-mapping.md` fallback procedure, or (c) abort."
 
 5. **If user accepts generation:**
-   - Use the 12-section scaffold (0 Pre-flight → 10 Verification & non-regression → 11 Checklist self-audit — see `references/api-mapping.md` "Schéma général"). Section §11 is mandatory in every generated template; it drives Step 6 of this workflow
+   - Follow the fallback procedure in `references/api-mapping.md`
+   - Use the 12-section scaffold (0 Pre-flight → 10 Verification & non-regression → 11 Checklist self-audit). Section §11 is mandatory; it drives Step 6 of this workflow
    - Append two unnumbered sections: `## Common anti-patterns (rejected)` (table) and `## Quick verification commands` (block)
-   - Adapt items via `references/api-mapping.md` pivots
    - Write to `aidd_docs/templates/dev/data_checklist_<stack>.md` (or `docs/data-templates/<stack>.md`)
    - **If `aidd_docs/internal/decisions/` exists:** create a DEC documenting the convention choices
    - **Otherwise:** inline the chosen conventions in the new template's header
+   - Suggest packaging the produced template as a `sc-<stack>` plugin if reuse is likely
    - Continue to Step 3
 
 **Success criteria:** A checklist source is loaded into context, stack-appropriate.

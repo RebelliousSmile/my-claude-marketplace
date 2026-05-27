@@ -1,0 +1,50 @@
+[
+  { "prompt": "install the sc-tiers rules", "expect_action": "install" },
+  { "prompt": "setup the SaaS consumption rules", "expect_action": "install" },
+  { "prompt": "add Firebase coding rules to this project", "expect_action": "install" },
+  { "prompt": "installe les règles SaaS dans le projet", "expect_action": "install" },
+  { "prompt": "add the GTM consent rules", "expect_action": "install" },
+
+  { "prompt": "verify the project follows the Firebase rules", "expect_action": "verify" },
+  { "prompt": "audit the codebase for Klaviyo pattern violations", "expect_action": "verify" },
+  { "prompt": "check compliance with SaaS consumption rules", "expect_action": "verify" },
+  { "prompt": "audit this project's GTM consent implementation", "expect_action": "verify" },
+  { "prompt": "validate our Clarity integration", "expect_action": "verify" },
+  {
+    "prompt": "services=perf verify",
+    "expect_action": "verify",
+    "note": "explicit perf audit — not auto-triggered"
+  },
+
+  { "prompt": "how to integrate Klaviyo", "expect_action": "help" },
+  { "prompt": "rules for Firebase", "expect_action": "help" },
+  { "prompt": "help me with GTM consent mode", "expect_action": "help" },
+  { "prompt": "guide for Meta Pixel", "expect_action": "help" },
+  { "prompt": "how to use Microsoft Clarity", "expect_action": "help" },
+  { "prompt": "PageSpeed Insights best practices", "expect_action": "help" },
+  { "prompt": "sc-tiers help klaviyo", "expect_action": "help" },
+  { "prompt": "sc-tiers help firebase", "expect_action": "help" },
+  {
+    "prompt": "before implementing the Klaviyo integration, provide the authoritative patterns",
+    "expect_action": "help",
+    "note": "called by plan skill before generating integration code"
+  },
+  {
+    "prompt": "load the GTM rules before planning the consent banner",
+    "expect_action": "help",
+    "note": "called by plan skill — fetches reference context"
+  },
+  {
+    "prompt": "rules for psi",
+    "expect_action": "help",
+    "note": "explicit alias — perf rules on demand via help, not via verify auto-detection"
+  },
+
+  { "prompt": "plan the Klaviyo integration", "expect_action": null, "note": "plan skill, not sc-tiers" },
+  { "prompt": "plan a new feature", "expect_action": null, "note": "plan skill" },
+  { "prompt": "optimize my database queries", "expect_action": null, "note": "data-optimize, not sc-tiers" },
+  { "prompt": "optimize Firestore reads", "expect_action": null, "note": "data-optimize handles Firestore optimization" },
+  { "prompt": "how do I use Vue", "expect_action": null },
+  { "prompt": "install npm packages", "expect_action": null, "note": "generic install — not SaaS rules" },
+  { "prompt": "run the tests", "expect_action": null }
+]

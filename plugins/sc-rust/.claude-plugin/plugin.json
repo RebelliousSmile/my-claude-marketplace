@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "sc-rust",
+  "version": "0.1.0",
+  "description": "Rust-specific skills and workflows (Axum / Actix web + SQLx / Diesel data).",
+  "author": {
+    "name": "François-Xavier Guillois"
+  }
+}

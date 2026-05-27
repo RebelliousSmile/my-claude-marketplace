@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "sc-js",
+  "version": "0.1.0",
+  "description": "JavaScript/Nuxt 3 coding rules: component scope, icons (lucide-vue-next), image optimization (WebP/LCP), Nitro server imports, Vite dynamic imports, design system conventions, async components, preconnect strategy, CSS transitions, Playwright testing patterns.",
+  "author": {
+    "name": "François-Xavier Guillois"
+  }
+}
