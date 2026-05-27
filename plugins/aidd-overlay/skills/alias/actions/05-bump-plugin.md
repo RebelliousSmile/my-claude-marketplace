@@ -1,18 +1,23 @@
 # Action 05 — bump-plugin
 
-Fires the pre-crafted prompt for the **bump plugin version → update index.json → commit → push** workflow.
+Fires the pre-crafted prompt for the **bump plugin version → update index.json → commit → push → update local install** workflow.
 
 ## Context required
 
 - Plugin name (e.g. `sc-js`, `aidd-overlay`, `writing`).
 - New version or bump type (`major`, `minor`, `patch`). If absent, ask before firing: *"Which plugin and what version bump (major / minor / patch)?"*
-- Marketplace repo path on disk. If absent, ask before firing: *"Where is the marketplace repo?"*
+- Marketplace repo path: auto-detected (see step 0). Only ask if auto-detection fails.
 
 ## Prompt
 
 Execute the following workflow verbatim:
 
-1. **Resolve the new version** — read `plugins/<name>/.claude-plugin/plugin.json` from the marketplace repo. If the user gave a bump type rather than an explicit version, compute the new semver (e.g. `0.1.0` + `minor` → `0.2.0`).
+0. **Locate the marketplace repo** — do not ask the user; find it automatically:
+   a. Check the `known_marketplaces.json` file (usually at `~/.claude/plugins/known_marketplaces.json` or `%USERPROFILE%\.claude\plugins\known_marketplaces.json`) and look for an entry whose `source.source` is `"directory"`. Use its `path` value as the marketplace root.
+   b. If no directory-source entry exists, search for a `index.json` file containing a `"plugins"` array within common project directories (`~/Documents`, `~/Projects`, `~/Projets` and their subdirectories, one level deep).
+   c. If still not found, ask the user: *"Where is your marketplace repo on this machine?"*
+
+1. **Resolve the new version** — read `plugins/<name>/.claude-plugin/plugin.json` from the marketplace root found in step 0. If the user gave a bump type rather than an explicit version, compute the new semver (e.g. `0.1.0` + `minor` → `0.2.0`).
 
 2. **Bump `plugin.json`** — edit `plugins/<name>/.claude-plugin/plugin.json`: replace the current `"version"` value with the new version. Do not touch any other field.
 
@@ -25,7 +30,11 @@ Execute the following workflow verbatim:
 
 5. **Push** — run `git push origin main`.
 
-6. Report:
+6. **Update local install** — run `/plugin update` then `/reload-plugins` so the running Claude Code instance picks up the new version immediately.
+
+7. Report:
+   - Marketplace path used
    - Plugin bumped (`name`: `old` → `new`)
    - Commit SHA
    - Push confirmed
+   - Local install updated
