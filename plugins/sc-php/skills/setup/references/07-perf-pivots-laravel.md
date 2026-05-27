@@ -24,10 +24,44 @@ Stack-specific overrides applied when `composer.json` contains `laravel/framewor
 - CSS critique above-fold : extraction custom OU `@vite` + Tailwind purge ; éviter d'attacher toute la lib Tailwind sur chaque page
 - Pas de framework JS au top-level d'un layout Blade — chaque `<script>` doit être justifié
 
+## §2 — LCP
+
+- Image hero above-fold : `<img src="{{ Vite::asset('resources/images/hero.webp') }}" fetchpriority="high" loading="eager" width="1440" height="800" alt="...">`
+- `<picture>` INTERDIT above-fold (délai supplémentaire de négociation format) ; utiliser `<img>` direct avec format optimisé
+- Preload hero via Blade : `@push('head') <link rel="preload" as="image" href="{{ Vite::asset('resources/images/hero.webp') }}"> @endpush`
+- Responsive srcset avec hash Vite :
+  ```blade
+  <img src="{{ Vite::asset('resources/images/hero-800.webp') }}"
+       srcset="{{ Vite::asset('resources/images/hero-400.webp') }} 400w,
+               {{ Vite::asset('resources/images/hero-800.webp') }} 800w"
+       sizes="(max-width: 768px) 400px, 800px"
+       fetchpriority="high" loading="eager" width="800" height="450" alt="...">
+  ```
+
+## §3 — CLS
+
+- `width` et `height` explicites obligatoires sur tout `<img>` Blade — sans eux le navigateur ne peut pas réserver l'espace
+- FOUT : ajouter `font-display: swap` dans `resources/css/app.css` pour toute `@font-face` custom
+- Livewire : réserver l'espace du composant avec `min-height` ou un skeleton Blade pendant la connexion initiale
+- Inertia : éviter les injections conditionnelles qui modifient la hauteur de layout après hydratation
+
 ## §4 — Bundle
 
 - Vite + Laravel : `manualChunks` configuré pour isoler vendors lourds (Alpine plugins, charts, editors)
 - `@vite` doit produire des URLs avec hash → cache-busting auto à chaque `pnpm build`
+
+## §5 — CSS
+
+- Tailwind purge config dans `vite.config.js` :
+  ```js
+  content: [
+    './resources/views/**/*.blade.php',
+    './resources/js/**/*.vue',
+    './resources/js/**/*.js',
+  ]
+  ```
+- `transition: all` à proscrire — invalide l'optimisation du browser compositor ; grep : `grep -rn "transition.*all" resources/css/ resources/js/`
+- Vérifier que `@apply` ne charge pas des utilities non purgées en prod
 
 ## §6 — Caching
 
@@ -44,11 +78,17 @@ Stack-specific overrides applied when `composer.json` contains `laravel/framewor
 
 ## §8 — INP / TBT (côté client)
 
+- PHP SSR → le TBT vient du JS client, pas du serveur ; prioriser la réduction du JS bloquant
 - Livewire `wire:loading.delay` pour éviter les flickers ; `wire:model.lazy` ou `.debounce.300ms` pour inputs
+- Vue/Inertia : `defineAsyncComponent(() => import('./HeavyComponent.vue'))` pour composants non-critiques
+- Code non-prioritaire : `requestIdleCallback(() => initAnalytics())` pour différer l'init post-LCP
+- Event listeners sur `scroll`/`touchstart` : toujours `{ passive: true }` pour ne pas bloquer le thread de rendu
 - Hydratation Inertia : auditer les props passées (`->only(['minimal_set'])`) — pas de full models avec relations
 
 ## §9 — Backend / runtime
 
+- Path critique : **max 3 queries séquentielles** sur hot path ; compter avec `DB::listen()` ou Debugbar
+- `DB::listen(function ($query) { Log::debug($query->sql, ['time' => $query->time]); })` pour audit ponctuel dans `AppServiceProvider`
 - **Octane** (Swoole / RoadRunner / FrankenPHP) : warm process, bootstrap supprimé → 5-10× throughput
   - Mémoire partagée entre requests → audit obligatoire des static state, singletons, requêtes Eloquent en propriété
 - **Horizon** pour queues : metrics `failed`, `runtime`, `throughput` par queue
