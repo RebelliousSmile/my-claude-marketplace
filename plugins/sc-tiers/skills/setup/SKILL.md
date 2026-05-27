@@ -49,9 +49,6 @@ Trigger-to-action mapping:
 ### Data pivots (consumed by `data-optimize`)
 
 - `references/08-data-pivots-firebase.md` — Firestore reads accounting, real-time listeners, security rules
-- `references/08-data-pivots-supabase.md` — Postgres + PostgREST + RLS + Realtime
-- `references/08-data-pivots-dynamodb.md` — DynamoDB single-table design, throttling, GSI
-- `references/08-data-pivots-hasura.md` — Hasura permissions, subscriptions, allow-list
 
 ## Transversal rules
 

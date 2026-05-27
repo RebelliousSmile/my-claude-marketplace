@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-tiers",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Third-party SaaS consumption rules: Firebase Firestore query limits, security rules, quota awareness, Auth listener cleanup, Hosting trailing slash and cache headers. Klaviyo API patterns: 2-step subscribe, 409→PATCH, lists, lazy loading. GTM Consent Mode v2: gtag() vs Array format, ensureGtag(), Meta Pixel consent, event taxonomy. Microsoft Clarity: best-effort model, consent-gated loading, queue init, dual push. PageSpeed Insights / Lighthouse: PSI variance, deterministic metrics, Nuxt 3 perf checklist (LCP/CLS/INP/TBT/bundle/cache).",
   "author": {
     "name": "François-Xavier Guillois"
