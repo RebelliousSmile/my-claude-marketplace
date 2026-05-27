@@ -26,7 +26,7 @@ grep -r "from ['\"]<module>" --include="*.{vue,js,ts}" .
 ## Signal load-bearing
 
 - Warning Vite/Rollup `dynamic import will not move module into another chunk` = bug, pas cosmétique
-- Vérifier `pnpm nuxt build` après chaque tentative de split — toute occurrence de ce warning bloque
+- Vérifier `pnpm vite build` après chaque tentative de split — toute occurrence de ce warning bloque
 
 ## Anti-patterns rejetés
 

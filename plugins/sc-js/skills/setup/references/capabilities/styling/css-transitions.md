@@ -2,6 +2,7 @@
 paths:
   - "**/*.vue"
   - "**/*.css"
+  - "**/*.html"
 ---
 
 # CSS transitions — éviter les no-op
@@ -15,8 +16,9 @@ paths:
 
 ## Patterns no-op silencieux
 
-- Données Vue réactives changent mais classes CSS statiques → transition ne se déclenche jamais
-- `v-if` / `v-else` détruit le DOM node → pas de changement CSS sur le parent → transition ignorée
+- État réactif qui change mais classes CSS statiques → transition ne se déclenche jamais
+- `v-if` / `v-else` ou `x-if` détruit le nœud DOM → pas de changement CSS sur le parent → transition ignorée
+- Propriété non-animatable ciblée (ex. `display`, `visibility`) → pas d'interpolation
 
 ## Exemple
 
@@ -26,8 +28,15 @@ transition: all 0.3s ease;
 
 /* ✅ */
 transition: border-color 0.3s ease, box-shadow 0.3s ease;
-/* Tailwind: */
-transition-[background-color,transform]
+```
+
+```html
+<!-- Tailwind -->
+<!-- ❌ -->
+<div class="transition-all">
+
+<!-- ✅ -->
+<div class="transition-[background-color,transform]">
 ```
 
 ## Vérification

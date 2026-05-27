@@ -10,7 +10,7 @@ Read the manifest emitted by `01-scan`. For each rule file listed:
 
 1. Read the corresponding reference file from the plugin's `references/` directory (path listed in the manifest)
 2. Write it verbatim to the target path in `.claude/rules/` of the current project
-3. Create parent directories as needed (`mkdir -p` equivalent)
+3. Create parent directories as needed
 
 ### OUTDATED files — update
 
@@ -22,44 +22,50 @@ Read the manifest emitted by `01-scan`. For each rule file listed:
 
 Do not write. Do not read again. Skip entirely.
 
+### NOT-APPLICABLE files — skip
+
+Do not write. Do not remove if already present. Skip entirely.
+
 ## Reference mapping
 
-### Coding rules (always required)
+### Capability rules
 
-| Reference file | Target path |
+| Reference | Target |
 |---|---|
-| `references/00-shared-component-scope.md` | `.claude/rules/00-architecture/00-shared-component-scope.md` |
-| `references/03-icons.md` | `.claude/rules/03-frameworks-and-libraries/03-icons.md` |
-| `references/03-image-optimization.md` | `.claude/rules/03-frameworks-and-libraries/03-image-optimization.md` |
-| `references/03-pinia.md` | `.claude/rules/03-frameworks-and-libraries/03-pinia.md` |
-| `references/3-nitro-plugin-imports.md` | `.claude/rules/03-frameworks-and-libraries/3-nitro-plugin-imports.md` |
-| `references/3-vite-dynamic-imports.md` | `.claude/rules/03-frameworks-and-libraries/3-vite-dynamic-imports.md` |
-| `references/03-design-system.md` | `.claude/rules/06-design-patterns/03-design-system.md` |
-| `references/07-async-components-marketing.md` | `.claude/rules/07-quality/07-async-components-marketing.md` |
-| `references/07-preconnect-strategy.md` | `.claude/rules/07-quality/07-preconnect-strategy.md` |
-| `references/7-css-transitions.md` | `.claude/rules/07-quality/7-css-transitions.md` |
+| `references/capabilities/components/shared-scope.md` | `.claude/rules/capabilities/components/shared-scope.md` |
+| `references/capabilities/state/pinia.md` | `.claude/rules/capabilities/state/pinia.md` |
+| `references/capabilities/state/alpine-store.md` | `.claude/rules/capabilities/state/alpine-store.md` |
+| `references/capabilities/code-splitting/dynamic-import.md` | `.claude/rules/capabilities/code-splitting/dynamic-import.md` |
+| `references/capabilities/code-splitting/defineAsyncComponent.md` | `.claude/rules/capabilities/code-splitting/defineAsyncComponent.md` |
+| `references/capabilities/styling/design-system.md` | `.claude/rules/capabilities/styling/design-system.md` |
+| `references/capabilities/styling/css-transitions.md` | `.claude/rules/capabilities/styling/css-transitions.md` |
+| `references/capabilities/icons/lucide-vue.md` | `.claude/rules/capabilities/icons/lucide-vue.md` |
+| `references/capabilities/icons/svg-inline.md` | `.claude/rules/capabilities/icons/svg-inline.md` |
+| `references/capabilities/images/web-optimization.md` | `.claude/rules/capabilities/images/web-optimization.md` |
+| `references/capabilities/networking/preconnect.md` | `.claude/rules/capabilities/networking/preconnect.md` |
+| `references/capabilities/server/nitro-imports.md` | `.claude/rules/capabilities/server/nitro-imports.md` |
+| `references/capabilities/ssr/storage-guards.md` | `.claude/rules/capabilities/ssr/storage-guards.md` |
 
-### Perf pivots (conditional on detected framework)
+### Perf pivots (consumed by `web-optimize` — legacy target paths)
 
-| Condition | Reference file | Target path |
-|---|---|---|
-| Nuxt detected | `references/07-perf-pivots-nuxt.md` | `.claude/rules/07-quality/perf-pivots-nuxt.md` |
-| Vue SPA detected | `references/07-perf-pivots-vue-spa.md` | `.claude/rules/07-quality/perf-pivots-vue-spa.md` |
-| Vite hybrid detected | `references/07-perf-pivots-vite.md` | `.claude/rules/07-quality/perf-pivots-vite.md` |
-| Alpine.js detected | `references/07-perf-pivots-alpine.md` | `.claude/rules/07-quality/perf-pivots-alpine.md` |
-| Astro or 11ty detected | `references/07-perf-pivots-static.md` | `.claude/rules/07-quality/perf-pivots-static.md` |
-| Nuxt or Vue detected | `references/07-perf-storage-ssr.md` | `.claude/rules/07-quality/perf-storage-ssr.md` |
+| Reference | Target |
+|---|---|
+| `references/capabilities/perf/nuxt.md` | `.claude/rules/07-quality/perf-pivots-nuxt.md` |
+| `references/capabilities/perf/vue-spa.md` | `.claude/rules/07-quality/perf-pivots-vue-spa.md` |
+| `references/capabilities/perf/vite.md` | `.claude/rules/07-quality/perf-pivots-vite.md` |
+| `references/capabilities/perf/alpine.md` | `.claude/rules/07-quality/perf-pivots-alpine.md` |
+| `references/capabilities/perf/static.md` | `.claude/rules/07-quality/perf-pivots-static.md` |
 
-### Data pivots (conditional on detected ORM)
+### Data pivots (consumed by `data-optimize` — legacy target paths)
 
-| Condition | Reference file | Target path |
-|---|---|---|
-| Prisma detected | `references/08-data-pivots-prisma.md` | `.claude/rules/07-quality/data-pivots-prisma.md` |
-| Drizzle detected | `references/08-data-pivots-drizzle.md` | `.claude/rules/07-quality/data-pivots-drizzle.md` |
-| TypeORM / Sequelize detected | `references/08-data-pivots-typeorm.md` | `.claude/rules/07-quality/data-pivots-typeorm.md` |
-| Mongoose detected | `references/08-data-pivots-mongoose.md` | `.claude/rules/07-quality/data-pivots-mongoose.md` |
-| GraphQL detected | `references/08-data-pivots-graphql.md` | `.claude/rules/07-quality/data-pivots-graphql.md` |
-| tRPC detected | `references/08-data-pivots-trpc.md` | `.claude/rules/07-quality/data-pivots-trpc.md` |
+| Reference | Target |
+|---|---|
+| `references/capabilities/data/prisma.md` | `.claude/rules/07-quality/data-pivots-prisma.md` |
+| `references/capabilities/data/drizzle.md` | `.claude/rules/07-quality/data-pivots-drizzle.md` |
+| `references/capabilities/data/typeorm.md` | `.claude/rules/07-quality/data-pivots-typeorm.md` |
+| `references/capabilities/data/mongoose.md` | `.claude/rules/07-quality/data-pivots-mongoose.md` |
+| `references/capabilities/data/graphql.md` | `.claude/rules/07-quality/data-pivots-graphql.md` |
+| `references/capabilities/data/trpc.md` | `.claude/rules/07-quality/data-pivots-trpc.md` |
 
 ## Output
 
@@ -68,15 +74,26 @@ After all operations, report:
 ```
 ✅ sc-js sniff — sync complete
 
-  Installed (5):
-    + .claude/rules/03-frameworks-and-libraries/03-icons.md
-    + .claude/rules/07-quality/perf-pivots-nuxt.md
-    + .claude/rules/07-quality/perf-storage-ssr.md
-    + .claude/rules/07-quality/data-pivots-prisma.md
-    + .claude/rules/07-quality/data-pivots-trpc.md
-  Updated (1):
-    ↺ .claude/rules/03-frameworks-and-libraries/03-pinia.md
-  Skipped — already up-to-date (X):
-    - .claude/rules/00-architecture/00-shared-component-scope.md
-    ...
+  Installed (10):
+    + .claude/rules/capabilities/components/shared-scope.md
+    + .claude/rules/capabilities/state/pinia.md
+    + .claude/rules/capabilities/code-splitting/dynamic-import.md
+    + .claude/rules/capabilities/code-splitting/defineAsyncComponent.md
+    + .claude/rules/capabilities/styling/design-system.md
+    + .claude/rules/capabilities/styling/css-transitions.md
+    + .claude/rules/capabilities/icons/lucide-vue.md
+    + .claude/rules/capabilities/images/web-optimization.md
+    + .claude/rules/capabilities/networking/preconnect.md
+    + .claude/rules/07-quality/perf-pivots-vue-spa.md
+    + .claude/rules/07-quality/perf-pivots-vite.md
+  Updated (0): —
+  Not applicable (4):
+    ✗ capabilities/server/nitro-imports.md (Nuxt not detected)
+    ✗ capabilities/ssr/storage-guards.md (Nuxt not detected)
+    ✗ capabilities/icons/svg-inline.md (Vue detected — use lucide-vue instead)
+    ✗ 07-quality/data-pivots-*.md (no ORM detected)
+  Skipped — already up-to-date (0): —
+
+Gaps reported (no plugin rule):
+  vue-router (routing)
 ```

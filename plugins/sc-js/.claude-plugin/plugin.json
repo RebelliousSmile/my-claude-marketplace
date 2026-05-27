@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-js",
-  "version": "0.2.0",
-  "description": "JavaScript/Nuxt 3 coding rules: component scope, icons (lucide-vue-next), image optimization (WebP/LCP), Nitro server imports, Vite dynamic imports, design system conventions, async components, preconnect strategy, CSS transitions, Playwright testing patterns.",
+  "version": "0.3.0",
+  "description": "Capability-based JavaScript rules: detects runtime (web/desktop), framework (Nuxt/Vue/Alpine/Vite/Astro), ORMs and capabilities (state, icons, code-splitting, images, SSR, etc.) then installs matching coding rules. Perf pivots for web-optimize, data pivots for data-optimize. Use sniff on existing projects, setup for fresh installs.",
   "author": {
     "name": "François-Xavier Guillois"
   }
