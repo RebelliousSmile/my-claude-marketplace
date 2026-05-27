@@ -61,6 +61,15 @@ Applies to **relative** links only. External URLs (`http://`, `https://`, `ftp:/
 | Relative link without extension | `[README](./README)` | Try appending `.md`, `.txt`, none; check that one of the candidates exists |
 | Anchor-only link | `[Section](#heading)` | Skip — heading anchors are not verified |
 
+## Release artifact references
+
+Applies only in decision document context (see `@decision-doc.md`).
+
+| Pattern | Example | Verification method |
+|---------|---------|---------------------|
+| Platform artifact | `.apk`, `.exe`, `.dmg`, `.AppImage` | `gh release list --json tagName,assets \| jq '.[].assets[].name'` |
+| Feature keyword in release | service name, module name | Same as above, keyword match |
+
 ## Exclusions
 
 Do NOT attempt to verify:

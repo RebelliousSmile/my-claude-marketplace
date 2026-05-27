@@ -31,5 +31,5 @@ Dispatch on file extension (or absence of argument):
 - Skip issue-status checks when no tracker CLI is detectable.
 - Never modify any file during assessment.
 - If `.claude/rules/` is absent in the project, skip the rule-violation check silently.
-- Verdicts for docs: **Current** (≥80% claims match), **Partial** (20–79%), **Obsolete** (<20%).
+- Verdicts for docs: **Current** (≥80% claims match), **Partial** (20–79%), **Obsolete** (<20%), **Superseded** (≥80% accurate but decision overtaken by events — see `@assets/decision-doc.md`).
 - In scan mode, process files oldest-first (modification date ascending).

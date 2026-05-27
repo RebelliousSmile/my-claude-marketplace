@@ -11,7 +11,7 @@ Reads one `.md` file or scans all `.md` files in the project, extracts verifiabl
 **Single-file mode:**
 
 ```
-Verdict: Current | Partial | Obsolete
+Verdict: Current | Partial | Obsolete | Superseded
 
 | Claim | Found in code | Status |
 |-------|---------------|--------|
@@ -31,9 +31,9 @@ Scan complete — {N} files assessed
 
 | File | Verdict | Stale claims | Stale passages | Suggested action |
 |------|---------|--------------|----------------|-----------------|
-| {path} | Current / Partial / Obsolete / N/A | {N} | {list or —} | delete / update / keep / — |
+| {path} | Current / Partial / Obsolete / Superseded / N/A | {N} | {list or —} | delete / update / keep / archive / — |
 
-Summary: {N} obsolete, {N} partial, {N} current, {N} N/A
+Summary: {N} obsolete, {N} partial, {N} current, {N} superseded, {N} N/A
 
 Root causes (stale values shared across ≥2 files):
 
@@ -52,6 +52,10 @@ Fix plan (ordered by impact, highest first):
 
 @../assets/claim-types.md
 
+## Decision document protocol
+
+@../assets/decision-doc.md
+
 ## Ground rule
 
 **Taste verifies claims against the live codebase only — never against other documents.**
@@ -62,9 +66,10 @@ Cross-document coherence (does doc A agree with doc B?) is not in scope here; th
 ### Single-file mode
 
 1. Read the target file at `$ARGUMENTS`.
-2. Extract all verifiable claims of the types listed in `@../assets/claim-types.md`.
-3. If no extractable claims are found, output `Verdict: N/A — conceptual document, no verifiable claims` and stop.
-4. For each claim, verify against the **live codebase** using the appropriate method:
+2. **Decision doc detection** — scan the first 20 lines for markers defined in `@../assets/decision-doc.md`. If found, set `decision_doc = true` and extract `decision_value`, `re_eval_conditions`, `issue_refs`.
+3. Extract all verifiable claims of the types listed in `@../assets/claim-types.md`.
+4. If no extractable claims are found, output `Verdict: N/A — conceptual document, no verifiable claims` and stop.
+5. For each claim, verify against the **live codebase** using the appropriate method:
    - **File path**: read the referenced file — confirm it exists and the referenced element is present.
    - **Directory path**: check the directory exists.
    - **Markdown hyperlink** (relative only): resolve the link path relative to the file's directory; check the target exists. Skip anchor-only links (`#…`) and external URLs.
@@ -74,14 +79,17 @@ Cross-document coherence (does doc A agree with doc B?) is not in scope here; th
    - **ADR / DEC reference**: check the file exists in `aidd_docs/internal/decisions/` or equivalent.
    - **Version number**: compare with `package.json` / `composer.json` / `pyproject.toml`.
    - **Command name**: check the command exists in `SKILL.md` router tables or shell PATH.
-5. Classify each claim:
+6. Classify each claim:
    - ✅ **Current** — exact match
    - ⚠️ **Modified** — element exists but content differs from the claim
    - ❌ **Obsolete** — not found
-6. Identify **stale passages**: for each ⚠️ or ❌ claim, locate the section or paragraph it belongs to. Quote the passage (≤ 2 sentences) and state why it is stale.
-7. Compute match percentage: Current claims / total claims.
-   - ≥80% → **Current** | 20–79% → **Partial** | <20% → **Obsolete**
-8. Output the verdict line, the full claim table, the stale passages block, and the suggested actions block.
+7. Identify **stale passages**: for each ⚠️ or ❌ claim, locate the section or paragraph it belongs to. Quote the passage (≤ 2 sentences) and state why it is stale.
+8. **External source checks** — if `decision_doc = true`, run the checks defined in `@../assets/decision-doc.md` (issue status, release artifacts, codebase presence). Collect signals: `issues_closed`, `artifact_found`, `feature_implemented`.
+9. Compute verdict:
+   a. Match percentage = Current claims / total claims.
+   b. If `decision_doc = true` AND match ≥ 80% AND any of (`issues_closed`, `artifact_found`, `feature_implemented`) → **Superseded**.
+   c. Otherwise: ≥80% → **Current** | 20–79% → **Partial** | <20% → **Obsolete**.
+10. Output the verdict line, the full claim table, the stale passages block, the decision status block (if `decision_doc = true`), and the suggested actions block.
 
 ### Scan mode (no argument)
 
@@ -104,7 +112,7 @@ Cross-document coherence (does doc A agree with doc B?) is not in scope here; th
    { "file": "<path>", "verdict": "Current|Partial|Obsolete|N/A", "stale_claims": N, "stale_passages": ["§Title", …], "suggested_action": "keep|update|delete|—" }
    ```
 4. Wait for all agents to complete.
-5. Aggregate all returned results into the scan output table, sorted by verdict severity (Obsolete → Partial → Current → N/A).
+5. Aggregate all returned results into the scan output table, sorted by verdict severity (Obsolete → Superseded → Partial → Current → N/A).
 6. **Root-cause grouping** — after all files are assessed:
    a. Collect all ❌ Obsolete claims across every file.
    b. Normalise each stale value (trim, lowercase). Group claims that share the same normalised stale value or the same wrong identifier.
