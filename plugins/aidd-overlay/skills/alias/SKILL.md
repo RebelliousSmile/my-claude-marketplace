@@ -16,6 +16,7 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 02  | `afterplan`   | Implement from the current plan, then run both reviews                         | current plan in context      |
 | 03  | `endtask`     | Commit → endplan → changelog → push tags → close issue                         | current branch + issue number   |
 | 04  | `endplan`     | Archive plan file → capture learnings → merge branch if applicable → push      | current branch in context       |
+| 05  | `bump-plugin` | Bump plugin version in plugin.json + index.json → commit → push marketplace    | plugin name + version or bump type |
 
 ## Default flow
 
@@ -25,6 +26,7 @@ Trigger-to-action mapping:
 - "implement and review", "implement then review", "alias afterplan", "afterplan", "implement with double review" → `afterplan`
 - "end task", "close task", "endtask", "alias endtask", "commit and release", "wrap up this task", "finish the task" → `endtask`
 - "end plan", "close plan", "endplan", "alias endplan", "merge the plan branch", "archive the plan", "finish the plan branch" → `endplan`
+- "bump plugin", "release plugin", "bump-plugin", "alias bump-plugin", "monter en version", "bumper le plugin", "release <plugin>" → `bump-plugin`
 
 ## Transversal rules
 

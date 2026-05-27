@@ -20,6 +20,12 @@
   { "prompt": "merge the plan branch", "expect_action": "endplan" },
   { "prompt": "archive the plan", "expect_action": "endplan" },
   { "prompt": "finish the plan branch", "expect_action": "endplan" },
+  { "prompt": "bump plugin sc-js minor", "expect_action": "bump-plugin" },
+  { "prompt": "alias bump-plugin", "expect_action": "bump-plugin" },
+  { "prompt": "bump-plugin", "expect_action": "bump-plugin" },
+  { "prompt": "release plugin writing", "expect_action": "bump-plugin" },
+  { "prompt": "monter en version sc-tiers", "expect_action": "bump-plugin" },
+  { "prompt": "bumper le plugin aidd-overlay", "expect_action": "bump-plugin" },
   { "prompt": "just run the plan", "expect_action": null },
   { "prompt": "just run the review", "expect_action": null },
   { "prompt": "challenge this doc", "expect_action": null }
