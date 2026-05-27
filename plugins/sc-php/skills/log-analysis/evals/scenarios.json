@@ -1,0 +1,19 @@
+[
+  { "prompt": "montre-moi les derniers logs", "expect_action": "tail" },
+  { "prompt": "check the logs", "expect_action": "tail" },
+  { "prompt": "les 100 dernières lignes des logs PHP en prod", "expect_action": "tail" },
+  { "prompt": "show me the last 200 lines of nginx logs on docker", "expect_action": "tail" },
+  { "prompt": "quelles sont les erreurs PHP ?", "expect_action": "parse-errors" },
+  { "prompt": "PHP errors on docker", "expect_action": "parse-errors" },
+  { "prompt": "est-ce qu'il y a des warnings dans les logs ?", "expect_action": "parse-errors" },
+  { "prompt": "what apache errors do we have in production?", "expect_action": "parse-errors" },
+  { "prompt": "cherche les erreurs 500 dans les logs", "expect_action": "search" },
+  { "prompt": "find all occurrences of 'Uncaught TypeError' in production logs", "expect_action": "search" },
+  { "prompt": "grep 'POST /api' dans les access logs", "expect_action": "search" },
+  { "prompt": "donne-moi un résumé des erreurs du jour", "expect_action": "summarize" },
+  { "prompt": "log report for the last 24h", "expect_action": "summarize" },
+  { "prompt": "analyse les performances de la base de données", "expect_action": null },
+  { "prompt": "compile mes rapports trimestriels", "expect_action": null },
+  { "prompt": "montre-moi les logs en production", "expect_action": "tail" },
+  { "prompt": "résumé des erreurs sur le serveur de prod depuis 24h", "expect_action": "summarize" }
+]
