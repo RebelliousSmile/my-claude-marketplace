@@ -1,10 +1,58 @@
 {
   "plugins": [
     {
-      "id": "aidd-claude-custom",
-      "name": "aidd-claude-custom",
-      "description": "Custom AIDD commands, agents, rules and templates for Claude Code — extends the AIDD framework with project-agnostic workflows including agentic architecture, docs migration, changelog generation, and interactive learning agent Ada.",
-      "version": "1.0.0"
+      "id": "aidd-overlay",
+      "name": "aidd-overlay",
+      "description": "Extends the AIDD framework with project-agnostic workflows: interactive codebase quiz (dig), memory maintenance (harvest, reconcile-normative), obsolescence detection (taste), prospective analysis (foresee), performance audits (data-optimize, web-optimize), and planning utilities (decompose, journey, changelog, end-plan, previously).",
+      "version": "1.1.0"
+    },
+    {
+      "id": "gamedesign",
+      "name": "gamedesign",
+      "description": "Game design skills and workflows.",
+      "version": "0.2.0"
+    },
+    {
+      "id": "obsidian",
+      "name": "obsidian",
+      "description": "Obsidian project management integration: export project memory and status reports to Obsidian-compatible format (project-status).",
+      "version": "0.2.0"
+    },
+    {
+      "id": "writing",
+      "name": "writing",
+      "description": "Writing skills and workflows.",
+      "version": "0.2.0"
+    },
+    {
+      "id": "sc-js",
+      "name": "sc-js",
+      "description": "JavaScript/Nuxt 3 coding rules: component scope, icons (lucide-vue-next), image optimization (WebP/LCP), Nitro server imports, Vite dynamic imports, design system conventions, async components, preconnect strategy, CSS transitions, Playwright testing patterns.",
+      "version": "0.2.0"
+    },
+    {
+      "id": "sc-python",
+      "name": "sc-python",
+      "description": "Python-specific skills and workflows (Django web + ORM + async).",
+      "version": "0.2.0"
+    },
+    {
+      "id": "sc-rust",
+      "name": "sc-rust",
+      "description": "Rust-specific skills and workflows (Axum / Actix web + SQLx / Diesel data).",
+      "version": "0.2.0"
+    },
+    {
+      "id": "sc-php",
+      "name": "sc-php",
+      "description": "PHP-specific skills and workflows.",
+      "version": "0.2.0"
+    },
+    {
+      "id": "sc-tiers",
+      "name": "sc-tiers",
+      "description": "Third-party SaaS consumption rules: Firebase Firestore query limits, security rules, quota awareness, Auth listener cleanup, Hosting trailing slash and cache headers. Klaviyo API patterns: 2-step subscribe, 409→PATCH, lists, lazy loading. GTM Consent Mode v2: gtag() vs Array format, ensureGtag(), Meta Pixel consent, event taxonomy. Microsoft Clarity: best-effort model, consent-gated loading, queue init, dual push. PageSpeed Insights / Lighthouse: PSI variance, deterministic metrics, Nuxt 3 perf checklist (LCP/CLS/INP/TBT/bundle/cache).",
+      "version": "0.1.0"
     }
   ]
 }
