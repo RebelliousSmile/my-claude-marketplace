@@ -30,11 +30,16 @@ Execute the following workflow verbatim:
 
 5. **Push** — run `git push origin main`.
 
-6. **Update local install** — run `/plugin update` then `/reload-plugins` so the running Claude Code instance picks up the new version immediately.
+6. **Update local install** — `/plugin update` and `/reload-plugins` are harness commands that cannot be invoked programmatically. After the push, output the following instruction verbatim to the user:
+
+   > Run these two commands to activate the new version:
+   > ```
+   > /plugin update
+   > /reload-plugins
+   > ```
 
 7. Report:
    - Marketplace path used
    - Plugin bumped (`name`: `old` → `new`)
    - Commit SHA
    - Push confirmed
-   - Local install updated
