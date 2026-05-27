@@ -14,8 +14,8 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | --- | ------------- | ------------------------------------------------------------------------------ | ---------------------------- |
 | 01  | `rechallenge` | Plan the current task, then challenge until 0 deal-breakers and 0 suggestions  | current task in context      |
 | 02  | `afterplan`   | Implement from the current plan, then run both reviews                         | current plan in context      |
-| 03  | `endtask`     | Commit → endplan → changelog → push tags → close issue                         | plan branch + issue number   |
-| 04  | `endplan`     | Archive plan file → capture learnings → merge branch → push → delete branch    | plan branch in context       |
+| 03  | `endtask`     | Commit → endplan → changelog → push tags → close issue                         | current branch + issue number   |
+| 04  | `endplan`     | Archive plan file → capture learnings → merge branch if applicable → push      | current branch in context       |
 
 ## Default flow
 

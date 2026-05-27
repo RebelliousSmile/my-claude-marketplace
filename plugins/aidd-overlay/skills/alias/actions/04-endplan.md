@@ -1,40 +1,43 @@
 # Action 04 — endplan
 
-Fires the pre-crafted prompt to **archive the plan file, merge the plan branch, and delete the local branch**.
+Fires the pre-crafted prompt to **archive the plan file, capture learnings, and close the branch if applicable**.
 
 ## Context required
 
-Must be run from a plan branch. If the target branch is ambiguous, ask before firing: *"Which branch should I merge into?"*
+Can be run from a dedicated plan branch **or** directly from the target branch (e.g. `develop`) when the implementer worked without creating a branch. If the target branch is ambiguous, ask before firing: *"Which branch should I merge into?"*
 
 ## Prompt
 
 Execute the following workflow verbatim:
 
-1. **Get current branch** — run `git branch --show-current`. Record as `plan_branch`.
+1. **Get current branch** — run `git branch --show-current`. Record as `current_branch`.
 
-2. **Determine target branch**:
-   - If a branch name was passed as argument, use it.
-   - Otherwise, inspect `git log --oneline --decorate HEAD` to detect the branch the current branch was created from.
-   - If still ambiguous, ask: *"Which branch should I merge `<plan_branch>` into?"*
+2. **Detect branch mode**:
+   - If `current_branch` is `main`, `master`, `develop`, or `staging`, set `has_plan_branch = false` and `target_branch = current_branch`.
+   - Otherwise, set `has_plan_branch = true` and determine `target_branch`:
+     - If a branch name was passed as argument, use it.
+     - Otherwise, inspect `git log --oneline --decorate HEAD` to detect the branch the current branch was created from.
+     - If still ambiguous, ask: *"Which branch should I merge `<current_branch>` into?"*
 
-3. **Find plan file** — search `aidd_docs/tasks/` for a `.md` file whose content contains `**Branch name**: \`<plan_branch>\``. If not found, ask: *"Which file in `aidd_docs/tasks/` is the plan for `<plan_branch>`?"*
+3. **Find plan file** — search `aidd_docs/tasks/` for a `.pending.md` file. If not found, ask: *"Which file in `aidd_docs/tasks/` is the plan for this work?"*
 
-4. **Archive plan file** — rename `<name>.md` to `<name>.processed.md` in the same directory.
+4. **Archive plan file** — rename `<name>.pending.md` to `<name>.processed.md` in the same directory.
 
-5. **Capture learnings** — invoke `/aidd-context:05-learn` to capture any final learnings from the plan before closing the branch.
+5. **Capture learnings** — invoke `/aidd-context:05-learn` to capture any final learnings from the plan.
 
-6. **Checkout target branch** — run `git checkout <target_branch>`.
+6. **If `has_plan_branch = true`** (dedicated branch):
+   - Checkout target branch: `git checkout <target_branch>`
+   - Pull: `git pull`
+   - Merge: `git merge --no-ff <current_branch>`. If a merge conflict occurs, stop and ask the user to resolve it before continuing.
+   - Push: `git push`
+   - Delete local plan branch: `git branch -D <current_branch>`
 
-7. **Pull** — run `git pull` to ensure the local target is up to date.
+7. **If `has_plan_branch = false`** (working directly on target branch):
+   - Push: `git push`
 
-8. **Merge** — run `git merge --no-ff <plan_branch>`. If a merge conflict occurs, stop and ask the user to resolve it before continuing.
-
-9. **Push** — run `git push`.
-
-10. **Delete local plan branch** — run `git branch -D <plan_branch>`.
-
-11. Report:
-    - Current branch: `<target_branch>`
-    - Last commit: `<sha> <message>`
-    - Plan file archived: `<name>.processed.md`
-    - Deleted branch: `<plan_branch>`
+8. Report:
+   - Current branch: `<target_branch>`
+   - Last commit: `<sha> <message>`
+   - Plan file archived: `<name>.processed.md`
+   - Branch mode: `plan branch merged` or `direct commit on <target_branch>`
+   - Deleted branch: `<current_branch>` *(only if has_plan_branch)*
