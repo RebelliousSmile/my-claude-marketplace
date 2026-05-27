@@ -13,7 +13,9 @@ Execute the following workflow verbatim:
 
 1. Run `/aidd-dev:01-plan` on the current task or feature. Write the plan to `aidd_docs/tasks/` following the standard naming convention.
 
-2. Once the plan file is written, immediately invoke `/aidd-refine:02-challenge` on it.
+1b. **Verify the plan file is on disk** — immediately after the Write tool returns, run `ls <plan_path>` in a Bash command. If the file is not found, write it again with the Write tool and re-run `ls` until confirmed. Do not proceed until `ls` returns the file path without error.
+
+2. Once the plan file is confirmed on disk, immediately invoke `/aidd-refine:02-challenge` on it.
 
 3. After each challenge run, apply the following loop:
    - Fix every deal-breaker found — directly in the plan file.
