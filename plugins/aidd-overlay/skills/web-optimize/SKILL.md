@@ -36,6 +36,18 @@ Run a structured performance audit on a web project, picking the right checklist
 - **Primary deterministic metric** (bytes saved, chunks blocked, SQL queries removed, requests removed) is load-bearing for success. PSI score is a secondary noisy signal — report it but never anchor success solely on it
 - PSI variance can dominate any single fix: capture **3-5 baseline runs** before attributing changes (single-run baseline is unfalsifiable). Anonymous Google PSI API rate-limits at ~25/day → for 5+ programmatic runs use https://pagespeed.web.dev/ web UI manually OR a Google API key
 
+## Scope boundaries
+
+`web-optimize` couvre les métriques web (render-blocking, LCP, CLS, INP/TBT, bundle, CSS, caching, SSR/hydration, TTFB latence). Les pivots installées par sc-js / sc-php / sc-python / sc-tiers précisent la mise en œuvre concrète par stack.
+
+| Dans le périmètre | Hors périmètre — outil dédié |
+|---|---|
+| §0–§8 : render, images, bundle, CSS, cache, SSR | `data-optimize` : N+1 queries, quota, payload bytes, index DB |
+| §9 TTFB latence serveur (symptôme) | `data-optimize` : causes DB/API du TTFB |
+| Scripts tiers chargement lazy | `sc-tiers verify` : compliance consent GTM/Clarity/Klaviyo |
+
+Quand §9 dépasse 200ms sans cause render-blocking évidente → recommander `data-optimize` sur la route hot path.
+
 ## Pre-implementation quick check
 
 Before shipping a component that touches DOM rendering, network requests, or JS execution, load `references/w3c-perf-specs.md` and verify the relevant spec entries (§1 LCP if adding hero image, §2 CLS if adding media, §3 INP if adding event handlers, etc.). This prevents regressions before they appear in PSI.
@@ -142,7 +154,7 @@ flowchart LR
 
 5. **If user accepts generation:**
    - Follow the fallback procedure in `references/framework-mapping.md`
-   - Use the 12 numbered sections (0 Pre-flight → 10 Client-side storage → 11 Verification & non-regression) **plus** a `## Common anti-patterns (rejected)` table **plus** a `## Quick verification commands` block
+   - Use the 12 numbered sections (§0 Pre-flight, §1 Critical path, §2 LCP, §3 CLS, §4 JS bundle, §5 CSS, §6 Caching, §7 SSR, §8 INP/TBT, §9 TTFB, §10 Client storage, §11 Verification) **plus** a `## Common anti-patterns (rejected)` table **plus** a `## Quick verification commands` block
    - Write to `aidd_docs/templates/dev/perf_checklist_<stack>.md` (or `docs/perf-templates/<stack>.md`)
    - **If `aidd_docs/internal/decisions/` exists:** create a DEC documenting the convention choices
    - **Otherwise:** inline the chosen conventions in the new template's header
@@ -192,7 +204,7 @@ flowchart LR
 
 4. For each LCP / CLS / INP / TBT / TTFB finding, cross-check the criterion against `references/w3c-perf-specs.md` — confirm the fix is grounded in the spec, not just a Lighthouse convention
 5. Group fixes by ROI (quick wins / structural / monitoring)
-5. **Null result handling**: an audit step can produce zero actionable findings (e.g. grep for static imports of a heavy lib returns 0 — gisement already exhausted by a previous iteration). Record null results explicitly in the report ("Phase 2 audit: 0 static firebase imports in entry chunk — gisement exhausted by commit 440b248") so the next iteration doesn't redo the same audit
+6. **Null result handling**: an audit step can produce zero actionable findings (e.g. grep for static imports of a heavy lib returns 0 — gisement already exhausted by a previous iteration). Record null results explicitly in the report ("Phase 2 audit: 0 static firebase imports in entry chunk — gisement exhausted by commit 440b248") so the next iteration doesn't redo the same audit
 
 **Success criteria:** Every checklist line has a status; no `[ ]` left unchecked. Null results documented with the reason.
 

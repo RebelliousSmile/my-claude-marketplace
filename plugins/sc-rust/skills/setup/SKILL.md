@@ -7,6 +7,7 @@ description: >-
   when Rust-specific perf/data rules are missing. Covers: Tokio runtime, async
   patterns, release profile, SQLx compile-time checked queries, Diesel ORM.
   Do NOT use to update a single rule — edit it directly instead.
+  Prefer /sc-rust:sniff on already-configured projects (detects crates, installs only relevant rules, updates outdated ones).
 ---
 
 # sc-rust Setup
@@ -22,6 +23,10 @@ Installs the full set of Rust perf and data pivot rules to `.claude/rules/` in t
 ## Default flow
 
 Single action. Any invocation of `/sc-rust:setup` triggers `install`.
+
+## Companion skill
+
+- `/sc-rust:sniff` — detects Axum/Actix-web, SQLx, Diesel from Cargo.toml, then installs/updates only the matching pivots. Use instead of `setup` on projects that are already partially configured.
 
 ## References
 

@@ -1,28 +1,6 @@
 # Preconnect strategy
 
-## Rule
+> **Source d'autorité :** `.claude/rules/07-quality/07-preconnect-strategy.md` (installé par sc-js).
+> Ce fichier est un renvoi — ne pas modifier ici. Modifier `plugins/sc-js/skills/setup/references/07-preconnect-strategy.md`.
 
-Use `preconnect` only for origins on the **critical render path**.
-Use `dns-prefetch` for deferred or interaction-triggered scripts.
-
-| Resource type | Hint |
-|---|---|
-| Above-fold image CDN, font CDN | `preconnect` |
-| Deferred analytics (GTM, Klaviyo, Clarity) | `dns-prefetch` |
-| Unused origin (no actual request confirmed) | remove |
-
-## Before adding a preconnect
-
-Always verify the origin is actually used:
-
-```bash
-grep -r "<origin>" assets/ pages/ components/ nuxt.config.ts
-```
-
-If 0 results → remove the preconnect.
-
-## Why
-
-`preconnect` establishes TCP + TLS immediately (~150ms per connection).
-For deferred scripts (loaded after interaction or idle), this wastes the connection before it's needed.
-`dns-prefetch` resolves DNS only (~20ms) — appropriate for scripts not on the critical path.
+Règle : `preconnect` = origines above-fold uniquement ; `dns-prefetch` = scripts différés (GTM, Klaviyo, Clarity).

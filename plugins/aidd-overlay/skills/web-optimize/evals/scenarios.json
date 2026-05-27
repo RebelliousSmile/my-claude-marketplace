@@ -1,0 +1,27 @@
+[
+  { "prompt": "run a performance audit", "expect_action": "run" },
+  { "prompt": "audit my site's Core Web Vitals", "expect_action": "run" },
+  { "prompt": "check LCP and CLS", "expect_action": "run" },
+  { "prompt": "my Lighthouse score is 50, what's wrong?", "expect_action": "run" },
+  { "prompt": "PageSpeed Insights shows poor TBT", "expect_action": "run" },
+  { "prompt": "optimize bundle size and code splitting", "expect_action": "run" },
+  { "prompt": "fix render-blocking resources", "expect_action": "run" },
+  { "prompt": "INP is too high on my page", "expect_action": "run" },
+  { "prompt": "/web-optimize", "expect_action": "run" },
+  { "prompt": "/web-optimize marketing routes", "expect_action": "run" },
+
+  { "prompt": "le site est lent, fais un audit perf", "expect_action": "run" },
+  { "prompt": "ma page d'accueil est lente", "expect_action": "run" },
+  { "prompt": "audit perf complet", "expect_action": "run" },
+  { "prompt": "optimise les images et le LCP", "expect_action": "run" },
+  { "prompt": "PSI donne 55 sur mobile", "expect_action": "run" },
+  { "prompt": "réduis le bundle JS", "expect_action": "run" },
+
+  { "prompt": "optimize Firestore reads", "expect_action": null, "note": "data-optimize" },
+  { "prompt": "trop de lectures Firestore", "expect_action": null, "note": "data-optimize" },
+  { "prompt": "API lente, trop de requêtes SQL", "expect_action": null, "note": "data-optimize" },
+
+  { "prompt": "audit the codebase for dead code", "expect_action": null, "note": "aidd-dev:04-audit" },
+  { "prompt": "review my Vue component for best practices", "expect_action": null, "note": "taste" },
+  { "prompt": "plan the new feature", "expect_action": null, "note": "plan" }
+]

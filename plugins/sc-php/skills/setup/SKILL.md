@@ -9,6 +9,7 @@ description: >-
   preloading), WordPress (autoload bloat, transient API, REST API caching), HTMX
   hybrid patterns, Eloquent ORM pivots, Doctrine ORM pivots.
   Do NOT use to update a single rule — edit it directly instead.
+  Prefer /sc-php:sniff on already-configured projects (detects stack, installs only relevant rules, updates outdated ones).
 ---
 
 # sc-php Setup
@@ -24,6 +25,10 @@ Installs the full set of PHP perf and data pivot rules to `.claude/rules/` in th
 ## Default flow
 
 Single action. Any invocation of `/sc-php:setup` triggers `install`.
+
+## Companion skill
+
+- `/sc-php:sniff` — detects the actual PHP stack, then installs/updates only the matching pivots. Use instead of `setup` on projects that are already partially configured.
 
 ## References
 

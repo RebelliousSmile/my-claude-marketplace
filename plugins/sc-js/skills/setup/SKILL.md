@@ -6,9 +6,11 @@ description: >-
   project's .claude/rules/. Use when starting a JS project (Nuxt, Vue SPA, Vite,
   Alpine, Astro/11ty) or when JS-specific rules are missing. Covers: component
   scope, icons, image optimization, Nitro/Vite imports, design system tokens,
-  async components, preconnect, CSS transitions, perf pivots per JS stack, and
-  data pivots for Prisma / Drizzle / TypeORM / Mongoose / GraphQL / tRPC.
+  async components, preconnect, CSS transitions, Pinia state management, perf
+  pivots per JS stack, and data pivots for Prisma / Drizzle / TypeORM / Mongoose /
+  GraphQL / tRPC.
   Do NOT use to update a single rule — edit it directly instead.
+  Prefer /sc-js:sniff on already-configured projects (detects framework and ORMs, installs only relevant rules, updates outdated ones).
 ---
 
 # sc-js Setup
@@ -25,6 +27,10 @@ Installs the full set of Nuxt 3 / JavaScript coding rules to `.claude/rules/` in
 
 Single action. Any invocation of `/sc-js:setup` triggers `install`.
 
+## Companion skill
+
+- `/sc-js:sniff` — detects Nuxt/Vue/Vite/Alpine/Astro/11ty and ORMs, then installs/updates only the matching rules. Use instead of `setup` on projects that are already partially configured.
+
 ## References
 
 ### Coding rules
@@ -32,6 +38,7 @@ Single action. Any invocation of `/sc-js:setup` triggers `install`.
 - `references/00-shared-component-scope.md` — Vue component optional props pattern
 - `references/03-icons.md` — lucide-vue-next, tree-shaking, CSS svg selectors
 - `references/03-image-optimization.md` — WebP, above/below-fold, LCP, CLS prevention
+- `references/03-pinia.md` — Pinia store patterns, TTL cache, SSR safety, storeToRefs
 - `references/3-nitro-plugin-imports.md` — Nitro server plugin module imports (~~/alias)
 - `references/3-vite-dynamic-imports.md` — Vite code-splitting, full graph conversion rule
 - `references/03-design-system.md` — Theme token conventions, semantic colors, component patterns

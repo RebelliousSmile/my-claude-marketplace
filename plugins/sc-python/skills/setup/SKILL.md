@@ -8,6 +8,7 @@ description: >-
   template caching, middleware budget, debug toolbar, FastAPI async patterns,
   Django ORM (select_related, prefetch_related, N+1), SQLAlchemy.
   Do NOT use to update a single rule — edit it directly instead.
+  Prefer /sc-python:sniff on already-configured projects (detects stack, installs only relevant rules, updates outdated ones).
 ---
 
 # sc-python Setup
@@ -23,6 +24,10 @@ Installs the full set of Python perf and data pivot rules to `.claude/rules/` in
 ## Default flow
 
 Single action. Any invocation of `/sc-python:setup` triggers `install`.
+
+## Companion skill
+
+- `/sc-python:sniff` — detects Django/FastAPI/Flask and ORMs, then installs/updates only the matching pivots. Use instead of `setup` on projects that are already partially configured.
 
 ## References
 

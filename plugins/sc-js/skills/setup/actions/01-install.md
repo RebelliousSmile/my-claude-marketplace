@@ -13,6 +13,7 @@ Read each reference file listed below and write its content verbatim to the targ
 | `references/00-shared-component-scope.md` | `.claude/rules/00-architecture/00-shared-component-scope.md` |
 | `references/03-icons.md` | `.claude/rules/03-frameworks-and-libraries/03-icons.md` |
 | `references/03-image-optimization.md` | `.claude/rules/03-frameworks-and-libraries/03-image-optimization.md` |
+| `references/03-pinia.md` | `.claude/rules/03-frameworks-and-libraries/03-pinia.md` |
 | `references/3-nitro-plugin-imports.md` | `.claude/rules/03-frameworks-and-libraries/3-nitro-plugin-imports.md` |
 | `references/3-vite-dynamic-imports.md` | `.claude/rules/03-frameworks-and-libraries/3-vite-dynamic-imports.md` |
 | `references/03-design-system.md` | `.claude/rules/06-design-patterns/03-design-system.md` |
@@ -47,11 +48,12 @@ Read each reference file listed below and write its content verbatim to the targ
 After all files are written, confirm:
 
 ```
-✅ sc-js rules installed — 21 files written to .claude/rules/
-  Coding rules (9):
+✅ sc-js rules installed — 22 files written to .claude/rules/
+  Coding rules (10):
     - .claude/rules/00-architecture/00-shared-component-scope.md
     - .claude/rules/03-frameworks-and-libraries/03-icons.md
     - .claude/rules/03-frameworks-and-libraries/03-image-optimization.md
+    - .claude/rules/03-frameworks-and-libraries/03-pinia.md
     - .claude/rules/03-frameworks-and-libraries/3-nitro-plugin-imports.md
     - .claude/rules/03-frameworks-and-libraries/3-vite-dynamic-imports.md
     - .claude/rules/06-design-patterns/03-design-system.md
