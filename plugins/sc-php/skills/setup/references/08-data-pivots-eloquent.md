@@ -73,3 +73,49 @@ Stack-specific overrides for data audits when `illuminate/database` is detected.
 - `remember($key, $ttl, fn() => User::with(...)->get())` — invalider via model events (`saved`, `deleted`)
 - `Cache::flexible()` (Laravel 11+) : stale-while-revalidate, idéal pour hot path
 - Tag-based invalidation (Redis only) : `Cache::tags(['users'])->flush()`
+
+## §3 — Real-time (contrat data-optimize)
+
+- **N/A** — Eloquent est un ORM request/response synchrone, sans support natif des streams ou subscriptions
+- Pour du real-time avec Laravel : utiliser **Laravel Reverb** (WebSocket) ou **Laravel Echo** + **Pusher** côté client ; Eloquent reste l'ORM pour les requêtes DB classiques
+- Broadcasting Eloquent : `User::updated()` event → `broadcast(new UserUpdated($user))` mais c'est du broadcasting, pas du real-time ORM
+
+## §6 — Quota & cost (contrat data-optimize)
+
+- MySQL/PostgreSQL auto-hébergé : pas de facturation par query (contrairement aux BaaS comme PlanetScale ou Neon serverless)
+- **Laravel Telescope** QueryWatcher en dev : count queries, slow queries, bindings — voir `/telescope/queries`
+- **Laravel Debugbar** : query count par request dans la barre dev
+- `DB::listen(function ($q) { if ($q->time > 100) Log::warning('Slow query', ['sql' => $q->sql]); })` pour alerter sur les queries lentes > 100ms
+- `EXPLAIN SELECT ...` sur les hot paths identifiés ; index manquant = full table scan = coût exponentiel sur croissance des données
+
+## §7 — Security (contrat data-optimize)
+
+- `DB::raw()` / `DB::statement()` pour les CTE, window functions, full-text non-supportés par le QB
+- Bindings paramétriques toujours (`DB::select('... ?', [$value])`) — JAMAIS de concaténation string
+- **Scope obligatoire par utilisateur** : `Model::where('user_id', Auth::id())` sur toutes les queries d'accès aux données privées
+- `$guarded = ['*']` ou `$fillable = []` explicite par défaut ; documenter chaque champ fillable
+- **Policies** pour logique d'autorisation complexe ; **GlobalScope** pour multi-tenant (filtre tenant_id automatique)
+- `preventLazyLoading()` contribue aussi à la sécurité : évite les accès accidentels aux relations non chargées
+
+## §9 — Background jobs (contrat data-optimize)
+
+- Eloquent dans les jobs : même règles (eager loading, select narrowing) — un job sans eager loading peut générer des milliers de queries
+- **Laravel Queues** : `dispatch(new ProcessImport($data))` ; implémenter `ShouldQueue` sur le job
+- **Laravel Horizon** en prod pour monitoring : throughput, failed jobs, temps de traitement par queue
+- Idempotence : `User::firstOrCreate(['email' => $email])` / `User::updateOrCreate(['id' => $id], $data)` pour jobs rejouables sans duplication
+- `retry_after`, `tries`, `backoff` configurés sur chaque job bulk pour résistance aux timeouts DB
+- `chunkById(500, fn($users) => ...)` dans les jobs d'import — jamais `User::all()` en mémoire
+
+## §10 — Verification (contrat data-optimize)
+
+- Critère déterministe : `DB::getQueryLog()` (après `DB::enableQueryLog()`) pour compter précisément les queries par request
+- Baseline via Laravel Debugbar : query count avant fix documenté
+- Médiane post-fix via Debugbar ou Telescope — comparer avec le max pré-fix pour valider le gain
+- Test de non-régression N+1 : `Model::preventLazyLoading()` en test env → `LazyLoadingViolationException` si N+1 réintroduit
+
+## §11 — Self-audit
+
+- **Faux positifs** : `withoutEvents()` est valide pour les bulk imports — ne pas l'ajouter aux issues de review sans contexte
+- **Gaps candidats** : GlobalScopes = coût caché non documenté dans le codebase (filtre SQL invisible dans le code appelant)
+- GlobalScopes non documentés → requêtes silencieusement filtrées → bugs difficiles à diagnostiquer
+- `$appends` (accessors) calculés à chaque sérialisation — overhead si collections volumineuses ; utiliser `makeHidden()` ou `setVisible()` en contexte API
