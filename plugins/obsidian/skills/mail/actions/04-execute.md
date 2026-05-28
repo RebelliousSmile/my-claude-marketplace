@@ -81,6 +81,21 @@ Regrouper tous les fichiers du même `merge_group` en un seul fichier fusionné.
 Ne rien modifier. Ne pas ajouter `processed: true` (le fichier reste dans le périmètre des sessions suivantes).
 Marquer le fichier comme traité dans `batch_result`.
 
+### Insertion de `processed: true` — cas sans frontmatter YAML
+
+Certains fichiers n'ont pas de bloc `--- ... ---` en en-tête (format `Tagged: #email`, titre Markdown, etc.).
+Dans ce cas, **créer un frontmatter minimal** en début de fichier :
+
+```markdown
+---
+processed: true
+---
+
+<contenu original inchangé>
+```
+
+S'applique à toutes les actions sauf `intact` et `delete`.
+
 ### Action : flag-phishing
 
 1. Archiver l'original dans `.archive/YYYY-MM-DD/<chemin-relatif>`.
