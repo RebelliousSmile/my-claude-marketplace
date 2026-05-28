@@ -15,6 +15,13 @@
       "recommended": true
     },
     {
+      "name": "design",
+      "version": "0.1.0",
+      "source": "./plugins/design",
+      "description": "Mobile-first responsive design system: from-reference / from-brief intakes, agnostic W3C tokens + CSS/Tailwind adapters, living HTML wireframes, reusable components with options, and a compliance audit.",
+      "recommended": false
+    },
+    {
       "name": "gamedesign",
       "version": "0.1.0",
       "source": "./plugins/gamedesign",
