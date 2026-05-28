@@ -5,11 +5,12 @@ description: >-
   Scans JavaScript/TypeScript code for outdated patterns and deprecated APIs,
   then proposes a migration plan. Handles ES5 remnants (var, callbacks, prototype
   patterns), CommonJS→ESM migration, Vue 2→3 (Options API → Composition API,
-  Vuex → Pinia), TypeScript strictness evolution, and framework version migrations
-  (Nuxt 2→3, Vite config updates).
+  Vuex → Pinia), Svelte 4→5 (runes: $state/$derived/$effect/$props, slots→snippets,
+  on: directives → DOM attributes), SvelteKit 1→2 (redirect throws, $app/state),
+  TypeScript strictness evolution, and framework version migrations (Nuxt 2→3).
   Use when the user says "modernize", "upgrade to Vue 3", "migrate to ESM",
-  "this uses old JS", "remove Vuex", "this is Vue 2 code", or when deprecated
-  patterns appear in the codebase.
+  "this uses old JS", "remove Vuex", "this is Vue 2 code", "migrate to runes",
+  "upgrade to Svelte 5", or when deprecated patterns appear in the codebase.
   Do NOT use for dependency management (npm/pnpm), performance optimization
   (web-optimize), or general refactoring unrelated to version compatibility.
 ---
@@ -36,6 +37,7 @@ Always sequential: `scan` → `migrate`.
 
 - `references/js-versions.md` — ES version change tables (ES5→ES2024, CommonJS→ESM)
 - `references/vue-migration.md` — Vue 2→3, Vuex→Pinia, Nuxt 2→3 breaking changes
+- `references/svelte-migration.md` — Svelte 4→5 runes, SvelteKit 1→2 breaking changes
 - `references/typescript-strictness.md` — TS strict flags and version-specific features
 
 ## Transversal rules

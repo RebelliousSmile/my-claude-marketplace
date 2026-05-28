@@ -9,7 +9,7 @@ Detect legacy JS/TS patterns, version gaps, and deprecated APIs. Emit a structur
 Read `package.json`:
 - `engines.node` — target Node version
 - `type` field — `"module"` (ESM) or absent/`"commonjs"`
-- Dependency versions: Vue, Nuxt, Vite, TypeScript, Vuex, Pinia
+- Dependency versions: Vue, Nuxt, Vite, TypeScript, Vuex, Pinia, Svelte, SvelteKit
 
 Read `tsconfig.json` if present:
 - `target` — ES version
@@ -23,6 +23,7 @@ Load the applicable reference documents before scanning:
 
 @../references/js-versions.md
 @../references/vue-migration.md
+@../references/svelte-migration.md
 @../references/typescript-strictness.md
 
 ### Step 3 — Classify migration axes
@@ -35,6 +36,8 @@ Determine which axes apply based on detected versions. Use the loaded references
 | CommonJS→ESM | `require()` in files when `"type": "module"` present or target is ESM |
 | Vue 2→3 | `vue` version < 3 OR Options API + `vuex` detected |
 | Vuex→Pinia | `vuex` in dependencies |
+| Svelte 4→5 Runes | `svelte` version ≥ 5 detected AND `$:` or `export let` or `on:` directives present in `.svelte` files |
+| SvelteKit 1→2 | `@sveltejs/kit` version ≥ 2 detected AND `return redirect(` or `$app/stores` usage present |
 | TypeScript strictness | `strict: false` or absent in `tsconfig.json` |
 | Nuxt 2→3 | `nuxt` version < 3 detected |
 
@@ -59,6 +62,26 @@ Migration axes (N total):
 Breaking changes requiring confirmation:
   - filters removed in Vue 3 (4 usages in 2 files)
   - $listeners merged into $attrs (2 usages)
+
+→ proceed to 02-migrate? (y/n)
+```
+
+Svelte example:
+
+```
+📋 sc-js legacy — scan manifest
+
+Current: Svelte 5.0 + SvelteKit 2.0 (pre-runes components)
+Target:  Svelte 5 (runes mode) + SvelteKit 2
+
+Migration axes (N total):
+  ✅ Svelte 4→5 Runes           18 files — $: (34), export let (27), on: (41)
+  ✅ SvelteKit 1→2              2 files — return redirect() (3 usages)
+  ⬜ TypeScript strictness       not applicable (strict already enabled)
+
+Breaking changes requiring confirmation:
+  - on: modifier syntax (on:click|once) — 2 usages, must rewrite manually
+  - Slots → Snippets — 5 components with named slots (parent + child must migrate together)
 
 → proceed to 02-migrate? (y/n)
 ```
