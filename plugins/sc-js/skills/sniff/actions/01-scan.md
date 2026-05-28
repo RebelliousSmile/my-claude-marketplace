@@ -137,6 +137,7 @@ For each capability, evaluate the detection condition and record the applicable 
 | Capability | Condition | Pivot path |
 |---|---|---|
 | Biome | `@biomejs/biome` in devDependencies | `tools/biome.md` |
+| Playwright perf | `@playwright/test` or `playwright` or `playwright-core` in devDependencies | `tools/playwright.md` |
 
 #### Perf pivots — install targets (consumed by `web-optimize`)
 
