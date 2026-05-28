@@ -37,9 +37,9 @@
     },
     {
       "name": "sc-js",
-      "version": "0.5.6",
+      "version": "0.6.0",
       "source": "./plugins/sc-js",
-      "description": "JavaScript ecosystem: sniff (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), audit, improve (8 capability pivots in Step 1.5), legacy (Vue 2→3/ESM/TS), teach + perf pivots + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots.",
+      "description": "JavaScript ecosystem: sniff (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), audit, improve (8 capability pivots in Step 1.5), legacy (Vue 2→3/ESM/TS), teach + SvelteKit perf pivot + Svelte stores pivot + Biome pivot + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots.",
       "recommended": false
     },
     {
