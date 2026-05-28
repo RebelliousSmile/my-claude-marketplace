@@ -1,0 +1,15 @@
+[
+  { "prompt": "modernize this Rust code", "expect_action": "scan" },
+  { "prompt": "migrate to Rust edition 2024", "expect_action": "scan" },
+  { "prompt": "this uses deprecated APIs", "expect_action": "scan" },
+  { "prompt": "upgrade to edition 2021", "expect_action": "scan" },
+  { "prompt": "detect deprecated patterns before upgrading", "expect_action": "scan" },
+  { "prompt": "il y a des APIs dépréciées dans ce crate", "expect_action": "scan" },
+  { "prompt": "passer en Rust edition 2024", "expect_action": "scan" },
+  { "prompt": "le code utilise encore des try! macros partout", "expect_action": "scan" },
+  { "prompt": "identify edition incompatibilities", "expect_action": "scan" },
+  { "prompt": "can I run this on stable Rust?", "expect_action": "scan" },
+  { "prompt": "optimize my database queries", "expect_action": null },
+  { "prompt": "manage dependencies with cargo", "expect_action": null },
+  { "prompt": "debug a runtime panic", "expect_action": null }
+]

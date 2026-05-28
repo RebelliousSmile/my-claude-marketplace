@@ -1,6 +1,6 @@
 # Action 01 — scan
 
-Detect project capabilities, map them to plugin rules, audit `.claude/rules/` to determine what is missing or outdated.
+Detect project capabilities, map them to plugin pivots, and emit a structured pivot manifeste for `02-install-pivots` and `/sc-rust:audit`.
 
 ## Process
 
@@ -23,7 +23,7 @@ If no `Cargo.toml` is found anywhere, abort:
 | `axum` | Axum |
 | `actix-web` | Actix-web |
 
-Note: both `axum` and `actix-web` map to the same perf pivot (`perf-pivots-axum.md`). If either is detected, mark the perf pivot as required.
+Note: both `axum` and `actix-web` map to the same perf pivot (`perf/axum.md`). If either is detected, mark the perf pivot as required.
 
 ### Step 3 — Classify data layer
 
@@ -32,52 +32,52 @@ Note: both `axum` and `actix-web` map to the same perf pivot (`perf-pivots-axum.
 | `sqlx` | SQLx (async queries) |
 | `diesel` | Diesel ORM |
 
-### Step 4 — Map capabilities to rules
+### Step 4 — Map capabilities to pivots
 
-For each capability, evaluate the detection condition and determine the rule to install.
+#### Capability pivots (loaded at audit time by `/sc-rust:audit` — never installed to disk)
 
-#### Perf pivots (consumed by `web-optimize`)
-
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| Web framework perf | Axum or Actix-web detected | `references/07-perf-pivots-axum.md` → `.claude/rules/07-quality/perf-pivots-axum.md` |
+| Rust idioms | Any Rust project detected | `rust/idioms.md` |
 
-#### Data pivots (consumed by `data-optimize`)
+#### Perf pivots (installed to `.claude/rules/07-quality/`)
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Source → Target |
 |---|---|---|
-| SQLx async | `sqlx` detected | `references/08-data-pivots-sqlx.md` → `.claude/rules/07-quality/data-pivots-sqlx.md` |
-| Diesel ORM | `diesel` detected | `references/08-data-pivots-diesel.md` → `.claude/rules/07-quality/data-pivots-diesel.md` |
+| Web framework perf | Axum or Actix-web detected | `references/capabilities/perf/axum.md` → `.claude/rules/07-quality/perf-pivots-axum.md` |
 
-### Step 5 — Status each rule
+#### Data pivots (installed to `.claude/rules/07-quality/`)
 
-For each required rule, determine status:
+| Capability | Condition | Source → Target |
+|---|---|---|
+| SQLx async | `sqlx` detected | `references/capabilities/data/sqlx.md` → `.claude/rules/07-quality/data-pivots-sqlx.md` |
+| Diesel ORM | `diesel` detected | `references/capabilities/data/diesel.md` → `.claude/rules/07-quality/data-pivots-diesel.md` |
+
+### Step 5 — Status each perf/data pivot
+
+For each required pivot, determine status:
 - File does not exist → **MISSING**
 - File exists, content matches plugin reference → **UP-TO-DATE**
 - File exists, content differs from plugin reference → **OUTDATED**
-- Condition not met → **NOT-APPLICABLE** (do not install, do not audit)
+- Condition not met → **NOT-APPLICABLE**
 
 ### Step 6 — Detect gaps
 
-A **gap** is a capability that is detected but for which the plugin has no matching rule or skill.
+A **gap** is a capability detected but for which the plugin has no matching pivot.
 
-Check: are there crates in `Cargo.toml` representing a capability not covered by any entry in Step 4?
-
-Report only meaningful gaps — foundational crates like `tokio`, `serde`, or `anyhow` that represent standard infrastructure rather than app-level capabilities need not be reported.
+Report only meaningful gaps — foundational crates like `tokio`, `serde`, or `anyhow` need not be reported.
 
 Examples of gaps to report:
 - `tower-http` detected — no middleware rule in plugin
 - `tonic` detected — no gRPC rule in plugin
 - `sea-orm` detected — no SeaORM rule in plugin
 
-List all gaps explicitly in the output.
-
 ## Output
 
-Emit a structured manifest for `02-sync`:
+Emit the pivot manifeste for `02-install-pivots`:
 
 ```
-📊 sc-rust sniff — capability scan
+📊 sc-rust sniff — pivot manifeste
 
 Web framework:
   ✅ Axum (axum = "0.7" from Cargo.toml)
@@ -87,24 +87,30 @@ Data layer:
   ✅ SQLx (sqlx = "0.8" from Cargo.toml)
   ❌ Diesel — not detected
 
-Capabilities → rules:
-  Perf (Axum/Actix) ✅ perf-pivots-axum.md
-  Data (SQLx)       ✅ data-pivots-sqlx.md
-  Data (Diesel)     — N/A (not detected)
+Capability pivots (loaded at audit time — not installed):
+  rust/idioms.md   ✅
+
+Perf pivots (to install):
+  perf/axum.md     ✅ → .claude/rules/07-quality/perf-pivots-axum.md
+
+Data pivots (to install):
+  data/sqlx.md     ✅ → .claude/rules/07-quality/data-pivots-sqlx.md
+  data/diesel.md   — N/A (not detected)
 
 Skills support:
   /web-optimize  ✅ (perf-pivots-axum.md ready)
   /data-optimize ✅ (data-pivots-sqlx.md ready)
+  /sc-rust:audit ✅ (rust/idioms.md will be loaded)
 
-Gaps (no plugin rule):
+Gaps (no plugin pivot):
   tower-http — no middleware rule in plugin
 
-Rule audit:
-  MISSING        .claude/rules/07-quality/perf-pivots-axum.md
-  UP-TO-DATE     .claude/rules/07-quality/data-pivots-sqlx.md
-  NOT-APPLICABLE data-pivots-diesel.md (Diesel not detected)
+Rule audit (.claude/rules/07-quality/):
+  MISSING   perf-pivots-axum.md
+  UP-TO-DATE data-pivots-sqlx.md
+  N/A       data-pivots-diesel.md (Diesel not detected)
 
-→ sync will install 1 file, update 0 files.
+→ install-pivots will install 1 file, update 0 files.
 ```
 
-Then proceed to action `02-sync`.
+Then proceed to `02-install-pivots`.

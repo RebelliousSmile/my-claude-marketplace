@@ -1,0 +1,14 @@
+[
+  { "prompt": "audit my Rust code", "expect_action": "audit" },
+  { "prompt": "check Rust best practices", "expect_action": "audit" },
+  { "prompt": "review code quality", "expect_action": "audit" },
+  { "prompt": "is this idiomatic Rust?", "expect_action": "audit" },
+  { "prompt": "audit Axum conventions", "expect_action": "audit" },
+  { "prompt": "check ownership patterns", "expect_action": "audit" },
+  { "prompt": "vérifier les bonnes pratiques Rust", "expect_action": "audit" },
+  { "prompt": "mon code est-il idiomatique ?", "expect_action": "audit" },
+  { "prompt": "clippy compliance review", "expect_action": "audit" },
+  { "prompt": "optimize my SQL queries", "expect_action": null },
+  { "prompt": "debug this Rust error", "expect_action": null },
+  { "prompt": "migrate to Rust edition 2024", "expect_action": null }
+]

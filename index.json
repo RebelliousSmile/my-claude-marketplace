@@ -33,8 +33,8 @@
     {
       "id": "sc-rust",
       "name": "sc-rust",
-      "description": "Rust-specific skills and workflows (Axum / Actix web + SQLx / Diesel data).",
-      "version": "0.3.0"
+      "description": "Rust-specific skills and workflows: two-tier sniff (pivot model), audit (aidd-dev:reviewer), improve, legacy, log-analysis, teach (Axum/Actix + SQLx/Diesel).",
+      "version": "0.4.0"
     },
     {
       "id": "sc-php",

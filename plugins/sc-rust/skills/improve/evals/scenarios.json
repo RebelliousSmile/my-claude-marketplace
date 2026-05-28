@@ -1,0 +1,14 @@
+[
+  { "prompt": "how can I improve this Rust code", "expect_action": "analyze" },
+  { "prompt": "is this idiomatic Rust?", "expect_action": "analyze" },
+  { "prompt": "find anti-patterns in this file", "expect_action": "analyze" },
+  { "prompt": "code quality check", "expect_action": "analyze" },
+  { "prompt": "refactoring suggestions for this handler", "expect_action": "analyze" },
+  { "prompt": "how to better structure this service", "expect_action": "analyze" },
+  { "prompt": "quelles sont les mauvaises pratiques dans ce code Rust", "expect_action": "analyze" },
+  { "prompt": "too many clones in this file", "expect_action": "analyze" },
+  { "prompt": "my error handling is messy", "expect_action": "analyze" },
+  { "prompt": "optimize my database queries", "expect_action": null },
+  { "prompt": "debug this Rust error", "expect_action": null },
+  { "prompt": "migrate to edition 2024", "expect_action": null }
+]

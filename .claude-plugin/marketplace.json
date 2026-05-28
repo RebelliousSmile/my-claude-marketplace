@@ -58,9 +58,9 @@
     },
     {
       "name": "sc-rust",
-      "version": "0.1.0",
+      "version": "0.4.0",
       "source": "./plugins/sc-rust",
-      "description": "Rust ecosystem: Axum/Actix-web perf pivots + SQLx/Diesel data pivots.",
+      "description": "Rust ecosystem: two-tier sniff (pivot model), audit, Axum/Actix-web perf pivots + SQLx/Diesel data pivots.",
       "recommended": false
     }
   ]

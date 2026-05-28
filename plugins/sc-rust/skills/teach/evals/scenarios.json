@@ -1,0 +1,20 @@
+[
+  { "prompt": "explain Rust lifetimes", "expect_action": "explain" },
+  { "prompt": "how does the borrow checker work?", "expect_action": "explain" },
+  { "prompt": "what is the difference between Box and Arc?", "expect_action": "explain" },
+  { "prompt": "montre-moi un exemple de traits en Rust", "expect_action": "explain" },
+  { "prompt": "how do iterators work in Rust?", "expect_action": "explain" },
+  { "prompt": "explain error handling with ?", "expect_action": "explain" },
+  { "prompt": "what are trait objects?", "expect_action": "explain" },
+  { "prompt": "je ne comprends pas les lifetimes", "expect_action": "explain" },
+  { "prompt": "c'est quoi un Pin en Rust ?", "expect_action": "explain" },
+  { "prompt": "why does the compiler reject this code?", "expect_action": "explain" },
+  { "prompt": "give me a practice exercise on ownership", "expect_action": "practice" },
+  { "prompt": "quiz me on async Rust", "expect_action": "practice" },
+  { "prompt": "challenge me on Rust iterators", "expect_action": "practice" },
+  { "prompt": "exercice sur les traits", "expect_action": "practice" },
+  { "prompt": "test me on error handling", "expect_action": "practice" },
+  { "prompt": "review my code quality", "expect_action": null },
+  { "prompt": "debug this Rust error", "expect_action": null },
+  { "prompt": "migrate to edition 2024", "expect_action": null }
+]
