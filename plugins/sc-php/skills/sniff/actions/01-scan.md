@@ -48,6 +48,10 @@ To detect HTMX from templates: search for `hx-get`, `hx-post`, `hx-swap`, or `hx
 
 ### Step 5 — Map capabilities to rules
 
+<!-- Canonical mapping — referenced by setup/01-install.md and sniff/02-sync.md -->
+
+(Canonical mapping — see below for the full reference→target table with detection conditions.)
+
 For each capability, evaluate the detection condition and determine the rule to install.
 
 #### Perf pivots (consumed by `web-optimize`)
