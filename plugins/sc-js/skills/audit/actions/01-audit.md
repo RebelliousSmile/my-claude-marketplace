@@ -72,15 +72,24 @@ Spawn an Agent with `subagent_type: aidd-dev:reviewer`, passing:
 - `review_target`: the project source files identified in Step 3 — the reviewer will read and analyze them
 - `agreed_plan`: the acceptance criteria document built in Step 2 (JS capability pivots as the standard to verify against)
 
+**Instructions to include verbatim in the reviewer prompt:**
+
+> 1. **Every loaded pivot must appear in the report** — either as a finding (violation) or as an explicit "✅ verified, no violations" entry in the satisfied criteria table. No pivot section may be silently absent.
+> 2. **Severity is fixed before emitting** — do not hedge a finding's severity in its body text ("à considérer MAJOR selon le contexte"). If severity is context-dependent, pick the more conservative severity and justify it in one line; then emit a single, definitive severity label.
+> 3. **Score breakdown is required** — for completion_score < 100%, list the pivot sections that were not fully reviewed. For quality_score, name the top 1–2 categories pulling it down.
+
 The reviewer returns a structured report with:
 - items reviewed
 - findings (violations of pivot best practices)
-- completion score
-- quality score
+- completion score with breakdown
+- quality score with breakdown
 
 ### Step 5 — Present results
 
-Display the reviewer's report to the user. If the completion score < 100, note which criteria were not fully verified and suggest a follow-up targeted review.
+Display the reviewer's report to the user. Verify that:
+- Every loaded pivot appears either in findings or in the satisfied criteria table — flag any pivot silently absent.
+- Each finding has exactly one severity label with no hedging in the body.
+- Scores include a breakdown explaining what the remaining % represents.
 
 ## Output format
 
