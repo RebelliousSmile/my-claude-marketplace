@@ -49,6 +49,8 @@ Format: `[YYYY-MM-DD HH:MM:SS] <env>.<LEVEL>: <message> <context> <extra>`
 
 Parse regex: `^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] (\w+)\.(\w+): (.+)`
 
+<!-- Canonical strategy selection — referenced by 02-parse-errors.md, 03-search.md, 04-summarize.md -->
+
 ## Timestamp filtering
 
 ### docker-* sources (stdout/stderr streams)
