@@ -1,0 +1,18 @@
+[
+  { "prompt": "comment améliorer ce code", "expect_action": "analyze" },
+  { "prompt": "find anti-patterns in this file", "expect_action": "analyze" },
+  { "prompt": "code quality check", "expect_action": "analyze" },
+  { "prompt": "how can I improve this PHP class?", "expect_action": "analyze" },
+  { "prompt": "refactoring suggestions for this controller", "expect_action": "analyze" },
+  { "prompt": "is this good PHP?", "expect_action": "analyze" },
+  { "prompt": "how to better structure this service layer", "expect_action": "analyze" },
+  { "prompt": "quelles sont les mauvaises pratiques dans ce code", "expect_action": "analyze" },
+  { "prompt": "analyse de qualité du code", "expect_action": "analyze" },
+  { "prompt": "find SOLID violations in this class", "expect_action": "analyze" },
+  { "prompt": "ce code respecte-t-il les bonnes pratiques PHP ?", "expect_action": "analyze" },
+  { "prompt": "review the architecture of my repository layer", "expect_action": "analyze" },
+  { "prompt": "optimize the performance of my SQL queries", "expect_action": null },
+  { "prompt": "debug this PHP error", "expect_action": null },
+  { "prompt": "review my PR", "expect_action": null },
+  { "prompt": "migrate this code to PHP 8", "expect_action": null }
+]

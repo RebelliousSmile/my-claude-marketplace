@@ -1,0 +1,15 @@
+[
+  { "prompt": "run Bruno tests", "expect_action": "test" },
+  { "prompt": "lance les tests Bruno", "expect_action": "test" },
+  { "prompt": "bru run", "expect_action": "test" },
+  { "prompt": "run the API tests", "expect_action": "test" },
+  { "prompt": "fix the failing Bruno tests", "expect_action": "test" },
+  { "prompt": "run the bruno/ folder", "expect_action": "test" },
+  { "prompt": "test the API with Bruno", "expect_action": "test" },
+  { "prompt": "execute bru run on staging", "expect_action": "test" },
+  { "prompt": "mes tests Bruno sont cassés", "expect_action": "test" },
+  { "prompt": "relance la suite Bruno sur l'env de recette", "expect_action": "test" },
+  { "prompt": "write new Bruno test files", "expect_action": null },
+  { "prompt": "run Playwright tests", "expect_action": null },
+  { "prompt": "run unit tests with PHPUnit", "expect_action": null }
+]

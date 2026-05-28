@@ -122,10 +122,12 @@ Pour les stacks PHP (Laravel, Symfony, WordPress, HTMX).
 
 | Skill | Déclencheur | Description |
 |---|---|---|
-| `setup` | `/sc-php:setup` | Installe **toutes** les règles PHP (perf pivots + data pivots) dans `.claude/rules/` |
 | `sniff` | `/sc-php:sniff` | Détecte la stack depuis `composer.json` et sentinelles, puis installe/met à jour uniquement les règles pertinentes |
+| `audit` | `/sc-php:audit` | Délègue la revue PHP à `aidd-dev:reviewer` en chargeant les pivots de capacité applicables |
 | `log-analysis` | `/sc-php:log-analysis` | Analyse les logs PHP/Apache/Nginx (local, Docker, prod SSH) — tail, parse-errors, search, summarize |
 | `bruno` | `/sc-php:bruno` | Tests API Bruno en CLI — scripts, environnements, assertions |
+
+Note: skill `bruno` is PHP-specific and is intentionally not propagated to sc-python/sc-rust.
 
 ---
 

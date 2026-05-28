@@ -148,3 +148,21 @@ enum Status: string {
   Skipped (dry-run or user declined):
     - templates/old.php — short open tags (manual fix required)
 ```
+
+### Dry-run output
+
+When `dry-run` flag is set, no files are written. Output shape:
+
+```
+[dry-run] sc-php legacy — migration preview
+
+  Would modify (4 files):
+    [dry-run] src/db.php — mysql_connect → PDO
+    [dry-run] src/Legacy/OldHelper.php — create_function × 3 → anonymous fn
+  Would create (1):
+    [dry-run] src/Enum/Status.php — enum Status: string
+  Skipped (user declined or dry-run):
+    - templates/old.php — short open tags (manual fix required)
+
+No files written. Remove --dry-run to apply.
+```

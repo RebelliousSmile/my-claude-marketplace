@@ -2,55 +2,46 @@
 name: sniff
 model: sonnet
 description: >-
-  Capability mapper for PHP projects. Reads composer.json and sentinel files
+  PHP stack detector for PHP projects. Reads composer.json and sentinel files
   (artisan, bin/console, wp-config.php) to detect the framework (Laravel,
-  Symfony, WordPress) and data layer (Eloquent, Doctrine), and frontend bridge
-  (HTMX). For each detected capability, installs the matching coding rule from
-  the plugin — only if a rule exists. Perf pivots (consumed by web-optimize)
-  and data pivots (consumed by data-optimize) are installed selectively.
-  Reports gaps when a capability is detected but no matching plugin rule exists.
-  Prefer sniff over setup on already-configured projects.
-  Do NOT use to update a single rule manually — edit it directly instead.
+  Symfony, WordPress), data layer (Eloquent, Doctrine), frontend bridge (HTMX),
+  and testing harness (Bruno). Uses a two-tier model: capability pivots (SOLID,
+  Bruno) are loaded at audit time by /sc-php:audit and never written to disk;
+  perf pivots (for web-optimize) and data pivots (for data-optimize) are
+  installed selectively to .claude/rules/07-quality/. Emits a pivot manifeste
+  for use by /sc-php:audit. Reports gaps when a capability is detected but no
+  matching plugin pivot exists. Prefer sniff over setup on already-configured
+  projects.
 ---
 
 # sc-php Sniff
 
-Capability mapper. Detects what the PHP project DOES, then installs the matching rules from the plugin — only for what is detected, only when a rule exists.
-
-Unlike `setup` (which installs all rules unconditionally), sniff is selective: it maps detected capabilities to available rules and reports gaps when no matching skill covers a capability.
+PHP stack detector and pivot manifeste producer.
 
 ## Available actions
 
 | # | Action | Role | Input |
 |---|--------|------|-------|
-| 01 | `scan` | Detect capabilities, map to rules, audit installed rules | current project path |
-| 02 | `sync` | Install missing rules, update outdated ones | scan manifest |
+| 01 | `scan` | Detect capabilities, emit pivot manifeste, map perf/data install targets | current project path |
+| 02 | `install-pivots` | Install perf/data pivots to `.claude/rules/07-quality/` | scan pivot manifeste |
 
 ## Default flow
 
-Always sequential: `scan` → `sync`.
-
-1. `scan` reads `composer.json` and sentinel files, detects framework/ORM/capabilities, maps to plugin rules, audits `.claude/rules/`, emits a structured manifest
-2. `sync` reads the manifest and writes/updates only the files that need it
-
-Never skip `sync` if `scan` reports missing or outdated rules.
+Sequential: `scan` → `install-pivots`.
 
 ## Conceptual model
 
-Capabilities → rules → skills:
-
-- A **capability** is something the app does: serve HTTP via a framework, query a database via an ORM, render lightweight HTML via HTMX, etc.
-- A **rule** is the coding knowledge for the chosen solution (Laravel vs Symfony vs WordPress)
-- A **skill** (`web-optimize`, `data-optimize`) consumes perf/data pivots to act on the project
-
-sniff installs rules for detected capabilities. It does NOT install rules for capabilities the project doesn't have.
+- A **capability** is something the app does: use SOLID patterns, test with Bruno, serve HTTP via a framework, query a database via an ORM, render lightweight HTML via HTMX, etc.
+- A **pivot** is the PHP knowledge for the chosen solution (e.g. Laravel perf patterns, Eloquent query conventions)
+- Capability pivots live in the plugin (`skills/sniff/references/capabilities/`) — they are loaded at audit time by `/sc-php:audit`, not installed to the project
+- **Perf pivots** and **data pivots** are the exception: they ARE written to `.claude/rules/07-quality/` because `web-optimize` and `data-optimize` read them from there
 
 ## Transversal rules
 
 - If no PHP manifest is found (`composer.json` absent and none of the sentinel files present), abort with an explicit message.
-- Never install a rule for a capability not detected in the project.
+- Never install a capability pivot to `.claude/rules/` — those are loaded on demand at audit time.
 - Never install a perf pivot for a framework not detected.
 - Never install a data pivot for an ORM not detected.
-- Compare installed rule content against the plugin reference before updating — skip files already identical.
+- Compare installed pivot content against the plugin reference before updating — skip files already identical.
 - Report every file written, updated, or skipped.
-- Report gaps: capabilities detected but no matching plugin rule exists.
+- Report gaps: capabilities detected but no matching plugin pivot exists.

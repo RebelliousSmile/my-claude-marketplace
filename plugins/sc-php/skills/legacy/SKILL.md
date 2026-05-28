@@ -1,5 +1,6 @@
 ---
 name: legacy
+model: sonnet
 description: >-
   Scans PHP code for version-specific and deprecated patterns, then proposes an
   upgrade (toward PHP 8+) or a downgrade (to a target PHP version for hosting

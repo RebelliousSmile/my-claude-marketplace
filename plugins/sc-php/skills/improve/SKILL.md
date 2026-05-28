@@ -1,5 +1,6 @@
 ---
 name: improve
+model: sonnet
 description: >-
   Analyzes the PHP codebase for design pattern opportunities, language-specific
   anti-patterns, and maintainability issues, then produces a prioritized improvement

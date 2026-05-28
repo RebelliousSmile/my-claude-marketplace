@@ -26,4 +26,4 @@ Single action. Dispatch to `test` on any trigger.
 
 ## External data
 
-- `.claude/rules/custom/04-bruno.md` — Bruno conventions and environment configuration for this project
+- `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/testing/bruno.md` — Bruno conventions (capability pivot, loaded at audit time by /sc-php:audit)

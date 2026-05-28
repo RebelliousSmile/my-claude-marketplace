@@ -9,9 +9,9 @@
   "plugins": [
     {
       "name": "aidd-overlay",
-      "version": "1.0.0",
+      "version": "1.7.1",
       "source": "./plugins/aidd-overlay",
-      "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize.",
+      "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, status.",
       "recommended": true
     },
     {
@@ -29,15 +29,8 @@
       "recommended": false
     },
     {
-      "name": "obsidian",
-      "version": "0.1.0",
-      "source": "./plugins/obsidian",
-      "description": "Obsidian project management integration: export project memory and status reports to Obsidian-compatible format.",
-      "recommended": false
-    },
-    {
       "name": "sc-php",
-      "version": "0.1.0",
+      "version": "0.4.0",
       "source": "./plugins/sc-php",
       "description": "PHP ecosystem skills: Laravel/Symfony/WordPress perf pivots, HTMX hybrid, Eloquent + Doctrine data pivots.",
       "recommended": false

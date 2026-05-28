@@ -1,0 +1,21 @@
+[
+  { "prompt": "explain PHP traits", "expect_action": "explain" },
+  { "prompt": "how does dependency injection work in PHP?", "expect_action": "explain" },
+  { "prompt": "what is the difference between abstract class and interface?", "expect_action": "explain" },
+  { "prompt": "montre-moi un exemple de generators en PHP", "expect_action": "explain" },
+  { "prompt": "how does match work in PHP 8?", "expect_action": "explain" },
+  { "prompt": "what is constructor promotion?", "expect_action": "explain" },
+  { "prompt": "explain readonly properties in PHP 8.1", "expect_action": "explain" },
+  { "prompt": "je ne comprends pas les value objects", "expect_action": "explain" },
+  { "prompt": "c'est quoi les fibers en PHP ?", "expect_action": "explain" },
+  { "prompt": "how do named arguments work?", "expect_action": "explain" },
+  { "prompt": "give me a practice exercise on traits", "expect_action": "practice" },
+  { "prompt": "quiz me on dependency injection", "expect_action": "practice" },
+  { "prompt": "challenge me on PHP enums", "expect_action": "practice" },
+  { "prompt": "exercice sur les interfaces en PHP", "expect_action": "practice" },
+  { "prompt": "test me on PHP 8 features", "expect_action": "practice" },
+  { "prompt": "review my code quality", "expect_action": null },
+  { "prompt": "debug this PHP error", "expect_action": null },
+  { "prompt": "migrate my code to PHP 8", "expect_action": null },
+  { "prompt": "fix this bug in my controller", "expect_action": null }
+]

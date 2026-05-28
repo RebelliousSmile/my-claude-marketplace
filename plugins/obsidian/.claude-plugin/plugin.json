@@ -1,9 +1,0 @@
-{
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "obsidian",
-  "version": "0.2.0",
-  "description": "Obsidian project management integration: export project memory and status reports to Obsidian-compatible format (project-status).",
-  "author": {
-    "name": "François-Xavier Guillois"
-  }
-}

@@ -53,7 +53,7 @@ Detection: user mentions "production", "prod", "server", or "remote".
 
 1. Check `~/.ssh/config` for a host matching `*prod*` or `*server*` — use that alias.
 2. If none found, ask user: "SSH target for production? (user@host or ~/.ssh/config alias)"
-3. Never store or print the SSH key path.
+3. Never store or print the SSH key path, hostnames, or tokens that may appear in grepped log lines.
 4. Reading system logs (`/var/log/`) may require `sudo` — if a command returns `Permission denied`, retry with `sudo` or ask the user to run `sudo chmod +r <path>` on the server.
 
 ### Remote log paths (same as local defaults)

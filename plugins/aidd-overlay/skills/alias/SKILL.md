@@ -1,7 +1,7 @@
 ---
 name: alias
 model: sonnet
-description: Fires a pre-crafted workflow prompt to chain aidd skills in one command. Use when you want to trigger plan→challenge or implement→review sequences without typing the full chain manually. Do NOT use for single-skill tasks, custom workflows, or when you need direct control over each step.
+description: Fires a pre-crafted workflow prompt to chain aidd skills in one command, or rewrite a prompt file in place (smarten). Use when you want to trigger plan→challenge or implement→review sequences, project snapshot with status context (previously), or compress a .md prompt to its minimal form (smarten). Do NOT use for single-skill tasks, custom workflows, or when you need direct control over each step.
 ---
 
 # Alias
@@ -17,6 +17,8 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 03  | `endtask`     | Commit → endplan → changelog → push tags → close issue                         | current branch + issue number   |
 | 04  | `endplan`     | Archive plan file → capture learnings → merge branch if applicable → push      | current branch in context       |
 | 05  | `bump-plugin` | Bump plugin version in plugin.json + index.json → commit → push marketplace    | plugin name + version or bump type |
+| 06  | `previously`  | Project snapshot with status context — status summary + tests/git/lint snapshot | optional depth (commit count or duration like 7d) |
+| 07  | `smarten`     | Rewrite a prompt file in place — remove fluff, compress steps, bullet points    | file path |
 
 ## Default flow
 
@@ -27,6 +29,8 @@ Trigger-to-action mapping:
 - "end task", "close task", "endtask", "alias endtask", "commit and release", "wrap up this task", "finish the task" → `endtask`
 - "end plan", "close plan", "endplan", "alias endplan", "merge the plan branch", "archive the plan", "finish the plan branch" → `endplan`
 - "bump plugin", "release plugin", "bump-plugin", "alias bump-plugin", "monter en version", "bumper le plugin", "release <plugin>" → `bump-plugin`
+- "where are we in the project", "catch me up", "what's the current project state", "project snapshot", "previously", "alias previously" → `previously`
+- "smarten", "slim this", "simplify this prompt", "optimize this prompt", "compress this file", "alias smarten" → `smarten`
 
 ## Transversal rules
 

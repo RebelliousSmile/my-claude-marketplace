@@ -38,7 +38,7 @@ Total: 4 matches across 1 source(s).
      SAFE=$(printf '%s' '<pattern>' | sed "s/'/'\\\\''/g")
      ssh <host> "grep -nF -- '$SAFE' <path>"
      ```
-5. If `since` provided: for docker-* sources use `docker logs --since <duration> | grep -F`; for file sources apply timestamp filter first (see `references/log-formats.md` — Timestamp filtering), then grep.
+5. If `since` provided: apply timestamp filter first — see [`references/log-formats.md` — Timestamp filtering](../references/log-formats.md).
 6. Print matches per source with line numbers under a labeled header.
 7. Truncate each match to 300 chars.
 8. Report match count per source and grand total.
