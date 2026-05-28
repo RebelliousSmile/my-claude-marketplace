@@ -1,0 +1,15 @@
+[
+  { "prompt": "how can I improve this JS code", "expect_action": "analyze" },
+  { "prompt": "find anti-patterns in this Vue component", "expect_action": "analyze" },
+  { "prompt": "code quality check", "expect_action": "analyze" },
+  { "prompt": "refactoring suggestions for this composable", "expect_action": "analyze" },
+  { "prompt": "how to better structure this Nuxt page", "expect_action": "analyze" },
+  { "prompt": "is this good TypeScript?", "expect_action": "analyze" },
+  { "prompt": "quelles sont les mauvaises pratiques dans ce code Vue", "expect_action": "analyze" },
+  { "prompt": "trouve les anti-patterns dans ce composant", "expect_action": "analyze" },
+  { "prompt": "my TypeScript types are messy", "expect_action": "analyze" },
+  { "prompt": "too many Options API components", "expect_action": "analyze" },
+  { "prompt": "optimize my database queries", "expect_action": null },
+  { "prompt": "debug this JS error", "expect_action": null },
+  { "prompt": "migrate to Vue 3", "expect_action": null }
+]

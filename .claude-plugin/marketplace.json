@@ -37,9 +37,9 @@
     },
     {
       "name": "sc-js",
-      "version": "0.1.0",
+      "version": "0.5.0",
       "source": "./plugins/sc-js",
-      "description": "JavaScript ecosystem: Nuxt/Vue SPA/Vite/Alpine/Astro coding rules + perf pivots + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots.",
+      "description": "JavaScript ecosystem: sniff, audit, improve, legacy (Vue 2→3/ESM/TS), teach + Nuxt/Vue/Alpine/Vite perf pivots + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots.",
       "recommended": false
     },
     {

@@ -1,0 +1,16 @@
+[
+  { "prompt": "modernize this JavaScript code", "expect_action": "scan" },
+  { "prompt": "migrate to Vue 3", "expect_action": "scan" },
+  { "prompt": "this uses old JS patterns", "expect_action": "scan" },
+  { "prompt": "remove Vuex and use Pinia", "expect_action": "scan" },
+  { "prompt": "migrate to ESM", "expect_action": "scan" },
+  { "prompt": "il y a des require() partout dans le projet", "expect_action": "scan" },
+  { "prompt": "passer en Vue 3 Composition API", "expect_action": "scan" },
+  { "prompt": "le code utilise encore des callbacks", "expect_action": "scan" },
+  { "prompt": "detect deprecated Vue 2 patterns", "expect_action": "scan" },
+  { "prompt": "add TypeScript strict mode", "expect_action": "scan" },
+  { "prompt": "identifier les incompatibilités avant la migration Nuxt 3", "expect_action": "scan" },
+  { "prompt": "optimize my database queries", "expect_action": null },
+  { "prompt": "manage dependencies with npm", "expect_action": null },
+  { "prompt": "debug a runtime error", "expect_action": null }
+]

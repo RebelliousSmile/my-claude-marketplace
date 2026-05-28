@@ -1,0 +1,20 @@
+[
+  { "prompt": "explain Vue composables", "expect_action": "explain" },
+  { "prompt": "how does the JavaScript event loop work?", "expect_action": "explain" },
+  { "prompt": "what is the difference between ref and reactive?", "expect_action": "explain" },
+  { "prompt": "montre-moi un exemple de Pinia store", "expect_action": "explain" },
+  { "prompt": "how do TypeScript generics work?", "expect_action": "explain" },
+  { "prompt": "explain async/await", "expect_action": "explain" },
+  { "prompt": "what is a closure in JavaScript?", "expect_action": "explain" },
+  { "prompt": "je ne comprends pas useAsyncData", "expect_action": "explain" },
+  { "prompt": "c'est quoi un composable en Vue ?", "expect_action": "explain" },
+  { "prompt": "difference between watch and watchEffect", "expect_action": "explain" },
+  { "prompt": "give me a practice exercise on composables", "expect_action": "practice" },
+  { "prompt": "quiz me on TypeScript generics", "expect_action": "practice" },
+  { "prompt": "challenge me on async/await", "expect_action": "practice" },
+  { "prompt": "exercice sur les Pinia stores", "expect_action": "practice" },
+  { "prompt": "test me on Vue reactivity", "expect_action": "practice" },
+  { "prompt": "review my code quality", "expect_action": null },
+  { "prompt": "debug this JavaScript error", "expect_action": null },
+  { "prompt": "migrate to Vue 3", "expect_action": null }
+]
