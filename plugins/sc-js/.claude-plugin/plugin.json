@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-js",
-  "version": "0.3.0",
-  "description": "Capability-based JavaScript rules: detects runtime (web/desktop), framework (Nuxt/Vue/Alpine/Vite/Astro), ORMs and capabilities (state, icons, code-splitting, images, SSR, etc.) then installs matching coding rules. Perf pivots for web-optimize, data pivots for data-optimize. Use sniff on existing projects, setup for fresh installs.",
+  "version": "0.4.0",
+  "description": "JS knowledge provider: detects runtime (web/desktop), framework (Nuxt/Vue/Alpine/Vite/Astro), ORMs and capabilities, then emits a pivot manifeste. /sc-js:audit delegates code review to aidd-dev:reviewer using capability pivots as criteria. Perf pivots for web-optimize, data pivots for data-optimize. Run sniff on any JS project; run audit to review JS code quality against best practices.",
   "author": {
     "name": "François-Xavier Guillois"
   }

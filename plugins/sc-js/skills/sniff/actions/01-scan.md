@@ -1,6 +1,6 @@
 # Action 01 — scan
 
-Detect project capabilities, map them to plugin rules, audit `.claude/rules/` to determine what is missing or outdated.
+Detect project capabilities, map them to JS knowledge pivots, and emit a pivot manifeste for use by `02-install-pivots` and `/sc-js:audit`.
 
 ## Process
 
@@ -46,118 +46,111 @@ A project may match multiple (e.g. Vue + Vite → Vue SPA).
 | `@apollo/server` or `graphql-yoga` or `mercurius` or `graphql` | GraphQL |
 | `@trpc/server` | tRPC |
 
-### Step 5 — Map capabilities to rules
+### Step 5 — Map capabilities to knowledge pivots
 
-For each capability, evaluate the detection condition and determine the rule to install.
+For each capability, evaluate the detection condition and record the applicable pivot path (under `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/`). These paths are **not installed** — they are loaded on demand by `/sc-js:audit`.
 
 #### Component patterns
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| Vue component scope | Vue or Nuxt detected | `capabilities/components/shared-scope.md` → `.claude/rules/capabilities/components/shared-scope.md` |
+| Vue component scope | Vue or Nuxt detected | `components/shared-scope.md` |
 
 #### State management
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| Pinia store | `pinia` detected | `capabilities/state/pinia.md` → `.claude/rules/capabilities/state/pinia.md` |
-| Alpine.store | Alpine.js detected | `capabilities/state/alpine-store.md` → `.claude/rules/capabilities/state/alpine-store.md` |
+| Pinia store | `pinia` detected | `state/pinia.md` |
+| Alpine.store | Alpine.js detected | `state/alpine-store.md` |
 
 #### Code splitting
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| Vite dynamic imports | Vite detected (any framework with vite) | `capabilities/code-splitting/dynamic-import.md` → `.claude/rules/capabilities/code-splitting/dynamic-import.md` |
-| Vue async components | Vue or Nuxt detected | `capabilities/code-splitting/defineAsyncComponent.md` → `.claude/rules/capabilities/code-splitting/defineAsyncComponent.md` |
+| Vite dynamic imports | Vite detected (any framework with vite) | `code-splitting/dynamic-import.md` |
+| Vue async components | Vue or Nuxt detected | `code-splitting/defineAsyncComponent.md` |
 
 #### Styling
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| Design system tokens | `tailwindcss` detected | `capabilities/styling/design-system.md` → `.claude/rules/capabilities/styling/design-system.md` |
-| CSS transitions | always | `capabilities/styling/css-transitions.md` → `.claude/rules/capabilities/styling/css-transitions.md` |
+| CSS transitions | always | `styling/css-transitions.md` |
 
 #### Icons
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| lucide-vue-next | `lucide-vue-next` detected | `capabilities/icons/lucide-vue.md` → `.claude/rules/capabilities/icons/lucide-vue.md` |
-| SVG inline / Iconify | Alpine.js detected, or no Vue/Nuxt | `capabilities/icons/svg-inline.md` → `.claude/rules/capabilities/icons/svg-inline.md` |
+| lucide-vue-next | `lucide-vue-next` detected | `icons/lucide-vue.md` |
+| SVG inline / Iconify | Alpine.js detected, or no Vue/Nuxt | `icons/svg-inline.md` |
 
 #### Images (web runtime only)
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| Web image optimization | `runtime = "web"` | `capabilities/images/web-optimization.md` → `.claude/rules/capabilities/images/web-optimization.md` |
+| Web image optimization | `runtime = "web"` | `images/web-optimization.md` |
 
 #### Networking (web runtime only)
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| preconnect / dns-prefetch | `runtime = "web"` | `capabilities/networking/preconnect.md` → `.claude/rules/capabilities/networking/preconnect.md` |
+| preconnect / dns-prefetch | `runtime = "web"` | `networking/preconnect.md` |
 
 #### Server (Nuxt only)
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| Nitro server imports | Nuxt detected | `capabilities/server/nitro-imports.md` → `.claude/rules/capabilities/server/nitro-imports.md` |
+| Nitro server imports | Nuxt detected | `server/nitro-imports.md` |
 
 #### SSR guards (isomorphic JS only)
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| SSR storage guards | Nuxt detected | `capabilities/ssr/storage-guards.md` → `.claude/rules/capabilities/ssr/storage-guards.md` |
+| SSR storage guards | Nuxt detected | `ssr/storage-guards.md` |
 
-#### Perf pivots (consumed by `web-optimize`)
+#### Perf pivots — install targets (consumed by `web-optimize`)
 
-| Condition | Reference → Target |
-|---|---|
-| Nuxt detected | `capabilities/perf/nuxt.md` → `.claude/rules/07-quality/perf-pivots-nuxt.md` |
-| Vue SPA detected | `capabilities/perf/vue-spa.md` → `.claude/rules/07-quality/perf-pivots-vue-spa.md` |
-| Vite hybrid detected | `capabilities/perf/vite.md` → `.claude/rules/07-quality/perf-pivots-vite.md` |
-| Alpine.js detected | `capabilities/perf/alpine.md` → `.claude/rules/07-quality/perf-pivots-alpine.md` |
-| Astro or 11ty detected | `capabilities/perf/static.md` → `.claude/rules/07-quality/perf-pivots-static.md` |
+These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`. Unlike capability pivots, they ARE written to disk.
 
-#### Data pivots (consumed by `data-optimize`)
+| Condition | Source | Target |
+|---|---|---|
+| Nuxt detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/nuxt.md` | `.claude/rules/07-quality/perf-pivots-nuxt.md` |
+| Vue SPA detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/vue-spa.md` | `.claude/rules/07-quality/perf-pivots-vue-spa.md` |
+| Vite hybrid detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/vite.md` | `.claude/rules/07-quality/perf-pivots-vite.md` |
+| Alpine.js detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/alpine.md` | `.claude/rules/07-quality/perf-pivots-alpine.md` |
+| Astro or 11ty detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/static.md` | `.claude/rules/07-quality/perf-pivots-static.md` |
 
-| Condition | Reference → Target |
-|---|---|
-| Prisma detected | `capabilities/data/prisma.md` → `.claude/rules/07-quality/data-pivots-prisma.md` |
-| Drizzle detected | `capabilities/data/drizzle.md` → `.claude/rules/07-quality/data-pivots-drizzle.md` |
-| TypeORM / Sequelize detected | `capabilities/data/typeorm.md` → `.claude/rules/07-quality/data-pivots-typeorm.md` |
-| Mongoose detected | `capabilities/data/mongoose.md` → `.claude/rules/07-quality/data-pivots-mongoose.md` |
-| GraphQL detected | `capabilities/data/graphql.md` → `.claude/rules/07-quality/data-pivots-graphql.md` |
-| tRPC detected | `capabilities/data/trpc.md` → `.claude/rules/07-quality/data-pivots-trpc.md` |
+#### Data pivots — install targets (consumed by `data-optimize`)
 
-### Step 6 — Status each rule
+| Condition | Source | Target |
+|---|---|---|
+| Prisma detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/prisma.md` | `.claude/rules/07-quality/data-pivots-prisma.md` |
+| Drizzle detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/drizzle.md` | `.claude/rules/07-quality/data-pivots-drizzle.md` |
+| TypeORM / Sequelize detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/typeorm.md` | `.claude/rules/07-quality/data-pivots-typeorm.md` |
+| Mongoose detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/mongoose.md` | `.claude/rules/07-quality/data-pivots-mongoose.md` |
+| GraphQL detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/graphql.md` | `.claude/rules/07-quality/data-pivots-graphql.md` |
+| tRPC detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/trpc.md` | `.claude/rules/07-quality/data-pivots-trpc.md` |
 
-For each required rule, determine status:
-- File does not exist → **MISSING**
-- File exists, content matches plugin reference → **UP-TO-DATE**
-- File exists, content differs from plugin reference → **OUTDATED**
-- Condition not met → **NOT-APPLICABLE** (do not install, do not audit)
+### Step 6 — Detect gaps
 
-### Step 7 — Detect gaps
-
-A **gap** is a capability that is detected but for which the plugin has no matching rule or skill.
+A **gap** is a capability that is detected but for which the plugin has no matching pivot.
 
 Check: are there libraries in `package.json` representing a capability not covered by any entry in Step 5?
 
 Examples of gaps to report:
-- `vue-router` detected but no routing rule in plugin
-- `@vueuse/core` detected but no composables rule in plugin
-- `i18n` / `vue-i18n` detected but no localization rule in plugin
+- `vue-router` detected but no routing pivot in plugin
+- `@vueuse/core` detected but no composables pivot in plugin
+- `vue-i18n` detected but no localization pivot in plugin
 
 List all gaps explicitly in the output.
 
 ## Output
 
-Emit a structured manifest for `02-sync`:
+Emit a structured pivot manifeste:
 
 ```
 📊 sc-js sniff — capability scan
 
-Runtime: web
+Runtime: web | desktop (Tauri) | desktop (Electron)
 
 Framework:
   ✅ Vue SPA (vue ^3.5.13)
@@ -168,36 +161,29 @@ Framework:
 ORM / data layer:
   ❌ None detected
 
-Capabilities → rules:
-  Component patterns   ✅ shared-scope.md
-  State (Pinia)        ✅ state/pinia.md (pinia ^3.0.3)
-  Code splitting       ✅ code-splitting/dynamic-import.md
-                       ✅ code-splitting/defineAsyncComponent.md
-  Styling              ✅ styling/design-system.md (tailwindcss ^3)
-                       ✅ styling/css-transitions.md
-  Icons                ✅ icons/lucide-vue.md (lucide-vue-next ^0.511.0)
-  Images               ✅ images/web-optimization.md
-  Networking           ✅ networking/preconnect.md
-  Perf pivot           ✅ perf/vue-spa.md → 07-quality/perf-pivots-vue-spa.md
-                       ✅ perf/vite.md → 07-quality/perf-pivots-vite.md
-  SSR guards           — N/A (no SSR)
-  Data pivots          — none detected
+Pivot manifeste — applicable capability references:
+  (load via ${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>)
+  components/shared-scope.md
+  state/pinia.md
+  code-splitting/dynamic-import.md
+  code-splitting/defineAsyncComponent.md
+  styling/css-transitions.md
+  icons/lucide-vue.md
+  [runtime=desktop: images/web-optimization.md — NOT APPLICABLE]
+  [runtime=desktop: networking/preconnect.md — NOT APPLICABLE]
 
-Skills support:
-  /web-optimize  ✅ (perf-pivots-vue-spa.md + perf-pivots-vite.md ready)
-  /data-optimize ✗  (no ORM detected)
+Perf pivots (→ 02-install-pivots will write to .claude/rules/07-quality/):
+  perf/vue-spa.md → perf-pivots-vue-spa.md
+  perf/vite.md    → perf-pivots-vite.md
 
-Gaps (no plugin rule):
-  vue-router (routing) — no routing rule in plugin
+Data pivots:
+  — none detected
 
-Rule audit:
-  MISSING  .claude/rules/capabilities/components/shared-scope.md
-  MISSING  .claude/rules/capabilities/state/pinia.md
-  ...
-  NOT-APPLICABLE  server/nitro-imports.md (Nuxt not detected)
-  NOT-APPLICABLE  ssr/storage-guards.md (Nuxt not detected)
+Gaps (no plugin pivot):
+  vue-router (routing) — no pivot in plugin
 
-→ sync will install 10 files, update 0 files.
+→ Proceed to 02-install-pivots to write perf/data pivots.
+→ Use pivot manifeste as input for /sc-js:audit.
 ```
 
-Then proceed to action `02-sync`.
+Then proceed to action `02-install-pivots`.
