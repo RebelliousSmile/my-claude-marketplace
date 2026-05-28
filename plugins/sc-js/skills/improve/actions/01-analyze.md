@@ -25,6 +25,8 @@ For each category, search the codebase and record findings with file + line refe
 
 #### TypeScript type coverage
 
+**Skip this category entirely if no `tsconfig.json` is found AND `typescript` is absent from devDependencies.** Flagging type coverage on a vanilla JS project produces irrelevant findings.
+
 - Implicit `any` — untyped function parameters, return types, variables
 - Type assertions (`as X`) that bypass safety — flag without justification comment
 - Missing interface/type for component props not using `defineProps<T>()`

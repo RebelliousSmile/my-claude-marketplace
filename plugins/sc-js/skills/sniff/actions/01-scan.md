@@ -107,6 +107,12 @@ For each capability, evaluate the detection condition and record the applicable 
 |---|---|---|
 | SSR storage guards | Nuxt detected | `ssr/storage-guards.md` |
 
+#### TypeScript
+
+| Capability | Condition | Pivot path |
+|---|---|---|
+| TypeScript | `typescript` or `vue-tsc` in devDependencies, or Nuxt 3 detected | `typescript.md` |
+
 #### Perf pivots — install targets (consumed by `web-optimize`)
 
 These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`. Unlike capability pivots, they ARE written to disk.
@@ -162,6 +168,8 @@ ORM / data layer:
   ❌ None detected
 
 Pivot manifeste — applicable capability references:
+  ⚠️  READ-ONLY — do NOT install these to .claude/rules/capabilities/ or anywhere else
+  ⚠️  These paths are loaded at audit time from the plugin; they are never written to disk
   (load via ${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>)
   components/shared-scope.md
   state/pinia.md
@@ -169,6 +177,7 @@ Pivot manifeste — applicable capability references:
   code-splitting/defineAsyncComponent.md
   styling/css-transitions.md
   icons/lucide-vue.md
+  typescript.md
   [runtime=desktop: images/web-optimization.md — NOT APPLICABLE]
   [runtime=desktop: networking/preconnect.md — NOT APPLICABLE]
 
