@@ -10,7 +10,7 @@ Read the manifest emitted by `01-scan`. For each rule file listed:
 
 1. Read the corresponding reference file from the plugin's `references/` directory (path listed in the manifest)
 2. Write it verbatim to the target path in `.claude/rules/` of the current project
-3. Create parent directories as needed (`mkdir -p` equivalent)
+3. Create parent directories as needed
 
 ### OUTDATED files — update
 
@@ -22,15 +22,26 @@ Read the manifest emitted by `01-scan`. For each rule file listed:
 
 Do not write. Do not read again. Skip entirely.
 
+### NOT-APPLICABLE files — skip
+
+Do not write. Do not remove if already present. Skip entirely.
+
 ## Reference mapping
 
-| Detected stack | Reference file | Target path |
-|---|---|---|
-| Axum or Actix-web | `references/07-perf-pivots-axum.md` | `.claude/rules/07-quality/perf-pivots-axum.md` |
-| SQLx | `references/08-data-pivots-sqlx.md` | `.claude/rules/07-quality/data-pivots-sqlx.md` |
-| Diesel | `references/08-data-pivots-diesel.md` | `.claude/rules/07-quality/data-pivots-diesel.md` |
+### Perf pivots (consumed by `web-optimize`)
 
-Note: if both Axum and Actix-web are detected (unusual), install `perf-pivots-axum.md` only once.
+| Reference | Target |
+|---|---|
+| `references/07-perf-pivots-axum.md` | `.claude/rules/07-quality/perf-pivots-axum.md` |
+
+Note: covers both Axum and Actix-web. Install only once even if both are detected.
+
+### Data pivots (consumed by `data-optimize`)
+
+| Reference | Target |
+|---|---|
+| `references/08-data-pivots-sqlx.md` | `.claude/rules/07-quality/data-pivots-sqlx.md` |
+| `references/08-data-pivots-diesel.md` | `.claude/rules/07-quality/data-pivots-diesel.md` |
 
 ## Output
 
@@ -41,8 +52,12 @@ After all operations, report:
 
   Installed (1):
     + .claude/rules/07-quality/perf-pivots-axum.md
-  Updated (0):
-    (none)
+  Updated (0): —
+  Not applicable (1):
+    ✗ 07-quality/data-pivots-diesel.md (Diesel not detected)
   Skipped — already up-to-date (1):
     - .claude/rules/07-quality/data-pivots-sqlx.md
+
+Gaps reported (no plugin rule):
+  tower-http (middleware)
 ```

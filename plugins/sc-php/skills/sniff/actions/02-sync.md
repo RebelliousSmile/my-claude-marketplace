@@ -10,7 +10,7 @@ Read the manifest emitted by `01-scan`. For each rule file listed:
 
 1. Read the corresponding reference file from the plugin's `references/` directory (path listed in the manifest)
 2. Write it verbatim to the target path in `.claude/rules/` of the current project
-3. Create parent directories as needed (`mkdir -p` equivalent)
+3. Create parent directories as needed
 
 ### OUTDATED files — update
 
@@ -22,16 +22,27 @@ Read the manifest emitted by `01-scan`. For each rule file listed:
 
 Do not write. Do not read again. Skip entirely.
 
+### NOT-APPLICABLE files — skip
+
+Do not write. Do not remove if already present. Skip entirely.
+
 ## Reference mapping
 
-| Detected stack | Reference file | Target path |
-|---|---|---|
-| Laravel | `references/07-perf-pivots-laravel.md` | `.claude/rules/07-quality/perf-pivots-laravel.md` |
-| Symfony | `references/07-perf-pivots-symfony.md` | `.claude/rules/07-quality/perf-pivots-symfony.md` |
-| WordPress | `references/07-perf-pivots-wordpress.md` | `.claude/rules/07-quality/perf-pivots-wordpress.md` |
-| HTMX | `references/07-perf-pivots-htmx.md` | `.claude/rules/07-quality/perf-pivots-htmx.md` |
-| Eloquent ORM | `references/08-data-pivots-eloquent.md` | `.claude/rules/07-quality/data-pivots-eloquent.md` |
-| Doctrine ORM | `references/08-data-pivots-doctrine.md` | `.claude/rules/07-quality/data-pivots-doctrine.md` |
+### Perf pivots (consumed by `web-optimize`)
+
+| Reference | Target |
+|---|---|
+| `references/07-perf-pivots-laravel.md` | `.claude/rules/07-quality/perf-pivots-laravel.md` |
+| `references/07-perf-pivots-symfony.md` | `.claude/rules/07-quality/perf-pivots-symfony.md` |
+| `references/07-perf-pivots-wordpress.md` | `.claude/rules/07-quality/perf-pivots-wordpress.md` |
+| `references/07-perf-pivots-htmx.md` | `.claude/rules/07-quality/perf-pivots-htmx.md` |
+
+### Data pivots (consumed by `data-optimize`)
+
+| Reference | Target |
+|---|---|
+| `references/08-data-pivots-eloquent.md` | `.claude/rules/07-quality/data-pivots-eloquent.md` |
+| `references/08-data-pivots-doctrine.md` | `.claude/rules/07-quality/data-pivots-doctrine.md` |
 
 ## Output
 
@@ -44,6 +55,13 @@ After all operations, report:
     + .claude/rules/07-quality/perf-pivots-laravel.md
   Updated (1):
     ↺ .claude/rules/07-quality/data-pivots-eloquent.md
-  Skipped — already up-to-date (0):
-    (none)
+  Not applicable (4):
+    ✗ 07-quality/perf-pivots-symfony.md (Symfony not detected)
+    ✗ 07-quality/perf-pivots-wordpress.md (WordPress not detected)
+    ✗ 07-quality/perf-pivots-htmx.md (HTMX not detected)
+    ✗ 07-quality/data-pivots-doctrine.md (Doctrine not detected)
+  Skipped — already up-to-date (0): —
+
+Gaps reported (no plugin rule):
+  livewire/livewire
 ```

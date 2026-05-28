@@ -10,7 +10,7 @@ Read the manifest emitted by `01-scan`. For each rule file listed:
 
 1. Read the corresponding reference file from the plugin's `references/` directory (path listed in the manifest)
 2. Write it verbatim to the target path in `.claude/rules/` of the current project
-3. Create parent directories as needed (`mkdir -p` equivalent)
+3. Create parent directories as needed
 
 ### OUTDATED files — update
 
@@ -22,26 +22,36 @@ Read the manifest emitted by `01-scan`. For each rule file listed:
 
 Do not write. Do not read again. Skip entirely.
 
+### NOT-APPLICABLE files — skip
+
+Do not write. Do not remove if already present. Skip entirely.
+
 ### Flask-only projects
 
 If Flask was the only framework detected (no Django, no FastAPI), do not install any perf pivot automatically. Instead, output:
 
 ```
 ℹ️  Flask detected — no dedicated Flask perf pivot in sc-python.
-   Consider: install FastAPI pivot as a general ASGI/WSGI reference?
-   Run: /sc-python:setup to install everything, or skip.
+   Tip: run /sc-python:setup to install everything, or skip.
 ```
 
-Then stop (do not install the FastAPI pivot without explicit user confirmation).
+Then stop — do not install the FastAPI pivot without explicit user confirmation.
 
 ## Reference mapping
 
-| Detected stack | Reference file | Target path |
-|---|---|---|
-| Django | `references/07-perf-pivots-django.md` | `.claude/rules/07-quality/perf-pivots-django.md` |
-| FastAPI | `references/07-perf-pivots-fastapi.md` | `.claude/rules/07-quality/perf-pivots-fastapi.md` |
-| Django ORM | `references/08-data-pivots-django-orm.md` | `.claude/rules/07-quality/data-pivots-django-orm.md` |
-| SQLAlchemy | `references/08-data-pivots-sqlalchemy.md` | `.claude/rules/07-quality/data-pivots-sqlalchemy.md` |
+### Perf pivots (consumed by `web-optimize`)
+
+| Reference | Target |
+|---|---|
+| `references/07-perf-pivots-django.md` | `.claude/rules/07-quality/perf-pivots-django.md` |
+| `references/07-perf-pivots-fastapi.md` | `.claude/rules/07-quality/perf-pivots-fastapi.md` |
+
+### Data pivots (consumed by `data-optimize`)
+
+| Reference | Target |
+|---|---|
+| `references/08-data-pivots-django-orm.md` | `.claude/rules/07-quality/data-pivots-django-orm.md` |
+| `references/08-data-pivots-sqlalchemy.md` | `.claude/rules/07-quality/data-pivots-sqlalchemy.md` |
 
 ## Output
 
@@ -54,6 +64,11 @@ After all operations, report:
     + .claude/rules/07-quality/perf-pivots-django.md
   Updated (1):
     ↺ .claude/rules/07-quality/data-pivots-django-orm.md
-  Skipped — already up-to-date (0):
-    (none)
+  Not applicable (2):
+    ✗ 07-quality/perf-pivots-fastapi.md (FastAPI not detected)
+    ✗ 07-quality/data-pivots-sqlalchemy.md (SQLAlchemy not detected)
+  Skipped — already up-to-date (0): —
+
+Gaps reported (no plugin rule):
+  (none)
 ```

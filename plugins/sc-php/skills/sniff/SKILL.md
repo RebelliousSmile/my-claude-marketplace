@@ -2,39 +2,55 @@
 name: sniff
 model: sonnet
 description: >-
-  Detects the PHP stack in the current project and synchronizes .claude/rules/
-  with the matching sc-php pivots. Use when you want to install only the pivots
-  that match the actual stack (Laravel, Symfony, WordPress, HTMX), or to refresh
-  outdated rules after a plugin update. Reads composer.json, artisan, bin/console,
-  wp-config.php to classify the stack, then diffs installed rules against plugin
-  references and applies only what changed.
+  Capability mapper for PHP projects. Reads composer.json and sentinel files
+  (artisan, bin/console, wp-config.php) to detect the framework (Laravel,
+  Symfony, WordPress) and data layer (Eloquent, Doctrine), and frontend bridge
+  (HTMX). For each detected capability, installs the matching coding rule from
+  the plugin — only if a rule exists. Perf pivots (consumed by web-optimize)
+  and data pivots (consumed by data-optimize) are installed selectively.
+  Reports gaps when a capability is detected but no matching plugin rule exists.
   Prefer sniff over setup on already-configured projects.
   Do NOT use to update a single rule manually — edit it directly instead.
 ---
 
 # sc-php Sniff
 
-Scans the current project, detects which PHP frameworks and ORMs are in use, then installs or updates only the matching perf/data pivot rules in `.claude/rules/`. Unlike `setup` (which installs everything), sniff is selective: it writes only the rules relevant to what was actually detected.
+Capability mapper. Detects what the PHP project DOES, then installs the matching rules from the plugin — only for what is detected, only when a rule exists.
+
+Unlike `setup` (which installs all rules unconditionally), sniff is selective: it maps detected capabilities to available rules and reports gaps when no matching skill covers a capability.
 
 ## Available actions
 
 | # | Action | Role | Input |
 |---|--------|------|-------|
-| 01 | `scan` | Detect PHP stack and audit installed rules | current project path |
+| 01 | `scan` | Detect capabilities, map to rules, audit installed rules | current project path |
 | 02 | `sync` | Install missing rules, update outdated ones | scan manifest |
 
 ## Default flow
 
 Always sequential: `scan` → `sync`.
 
-1. `scan` reads manifests, classifies the stack, audits `.claude/rules/`, emits a structured manifest
+1. `scan` reads `composer.json` and sentinel files, detects framework/ORM/capabilities, maps to plugin rules, audits `.claude/rules/`, emits a structured manifest
 2. `sync` reads the manifest and writes/updates only the files that need it
 
 Never skip `sync` if `scan` reports missing or outdated rules.
 
+## Conceptual model
+
+Capabilities → rules → skills:
+
+- A **capability** is something the app does: serve HTTP via a framework, query a database via an ORM, render lightweight HTML via HTMX, etc.
+- A **rule** is the coding knowledge for the chosen solution (Laravel vs Symfony vs WordPress)
+- A **skill** (`web-optimize`, `data-optimize`) consumes perf/data pivots to act on the project
+
+sniff installs rules for detected capabilities. It does NOT install rules for capabilities the project doesn't have.
+
 ## Transversal rules
 
-- Never install a pivot for a framework not detected in the project.
+- If no PHP manifest is found (`composer.json` absent and none of the sentinel files present), abort with an explicit message.
+- Never install a rule for a capability not detected in the project.
+- Never install a perf pivot for a framework not detected.
+- Never install a data pivot for an ORM not detected.
 - Compare installed rule content against the plugin reference before updating — skip files already identical.
 - Report every file written, updated, or skipped.
-- If no PHP manifest is found (`composer.json` absent and none of the sentinel files present), abort with an explicit message instead of guessing.
+- Report gaps: capabilities detected but no matching plugin rule exists.

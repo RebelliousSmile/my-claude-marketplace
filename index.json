@@ -34,19 +34,19 @@
       "id": "sc-python",
       "name": "sc-python",
       "description": "Python-specific skills and workflows (Django web + ORM + async).",
-      "version": "0.2.0"
+      "version": "0.2.1"
     },
     {
       "id": "sc-rust",
       "name": "sc-rust",
       "description": "Rust-specific skills and workflows (Axum / Actix web + SQLx / Diesel data).",
-      "version": "0.2.0"
+      "version": "0.2.1"
     },
     {
       "id": "sc-php",
       "name": "sc-php",
       "description": "PHP-specific skills and workflows.",
-      "version": "0.2.0"
+      "version": "0.2.1"
     },
     {
       "id": "sc-tiers",
