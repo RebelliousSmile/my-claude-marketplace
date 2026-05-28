@@ -15,7 +15,7 @@ Detect version-specific and deprecated patterns in the PHP codebase. Emit a stru
 1. Read `composer.json` → `require.php` constraint (e.g. `^7.4`, `>=8.0`)
 2. Check `Dockerfile` or `docker-compose.yml` for `FROM php:X.X`
 3. Check `.php-version` or `.tool-versions`
-4. If still unknown: assume PHP 7.4 and note the assumption in output
+4. If still unknown: ⚠ PHP version not detected — assumed 7.4 (legacy default; see DEC-012 if applicable). Set 'target' explicitly if your server runs a different version.
 
 ### Step 2 — Determine direction and target
 
@@ -54,7 +54,6 @@ Grep the source files (`.php`) under `path`. Exclude `vendor/`.
 | Readonly properties | Property only assigned in constructor | 8.1 |
 | Enums | Class constants acting as enum values | 8.1 |
 | First class callables | `fn($x) => fn($x)` single-expression wrappers | 8.1 |
-| Array unpacking with string keys | Not yet available — note as gap | 8.1 |
 | Fibers | Coroutine-style patterns via Generators | 8.1 |
 
 #### PHP 7.x downgrade targets (downgrade direction only)
@@ -96,6 +95,10 @@ Upgrade opportunities:
   MEDIUM    Constructor promotion — 6 classes qualify
   LOW       Readonly properties — 3 properties qualify
   LOW       Enums — 2 constant groups qualify
+
+Framework gaps:
+  WARN  Laravel 9 → 11: Route::resource()->only() deprecated pattern, check 3 usages
+  WARN  Symfony 4 → 6: yaml_parse() removed, use symfony/yaml component
 
 → migrate will modify 6 files (critical first).
 ```
