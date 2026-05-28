@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "design",
+  "version": "0.2.0",
+  "description": "Mobile-first responsive design system: from-reference / from-brief intakes (core trio first, never emoji), agnostic W3C tokens + CSS/Tailwind adapters, living HTML wireframes, reusable components with options, compliance audit, plus doctor + refactor for production codebases and export-wordpress (theme.json + block patterns).",
+  "author": {
+    "name": "François-Xavier Guillois"
+  }
+}

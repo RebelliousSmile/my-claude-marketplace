@@ -50,6 +50,7 @@ Ou via commande dans le projet :
 
 | Type de projet | Plugin à activer |
 |---|---|
+| Design system / UI mobile-first | `design@my-marketplace` |
 | Web JavaScript / Nuxt / Vue | `sc-js@my-marketplace` |
 | Web PHP | `sc-php@my-marketplace` |
 | Web Python | `sc-python@my-marketplace` |
@@ -66,6 +67,7 @@ Ou via commande dans le projet :
 | Plugin | `recommended` | Description |
 |---|---|---|
 | `aidd-overlay` | ✅ | Socle commun — workflows projet-agnostiques |
+| `design` | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit |
 | `sc-js` | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
 | `sc-php` | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
 | `sc-python` | — | Stack Python : Django / FastAPI |
@@ -98,6 +100,30 @@ Plugin principal, installé globalement. Étend le framework AIDD avec des workf
 | `decompose` | `/decompose` | Décompose un objectif en graphe Mikado |
 | `journey` | `/journey` | Teste un parcours utilisateur depuis une issue |
 | `changelog` | `/changelog` | Génère/met à jour CHANGELOG.md depuis git |
+
+---
+
+## design
+
+Plugin de design system mobile-first et responsive. Deux entrées (référence fournie ou brief/user story) convergent vers un système complet, puis production de wireframes et composants vérifiés contre ce système.
+
+Philosophie : décider vite le trio palette / typo / icônes (jamais d'émoticons), établir les tokens, oser le contenu enrichi sur grand écran (toujours additif) et l'UX mobile-only (avec équivalent desktop), contrôler la conformité — et intervenir aussi sur des projets déjà en production.
+
+### Skills
+
+| Skill | Déclencheur | Description |
+|---|---|---|
+| `setup` | `/design:setup` | Installe les règles mobile-first / responsive / iconographie / a11y dans `.claude/rules/08-design/` |
+| `from-reference` | `/design:from-reference` | Établit le design system depuis une référence (screenshot, URL, Figma, CSS) |
+| `from-brief` | `/design:from-brief` | Établit le design system depuis un besoin / user story (sans référence) |
+| `wireframe` | `/design:wireframe` | User story → preview HTML mobile-first annoté (enrichi / mobile-only) |
+| `component` | `/design:component` | Composant réutilisable à options/variants — spec puis implémentation |
+| `audit` | `/design:audit` | Vérifie wireframes / pages / composants contre le système (rapport par sévérité, `--fix`) |
+| `doctor` | `/design:doctor` | Diagnostic design d'un projet déjà en production + ordonnance de remédiation |
+| `refactor` | `/design:refactor` | Migration incrémentale d'un code existant vers les tokens (vérifiée par audit) |
+| `export-wordpress` | `/design:export-wordpress` | Bascule un design vers WordPress : `theme.json` (v3) + block patterns |
+
+Artefacts produits dans le projet : `design/tokens.json` (source W3C DTCG), `design/design-system.md`, `design/adapters/{tokens.css,theme.css}` (générés), `design/components/*.md`, `design/wireframes/*.html`.
 
 ---
 

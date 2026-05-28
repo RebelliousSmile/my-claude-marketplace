@@ -1,0 +1,9 @@
+[
+  { "prompt": "extract the design system from this screenshot my colleague sent", "expect_action": "capture" },
+  { "prompt": "match the tokens of https://example.com for our project", "expect_action": "capture" },
+  { "prompt": "integrate this Figma export into a design system", "expect_action": "capture" },
+  { "prompt": "build tokens.json from this existing styles.css", "expect_action": "capture" },
+  { "prompt": "write the design system from these tokens we agreed on", "expect_action": "write-system" },
+  { "prompt": "design a system from this user story, no reference", "expect_action": null },
+  { "prompt": "audit this page against the system", "expect_action": null }
+]
