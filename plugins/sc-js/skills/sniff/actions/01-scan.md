@@ -66,7 +66,9 @@ Include the adapter in the framework output line: `SvelteKit (adapter-static —
 
 ### Step 5 — Map capabilities to knowledge pivots
 
-For each capability, evaluate the detection condition and record the applicable pivot path (under `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/`). These paths are **not installed** — they are loaded on demand by `/sc-js:audit`.
+For each capability, evaluate the detection condition **against `package.json` only** and record the applicable pivot path (under `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/`). These paths are **not installed** — they are loaded on demand by `/sc-js:audit`.
+
+**Never inspect source files to decide whether to include a pivot.** If the `package.json` condition matches, the pivot goes in the manifeste — even if the pattern is not yet used in the codebase. It is `/sc-js:audit`'s job to check whether the pattern is missing, misused, or correct. The sniff only maps what is available.
 
 #### Component patterns
 
