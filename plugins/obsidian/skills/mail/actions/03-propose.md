@@ -30,7 +30,9 @@ Regrouper les décisions en lots thématiques, les présenter à l'utilisateur e
 
    Action : <action>
    Fichiers concernés (N) :
-   - email_YYYY-MM-DD_... → <branche cible si classify>
+   - <nom_fichier>
+     From: <from> | Date: <YYYY-MM-DD> | Sujet: <subject tronqué à 60 chars>
+     → <branche cible si classify, sinon action>
    - ...
 
    [Si règle globale] Règle appliquée : <description de la règle>
@@ -51,5 +53,6 @@ Regrouper les décisions en lots thématiques, les présenter à l'utilisateur e
 ## Test
 
 - Chaque lot affiche clairement : action, liste des fichiers, destination si applicable.
+- Chaque fichier affiche from, date et subject (tronqué à 60 chars).
 - L'utilisateur peut rejeter ou modifier un lot sans bloquer les suivants.
 - Aucun lot n'est exécuté sans confirmation explicite.
