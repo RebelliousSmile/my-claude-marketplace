@@ -32,12 +32,7 @@ Unique files: index.php
 
 1. Auto-detect `env` (same as `tail`). Resolve SSH target if `prod`.
 2. For `docker`: discover containers via `docker ps` if needed.
-3. Fetch log content per source, applying `since` filter if provided (see `references/log-formats.md` — Timestamp filtering):
-   - `docker-*` sources with `since`: `docker logs --since <duration> <container>`
-   - `docker-*` sources without `since`: `docker logs --tail 5000 <container>` (cap to avoid flooding)
-   - File sources with `since ≥ 1 day`: Strategy A (date-prefix grep) from `references/log-formats.md`
-   - File sources with `since < 1 day`: Strategy B (PHP one-liner) from `references/log-formats.md`
-   - File sources without `since`: `docker exec <container> cat <path>` / `cat <path>` / `ssh <host> "cat <path>"`
+3. Fetch log content per source. Apply `since` filter if provided. See [`references/log-formats.md` — Timestamp filtering](../references/log-formats.md) for the strategy selection table (docker logs --since vs Strategy A vs Strategy B).
 4. PHP log: parse lines matching `^\[.+\] PHP (Fatal error|Parse error|Error|Warning|Notice|Deprecated)` (see `references/log-formats.md`).
    - Group by `(severity, normalized_message)` — strip line numbers and memory addresses.
    - Sort by count desc.
