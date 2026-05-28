@@ -27,8 +27,8 @@
     {
       "id": "sc-js",
       "name": "sc-js",
-      "description": "JavaScript/Nuxt 3 coding rules: component scope, icons (lucide-vue-next), image optimization (WebP/LCP), Nitro server imports, Vite dynamic imports, design system conventions, async components, preconnect strategy, CSS transitions, Playwright testing patterns.",
-      "version": "0.2.0"
+      "description": "JS knowledge provider: detects runtime (web/desktop), framework (Nuxt/Vue/Alpine/Vite/Astro), ORMs and capabilities, then emits a pivot manifeste. /sc-js:audit delegates code review to aidd-dev:reviewer using capability pivots as criteria. Perf pivots for web-optimize, data pivots for data-optimize.",
+      "version": "0.4.0"
     },
     {
       "id": "sc-python",
