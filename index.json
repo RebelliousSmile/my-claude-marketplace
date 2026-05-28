@@ -37,6 +37,12 @@
       "version": "0.4.3"
     },
     {
+      "id": "obsidian",
+      "name": "obsidian",
+      "description": "Personal Obsidian notes management — Pro project lifecycle (create, fill, reorganize, log-session, log-meeting, add-invoice, export-rag) and JDR solo player-character management (new, fill, reorganize, log-session, show).",
+      "version": "0.2.0"
+    },
+    {
       "id": "sc-php",
       "name": "sc-php",
       "description": "PHP-specific skills and workflows.",

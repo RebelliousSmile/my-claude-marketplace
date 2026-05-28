@@ -62,6 +62,13 @@
       "source": "./plugins/sc-rust",
       "description": "Rust ecosystem: two-tier sniff (pivot model), audit, Axum/Actix-web perf pivots + SQLx/Diesel data pivots.",
       "recommended": false
+    },
+    {
+      "name": "obsidian",
+      "version": "0.2.0",
+      "source": "./plugins/obsidian",
+      "description": "Personal Obsidian notes management — Pro project lifecycle (create, fill, reorganize, log-session, log-meeting, add-invoice, export-rag) and JDR solo player-character management (new, fill, reorganize, log-session, show).",
+      "recommended": false
     }
   ]
 }

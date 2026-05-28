@@ -73,7 +73,7 @@ Ou via commande dans le projet :
 | `sc-tiers` | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
 | `gamedesign` | — | Game design : dialogue, bank d'assets |
 | `writing` | — | Rédaction : ton, style, typographie, chapitres |
-| `obsidian` | — | Export vers Obsidian (mémoire projet, statut) |
+| `obsidian` | — | Gestion notes Obsidian — projets Pro et PJ JDR solo |
 
 ---
 
@@ -207,13 +207,14 @@ Pour les projets rédactionnels (romans, RPG, guides, articles).
 
 ## obsidian
 
-Pour les projets utilisant Obsidian comme outil de gestion de projet.
+Pour la gestion des notes Obsidian — projets Pro et personnages JDR solo.
 
 ### Skills
 
-| Skill | Description |
-|---|---|
-| `project-status` | Export mémoire projet, audit et rapport de statut en format Obsidian |
+| Skill | Déclencheur | Description |
+|---|---|---|
+| `project` | `/obsidian:project` | Gestion des projets Pro : create, fill, reorganize, log-session, log-meeting, add-invoice, export-rag |
+| `pc` | `/obsidian:pc` | Gestion des PJ JDR solo (Jauges & Tarot) : new, fill, reorganize, log-session, show |
 
 ---
 
