@@ -127,6 +127,8 @@ Pour les stacks PHP (Laravel, Symfony, WordPress, HTMX).
 | `log-analysis` | `/sc-php:log-analysis` | Analyse les logs PHP/Apache/Nginx (local, Docker, prod SSH) — tail, parse-errors, search, summarize |
 | `bruno` | `/sc-php:bruno` | Tests API Bruno en CLI — scripts, environnements, assertions |
 
+Note: skill `bruno` is PHP-specific (depends on Apache stripping the Authorization header — see `references/07-perf-pivots-htmx.md` in references) and is intentionally not propagated to sc-python/sc-rust.
+
 ---
 
 ## sc-python
