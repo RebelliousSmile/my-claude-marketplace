@@ -50,3 +50,7 @@ Single action. Any invocation of `/sc-php:setup` triggers `install`.
 - Preserve frontmatter (paths: globs) verbatim from each reference file.
 - If a target file already exists, overwrite it without confirmation.
 - Report each written file path at the end.
+
+## Cross-plugin notes
+
+- `references/07-perf-pivots-htmx.md` may also be consumed by `sc-python:web-optimize` when Django + HTMX are detected. Edits to this file must remain framework-agnostic above the §1 anchor.
