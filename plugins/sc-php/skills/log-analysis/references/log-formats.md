@@ -4,9 +4,11 @@
 
 Format: `[DD-Mon-YYYY HH:MM:SS UTC] PHP <severity>: <message> in <file> on line <N>`
 
-Severity values: `Fatal error`, `Parse error`, `Error`, `Warning`, `Notice`, `Deprecated`, `Strict Standards`
+Severity values: `Fatal error`, `Parse error`, `Error`, `Warning`, `Notice`, `Deprecated`
 
-Parse regex: `^\[(.+?)\] PHP (Fatal error|Parse error|Error|Warning|Notice|Deprecated|Strict Standards): (.+) in (.+) on line (\d+)`
+Parse regex: `^\[(.+?)\] PHP (Fatal error|Parse error|Error|Warning|Notice|Deprecated): (.+) in (.+) on line (\d+)`
+
+(The `strict_standards` severity level was removed in PHP 7.0; users on PHP 5.x projects can re-add it locally.)
 
 Normalization for grouping — strip:
 - Memory addresses: `0x[0-9a-f]+`
