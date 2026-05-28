@@ -1,4 +1,4 @@
-# Action 02 — implement-review
+# Action 02 — afterdev
 
 Fires the pre-crafted prompt for the **implement → double review** workflow.
 
