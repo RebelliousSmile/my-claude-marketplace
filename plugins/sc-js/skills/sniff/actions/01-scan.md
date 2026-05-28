@@ -37,6 +37,19 @@ If `package.json` is absent, abort:
 
 A project may match multiple (e.g. Vue + Vite → Vue SPA).
 
+**SvelteKit adapter detection** — when SvelteKit is detected, read `svelte.config.js` or `svelte.config.ts` to identify the adapter import:
+
+| Adapter import | Mode |
+|---|---|
+| `@sveltejs/adapter-static` | SSG / SPA (no SSR at runtime) |
+| `@sveltejs/adapter-node` | SSR — Node.js server |
+| `@sveltejs/adapter-auto` | auto (Vercel / Netlify / Node fallback) |
+| `@sveltejs/adapter-cloudflare` | SSR — Cloudflare Workers |
+| `@sveltejs/adapter-vercel` | SSR — Vercel Edge/Serverless |
+| (not found or unreadable) | unknown |
+
+Include the adapter in the framework output line: `SvelteKit (adapter-static — SPA mode)` or `SvelteKit (adapter-node — SSR)`.
+
 ### Step 4 — Classify ORMs
 
 | Signal (package.json) | ORM |
@@ -150,14 +163,19 @@ These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`
 
 A **gap** is a capability that is detected but for which the plugin has no matching pivot.
 
-Check: are there libraries in `package.json` representing a capability not covered by any entry in Step 5?
+Scan **all** entries in `dependencies` and `devDependencies` — not just framework libraries. For every package that represents a capability (state management, data access, UI, tooling, networking, i18n, file formats, etc.) and has no matching pivot in Step 5, report it as a gap.
 
-Examples of gaps to report:
-- `vue-router` detected but no routing pivot in plugin
-- `@vueuse/core` detected but no composables pivot in plugin
-- `vue-i18n` detected but no localization pivot in plugin
+**Do not omit gaps because they seem minor or niche** — list every one so the caller can decide. A gap reported consistently across runs is more useful than one that disappears.
 
-List all gaps explicitly in the output.
+Examples (non-exhaustive):
+- `vue-router` — routing, no pivot
+- `vue-i18n` / `i18next` / homemade lang store — localisation, no pivot
+- `yaml` / `js-yaml` — YAML parsing, no pivot
+- `socket.io-client` — WebSocket, no pivot
+- `konva` — canvas rendering, no pivot
+- `@vueuse/core` — composables, no pivot
+
+List all gaps explicitly in the output. Never silently drop a gap between runs.
 
 ## Output
 
@@ -169,7 +187,7 @@ Emit a structured pivot manifeste:
 Runtime: web
 
 Framework:
-  ✅ SvelteKit (SSR/SSG/SPA) (@sveltejs/kit ^2.16.0)
+  ✅ SvelteKit (adapter-static — SPA mode) (@sveltejs/kit ^2.16.0)
   ✅ Vite (vite ^6.2.6)
   ❌ Nuxt — not detected
   ❌ Vue SPA — not detected
