@@ -9,7 +9,12 @@ Detect edition-specific patterns and deprecated APIs in the Rust codebase. Emit 
 
 ## Process
 
-### Step 1 — Detect current edition and key crates
+### Step 1 — Load version references
+
+@../references/rust-editions.md
+@../references/api-deprecations.md
+
+### Step 2 — Detect current edition and key crates
 
 1. Read `Cargo.toml` → `[package] edition` (default if absent: `"2015"`)
 2. Read `[dependencies]` to detect crates with known major breaking changes:
@@ -20,7 +25,7 @@ Detect edition-specific patterns and deprecated APIs in the Rust codebase. Emit 
    - `actix-web` version
    - `sqlx` version
 
-### Step 2 — Scan edition-specific patterns
+### Step 3 — Scan edition-specific patterns
 
 Grep `.rs` files under `path`. Exclude `target/`.
 
@@ -64,7 +69,7 @@ Grep `.rs` files under `path`. Exclude `target/`.
 | `clone()` on large types | `.clone()` on `Vec`, `HashMap`, `String` returned from functions | Consider `Rc`/`Arc` or returning references |
 | `Box<dyn Error>` in public API | `Box<dyn Error>` in pub fn signatures | Use concrete error type or `thiserror` |
 
-### Step 3 — Output manifest
+### Step 4 — Output manifest
 
 ```
 📊 sc-rust legacy — scan results

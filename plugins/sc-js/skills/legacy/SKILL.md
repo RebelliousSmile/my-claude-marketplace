@@ -32,6 +32,12 @@ Always sequential: `scan` → `migrate`.
 1. `scan` reads `package.json`, `tsconfig.json`, and source files; detects current and target versions; finds deprecated/missing patterns; emits a structured manifest
 2. `migrate` reads the manifest and applies transformations file by file
 
+## References
+
+- `references/js-versions.md` — ES version change tables (ES5→ES2024, CommonJS→ESM)
+- `references/vue-migration.md` — Vue 2→3, Vuex→Pinia, Nuxt 2→3 breaking changes
+- `references/typescript-strictness.md` — TS strict flags and version-specific features
+
 ## Transversal rules
 
 - Always detect current framework/library versions from `package.json` before scanning.

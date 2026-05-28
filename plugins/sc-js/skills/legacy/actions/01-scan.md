@@ -17,9 +17,17 @@ Read `tsconfig.json` if present:
 
 Read `.nvmrc` or `.node-version` if present.
 
-### Step 2 — Classify migration axes
+### Step 2 — Load version references
 
-Determine which axes apply based on detected versions:
+Load the applicable reference documents before scanning:
+
+@../references/js-versions.md
+@../references/vue-migration.md
+@../references/typescript-strictness.md
+
+### Step 3 — Classify migration axes
+
+Determine which axes apply based on detected versions. Use the loaded references to identify patterns.
 
 | Axis | Trigger |
 |---|---|
@@ -30,45 +38,11 @@ Determine which axes apply based on detected versions:
 | TypeScript strictness | `strict: false` or absent in `tsconfig.json` |
 | Nuxt 2→3 | `nuxt` version < 3 detected |
 
-### Step 3 — Scan codebase per axis
+### Step 4 — Scan codebase per axis
 
-#### ES5 / Modern JS
+For each active axis, apply the detection patterns from the reference documents. Flag every occurrence with file and line.
 
-- `var` declarations → `const`/`let`
-- Callback-based async → `async/await`
-- `.then().catch()` chains → `try/catch` with `await`
-- `prototype` method assignment → class syntax or arrow functions
-- String concatenation → template literals
-- `arguments` object → rest parameters
-
-#### CommonJS → ESM
-
-- `require()` calls → `import`
-- `module.exports` → `export default` / named exports
-- `__dirname` / `__filename` → `import.meta.url` + `fileURLToPath`
-
-#### Vue 2 → Vue 3 / Options API → Composition API
-
-- `export default { data(), methods: {}, computed: {} }` → `<script setup>` with `ref`, `computed`
-- `this.$store` → `useStore()` (Vuex) or `useFoo()` (Pinia)
-- `this.$router` → `useRouter()`
-- `this.$emit` → `defineEmits()`
-- `filters` → computed properties or utility functions
-- `$listeners` / `$attrs` merging — Vue 3 behavior change
-
-#### Vuex → Pinia
-
-- `createStore` → `defineStore`
-- `commit` / `dispatch` → direct store method calls
-- Namespaced modules → separate stores
-
-#### TypeScript
-
-- Implicit `any` in strict context
-- `!` non-null assertions without comment
-- Missing return type annotations on exported functions
-
-### Step 4 — Emit manifest
+### Step 5 — Emit manifest
 
 ```
 📋 sc-js legacy — scan manifest

@@ -10,7 +10,12 @@ Detect version-specific and deprecated patterns in the Python codebase. Emit a s
 
 ## Process
 
-### Step 1 — Detect current Python version
+### Step 1 — Load version references
+
+@../references/python-versions.md
+@../references/framework-migrations.md
+
+### Step 2 — Detect current Python version
 
 1. Read `.python-version` (pyenv)
 2. Read `pyproject.toml` → `[tool.poetry] python` or `[project] requires-python`
@@ -18,13 +23,13 @@ Detect version-specific and deprecated patterns in the Python codebase. Emit a s
 4. Read `tox.ini` → `[tox] envlist`
 5. If still unknown: check Dockerfile `FROM python:X.X`, else assume 3.9 and note the assumption
 
-### Step 2 — Determine direction and target
+### Step 3 — Determine direction and target
 
 - If user said "upgrade" or "modernize" or target > current: `direction = upgrade`, `target = 3.12` (or user value)
 - If user said "downgrade" or "compat" or target < current: `direction = downgrade`, ask for target if not provided
 - If direction still unknown: ask the user before scanning
 
-### Step 3 — Scan deprecated and version-specific patterns
+### Step 4 — Scan deprecated and version-specific patterns
 
 Grep the source files (`.py`) under `path`. Exclude `.venv/`, `venv/`, `__pycache__/`, migration files (`migrations/`, `alembic/versions/`).
 
@@ -78,12 +83,12 @@ Grep the source files (`.py`) under `path`. Exclude `.venv/`, `venv/`, `__pycach
 | `TypeVarTuple`, `Unpack` | | < 3.11 |
 | PEP 695 `type X =` | `^type\s+\w+\s*=` | < 3.12 |
 
-### Step 4 — Detect framework version gaps (if detected)
+### Step 5 — Detect framework version gaps (if detected)
 
 If Django detected: check installed version and note patterns removed between detected and target major.
 If FastAPI detected: check for deprecated `@app.on_event` → `lifespan` context manager pattern.
 
-### Step 5 — Output manifest
+### Step 6 — Output manifest
 
 ```
 📊 sc-python legacy — scan results

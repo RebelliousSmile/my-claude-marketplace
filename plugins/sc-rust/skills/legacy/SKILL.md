@@ -30,6 +30,11 @@ Always sequential: `scan` → `migrate`.
 1. `scan` reads `Cargo.toml`, detects current edition, finds deprecated patterns and outdated crate API usage, emits a structured manifest
 2. `migrate` reads the manifest and applies transformations file by file
 
+## References
+
+- `references/rust-editions.md` — edition-by-edition change tables (2015→2018→2021→2024)
+- `references/api-deprecations.md` — std deprecations and crate migrations (failure, futures 0.1, rand, serde)
+
 ## Transversal rules
 
 - Always detect the current Rust edition from `Cargo.toml` (`edition = "2015"/"2018"/"2021"/"2024"`) before scanning.

@@ -32,6 +32,11 @@ Always sequential: `scan` → `migrate`.
 1. `scan` reads `pyproject.toml`, `setup.py`, or `.python-version`, detects current and target Python versions, finds deprecated/missing patterns, emits a structured manifest
 2. `migrate` reads the manifest and applies transformations file by file
 
+## References
+
+- `references/python-versions.md` — version-by-version change tables (ES5→3.12+, type hint evolution)
+- `references/framework-migrations.md` — Django, FastAPI/Pydantic, SQLAlchemy breaking changes
+
 ## Transversal rules
 
 - Always detect the current Python version from `pyproject.toml`, `.python-version`, or `tox.ini` before scanning.
