@@ -20,7 +20,10 @@ If `package.json` is absent, abort:
 |---|---|
 | `@tauri-apps/api` or `@tauri-apps/cli` | `desktop` — Tauri |
 | `electron` or `electron-builder` or `electron-vite` | `desktop` — Electron |
-| (none of the above) | `web` |
+| `fastify`, `express`, `koa`, `@nestjs/core`, `hapi`, `@hapi/hapi` — AND no frontend framework (no nuxt/vue/svelte/astro/alpinejs) | `node` — backend |
+| (none of the above) | `web` — frontend |
+
+`runtime = "web"` means a browser-targeting frontend project. A pure Node.js backend with no frontend framework is `node`, not `web` — skip all browser-specific capability pivots for `node` runtime.
 
 ### Step 3 — Classify framework
 
@@ -90,14 +93,14 @@ For each capability, evaluate the detection condition and record the applicable 
 
 | Capability | Condition | Pivot path |
 |---|---|---|
-| CSS transitions | always | `styling/css-transitions.md` |
+| CSS transitions | `runtime = "web"` (frontend framework detected) | `styling/css-transitions.md` |
 
 #### Icons
 
 | Capability | Condition | Pivot path |
 |---|---|---|
 | lucide-vue-next | `lucide-vue-next` detected | `icons/lucide-vue.md` |
-| SVG inline / Iconify | Alpine.js detected, or no Vue/Nuxt | `icons/svg-inline.md` |
+| SVG inline / Iconify | `runtime = "web"` AND (Alpine.js detected, or no Vue/Nuxt) | `icons/svg-inline.md` |
 
 #### Images (web runtime only)
 
