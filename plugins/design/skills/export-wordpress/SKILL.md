@@ -33,6 +33,7 @@ Trigger-to-action mapping:
 ## Transversal rules
 
 - Requires `design/tokens.json`. If absent, route to `from-reference`/`from-brief`.
+- **Idempotent / re-runnable**: every action is a safe update, runnable as many times as wanted. Re-deriving from the same tokens yields the same output (no duplication, no churn); changed tokens produce a clean diff. Generated, design-derived sections/files are overwritten; hand-authored, non-design content is preserved. Always report what changed.
 - `theme.json` is **generated from tokens** — never hand-tune values that exist as tokens; re-export when tokens change.
 - Map by role: token slugs become WP preset slugs (kebab-case); resolve `{alias}` references to concrete values.
 - Tokens without a native WP preset bucket (radius, shadow, motion, icon, breakpoints, z-index) go under `settings.custom` (emitted as `--wp--custom--*`).
