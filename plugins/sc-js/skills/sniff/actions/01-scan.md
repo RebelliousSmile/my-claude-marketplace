@@ -70,6 +70,8 @@ For each capability, evaluate the detection condition **against `package.json` o
 
 **Never inspect source files to decide whether to include a pivot.** If the `package.json` condition matches, the pivot goes in the manifeste — even if the pattern is not yet used in the codebase. It is `/sc-js:audit`'s job to check whether the pattern is missing, misused, or correct. The sniff only maps what is available.
 
+**Only list pivots that physically exist in the plugin.** Before including a pivot, verify it exists at `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>`. Do NOT invent a pivot path because it would be useful — if no file exists at that path, the capability goes in **Gaps**, not in the manifeste. Listing a non-existent pivot as available misleads `/sc-js:audit` into trying to load a file that isn't there.
+
 #### Component patterns
 
 | Capability | Condition | Pivot path |
