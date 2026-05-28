@@ -19,6 +19,7 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 05  | `bump-plugin` | Bump plugin version in plugin.json + index.json → commit → push marketplace    | plugin name + version or bump type |
 | 06  | `previously`  | Project snapshot with status context — status summary + tests/git/lint snapshot | optional depth (commit count or duration like 7d) |
 | 07  | `smarten`     | Rewrite a prompt file in place — remove fluff, compress steps, bullet points    | file path |
+| 08  | `skillconf`   | Classify enabled skills as auto-trigger vs user-invocable-only → update skillOverrides | settings.json accessible |
 
 ## Default flow
 
@@ -31,6 +32,7 @@ Trigger-to-action mapping:
 - "bump plugin", "release plugin", "bump-plugin", "alias bump-plugin", "monter en version", "bumper le plugin", "release <plugin>" → `bump-plugin`
 - "where are we in the project", "catch me up", "what's the current project state", "project snapshot", "previously", "alias previously" → `previously`
 - "smarten", "slim this", "simplify this prompt", "optimize this prompt", "compress this file", "alias smarten" → `smarten`
+- "skillconf", "configure skills", "auto-configure skills", "reduce skill context", "skill overrides", "alias skillconf", "skills prennent trop de place", "descriptions écretées" → `skillconf`
 
 ## Transversal rules
 
