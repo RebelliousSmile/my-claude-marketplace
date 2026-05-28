@@ -32,7 +32,7 @@ Produce a period digest across all log sources: error counts by severity, top re
 1. Auto-detect `env`. Resolve SSH target if `prod`.
 2. For `docker`: discover containers if needed.
    - `docker-*` sources: `docker logs --since <since> <container>` (default `--since 24h`).
-   - File sources: apply timestamp filter from `references/log-formats.md` — Strategy A for `since ≥ 1 day`, Strategy B (PHP one-liner) otherwise.
+   - File sources: apply `since` filter. See [`references/log-formats.md` — Timestamp filtering](../references/log-formats.md) for the strategy selection table (docker logs --since vs Strategy A vs Strategy B).
 3. Fetch all default sources: `php`, `apache-error`, `nginx-error`, `apache-access` (see `references/environments.md`).
 4. **PHP errors** — parse using `references/log-formats.md`:
    - Count by severity.
