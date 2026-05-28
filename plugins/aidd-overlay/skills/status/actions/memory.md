@@ -10,6 +10,22 @@ Synthesizes all project memory files and decision records into a dated export do
 
 A filled memory export saved to `aidd_docs/tasks/memory/<yyyy>_<mm>_<dd>_project_memory.md`, rendered from `@../assets/project_memory.md`.
 
+Inline summary displayed to the user after saving:
+
+```
+## Status — Memory
+Saved: `aidd_docs/tasks/memory/<date>_project_memory.md`
+
+| Metric | Value |
+|--------|-------|
+| Memory files | N |
+| Total lines | N |
+| Total size | N KB |
+| Oversized files | N |
+| Decisions | N |
+| Health | ✅ Healthy / ⚠️ Approaching limits / ❌ Oversized |
+```
+
 ## Process
 
 1. Run `mkdir -p aidd_docs/tasks/memory` to ensure the output directory exists.
@@ -20,7 +36,8 @@ A filled memory export saved to `aidd_docs/tasks/memory/<yyyy>_<mm>_<dd>_project
 6. For each discovered decision (dedicated file or inline): extract ID, title, status (Accepted/Deprecated/Superseded), the one-line decision, and the one-line rationale.
 7. Compute size metrics: total file count, total lines, total size in KB, oversized file count, decision count. Apply health verdict: ✅ Healthy if no oversized files and all counts reasonable; ⚠️ Approaching limits if 1–2 oversized files; ❌ Oversized if >2 oversized files or total >50 KB.
 8. Fill `@../assets/project_memory.md` with all gathered data and save the result to `aidd_docs/tasks/memory/<yyyy>_<mm>_<dd>_project_memory.md`.
+9. Display the inline summary to the user.
 
 ## Test
 
-Invoke in a project that has `aidd_docs/memory/` with at least one `.md` file; verify `aidd_docs/tasks/memory/<date>_project_memory.md` is created and contains a populated Footprint table and at least one Memory Files entry.
+Invoke in a project that has `aidd_docs/memory/` with at least one `.md` file; verify `aidd_docs/tasks/memory/<date>_project_memory.md` is created and contains a populated Footprint table and at least one Memory Files entry, and that the inline summary is displayed with all metrics filled.

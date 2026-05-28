@@ -3,19 +3,13 @@
     {
       "id": "aidd-overlay",
       "name": "aidd-overlay",
-      "description": "Extends the AIDD framework with project-agnostic workflows: interactive codebase quiz (dig), memory maintenance (harvest, reconcile-normative), obsolescence detection (taste), prospective analysis (foresee), performance audits (data-optimize, web-optimize), and planning utilities (decompose, journey, changelog, end-plan, previously).",
-      "version": "1.5.0"
+      "description": "Extends the AIDD framework with project-agnostic workflows: interactive codebase quiz (dig), memory maintenance (harvest, reconcile-normative), obsolescence detection (taste), prospective analysis (foresee), performance audits (data-optimize, web-optimize), project health reporting (status), and planning utilities (decompose, journey, changelog, end-plan). Alias chains: rechallenge, afterplan, endtask, endplan, bump-plugin, previously.",
+      "version": "1.6.0"
     },
     {
       "id": "gamedesign",
       "name": "gamedesign",
       "description": "Game design skills and workflows.",
-      "version": "0.2.0"
-    },
-    {
-      "id": "obsidian",
-      "name": "obsidian",
-      "description": "Obsidian project management integration: export project memory and status reports to Obsidian-compatible format (project-status).",
       "version": "0.2.0"
     },
     {
@@ -46,7 +40,7 @@
       "id": "sc-php",
       "name": "sc-php",
       "description": "PHP-specific skills and workflows.",
-      "version": "0.3.0"
+      "version": "0.4.0"
     },
     {
       "id": "sc-tiers",
