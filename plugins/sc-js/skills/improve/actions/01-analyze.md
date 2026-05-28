@@ -21,6 +21,7 @@ Re-detect capabilities from `package.json` (same conditions as `sniff/01-scan`).
 | Pinia store patterns | `pinia` in dependencies | `state/pinia.md` |
 | Vue component scope | Vue or Nuxt detected | `components/shared-scope.md` |
 | Alpine.store patterns | Alpine.js detected | `state/alpine-store.md` |
+| Svelte store patterns | `svelte` or `@sveltejs/kit` in dependencies | `state/svelte-stores.md` |
 | SSR storage guards | Nuxt or SvelteKit detected | `ssr/storage-guards.md` |
 | Nitro server imports | Nuxt detected | `server/nitro-imports.md` |
 | Vite dynamic imports | Vite detected (any framework with vite) | `code-splitting/dynamic-import.md` |

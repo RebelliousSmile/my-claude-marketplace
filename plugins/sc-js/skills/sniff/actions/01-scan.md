@@ -28,8 +28,9 @@ If `package.json` is absent, abort:
 |---|---|
 | `nuxt` | Nuxt 3 (SSR/SSG) |
 | `@sveltejs/kit` | SvelteKit (SSR/SSG/SPA) |
+| `svelte` (without `@sveltejs/kit`) | Svelte SPA |
 | `vue` (without `nuxt`) | Vue SPA |
-| `vite` (without `nuxt`, `vue`, `@sveltejs/kit`) | Vite hybrid (Laravel, Django, etc.) |
+| `vite` (without `nuxt`, `vue`, `@sveltejs/kit`, `svelte`) | Vite hybrid (Laravel, Django, etc.) |
 | `alpinejs` or `@alpinejs/core` | Alpine.js |
 | `astro` | Astro |
 | `@11ty/eleventy` | 11ty |
@@ -63,6 +64,7 @@ For each capability, evaluate the detection condition and record the applicable 
 |---|---|---|
 | Pinia store | `pinia` detected | `state/pinia.md` |
 | Alpine.store | Alpine.js detected | `state/alpine-store.md` |
+| Svelte stores | `svelte` or `@sveltejs/kit` in dependencies | `state/svelte-stores.md` |
 
 #### Code splitting
 
@@ -114,6 +116,12 @@ For each capability, evaluate the detection condition and record the applicable 
 |---|---|---|
 | TypeScript | `typescript` or `vue-tsc` in devDependencies, or Nuxt 3 detected | `typescript.md` |
 
+#### Tools
+
+| Capability | Condition | Pivot path |
+|---|---|---|
+| Biome | `@biomejs/biome` in devDependencies | `tools/biome.md` |
+
 #### Perf pivots — install targets (consumed by `web-optimize`)
 
 These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`. Unlike capability pivots, they ARE written to disk.
@@ -125,6 +133,7 @@ These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`
 | Vite hybrid detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/vite.md` | `.claude/rules/07-quality/perf-pivots-vite.md` |
 | Alpine.js detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/alpine.md` | `.claude/rules/07-quality/perf-pivots-alpine.md` |
 | Astro or 11ty detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/static.md` | `.claude/rules/07-quality/perf-pivots-static.md` |
+| SvelteKit detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/sveltekit.md` | `.claude/rules/07-quality/perf-pivots-sveltekit.md` |
 
 #### Data pivots — install targets (consumed by `data-optimize`)
 
@@ -157,12 +166,13 @@ Emit a structured pivot manifeste:
 ```
 📊 sc-js sniff — capability scan
 
-Runtime: web | desktop (Tauri) | desktop (Electron)
+Runtime: web
 
 Framework:
-  ✅ Vue SPA (vue ^3.5.13)
+  ✅ SvelteKit (SSR/SSG/SPA) (@sveltejs/kit ^2.16.0)
   ✅ Vite (vite ^6.2.6)
   ❌ Nuxt — not detected
+  ❌ Vue SPA — not detected
   ❌ Alpine.js — not detected
 
 ORM / data layer:
@@ -172,25 +182,24 @@ Pivot manifeste — applicable capability references:
   ⚠️  READ-ONLY — do NOT install these to .claude/rules/capabilities/ or anywhere else
   ⚠️  These paths are loaded at audit time from the plugin; they are never written to disk
   (load via ${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>)
-  components/shared-scope.md
-  state/pinia.md
+  state/svelte-stores.md
+  ssr/storage-guards.md
   code-splitting/dynamic-import.md
-  code-splitting/defineAsyncComponent.md
   styling/css-transitions.md
-  icons/lucide-vue.md
+  icons/svg-inline.md
+  images/web-optimization.md
+  networking/preconnect.md
   typescript.md
-  [runtime=desktop: images/web-optimization.md — NOT APPLICABLE]
-  [runtime=desktop: networking/preconnect.md — NOT APPLICABLE]
+  tools/biome.md
 
 Perf pivots (→ 02-install-pivots will write to .claude/rules/07-quality/):
-  perf/vue-spa.md → perf-pivots-vue-spa.md
-  perf/vite.md    → perf-pivots-vite.md
+  perf/sveltekit.md → perf-pivots-sveltekit.md
 
 Data pivots:
   — none detected
 
 Gaps (no plugin pivot):
-  vue-router (routing) — no pivot in plugin
+  — none detected
 
 → Proceed to 02-install-pivots to write perf/data pivots.
 → Use pivot manifeste as input for /sc-js:audit.
