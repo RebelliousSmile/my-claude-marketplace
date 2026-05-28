@@ -7,6 +7,14 @@ Read the PHP codebase and identify design pattern gaps, anti-patterns, and maint
 - `path` (optional, default: project root) — scope of the analysis
 - `focus` (optional) — specific area: `solid`, `patterns`, `types`, `framework` (default: all)
 
+| `focus` value | Analysis category |
+|---|---|
+| `focus=solid` | SOLID violations |
+| `focus=patterns` | Missing patterns |
+| `focus=types` | PHP type system gaps |
+| `focus=framework` | Framework-specific issues |
+| (omitted) | All categories |
+
 ## Process
 
 ### Step 1 — Map the codebase structure
