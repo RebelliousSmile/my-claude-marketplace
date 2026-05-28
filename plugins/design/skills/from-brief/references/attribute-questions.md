@@ -11,6 +11,7 @@ The clarification checklist for `from-brief/01-clarify`. Ask only what the brief
 | **Primary platform & usage** (mobile-first app, content site, dashboard) | Drives layout strategy, enriched/mobile-only split, density | Mobile-first responsive web |
 | **Brand color or logo constraints** | Anchors the brand ramp | Derive a distinctive primary from personality |
 | **Light / dark / both** | Doubles the semantic layer if both | Light only (note dark as future) |
+| **Icon style** (outline / solid / duotone; any library preference) | Picks the single icon set — part of the core trio | Lucide, outline |
 | **Accessibility / compliance bar** (e.g. WCAG AA/AAA, public sector) | Sets contrast and target-size minimums | WCAG AA |
 
 ## Do not ask

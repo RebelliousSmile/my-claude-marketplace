@@ -37,7 +37,9 @@ Trigger-to-action mapping:
 
 - Read the design-system contract before writing: `${CLAUDE_PLUGIN_ROOT}/references/design-system-contract.md`.
 - Follow the token schema exactly: `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md`.
+- Identify the **core trio first, fast** — palette anchor, type, icon set — and present it for one quick approval before the full token set.
 - Reference, don't invent: every token must trace to an observation in the reference. List anything assumed under § Open questions.
+- Record the single icon set used (`icon.library`/`icon.style`); if the reference uses emoji as icons, replace them with the chosen set — never emoji.
 - If `08-design` rules are absent (`.claude/rules/08-design/`), tell the user to run `/design:setup` first.
 - Prefer fluid `clamp()` steps when two reference breakpoints reveal a type/space progression.
 - Detect breakpoints from the reference if responsive evidence exists; otherwise propose the schema defaults and flag them as assumed.

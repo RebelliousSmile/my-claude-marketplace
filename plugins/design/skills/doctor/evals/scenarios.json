@@ -1,0 +1,9 @@
+[
+  { "prompt": "design doctor on this production app", "expect_action": "diagnose" },
+  { "prompt": "is there a real design system in this codebase?", "expect_action": "diagnose" },
+  { "prompt": "we inherited this project, diagnose the design health", "expect_action": "diagnose" },
+  { "prompt": "scan the CSS for color and spacing sprawl", "expect_action": "diagnose" },
+  { "prompt": "what's the remediation plan from this health report", "expect_action": "prescribe" },
+  { "prompt": "audit this page against our system", "expect_action": null },
+  { "prompt": "build a design system from this brief", "expect_action": null }
+]

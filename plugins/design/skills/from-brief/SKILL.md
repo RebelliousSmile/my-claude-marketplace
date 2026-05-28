@@ -37,7 +37,9 @@ Trigger-to-action mapping:
 
 - Read the design-system contract and token schema before writing: `${CLAUDE_PLUGIN_ROOT}/references/design-system-contract.md`, `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md`.
 - `clarify` asks **at most 3–4 questions at once**, only the ones that change token decisions; assume sensible defaults for the rest and list them as Open questions.
+- Decide the **core trio first, fast** — palette anchor, type, icon set — and get it approved in one pass before expanding the full scale.
 - Derive a deliberate, distinctive palette and type pairing — never default to the framework's stock look.
+- Choose one icon set; never use emoji or emoticons as iconography.
 - Verify color choices for WCAG AA at definition time.
 - Mobile-first responsive strategy is mandatory: define mobile core, enriched-only, and mobile-only UX up front.
 - If `08-design` rules are absent, tell the user to run `/design:setup` first.

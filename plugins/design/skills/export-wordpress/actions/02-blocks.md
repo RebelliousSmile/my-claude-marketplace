@@ -1,0 +1,28 @@
+# 02 - blocks
+
+Convert wireframes/components into WordPress block patterns or templates, with the token CSS enqueued.
+
+## Inputs
+
+- Source artifacts: `design/wireframes/*.html` and/or `design/components/*.md` (+ any implemented components).
+- `theme_dir` (the block theme) and its `theme.json` from `01-theme-json`.
+
+## Process
+
+1. **Choose the bridging strategy** (see `references/theme-json-mapping.md`):
+   - Fast switch → **enqueue `design/adapters/tokens.css`** so existing `var(--…)` keep resolving.
+   - WP-native → also emit a bridge mapping `--color-…`/`--space-…` to `--wp--preset--…`.
+   Enqueue via the theme's `functions.php` (`wp_enqueue_style`) or `@import` in the theme stylesheet; report which.
+2. **Map each wireframe region to blocks**: containers → `core/group` (with `layout`), columns → `core/columns`, nav → `core/navigation`, etc. Preserve the mobile-first structure; use the theme's `contentSize`/`wideSize` for width, not hardcoded values.
+3. **Preserve responsive intent**: rely on block layout + `theme.json` for fluid behavior; keep enriched-only and mobile-only decisions documented in the pattern's comment header (WordPress block markup is largely flow-based — note where custom CSS is still required).
+4. **Iconography**: inline SVG from the chosen icon set; never emoji.
+5. **Emit block patterns** to `<theme_dir>/patterns/<slug>.php` with the registration header, and/or templates/template-parts under `templates/` and `parts/`. One pattern per wireframe by default.
+6. **Style via presets/tokens only**: preset classes (`has-brand-primary-color`), `var(--wp--preset--…)`, or the enqueued `var(--…)` — no new literals.
+
+## Outputs
+
+Block pattern/template files in the theme + the enqueue wiring (and optional bridge CSS), with a note of where each wireframe landed.
+
+## Test
+
+Each pattern registers correctly, uses preset/token-based styling (no literals), inlines icon-set SVGs (no emoji), preserves the wireframe's mobile-first structure, and the token CSS is enqueued so `var(--…)` resolve on the front end.

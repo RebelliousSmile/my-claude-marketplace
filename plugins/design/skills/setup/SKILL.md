@@ -37,6 +37,7 @@ These are installed verbatim into `.claude/rules/08-design/`:
 - `references/4-design-tokens.md` — consume `design/tokens.json` via adapters, never hardcode values
 - `references/5-components-variants.md` — reusable components driven by options/variants, documented states
 - `references/6-accessibility.md` — contrast from tokens, focus, touch targets, reduced motion, semantics
+- `references/7-iconography.md` — one chosen icon set, sized from tokens, never emoji/emoticons
 
 ## Transversal rules
 

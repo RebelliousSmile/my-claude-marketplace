@@ -38,7 +38,14 @@ Run every applicable category against the target. Each finding records: severity
 - [ ] **note** Documented states present (focus, disabled, loading, error where applicable).
 - [ ] **note** Component matches its `design/components/<name>.md` spec.
 
-## 6 — Accessibility (`08-design/6-accessibility`)
+## 6 — Iconography (`08-design/7-iconography`)
+
+- [ ] **blocking** No emoji or emoticons used as UI icons, bullets, status dots, or button glyphs.
+- [ ] **warning** Icons come from the single chosen set (`icon.library`); no mixed sets.
+- [ ] **warning** Icon size/stroke from `icon.*` tokens, not hardcoded.
+- [ ] **warning** Icon-only buttons carry an accessible label; decorative icons are `aria-hidden`.
+
+## 7 — Accessibility (`08-design/6-accessibility`)
 
 - [ ] **blocking** Body text ≥ AA (4.5:1); UI/large text ≥ 3:1.
 - [ ] **blocking** Visible focus on every interactive element.

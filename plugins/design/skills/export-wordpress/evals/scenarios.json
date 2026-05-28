@@ -1,0 +1,10 @@
+[
+  { "prompt": "export our design system to WordPress", "expect_action": "theme-json" },
+  { "prompt": "generate a theme.json from our tokens", "expect_action": "theme-json" },
+  { "prompt": "port this design to a block theme", "expect_action": "theme-json" },
+  { "prompt": "update the WordPress global styles from the tokens", "expect_action": "theme-json" },
+  { "prompt": "turn the wireframes into WordPress block patterns", "expect_action": "blocks" },
+  { "prompt": "make WP templates from these components", "expect_action": "blocks" },
+  { "prompt": "build the design system from this brief", "expect_action": null },
+  { "prompt": "audit this page against the system", "expect_action": null }
+]

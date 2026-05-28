@@ -23,7 +23,30 @@ A complete design system MUST define these groups. Mark anything genuinely inapp
 | `motion.easing.*` | `cubicBezier` | standard / entrance / exit |
 | `breakpoint.*` | `dimension` | `sm`, `md`, `lg`, `xl` — px min-widths (mobile-first, used as `min-width`) |
 | `size.container.*` | `dimension` | max content widths per breakpoint |
+| `icon.size.*` | `dimension` | `sm`/`md`/`lg`, aligned to the type scale |
+| `icon.stroke.*` | `dimension` | stroke width(s) for outline icon sets |
 | `zIndex.*` | `number` | named layers (dropdown, sticky, overlay, modal, toast) |
+
+### The core trio (decide first, fast)
+
+Before fleshing out every group, settle the three decisions that define the look — and get them approved in one quick pass:
+
+1. **Palette anchor** — the brand primary + neutral temperature (the ramps follow).
+2. **Type** — the family or pairing (the scale follows).
+3. **Icon set** — a single chosen library, recorded as a foundation in `design-system.md`:
+
+   ```
+   icon.library: lucide        # one set only — e.g. lucide, phosphor, heroicons, material-symbols
+   icon.style: outline         # outline | solid | duotone — pick one default
+   ```
+
+   The library/style are **foundation fields**, not tokens; only `icon.size.*` and `icon.stroke.*` are tokens.
+
+### Never emoji
+
+- UI iconography comes exclusively from the chosen icon set.
+- Never use emoji or emoticons as interface icons, bullets, or status indicators — in tokens, components, wireframes, or generated code.
+- Emoji are content (a user may type them); they are never part of the design system's visual language.
 
 ### Example
 
