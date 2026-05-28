@@ -31,6 +31,7 @@ Note: both `axum` and `actix-web` map to the same perf pivot (`perf/axum.md`). I
 |---|---|
 | `sqlx` | SQLx (async queries) |
 | `diesel` | Diesel ORM |
+| `rusqlite` | rusqlite (embedded SQLite, synchronous) |
 
 ### Step 4 — Map capabilities to pivots
 
@@ -39,6 +40,7 @@ Note: both `axum` and `actix-web` map to the same perf pivot (`perf/axum.md`). I
 | Capability | Condition | Pivot path |
 |---|---|---|
 | Rust idioms | Any Rust project detected | `rust/idioms.md` |
+| PyO3 FFI bridge | `pyo3` detected | `rust/pyo3.md` |
 
 #### Perf pivots (installed to `.claude/rules/07-quality/`)
 
@@ -52,6 +54,7 @@ Note: both `axum` and `actix-web` map to the same perf pivot (`perf/axum.md`). I
 |---|---|---|
 | SQLx async | `sqlx` detected | `references/capabilities/data/sqlx.md` → `.claude/rules/07-quality/data-pivots-sqlx.md` |
 | Diesel ORM | `diesel` detected | `references/capabilities/data/diesel.md` → `.claude/rules/07-quality/data-pivots-diesel.md` |
+| rusqlite embedded | `rusqlite` detected | `references/capabilities/data/rusqlite.md` → `.claude/rules/07-quality/data-pivots-rusqlite.md` |
 
 ### Step 5 — Status each perf/data pivot
 

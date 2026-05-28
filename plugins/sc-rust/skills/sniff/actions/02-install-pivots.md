@@ -18,6 +18,7 @@ Read the pivot manifeste emitted by `01-scan`. For each perf or data pivot liste
 |---|---|
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/sqlx.md` | `.claude/rules/07-quality/data-pivots-sqlx.md` |
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/diesel.md` | `.claude/rules/07-quality/data-pivots-diesel.md` |
+| `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/rusqlite.md` | `.claude/rules/07-quality/data-pivots-rusqlite.md` |
 
 ### Install rules
 

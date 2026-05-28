@@ -19,6 +19,19 @@ Identify:
 - Serializers/schemas (`serializers.py`, `schemas/`)
 - Tests (`tests/`, `test_*.py`)
 
+### Step 1.5 — Stack-specific anti-patterns from capability pivots
+
+Re-detect capabilities from `requirements.txt`, `pyproject.toml`, or `setup.py` (same conditions as `sniff/01-scan`). For each condition met, load the pivot from `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>` and use its anti-patterns as **additional detection criteria** in Step 2. Report findings under a `Stack-specific` category.
+
+| Capability | Condition | Pivot |
+|---|---|---|
+| Python idioms | Always | `python/idioms.md` |
+| Django ORM patterns | Django detected | `data/django-orm.md` |
+| SQLAlchemy patterns | `sqlalchemy` in dependencies | `data/sqlalchemy.md` |
+
+If a loaded pivot has a `## Anti-patterns` section, extract it directly. Otherwise read the full pivot and infer violations from its prescriptive rules.
+Skip this step if no Python manifest file is found.
+
 ### Step 2 — Analyze each category
 
 #### Pythonic idiom gaps

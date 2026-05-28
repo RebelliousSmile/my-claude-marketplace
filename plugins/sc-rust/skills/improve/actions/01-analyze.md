@@ -18,6 +18,19 @@ Identify:
 - Module structure (`src/handlers/`, `src/services/`, `src/models/`, `src/errors/`)
 - Tests (`#[cfg(test)]` modules, `tests/`)
 
+### Step 1.5 — Stack-specific anti-patterns from capability pivots
+
+Re-detect capabilities from `Cargo.toml` (same conditions as `sniff/01-scan`). For each condition met, load the pivot from `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>` and use its anti-patterns, prescriptive rules, and violation patterns as **additional detection criteria** in Step 2. Report findings under a `Stack-specific` category.
+
+| Capability | Condition | Pivot |
+|---|---|---|
+| Rust idioms | Always | `rust/idioms.md` |
+| PyO3 FFI safety | `pyo3` in dependencies | `rust/pyo3.md` |
+| rusqlite patterns | `rusqlite` in dependencies | `data/rusqlite.md` |
+
+If a loaded pivot has a `## Anti-patterns` section, extract it directly. Otherwise read the full pivot and infer violations from its prescriptive rules.
+Skip this step entirely if no `Cargo.toml` is found.
+
 ### Step 2 — Analyze each category
 
 #### Error handling

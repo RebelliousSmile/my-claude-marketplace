@@ -11,6 +11,20 @@ Read `package.json` to identify:
 - TypeScript usage — presence of `tsconfig.json`
 - Runtime target (Node, browser, SSR)
 
+### Step 1.5 — Stack-specific anti-patterns from capability pivots
+
+Re-detect capabilities from `package.json` (same conditions as `sniff/01-scan`). For each condition met, load the pivot from `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>` and use its anti-patterns as **additional detection criteria** in Step 2. Report findings under a `Stack-specific` category.
+
+| Capability | Condition | Pivot |
+|---|---|---|
+| TypeScript patterns | `typescript` or `vue-tsc` in devDependencies, or Nuxt 3 detected | `typescript.md` |
+| Pinia store patterns | `pinia` in dependencies | `state/pinia.md` |
+| Vue component scope | Vue or Nuxt detected | `components/shared-scope.md` |
+
+Apply the same TS guard as the TypeScript type coverage category above: do not load `typescript.md` if no `tsconfig.json` and no `typescript` in devDependencies.
+If a loaded pivot has a `## Anti-patterns` section, extract it directly. Otherwise read the full pivot and infer violations.
+Skip this step if no `package.json` is found.
+
 ### Step 2 — Scan for anti-patterns
 
 For each category, search the codebase and record findings with file + line references.

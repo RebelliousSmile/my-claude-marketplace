@@ -27,6 +27,20 @@ Identify:
 - Repositories (`app/Repositories/`, `src/Repository/`)
 - Test files
 
+### Step 1.5 — Stack-specific anti-patterns from capability pivots
+
+Re-detect capabilities from `composer.json` (same conditions as `sniff/01-scan`). For each condition met, load the pivot from `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>` and use its anti-patterns as **additional detection criteria** in Step 2. Report findings under a `Stack-specific` category.
+
+| Capability | Condition | Pivot |
+|---|---|---|
+| PHP SOLID | Always | `php/solid.md` |
+| Eloquent patterns | `illuminate/database` or `laravel/framework` in composer.json | `data/eloquent.md` |
+| Doctrine patterns | `doctrine/orm` or `doctrine/dbal` in composer.json | `data/doctrine.md` |
+
+Note: `php/solid.md` overlaps with the SOLID violations category in Step 2 — if it adds no new findings beyond what Step 2 already covers, skip it to avoid duplicates.
+If a loaded pivot has a `## Anti-patterns` section, extract it directly. Otherwise read the full pivot and infer violations from its prescriptive rules.
+Skip this step if no `composer.json` is found.
+
 ### Step 2 — Analyze each category
 
 #### SOLID violations

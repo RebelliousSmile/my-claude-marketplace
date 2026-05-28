@@ -22,25 +22,25 @@
       "id": "sc-js",
       "name": "sc-js",
       "description": "JS knowledge provider: sniff, audit, improve, legacy (Vue 2→3/ESM/TS), teach (Nuxt/Vue/Alpine/Vite/Astro). Perf/data pivots for web-optimize and data-optimize.",
-      "version": "0.5.3"
+      "version": "0.5.4"
     },
     {
       "id": "sc-python",
       "name": "sc-python",
       "description": "Python-specific skills and workflows: two-tier sniff (pivot model), audit (aidd-dev:reviewer), improve, legacy, log-analysis, teach (Django/FastAPI).",
-      "version": "0.4.1"
+      "version": "0.4.2"
     },
     {
       "id": "sc-rust",
       "name": "sc-rust",
       "description": "Rust-specific skills and workflows: two-tier sniff (pivot model), audit (aidd-dev:reviewer), improve, legacy, log-analysis, teach (Axum/Actix + SQLx/Diesel).",
-      "version": "0.4.1"
+      "version": "0.4.2"
     },
     {
       "id": "sc-php",
       "name": "sc-php",
       "description": "PHP-specific skills and workflows.",
-      "version": "0.4.0"
+      "version": "0.4.1"
     },
     {
       "id": "sc-tiers",
