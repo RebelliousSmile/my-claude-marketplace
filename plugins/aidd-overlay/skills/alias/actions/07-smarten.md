@@ -24,7 +24,7 @@ Rewrite the content applying all rules simultaneously:
 - **Bullet points over prose** — convert prose enumerations to bullet lists. Do not convert narrative paragraphs that provide necessary context.
 - **No speculative content** — delete "you could also", unreachable alternatives, and tangential explanations. Retain documented fallbacks and conditional branches (`if X → do Y`) that are part of the specified behavior.
 - **Preserve all semantics** — every constraint, input, output, fallback, and test condition present in the original must survive in the rewrite. Compress phrasing only; do not drop rules.
-- **Preserve structure** — keep existing headings (`##`, `###`) and their order. Do not add new sections.
+- **Preserve structure** — keep existing headings (`##`, `###`) and their order. Do not add new sections. The description line immediately under the `#` title is structural (not fluff) — compress it, never delete it.
 
 ### Step 3 — Write
 
