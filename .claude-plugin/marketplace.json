@@ -51,9 +51,9 @@
     },
     {
       "name": "sc-python",
-      "version": "0.1.0",
+      "version": "0.4.0",
       "source": "./plugins/sc-python",
-      "description": "Python ecosystem: Django/FastAPI perf pivots + Django ORM/SQLAlchemy data pivots.",
+      "description": "Python ecosystem: two-tier sniff (pivot model), audit, Django/FastAPI perf pivots + Django ORM/SQLAlchemy data pivots.",
       "recommended": false
     },
     {

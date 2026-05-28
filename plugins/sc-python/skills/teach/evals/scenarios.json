@@ -1,0 +1,20 @@
+[
+  { "prompt": "explain Python generators", "expect_action": "explain" },
+  { "prompt": "how does async/await work in Python?", "expect_action": "explain" },
+  { "prompt": "what is the difference between @dataclass and NamedTuple?", "expect_action": "explain" },
+  { "prompt": "montre-moi un exemple de context managers", "expect_action": "explain" },
+  { "prompt": "how do decorators work?", "expect_action": "explain" },
+  { "prompt": "what is EAFP in Python?", "expect_action": "explain" },
+  { "prompt": "explain type hints with generics", "expect_action": "explain" },
+  { "prompt": "je ne comprends pas les metaclasses", "expect_action": "explain" },
+  { "prompt": "c'est quoi un descriptor en Python ?", "expect_action": "explain" },
+  { "prompt": "how do walrus operators work?", "expect_action": "explain" },
+  { "prompt": "give me a practice exercise on generators", "expect_action": "practice" },
+  { "prompt": "quiz me on async patterns", "expect_action": "practice" },
+  { "prompt": "challenge me on Python decorators", "expect_action": "practice" },
+  { "prompt": "exercice sur les dataclasses", "expect_action": "practice" },
+  { "prompt": "test me on type hints", "expect_action": "practice" },
+  { "prompt": "review my code quality", "expect_action": null },
+  { "prompt": "debug this Python error", "expect_action": null },
+  { "prompt": "migrate my code to Python 3.12", "expect_action": null }
+]

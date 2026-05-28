@@ -1,0 +1,15 @@
+[
+  { "prompt": "how can I improve this code", "expect_action": "analyze" },
+  { "prompt": "is this Pythonic?", "expect_action": "analyze" },
+  { "prompt": "find anti-patterns in this file", "expect_action": "analyze" },
+  { "prompt": "code quality check", "expect_action": "analyze" },
+  { "prompt": "refactoring suggestions for this view", "expect_action": "analyze" },
+  { "prompt": "how to better structure this service", "expect_action": "analyze" },
+  { "prompt": "quelles sont les mauvaises pratiques dans ce code", "expect_action": "analyze" },
+  { "prompt": "trouve les anti-patterns Django dans ce fichier", "expect_action": "analyze" },
+  { "prompt": "this code uses mutable defaults", "expect_action": "analyze" },
+  { "prompt": "my type hints are wrong", "expect_action": "analyze" },
+  { "prompt": "optimize my database queries", "expect_action": null },
+  { "prompt": "debug this Python error", "expect_action": null },
+  { "prompt": "migrate this code to Python 3.12", "expect_action": null }
+]

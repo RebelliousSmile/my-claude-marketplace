@@ -1,0 +1,16 @@
+[
+  { "prompt": "detect my Python stack", "expect_action": "scan" },
+  { "prompt": "sniff the project", "expect_action": "scan" },
+  { "prompt": "what Python rules do I need?", "expect_action": "scan" },
+  { "prompt": "update outdated rules", "expect_action": "scan" },
+  { "prompt": "analyse mon projet Python", "expect_action": "scan" },
+  { "prompt": "quelles règles installer pour Django", "expect_action": "scan" },
+  { "prompt": "check which pivots are missing", "expect_action": "scan" },
+  { "prompt": "scan the project capabilities", "expect_action": "scan" },
+  { "prompt": "mets à jour les règles Python", "expect_action": "scan" },
+  { "prompt": "detect capabilities and install rules", "expect_action": "scan" },
+  { "prompt": "re-sync rules after adding FastAPI", "expect_action": "scan" },
+  { "prompt": "no requirements.txt in this project", "expect_action": null },
+  { "prompt": "this is a Node.js project, not Python", "expect_action": null },
+  { "prompt": "manually edit a rule file", "expect_action": null }
+]

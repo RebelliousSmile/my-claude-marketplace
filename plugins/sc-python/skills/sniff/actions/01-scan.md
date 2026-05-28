@@ -1,6 +1,6 @@
 # Action 01 — scan
 
-Detect project capabilities, map them to plugin rules, audit `.claude/rules/` to determine what is missing or outdated.
+Detect project capabilities, map them to plugin pivots, and emit a structured pivot manifeste for `02-install-pivots` and `/sc-python:audit`.
 
 ## Process
 
@@ -29,7 +29,7 @@ If none of these exist, abort:
 | `fastapi` in any manifest | FastAPI |
 | `flask` in any manifest | Flask |
 
-A project may match multiple (e.g. Django + FastAPI in a hybrid monorepo, though uncommon).
+A project may match multiple (e.g. Django + FastAPI in a hybrid monorepo).
 
 ### Step 3 — Classify data layer
 
@@ -38,56 +38,51 @@ A project may match multiple (e.g. Django + FastAPI in a hybrid monorepo, though
 | Django detected and `sqlalchemy` not present | Django ORM (implicitly bundled with Django) |
 | `sqlalchemy` in any manifest | SQLAlchemy |
 
-Note: if Django and SQLAlchemy are both detected, install both — the project may use Django ORM for some models and SQLAlchemy for raw queries.
+If Django and SQLAlchemy are both detected, include both.
 
-### Step 4 — Map capabilities to rules
+### Step 4 — Map capabilities to pivots
 
-For each capability, evaluate the detection condition and determine the rule to install.
+#### Capability pivots (loaded at audit time by `/sc-python:audit` — never installed to disk)
 
-#### Perf pivots (consumed by `web-optimize`)
-
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Pivot path |
 |---|---|---|
-| Django perf | Django detected | `references/07-perf-pivots-django.md` → `.claude/rules/07-quality/perf-pivots-django.md` |
-| FastAPI perf | FastAPI detected | `references/07-perf-pivots-fastapi.md` → `.claude/rules/07-quality/perf-pivots-fastapi.md` |
-| Flask perf | Flask detected | — no plugin rule (report as gap) |
+| Python idioms | Any Python project detected | `python/idioms.md` |
 
-#### Data pivots (consumed by `data-optimize`)
+#### Perf pivots (installed to `.claude/rules/07-quality/`)
 
-| Capability | Condition | Reference → Target |
+| Capability | Condition | Source → Target |
 |---|---|---|
-| Django ORM | Django ORM detected | `references/08-data-pivots-django-orm.md` → `.claude/rules/07-quality/data-pivots-django-orm.md` |
-| SQLAlchemy | SQLAlchemy detected | `references/08-data-pivots-sqlalchemy.md` → `.claude/rules/07-quality/data-pivots-sqlalchemy.md` |
+| Django perf | Django detected | `references/capabilities/perf/django.md` → `.claude/rules/07-quality/perf-pivots-django.md` |
+| FastAPI perf | FastAPI detected | `references/capabilities/perf/fastapi.md` → `.claude/rules/07-quality/perf-pivots-fastapi.md` |
+| Flask perf | Flask detected | — no pivot (report as gap) |
 
-### Step 5 — Status each rule
+#### Data pivots (installed to `.claude/rules/07-quality/`)
 
-For each required rule, determine status:
+| Capability | Condition | Source → Target |
+|---|---|---|
+| Django ORM | Django ORM detected | `references/capabilities/data/django-orm.md` → `.claude/rules/07-quality/data-pivots-django-orm.md` |
+| SQLAlchemy | SQLAlchemy detected | `references/capabilities/data/sqlalchemy.md` → `.claude/rules/07-quality/data-pivots-sqlalchemy.md` |
+
+### Step 5 — Status each perf/data pivot
+
+For each required pivot, determine status:
 - File does not exist → **MISSING**
 - File exists, content matches plugin reference → **UP-TO-DATE**
 - File exists, content differs from plugin reference → **OUTDATED**
-- Condition not met → **NOT-APPLICABLE** (do not install, do not audit)
+- Condition not met → **NOT-APPLICABLE**
 
 ### Step 6 — Detect gaps
 
-A **gap** is a capability that is detected but for which the plugin has no matching rule or skill.
+A **gap** is a capability detected but for which the plugin has no matching pivot.
 
 Built-in gap: Flask has no dedicated perf pivot in this plugin version — always report it when Flask is detected.
 
-Check: are there packages in manifests representing a capability not covered by any entry in Step 4?
-
-Examples of gaps to report:
-- `flask` detected — no Flask perf pivot in plugin
-- `celery` detected — no task queue rule in plugin
-- `alembic` detected — no migration rule in plugin
-
-List all gaps explicitly in the output.
-
 ## Output
 
-Emit a structured manifest for `02-sync`:
+Emit the pivot manifeste for `02-install-pivots`:
 
 ```
-📊 sc-python sniff — capability scan
+📊 sc-python sniff — pivot manifeste
 
 Framework:
   ✅ Django (django==4.2.0 from requirements.txt)
@@ -98,26 +93,32 @@ Data layer:
   ✅ Django ORM (bundled with Django)
   ❌ SQLAlchemy — not detected
 
-Capabilities → rules:
-  Perf (Django)     ✅ perf-pivots-django.md
-  Perf (FastAPI)    — N/A (not detected)
-  Data (Django ORM) ✅ data-pivots-django-orm.md
-  Data (SQLAlchemy) — N/A (not detected)
+Capability pivots (loaded at audit time — not installed):
+  python/idioms.md   ✅
+
+Perf pivots (to install):
+  perf/django.md     ✅ → .claude/rules/07-quality/perf-pivots-django.md
+  perf/fastapi.md    — N/A (not detected)
+
+Data pivots (to install):
+  data/django-orm.md ✅ → .claude/rules/07-quality/data-pivots-django-orm.md
+  data/sqlalchemy.md — N/A (not detected)
 
 Skills support:
-  /web-optimize  ✅ (perf-pivots-django.md ready)
-  /data-optimize ✅ (data-pivots-django-orm.md ready)
+  /web-optimize    ✅ (perf-pivots-django.md ready)
+  /data-optimize   ✅ (data-pivots-django-orm.md ready)
+  /sc-python:audit ✅ (python/idioms.md will be loaded)
 
-Gaps (no plugin rule):
+Gaps (no plugin pivot):
   (none)
 
-Rule audit:
-  MISSING        .claude/rules/07-quality/perf-pivots-django.md
-  OUTDATED       .claude/rules/07-quality/data-pivots-django-orm.md
-  NOT-APPLICABLE perf-pivots-fastapi.md (FastAPI not detected)
-  NOT-APPLICABLE data-pivots-sqlalchemy.md (SQLAlchemy not detected)
+Rule audit (.claude/rules/07-quality/):
+  MISSING   perf-pivots-django.md
+  OUTDATED  data-pivots-django-orm.md
+  N/A       perf-pivots-fastapi.md (FastAPI not detected)
+  N/A       data-pivots-sqlalchemy.md (SQLAlchemy not detected)
 
-→ sync will install 1 file, update 1 file.
+→ install-pivots will install 1 file, update 1 file.
 ```
 
-Then proceed to action `02-sync`.
+Then proceed to `02-install-pivots`.

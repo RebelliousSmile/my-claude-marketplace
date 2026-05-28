@@ -1,0 +1,16 @@
+[
+  { "prompt": "modernize this Python code", "expect_action": "scan" },
+  { "prompt": "upgrade to Python 3.12", "expect_action": "scan" },
+  { "prompt": "this is Python 2 style code", "expect_action": "scan" },
+  { "prompt": "downgrade for Python 3.8 compatibility", "expect_action": "scan" },
+  { "prompt": "add type hints to this module", "expect_action": "scan" },
+  { "prompt": "il y a des fonctions dépréciées dans ce fichier", "expect_action": "scan" },
+  { "prompt": "passer en Python 3.12", "expect_action": "scan" },
+  { "prompt": "le code utilise encore des % strings partout", "expect_action": "scan" },
+  { "prompt": "detect deprecated patterns before upgrading", "expect_action": "scan" },
+  { "prompt": "can I run this on Python 3.8?", "expect_action": "scan" },
+  { "prompt": "identifier les incompatibilités avant la migration Python 3.12", "expect_action": "scan" },
+  { "prompt": "optimize my database queries", "expect_action": null },
+  { "prompt": "manage dependencies with pip", "expect_action": null },
+  { "prompt": "debug a 500 error in production", "expect_action": null }
+]

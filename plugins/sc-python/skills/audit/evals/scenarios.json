@@ -1,0 +1,14 @@
+[
+  { "prompt": "audit my Python code", "expect_action": "audit" },
+  { "prompt": "check Python best practices", "expect_action": "audit" },
+  { "prompt": "review code quality", "expect_action": "audit" },
+  { "prompt": "is this Pythonic?", "expect_action": "audit" },
+  { "prompt": "audit Django conventions", "expect_action": "audit" },
+  { "prompt": "check my FastAPI code", "expect_action": "audit" },
+  { "prompt": "vérifier les bonnes pratiques Python", "expect_action": "audit" },
+  { "prompt": "mon code respecte-t-il les idiomes Python ?", "expect_action": "audit" },
+  { "prompt": "analyse qualité du code Python", "expect_action": "audit" },
+  { "prompt": "optimize my SQL queries", "expect_action": null },
+  { "prompt": "debug this Python error", "expect_action": null },
+  { "prompt": "migrate to Python 3.12", "expect_action": null }
+]
