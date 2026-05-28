@@ -1,5 +1,6 @@
 ---
 name: log-analysis
+model: sonnet
 description: >-
   Analyzes server and PHP logs across three environments: host filesystem (local),
   Docker containers (docker), and remote production server (prod via SSH).

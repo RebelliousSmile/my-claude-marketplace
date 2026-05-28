@@ -1,5 +1,6 @@
 ---
 name: teach
+model: sonnet
 description: >-
   Teaches PHP language features, OOP patterns, and framework idioms by pulling
   examples directly from the current project codebase. Explains concepts with real
