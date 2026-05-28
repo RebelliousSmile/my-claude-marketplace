@@ -77,6 +77,7 @@ For each capability, evaluate the detection condition **against `package.json` o
 | Capability | Condition | Pivot path |
 |---|---|---|
 | Vue component scope | Vue or Nuxt detected | `components/shared-scope.md` |
+| Alpine.js component patterns | Alpine.js detected | `components/alpine-x-data.md` |
 
 #### State management
 
@@ -118,11 +119,12 @@ For each capability, evaluate the detection condition **against `package.json` o
 |---|---|---|
 | preconnect / dns-prefetch | `runtime = "web"` | `networking/preconnect.md` |
 
-#### Server (Nuxt only)
+#### Server
 
 | Capability | Condition | Pivot path |
 |---|---|---|
 | Nitro server imports | Nuxt detected | `server/nitro-imports.md` |
+| Express MVC patterns | `express` in dependencies | `server/express-mvc.md` |
 
 #### SSR guards (isomorphic JS only)
 
