@@ -36,7 +36,7 @@ Non-sequential — dispatch based on user intent:
 
 ## Transversal rules
 
-- Never print or log SSH credentials, passwords, or key paths.
+- Never print or log SSH credentials, passwords, key paths, hostnames, or tokens that may appear in grepped log lines.
 - Always show timestamps in output.
 - Truncate individual log lines to 300 chars to avoid flooding context.
 - When errors are found, always suggest a likely fix or next investigation step.
