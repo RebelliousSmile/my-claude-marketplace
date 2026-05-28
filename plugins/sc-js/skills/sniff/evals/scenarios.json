@@ -1,0 +1,17 @@
+[
+  { "prompt": "detect my JS stack", "expect_action": "scan" },
+  { "prompt": "sniff the project", "expect_action": "scan" },
+  { "prompt": "what JS rules do I need?", "expect_action": "scan" },
+  { "prompt": "analyse mon projet Vue", "expect_action": "scan" },
+  { "prompt": "quelles règles installer pour Nuxt", "expect_action": "scan" },
+  { "prompt": "check which pivots are missing", "expect_action": "scan" },
+  { "prompt": "scan the project capabilities", "expect_action": "scan" },
+  { "prompt": "detect capabilities and install rules", "expect_action": "scan" },
+  { "prompt": "re-sync rules after adding Pinia", "expect_action": "scan" },
+  { "prompt": "update outdated JS rules", "expect_action": "scan" },
+  { "prompt": "migrate from sc-js 0.3.0", "expect_action": "clean" },
+  { "prompt": "clean old capability rules", "expect_action": "clean" },
+  { "prompt": "no package.json in this project", "expect_action": null },
+  { "prompt": "this is a Python project", "expect_action": null },
+  { "prompt": "manually edit a rule file", "expect_action": null }
+]

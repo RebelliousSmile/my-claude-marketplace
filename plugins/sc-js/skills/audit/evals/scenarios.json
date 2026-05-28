@@ -1,0 +1,15 @@
+[
+  { "prompt": "audit my JS code", "expect_action": "audit" },
+  { "prompt": "check JS best practices", "expect_action": "audit" },
+  { "prompt": "review code quality", "expect_action": "audit" },
+  { "prompt": "audit Vue components", "expect_action": "audit" },
+  { "prompt": "check Pinia usage", "expect_action": "audit" },
+  { "prompt": "review code against JS standards", "expect_action": "audit" },
+  { "prompt": "vérifier les bonnes pratiques Vue", "expect_action": "audit" },
+  { "prompt": "mon code respecte-t-il les conventions Nuxt ?", "expect_action": "audit" },
+  { "prompt": "audit my Nuxt project", "expect_action": "audit" },
+  { "prompt": "check my Alpine.js patterns", "expect_action": "audit" },
+  { "prompt": "optimize my SQL queries", "expect_action": null },
+  { "prompt": "debug this JS error", "expect_action": null },
+  { "prompt": "migrate to Vue 4", "expect_action": null }
+]
