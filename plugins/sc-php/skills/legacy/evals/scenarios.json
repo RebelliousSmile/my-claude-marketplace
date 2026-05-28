@@ -1,0 +1,17 @@
+[
+  { "prompt": "modernize this PHP code", "expect_action": "scan" },
+  { "prompt": "upgrade to PHP 8.2", "expect_action": "scan" },
+  { "prompt": "this is old PHP, can you help?", "expect_action": "scan" },
+  { "prompt": "downgrade this for PHP 7.4 compatibility", "expect_action": "scan" },
+  { "prompt": "migrate to Laravel 11", "expect_action": "scan" },
+  { "prompt": "il y a des fonctions dépréciées dans ce fichier", "expect_action": "scan" },
+  { "prompt": "passer en PHP 8.3", "expect_action": "scan" },
+  { "prompt": "les mysql_* functions sont partout dans le projet", "expect_action": "scan" },
+  { "prompt": "detect deprecated patterns before upgrading", "expect_action": "scan" },
+  { "prompt": "can I run this codebase on PHP 7.4?", "expect_action": "scan" },
+  { "prompt": "ce code utilise encore ereg_replace, c'est gérable ?", "expect_action": "scan" },
+  { "prompt": "identifier les incompatibilités avant la migration PHP 8", "expect_action": "scan" },
+  { "prompt": "optimize my database queries", "expect_action": null },
+  { "prompt": "manage dependencies with Composer", "expect_action": null },
+  { "prompt": "debug a 500 error in production", "expect_action": null }
+]

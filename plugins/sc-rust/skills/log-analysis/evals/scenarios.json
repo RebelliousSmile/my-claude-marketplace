@@ -1,0 +1,19 @@
+[
+  { "prompt": "montre-moi les derniers logs", "expect_action": "tail" },
+  { "prompt": "check the application logs", "expect_action": "tail" },
+  { "prompt": "les 100 dernières lignes des logs axum en prod", "expect_action": "tail" },
+  { "prompt": "show me the last 200 lines of actix-web logs on docker", "expect_action": "tail" },
+  { "prompt": "quels sont les panics Rust dans les logs ?", "expect_action": "parse-errors" },
+  { "prompt": "Rust panics on docker", "expect_action": "parse-errors" },
+  { "prompt": "est-ce qu'il y a des erreurs tokio dans les logs ?", "expect_action": "parse-errors" },
+  { "prompt": "what 500 errors do we have in the axum logs in production?", "expect_action": "parse-errors" },
+  { "prompt": "cherche les erreurs 500 dans les logs axum", "expect_action": "search" },
+  { "prompt": "find all occurrences of 'thread panicked' in production logs", "expect_action": "search" },
+  { "prompt": "grep 'POST /api' dans les logs d'accès actix", "expect_action": "search" },
+  { "prompt": "donne-moi un résumé des erreurs du jour", "expect_action": "summarize" },
+  { "prompt": "log report for the last 24h", "expect_action": "summarize" },
+  { "prompt": "analyse les performances des requêtes SQL", "expect_action": null },
+  { "prompt": "compile mes rapports trimestriels", "expect_action": null },
+  { "prompt": "montre-moi les logs en production", "expect_action": "tail" },
+  { "prompt": "résumé des panics sur le serveur de prod depuis 24h", "expect_action": "summarize" }
+]
