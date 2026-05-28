@@ -1,3 +1,4 @@
+<!-- DEPRECATED in sc-php v0.4.0 — replaced by 02-install-pivots.md; deletion scheduled for Phase 4 -->
 # Action 02 — sync
 
 Install missing rules and update outdated ones identified by `01-scan`.
