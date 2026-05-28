@@ -41,6 +41,7 @@ Note: both `axum` and `actix-web` map to the same perf pivot (`perf/axum.md`). I
 |---|---|---|
 | Rust idioms | Any Rust project detected | `rust/idioms.md` |
 | PyO3 FFI bridge | `pyo3` detected | `rust/pyo3.md` |
+| Tauri desktop app | `tauri` detected | `rust/tauri.md` |
 
 #### Perf pivots (installed to `.claude/rules/07-quality/`)
 

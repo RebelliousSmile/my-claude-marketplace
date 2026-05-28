@@ -27,6 +27,7 @@ Re-detect capabilities from `Cargo.toml` (same conditions as `sniff/01-scan`). F
 | Rust idioms | Always | `rust/idioms.md` |
 | PyO3 FFI safety | `pyo3` in dependencies | `rust/pyo3.md` |
 | rusqlite patterns | `rusqlite` in dependencies | `data/rusqlite.md` |
+| Tauri desktop patterns | `tauri` in dependencies | `rust/tauri.md` |
 
 If a loaded pivot has a `## Anti-patterns` section, extract it directly. Otherwise read the full pivot and infer violations from its prescriptive rules.
 Skip this step entirely if no `Cargo.toml` is found.

@@ -34,7 +34,7 @@
       "id": "sc-rust",
       "name": "sc-rust",
       "description": "Rust-specific skills and workflows: two-tier sniff (pivot model), audit (aidd-dev:reviewer), improve, legacy, log-analysis, teach (Axum/Actix + SQLx/Diesel).",
-      "version": "0.4.2"
+      "version": "0.4.3"
     },
     {
       "id": "sc-php",
