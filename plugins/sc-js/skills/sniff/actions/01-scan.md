@@ -27,8 +27,9 @@ If `package.json` is absent, abort:
 | Signal (package.json) | Framework |
 |---|---|
 | `nuxt` | Nuxt 3 (SSR/SSG) |
+| `@sveltejs/kit` | SvelteKit (SSR/SSG/SPA) |
 | `vue` (without `nuxt`) | Vue SPA |
-| `vite` (without `nuxt` and without `vue`) | Vite hybrid (Laravel, Django, etc.) |
+| `vite` (without `nuxt`, `vue`, `@sveltejs/kit`) | Vite hybrid (Laravel, Django, etc.) |
 | `alpinejs` or `@alpinejs/core` | Alpine.js |
 | `astro` | Astro |
 | `@11ty/eleventy` | 11ty |
@@ -105,7 +106,7 @@ For each capability, evaluate the detection condition and record the applicable 
 
 | Capability | Condition | Pivot path |
 |---|---|---|
-| SSR storage guards | Nuxt detected | `ssr/storage-guards.md` |
+| SSR storage guards | Nuxt or SvelteKit detected | `ssr/storage-guards.md` |
 
 #### TypeScript
 

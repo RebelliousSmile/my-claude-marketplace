@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-js",
-  "version": "0.5.4",
-  "description": "JS knowledge provider: detects runtime (web/desktop), framework (Nuxt/Vue/Alpine/Vite/Astro), ORMs and capabilities, then emits a pivot manifeste. /sc-js:audit delegates code review to aidd-dev:reviewer. improve, legacy (Vue 2→3, ESM, TS), teach (composables, reactivity, async). Perf/data pivots for web-optimize and data-optimize.",
+  "version": "0.5.5",
+  "description": "JS knowledge provider: detects runtime (web/desktop), framework (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), ORMs and capabilities, then emits a pivot manifeste. /sc-js:audit delegates code review to aidd-dev:reviewer. improve, legacy (Vue 2→3, ESM, TS), teach (composables, reactivity, async). Perf/data pivots for web-optimize and data-optimize.",
   "author": {
     "name": "François-Xavier Guillois"
   }

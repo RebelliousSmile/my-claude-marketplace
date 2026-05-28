@@ -20,6 +20,11 @@ Re-detect capabilities from `package.json` (same conditions as `sniff/01-scan`).
 | TypeScript patterns | `typescript` or `vue-tsc` in devDependencies, or Nuxt 3 detected | `typescript.md` |
 | Pinia store patterns | `pinia` in dependencies | `state/pinia.md` |
 | Vue component scope | Vue or Nuxt detected | `components/shared-scope.md` |
+| Alpine.store patterns | Alpine.js detected | `state/alpine-store.md` |
+| SSR storage guards | Nuxt or SvelteKit detected | `ssr/storage-guards.md` |
+| Nitro server imports | Nuxt detected | `server/nitro-imports.md` |
+| Vite dynamic imports | Vite detected (any framework with vite) | `code-splitting/dynamic-import.md` |
+| Vue async components | Vue or Nuxt detected | `code-splitting/defineAsyncComponent.md` |
 
 Apply the same TS guard as the TypeScript type coverage category above: do not load `typescript.md` if no `tsconfig.json` and no `typescript` in devDependencies.
 If a loaded pivot has a `## Anti-patterns` section, extract it directly. Otherwise read the full pivot and infer violations.
