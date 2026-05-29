@@ -9,11 +9,11 @@
 
 ## Process
 
-1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté, univers), les données d'univers `JDR/univers/<univers>/.docs/` (`personnages.md`, `factions.md`, `geographie.md`), les fronts actifs `JDR/<campagne>/fronts.md`, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale).
+1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté, univers), les données d'univers **canon ET MJ** (`JDR/univers/<univers>/.docs/canon/` et `.docs/mj/` : `personnages.md`, `factions.md`, `geographie.md`), les fronts actifs `JDR/<campagne>/fronts.md`, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale). Le canon prime ; le MJ étend.
 2. **Construire en situation, pas en intrigue linéaire** (adapté au solo) :
    - **Prémisse & enjeu** : ce qui est vrai au départ, ce qui va déraper si le PJ n'agit pas.
-   - **Lieux** : 3–6 lieux clés ; les lieux durables vivent dans l'univers (`geographie.md`) — les `[[lier]]`, n'inscrire ici que leur mise en jeu (ambiance, ce qu'on y trouve maintenant).
-   - **PNJ impliqués** : `[[lier]]` les fiches de l'univers (`personnages.md`) ; en proposer de nouveaux via `npc` (créés côté univers).
+   - **Lieux** : 3–6 lieux clés ; `[[lier]]` les lieux existants (`canon/` ou `mj/geographie.md`), créer les nouveaux (invention MJ) dans `mj/geographie.md` ; n'inscrire ici que leur mise en jeu (ambiance, ce qu'on y trouve maintenant).
+   - **PNJ impliqués** : `[[lier]]` les fiches d'univers (`canon/` ou `mj/personnages.md`) ; en créer de nouveaux via `npc` (écrits dans `mj/`).
    - **Fronts & horloges** : ce qui avance en arrière-plan (lier à `fronts.md` de la campagne et aux factions d'univers).
    - **Amorces de scènes** : 4–8 scènes-germes (déclencheur + tension), pas un script figé.
    - **Issues possibles** : succès / échec / coût, et conséquences sur les fronts.

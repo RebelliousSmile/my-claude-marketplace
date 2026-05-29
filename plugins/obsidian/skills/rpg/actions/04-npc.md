@@ -1,6 +1,6 @@
 # 04 - npc
 
-Crée ou développe un PNJ de campagne (distinct du personnage-joueur, géré par `pc`).
+Crée ou développe un PNJ **créé par le MJ** (distinct du personnage-joueur géré par `pc`, et du lore canon).
 
 ## Inputs
 
@@ -9,21 +9,21 @@ Crée ou développe un PNJ de campagne (distinct du personnage-joueur, géré pa
 
 ## Process
 
-1. **Lire le contexte** : `config.yaml` (univers visé, profondeur PNJ attendue), les `personnages.md` / `factions.md` de l'univers (`JDR/univers/<univers>/.docs/`), le `synopsis.md` et le scénario qui l'invoque.
-2. **Définir le PNJ (durable)** :
+1. **Lire le contexte** : `config.yaml` (univers visé, profondeur PNJ attendue), les personnages/factions **canon** (`JDR/univers/<univers>/.docs/canon/`) ET MJ (`.docs/mj/`), le `synopsis.md` et le scénario qui l'invoque. Si le PNJ visé est canon, ne pas le réécrire : créer une fiche MJ qui l'**étend** et le `[[lie]]`.
+2. **Définir le PNJ (durable, création MJ)** :
    - Identité : nom, rôle, première impression / façade.
-   - **Motivation & agenda** : ce qu'il veut, ce qu'il fera pour l'obtenir (relié à une faction de l'univers si pertinent).
+   - **Motivation & agenda** : ce qu'il veut, ce qu'il fera pour l'obtenir (relié à une faction si pertinent).
    - **Secret / levier** : ce qu'il cache, ce qui le rend manipulable.
    - **Voix** : 2–3 tics de langage ou de comportement pour le jouer vite.
    - **Tags Parallaxe** : forces/faiblesses, statuts éventuels (consulter la référence Parallaxe — ne pas inventer).
-3. **Écrire l'entrée durable dans l'univers** : ajouter/compléter le PNJ dans `JDR/univers/<univers>/.docs/personnages.md` (arborescence partagée avec `lore-extract` : une info dans un seul fichier, ne pas écraser, synthétiser si > ~250 lignes). `[[lier]]` la faction dans `factions.md`.
-4. **Spécifique à la campagne** : si le PNJ a un rôle/une posture propre à *cette* partie (lien à la ligne rouge du PJ, implication dans un front actif), le consigner côté campagne — dans le scénario concerné (`scenarios/`) ou `fronts.md` — en référençant l'entrée d'univers, sans la dupliquer.
-5. Mettre à jour l'`index.md` de la campagne (PNJ en jeu → lien vers l'univers).
+3. **Écrire dans `mj/`** : ajouter/compléter le PNJ dans `JDR/univers/<univers>/.docs/mj/personnages.md` (une info dans un seul fichier, ne pas écraser, synthétiser si > ~250 lignes). `[[lier]]` la faction (`mj/` ou `canon/factions.md`). **Ne jamais écrire dans `canon/`**. Si le PNJ contredit le canon, le signaler.
+4. **Spécifique à la campagne** : si le PNJ a un rôle/une posture propre à *cette* partie (lien à la ligne rouge du PJ, implication dans un front actif), le consigner côté campagne — dans le scénario concerné (`scenarios/`) ou `fronts.md` — en référençant la fiche `mj/`, sans la dupliquer.
+5. Mettre à jour l'`index.md` de la campagne (PNJ en jeu → lien vers `mj/`).
 
 ## Outputs
 
-Entrée PNJ dans `JDR/univers/<univers>/.docs/personnages.md` (durable, partagée) + éventuelles notes de rôle côté campagne référençant cette entrée. Marquer les `[À compléter]`.
+Entrée PNJ dans `JDR/univers/<univers>/.docs/mj/personnages.md` (création MJ) + éventuelles notes de rôle côté campagne. `canon/` inchangé. Marquer les `[À compléter]`.
 
 ## Test
 
-L'entrée PNJ vit dans `personnages.md` de l'univers (pas dupliquée ailleurs), contient au moins motivation/agenda + un secret/levier, les tags Parallaxe (s'il y en a) proviennent de la référence Parallaxe, et tout rôle spécifique à la campagne référence l'entrée d'univers.
+L'entrée PNJ vit dans `mj/personnages.md` (jamais dans `canon/`, non dupliquée), contient au moins motivation/agenda + un secret/levier, les tags Parallaxe (s'il y en a) proviennent de la référence Parallaxe, et toute extension d'un PNJ canon le `[[lie]]` sans le réécrire.
