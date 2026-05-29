@@ -2,9 +2,14 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obsidian`.
 
+## [0.4.0] — 2026-05-29
+
+### Added
+- **`rpg`** — prep MJ du JDR solo : écriture de scénarios et préparation de campagne. Actions : `campaign` (amorce de la couche prep + synopsis), `scenario` (situation jouable : lieux, PNJ, fronts, amorces, issues), `prep-session` (objectif, scènes probables, questions oracle pré-armées, tables, accroches), `npc` (PNJ de campagne), `faction` (factions + fronts/horloges), `review` (cohérence et jouabilité). Complète `pc` (fiches PJ) et `solo-mc` (jeu en direct, plugin aidd-overlay) ; campagne dans `JDR/<campagne>/`, ancrée sur l'`intention.md` du PJ et le système Jauges & Tarot.
+
 ## [0.3.1] — 2026-05-29 (baseline)
 
-Gestion de notes Obsidian. Skills : `project`, `pc`, `mail`.
+Skills : `project`, `pc`, `mail`.
 
 ### Fixed
 - `mail` : gestion d'un frontmatter non-YAML lors de l'insertion de `processed: true`.

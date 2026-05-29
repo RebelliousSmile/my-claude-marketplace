@@ -79,9 +79,9 @@
     },
     {
       "name": "obsidian",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "source": "./plugins/obsidian",
-      "description": "Personal Obsidian notes management — Pro project lifecycle (create, fill, reorganize, log-session, log-meeting, add-invoice, export-rag) and JDR solo player-character management (new, fill, reorganize, log-session, show).",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc) plus scenario writing and campaign preparation (rpg).",
       "recommended": false
     }
   ]
