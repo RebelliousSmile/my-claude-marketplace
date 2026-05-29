@@ -42,6 +42,10 @@ This action installs ONLY to `.claude/rules/07-quality/`. It never writes to `.c
 
 ## Output
 
+Pick the header by what actually happened — never claim "installed" when nothing was written.
+
+### Case A — at least one pivot was installed or updated
+
 ```
 ✅ sc-js sniff — pivots installed
 
@@ -59,3 +63,27 @@ This action installs ONLY to `.claude/rules/07-quality/`. It never writes to `.c
 → Run /sc-js:audit to review JS code quality against capability pivots.
 → Run /sc-js:sniff clean to remove orphaned 0.3.0 capability rules (opt-in migration).
 ```
+
+### Case B — nothing to install (no applicable perf/data pivot)
+
+Use this header verbatim when the manifeste lists no perf and no data pivot (e.g. a vanilla-web or framework-less project). Do **not** write `pivots installed` in this case.
+
+```
+✅ sc-js sniff — nothing to install
+
+  Perf pivots:
+    — none applicable (no framework with a perf pivot detected)
+
+  Data pivots:
+    — none detected
+
+  Capability rules: not installed (loaded on demand by /sc-js:audit)
+
+→ /web-optimize and /data-optimize have no pivot to load for this project.
+→ Run /sc-js:audit to review JS code quality against capability pivots.
+→ Run /sc-js:sniff clean to remove orphaned 0.3.0 capability rules (opt-in migration).
+```
+
+### Case C — pivots were applicable but all already up-to-date
+
+Header `✅ sc-js sniff — pivots up-to-date`; list each pivot with `✓ … (skipped — up-to-date)`.

@@ -146,6 +146,7 @@ For each capability, evaluate the detection condition **against `package.json` o
 | Capability | Condition | Pivot path |
 |---|---|---|
 | Biome | `@biomejs/biome` in devDependencies | `tools/biome.md` |
+| ESLint | `eslint` in devDependencies | `tools/eslint.md` |
 | Playwright perf | `@playwright/test` or `playwright` or `playwright-core` in devDependencies | `tools/playwright.md` |
 | Vitest | `vitest` in devDependencies | `tools/vitest.md` |
 
@@ -176,6 +177,13 @@ These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`
 ### Step 6 — Detect gaps
 
 A **gap** is a package detected in `dependencies`/`devDependencies` that has no matching pivot in Step 5. Scan **all** entries — not just framework libraries — then sort each gap into one of three buckets. The buckets exist so the single actionable signal (capability gaps worth authoring a pivot for) is not drowned out by noise.
+
+**Companion packages — not gaps.** Before bucketing, drop any package that is a companion/peer of a capability **already covered by a pivot in the manifeste**. A covered pivot accounts for its whole toolchain, so its satellites must not be re-listed as gaps. Examples:
+- `@vitest/coverage-v8`, `@vitest/ui` — covered by `tools/vitest.md`
+- `@eslint/js`, `globals`, `eslint-config-prettier` — covered by `tools/eslint.md`
+- `playwright-core`, `@playwright/test` (whichever did not trigger detection) — covered by `tools/playwright.md`
+
+A companion is dropped silently (it is neither a gap nor "excluded") — it is simply part of the covered capability. If a package looks like a companion but the parent pivot is **not** in the manifeste, treat it normally (it is not covered, so it may be a real gap).
 
 #### Bucket A — Capability gaps (pivot candidates)
 

@@ -34,7 +34,7 @@
       "id": "sc-js",
       "name": "sc-js",
       "description": "JS knowledge provider: sniff, audit, improve, legacy (Vue 2→3/ESM/TS), teach (Nuxt/Vue/Alpine/Vite/Astro). Perf/data pivots for web-optimize and data-optimize.",
-      "version": "0.6.4"
+      "version": "0.6.5"
     },
     {
       "id": "sc-python",

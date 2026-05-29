@@ -1,5 +1,17 @@
 # Changelog — sc-js
 
+## [0.6.5] — 2026-05-29
+
+### sniff
+
+- **`02-install-pivots` — explicit no-op output.** No longer prints `✅ pivots installed` when nothing was written. New headers: `nothing to install` (no applicable perf/data pivot, e.g. vanilla web) and `pivots up-to-date` (all already current).
+- **ESLint detection** — `eslint` in devDependencies now maps to the new `tools/eslint.md` pivot, restoring symmetry with Biome (the dominant linter was previously sunk into the tooling/infra bucket).
+- **`01-scan` Step 6 — companion-package dedup.** Satellites of an already-covered pivot (e.g. `@vitest/coverage-v8` under `tools/vitest.md`, `@eslint/js`/`globals` under `tools/eslint.md`, `playwright-core` under `tools/playwright.md`) are dropped instead of re-listed as gaps.
+
+### New capability pivot
+
+- **`tools/eslint.md`** — flat config (ESLint 9+), `@eslint/js`/`globals`, CI (`--max-warnings=0`), Prettier coexistence, anti-patterns.
+
 ## [0.6.4] — 2026-05-29
 
 ### sniff

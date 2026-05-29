@@ -46,5 +46,6 @@ Sequential: `scan` → `install-pivots`.
 - Never install a perf pivot for a framework not detected.
 - Never install a data pivot for an ORM not detected.
 - `03-clean` is destructive — always show a dry-run scan before deleting anything.
-- Report gaps in three buckets: capability gaps (pivot candidates, listed exhaustively), tooling/infra (condensed, no pivot expected), and private/workspace packages (excluded by scope). See `01-scan` Step 6.
+- Report gaps in three buckets: capability gaps (pivot candidates, listed exhaustively), tooling/infra (condensed, no pivot expected), and private/workspace packages (excluded by scope). Drop companion packages of an already-covered pivot (e.g. `@vitest/coverage-v8`, `@eslint/js`) — they are not gaps. See `01-scan` Step 6.
+- `02-install-pivots` never prints "pivots installed" when nothing was written — use the no-op / up-to-date header instead.
 - A free-text summary must never call something a "gap" if it appears in the pivot manifeste.
