@@ -1,5 +1,11 @@
 # Changelog — sc-php
 
+## v0.4.3 — 2026-05-29
+
+### Fixed
+- `sniff/01-scan.md`: déplace la contrainte de format plain-text en tête du fichier, avant le processus, pour éviter que le modèle ne choisisse les tables markdown avant d'atteindre la section Output.
+- `sniff/SKILL.md`: ajoute l'interdiction des tables markdown dans les règles transversales.
+
 ## v0.4.2 — 2026-05-29
 
 ### Added

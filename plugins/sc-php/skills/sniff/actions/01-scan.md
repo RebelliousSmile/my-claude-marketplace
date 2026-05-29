@@ -1,5 +1,9 @@
 # Action 01 — scan
 
+> **OUTPUT FORMAT — enforced before any processing:**
+> The output of this action MUST use the exact plain-text format defined in the [Output](#output) section below.
+> **Markdown tables are strictly forbidden.** Use `✅ / ❌` lines with indentation, exactly as shown in the template.
+
 Detect project capabilities, map them to PHP knowledge pivots, and emit a pivot manifeste for use by `02-install-pivots` and `/sc-php:audit`.
 
 ## Process

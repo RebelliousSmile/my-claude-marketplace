@@ -45,3 +45,4 @@ Sequential: `scan` → `install-pivots`.
 - Compare installed pivot content against the plugin reference before updating — skip files already identical.
 - Report every file written, updated, or skipped.
 - Report gaps: capabilities detected but no matching plugin pivot exists.
+- **Output format is strict plain-text with `✅ / ❌` lines. Markdown tables are forbidden in all actions of this skill.**
