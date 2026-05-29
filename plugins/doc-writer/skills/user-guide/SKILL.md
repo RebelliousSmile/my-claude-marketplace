@@ -34,6 +34,7 @@ Trigger-to-action mapping:
 ## Transversal rules
 
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` first.
+- **Rédaction en français par défaut** — le guide est écrit en français (sauf demande explicite d'une autre langue) ; seuls les libellés d'UI gardent leur forme d'origine.
 - **Task-oriented**: one section per user goal, titled by the goal ("Send an invoice"), not by the UI ("The Invoices screen").
 - Plain language; assume no internal/technical knowledge; define any unavoidable term.
 - Steps are numbered, imperative, one action each, and state the expected result.

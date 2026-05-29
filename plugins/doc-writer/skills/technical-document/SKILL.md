@@ -34,6 +34,7 @@ Trigger-to-action mapping:
 ## Transversal rules
 
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` first.
+- **Rédaction en français par défaut** — la prose est en français (sauf demande explicite d'une autre langue) ; le code, les signatures, les commandes et les libellés gardent leur forme d'origine.
 - Match the document type's structure from `references/doc-types.md` — don't invent a shape.
 - **Ground every technical claim in the code**: read the relevant source before asserting behavior; cite `file:symbol`/`file:line` where useful.
 - Examples must be real and runnable — copy from or validate against the codebase, never illustrative pseudo-code presented as working.

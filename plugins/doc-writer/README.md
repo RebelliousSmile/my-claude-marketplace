@@ -4,6 +4,8 @@
 
 Distinct du plugin `writing` (rédaction narrative) et du skill `aidd-overlay:readme` (README de dépôt) : `doc-writer` couvre la documentation produit, technique et contractuelle.
 
+> **Rédaction en français par défaut.** Les noms de skills et certains termes (`specification`, `runbook`…) sont en anglais, mais les documents produits sont rédigés en français, sauf demande explicite d'une autre langue.
+
 ## Philosophie
 
 - **Lecteur d'abord** : on nomme le lecteur et son objectif avant d'écrire une ligne.

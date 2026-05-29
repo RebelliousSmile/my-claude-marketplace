@@ -19,10 +19,11 @@ The ethos every `doc-writer` skill follows, whatever the document type. Referenc
 - **Every claim verifiable.** Never invent versions, numbers, behaviors, endpoints, or UI. If unknown, ask or mark it explicitly as an assumption / open question.
 - **No marketing fluff.** Ban "powerful", "easy", "seamless", "robust", "simply", "just". State what it does and how, factually.
 
-## Language
+## Langue de rédaction
 
-- Write in the language of the request/product (default to the language the user wrote in); keep terminology aligned with the product's own wording.
-- No emoji in the body of a versioned/delivered document unless the user asks.
+- **Rédaction en français par défaut.** Ce plugin produit de la documentation en français, même si les noms de skills et certains termes techniques sont en anglais. N'écrire dans une autre langue que si l'utilisateur le demande explicitement.
+- Conserver les termes techniques consacrés et les libellés d'UI dans leur forme d'origine (ne pas traduire un label produit anglais) — mais la prose qui les entoure reste en français.
+- Pas d'emoji dans le corps d'un document livré/versionné, sauf demande explicite.
 
 ## Done
 

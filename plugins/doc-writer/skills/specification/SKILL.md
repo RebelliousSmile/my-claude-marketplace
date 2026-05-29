@@ -34,6 +34,7 @@ Trigger-to-action mapping:
 ## Transversal rules
 
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` and `references/spec-structure.md` first.
+- **Rédaction en français par défaut** — le cahier des charges est rédigé en français (sauf demande explicite d'une autre langue) ; les termes techniques consacrés gardent leur forme d'origine.
 - **Every requirement is atomic, uniquely identified, prioritized, and verifiable.** IDs like `FR-1`, `NFR-1`; priority via MoSCoW (Must/Should/Could/Won't).
 - Scope is explicit on **both** sides: an "out of scope" list is mandatory.
 - Acceptance criteria are measurable — a criterion you cannot test is not done.
