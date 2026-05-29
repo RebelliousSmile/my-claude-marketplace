@@ -1,5 +1,10 @@
 # Changelog — sc-php
 
+## v0.4.8 — 2026-05-29
+
+### Changed
+- `sniff/01-scan.md`: refactorise la readiness des skills — supprime la section `Skills support` séparée (systématiquement omise en 7 passes) et intègre les lignes `→ /skill : STATUS` directement dans chaque sous-bloc du Pivot manifeste (après capability pivots, perf pivots, data pivots). Supprime Step 8 et la closing gate.
+
 ## v0.4.7 — 2026-05-29
 
 ### Fixed

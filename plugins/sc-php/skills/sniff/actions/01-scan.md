@@ -60,18 +60,17 @@ If either signal is found, enable the `testing/bruno.md` capability pivot.
 
 ### Step 5 — Map capabilities to knowledge pivots
 
-#### 5a — Capability pivots (loaded at audit time, NOT installed to disk)
-
-For each capability, evaluate the detection condition and record the applicable pivot path (under `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/`). These paths are **never installed** — they are loaded on demand by `/sc-php:audit`.
+#### 5a — Capability pivots (loaded at audit time by `/sc-php:audit`, NOT installed to disk)
 
 | Capability | Condition | Pivot path (via `${CLAUDE_PLUGIN_ROOT}`) |
 |---|---|---|
 | PHP SOLID violations | always (every PHP project) | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/php/solid.md` |
 | Bruno test conventions | `bruno/` folder or `*.bru` files detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/testing/bruno.md` |
 
-#### 5b — Perf pivots (install targets, consumed by `web-optimize`)
+After listing capability pivots, append the `/sc-php:audit` readiness line:
+- → `/sc-php:audit` : PRÊT (capability pivots: list the active ones)
 
-These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`. Unlike capability pivots, they ARE written to disk.
+#### 5b — Perf pivots (install targets, consumed by `/web-optimize`)
 
 | Condition | Source | Target |
 |---|---|---|
@@ -80,12 +79,20 @@ These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`
 | WordPress detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/wordpress.md` | `.claude/rules/07-quality/perf-pivots-wordpress.md` |
 | HTMX detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/htmx.md` | `.claude/rules/07-quality/perf-pivots-htmx.md` |
 
-#### 5c — Data pivots (install targets, consumed by `data-optimize`)
+After listing perf pivots, append the `/web-optimize` readiness line:
+- If ≥ 1 perf pivot applicable → `/web-optimize` : PRÊT (will be installed by 02-install-pivots)
+- If no perf pivot applicable → `/web-optimize` : NOT APPLICABLE (no framework detected)
+
+#### 5c — Data pivots (install targets, consumed by `/data-optimize`)
 
 | Condition | Source | Target |
 |---|---|---|
 | Eloquent detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/eloquent.md` | `.claude/rules/07-quality/data-pivots-eloquent.md` |
 | Doctrine detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/doctrine.md` | `.claude/rules/07-quality/data-pivots-doctrine.md` |
+
+After listing data pivots, append the `/data-optimize` readiness line:
+- If ≥ 1 data pivot applicable → `/data-optimize` : PRÊT (will be installed by 02-install-pivots)
+- If no data pivot applicable → `/data-optimize` : NOT APPLICABLE (no ORM detected)
 
 ### Step 6 — Status each perf/data pivot
 
@@ -110,47 +117,13 @@ Examples of gaps to report:
 
 List all gaps explicitly in the output.
 
-### Step 8 — Build Skills support summary
-
-**This step is mandatory. Do not skip it.**
-
-For each downstream skill, determine readiness based on the results of Steps 5–7:
-
-| Skill | Ready if… | Not applicable if… |
-|---|---|---|
-| `/web-optimize` | ≥ 1 perf pivot is MISSING or UP-TO-DATE | no perf pivot applicable |
-| `/data-optimize` | ≥ 1 data pivot is MISSING or UP-TO-DATE | no data pivot applicable |
-| `/sc-php:audit` | always ready (capability pivots always loaded) | — |
-
-For each skill, emit one line:
-- `✅ /skill-name — reason` (ready or will be ready after install)
-- `— /skill-name — NOT APPLICABLE — reason` (no applicable pivot)
-
-This summary MUST be the **last thing you write** in Action 01, immediately before the `→ Proceed to 02-install-pivots.` line. It comes after Gaps.
-
-**Example — vanilla PHP (no framework, no ORM):**
-```
-Skills support:
-  — /web-optimize  — NOT APPLICABLE (no framework detected)
-  — /data-optimize — NOT APPLICABLE (no ORM detected)
-  ✅ /sc-php:audit  (capability pivots: php/solid.md, testing/bruno.md)
-```
-
-**Example — Laravel + Eloquent:**
-```
-Skills support:
-  ✅ /web-optimize  (perf-pivots-laravel.md — MISSING, will be installed)
-  ✅ /data-optimize (data-pivots-eloquent.md — MISSING, will be installed)
-  ✅ /sc-php:audit  (capability pivots: php/solid.md)
-```
-
 ## Output
 
 > **FORMAT CONSTRAINTS — do not deviate:**
 > - Use EXACTLY the plain-text format shown below. Do NOT use markdown tables.
-> - All sections are mandatory: Framework, Data layer, Frontend bridge, Testing harness, Pivot manifeste, Perf pivots, Data pivots, **Skills support**, Gaps.
+> - All sections are mandatory: Framework, Data layer, Frontend bridge, Testing harness, Pivot manifeste, Gaps.
 > - List every detection (✅ detected / ❌ not detected) for every framework, ORM, and frontend bridge — even when not detected.
-> - The **Skills support** section must always appear and must reflect the current pivot status.
+> - Each subsection of Pivot manifeste MUST end with a `→ /skill-name :` readiness line (see template).
 
 Emit a structured pivot manifeste:
 
@@ -158,12 +131,12 @@ Emit a structured pivot manifeste:
 📊 sc-php sniff — capability scan
 
 Framework:
-  ✅ Laravel (laravel/framework ^11.0)
+  ❌ Laravel — not detected
   ❌ Symfony — not detected
   ❌ WordPress — not detected
 
 Data layer:
-  ✅ Eloquent ORM (illuminate/database)
+  ❌ Eloquent ORM — not detected
   ❌ Doctrine ORM — not detected
 
 Frontend bridge:
@@ -172,38 +145,40 @@ Frontend bridge:
 Testing harness:
   ✅ Bruno (bruno/ directory detected)
 
-Pivot manifeste — capability pivots (loaded at audit time, not installed):
-  (load via ${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/<path>)
-  php/solid.md                        (always — every PHP project)
-  testing/bruno.md                    (bruno/ detected)
+Pivot manifeste:
+  Capability pivots (loaded at audit time, not installed):
+    ✅ php/solid.md     (always — every PHP project)
+    ✅ testing/bruno.md (bruno/ detected)
+  → /sc-php:audit : PRÊT
 
-Perf pivots (→ 02-install-pivots will write to .claude/rules/07-quality/):
-  perf/laravel.md  → perf-pivots-laravel.md   MISSING
-  perf/symfony.md  → perf-pivots-symfony.md   NOT-APPLICABLE (Symfony not detected)
-  perf/wordpress.md → perf-pivots-wordpress.md NOT-APPLICABLE (WordPress not detected)
-  perf/htmx.md    → perf-pivots-htmx.md      NOT-APPLICABLE (HTMX not detected)
+  Perf pivots → .claude/rules/07-quality/:
+    — aucun (pas de framework détecté)
+  → /web-optimize : NOT APPLICABLE
 
-Data pivots (→ 02-install-pivots will write to .claude/rules/07-quality/):
-  data/eloquent.md → data-pivots-eloquent.md  MISSING
-  data/doctrine.md → data-pivots-doctrine.md  NOT-APPLICABLE (Doctrine not detected)
+  Data pivots → .claude/rules/07-quality/:
+    — aucun (pas d'ORM détecté)
+  → /data-optimize : NOT APPLICABLE
 
 Gaps (no plugin pivot):
   livewire/livewire — no Livewire capability pivot in plugin
 
-Skills support:
-  /web-optimize  ✅ (perf-pivots-laravel.md — MISSING, will be installed)
-  /data-optimize ✅ (data-pivots-eloquent.md — MISSING, will be installed)
-  /sc-php:audit  ✅ (capability pivots: php/solid.md, testing/bruno.md)
-
 → Proceed to 02-install-pivots.
 ```
 
-### Closing gate — run before proceeding to 02-install-pivots
+**Example — Laravel + Eloquent:**
+```
+Pivot manifeste:
+  Capability pivots (loaded at audit time, not installed):
+    ✅ php/solid.md (always — every PHP project)
+  → /sc-php:audit : PRÊT
 
-Before writing `→ Proceed to 02-install-pivots`, answer these three questions in your output:
+  Perf pivots → .claude/rules/07-quality/:
+    perf/laravel.md → perf-pivots-laravel.md   MISSING
+  → /web-optimize : PRÊT (will be installed)
 
-1. Did your output above include a `Skills support:` block? (yes / no)
-2. If no → write it now, using the vanilla PHP example from Step 8 as a guide.
-3. Once the `Skills support:` block is present → write `→ Proceed to 02-install-pivots.`
+  Data pivots → .claude/rules/07-quality/:
+    data/eloquent.md → data-pivots-eloquent.md MISSING
+  → /data-optimize : PRÊT (will be installed)
+```
 
-Do not skip this gate. The gate output itself is not shown to the user — only the Skills support block and the proceed line are emitted.
+Then proceed to action `02-install-pivots`.
