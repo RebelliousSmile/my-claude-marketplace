@@ -58,7 +58,7 @@ Markdown par défaut (source de vérité, éditable et versionnable). Pour expor
 /doc-writer:specification "cahier des charges plateforme" --format icml
 ```
 
-L'export passe par **pandoc** (`pandoc <nom>.md -t icml --standalone -o <nom>.icml`) ; le `.md` reste la source, le `.icml` est généré. Si pandoc n'est pas installé, le `.md` est conservé et la commande est indiquée — voir `references/export-icml.md`. Prérequis : [pandoc](https://pandoc.org/installing.html).
+L'export écrit d'abord le `.md` sur disque (pandoc ne convertit pas une sortie en chat), puis convertit (`pandoc <nom>.md -t icml -o <nom>.icml`) ; le `.md` reste la source, le `.icml` est généré. Si pandoc est absent ou non exécutable, le `.md` est conservé et la commande est indiquée — voir `references/export-icml.md`. Prérequis : [pandoc](https://pandoc.org/installing.html).
 
 ## Démarrage rapide
 

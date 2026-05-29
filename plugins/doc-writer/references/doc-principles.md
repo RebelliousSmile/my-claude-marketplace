@@ -37,7 +37,8 @@ The ethos every `doc-writer` skill follows, whatever the document type. Referenc
 - **Markdown is the default and the source of truth** — always produce the document in Markdown first.
 - A user can request another format with `--format <markdown|icml>` in `$ARGUMENTS`. **Parse this flag out of `$ARGUMENTS`** (like `--style`), so it never pollutes the subject.
 - `--format icml` exports the finished Markdown to ICML (Adobe InCopy/InDesign) **via pandoc** — see `${CLAUDE_PLUGIN_ROOT}/references/export-icml.md`. The Markdown remains the editable source; the ICML is a generated export, never hand-written.
-- If pandoc is unavailable, report it and keep the Markdown; never hand-roll ICML XML.
+- **ICML export implies a file workflow**: pandoc converts a file, not chat output — so `--format icml` writes the Markdown to disk first (path from the user, else a slug of the subject), overriding the inline-by-default rule.
+- If pandoc is unavailable **or shell execution isn't permitted**, report it and keep the Markdown; never hand-roll ICML XML.
 
 ## Output destination
 
