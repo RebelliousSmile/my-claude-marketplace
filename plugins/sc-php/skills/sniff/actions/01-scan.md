@@ -108,6 +108,12 @@ List all gaps explicitly in the output.
 
 ## Output
 
+> **FORMAT CONSTRAINTS — do not deviate:**
+> - Use EXACTLY the plain-text format shown below. Do NOT use markdown tables.
+> - All sections are mandatory: Framework, Data layer, Frontend bridge, Testing harness, Pivot manifeste, Perf pivots, Data pivots, **Skills support**, Gaps.
+> - List every detection (✅ detected / ❌ not detected) for every framework, ORM, and frontend bridge — even when not detected.
+> - The **Skills support** section must always appear and must reflect the current pivot status.
+
 Emit a structured pivot manifeste:
 
 ```

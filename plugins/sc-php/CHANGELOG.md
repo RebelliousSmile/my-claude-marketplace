@@ -1,5 +1,16 @@
 # Changelog — sc-php
 
+## v0.4.2 — 2026-05-29
+
+### Added
+- README.md — per-plugin documentation covering all six skills and their pivot model.
+
+### Changed
+- `improve` now loads capability pivots (`solid.md`, `eloquent.md`, `doctrine.md`) during analysis to surface stack-specific anti-patterns.
+
+### Fixed
+- `sniff/01-scan.md` output constraints: prohibit markdown tables, enforce plain-text format, mark **Skills support** section as mandatory.
+
 ## v0.4.0 — 2026-05-28
 
 ### Breaking changes
