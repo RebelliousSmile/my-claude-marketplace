@@ -2,6 +2,20 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/aidd-overlay`.
 
+## [2.0.0] — 2026-05-29
+
+### New alias — `aiddlegacy`
+
+Nettoie une installation AIDD antérieure à v4 dans le `.claude/` du projet courant.
+
+Flux en 4 étapes :
+1. **Scan** — construit le référentiel des handles v4 depuis `~/.claude/plugins/cache/aidd-framework/` (aidd-dev, aidd-refine, aidd-context) ; inventorie `agents/`, `commands/`, `skills/`, `rules/` du projet ; classe chaque artefact comme transféré (match handle v4) ou sans équivalent (aucun match).
+2. **Rapport dry-run** — affiche l'inventaire complet (à supprimer / à conserver / rules par catégorie) sans rien modifier. Attend confirmation.
+3. **Appliquer** — sur confirmation : supprime `agents/` en entier, les `commands/` et `skills/` transférés. Les éléments sans équivalent sont conservés.
+4. **Arbitrage rules** — présente les rules groupées par catégorie v4, une par une ; pour chaque groupe : `garder tout / supprimer tout / arbitrer un par un`. Rapport final listant les éléments conservés (sans équivalent plugin) pour traitement manuel ultérieur.
+
+Triggers : `aiddlegacy`, `aidd legacy`, `clean aidd legacy`, `migrate aidd v4`, `nettoyer l'ancienne installation aidd`, `legacy cleanup`.
+
 ## [1.9.0] — 2026-05-29 (baseline)
 
 Socle commun, projet-agnostique. Skills : `alias`, `harvest`, `reconcile-normative`, `taste`, `foresee`, `dig`, `web-optimize`, `data-optimize`, `readme`, `changelog`, `decompose`, `journey`, `status`.

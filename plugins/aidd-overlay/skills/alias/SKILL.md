@@ -20,6 +20,7 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 06  | `previously`  | Project snapshot with status context — status summary + tests/git/lint snapshot | optional depth (commit count or duration like 7d) |
 | 07  | `smarten`     | Rewrite a prompt file in place — remove fluff, compress steps, bullet points    | file path |
 | 08  | `skillconf`   | Classify enabled skills as auto-trigger vs user-invocable-only → update skillOverrides | settings.json accessible |
+| 09  | `aiddlegacy`  | Scan `.claude/` legacy AIDD (<v4) → dry-run report → confirm → delete transferred agents/commands/skills → arbitrate rules | `.claude/` du projet courant |
 
 ## Default flow
 
@@ -33,6 +34,7 @@ Trigger-to-action mapping:
 - "where are we in the project", "catch me up", "what's the current project state", "project snapshot", "previously", "alias previously" → `previously`
 - "smarten", "slim this", "simplify this prompt", "optimize this prompt", "compress this file", "alias smarten" → `smarten`
 - "skillconf", "configure skills", "auto-configure skills", "reduce skill context", "skill overrides", "alias skillconf", "skills prennent trop de place", "descriptions écretées" → `skillconf`
+- "aiddlegacy", "aidd legacy", "clean aidd legacy", "migrate aidd v4", "nettoyer l'ancienne installation aidd", "nettoyer aidd", "legacy cleanup" → `aiddlegacy`
 
 ## Transversal rules
 
