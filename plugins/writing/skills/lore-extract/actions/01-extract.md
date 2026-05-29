@@ -7,14 +7,15 @@ Transform raw source files into structured thematic `.docs/` files for a univers
 - `sources` (required) — one or more file paths to process (relative to current directory)
 - `--update` (optional) — incremental mode: enrich existing files, skip already-processed sources
 - `--force` (optional) — regenerate all files even if they already exist
+- `--homemade` (optional) — provenance: the sources are homemade/user-created (non-canon). Output goes to the `mj/` subtree. Default (no flag) treats sources as canonical → `canon/` subtree.
 
 ## Outputs
 
-Paths resolved from `bank.yml` (current directory):
-- `bank.yml#docs.terminologie` — always written
-- One file per detected theme alongside `terminologie` in the same `.docs/` directory
+Paths resolved from `bank.yml` (current directory), under the **provenance subtree** `canon/` (default) or `mj/` (`--homemade`):
+- `<docs-root>/<provenance>/terminologie.md` — always written
+- One file per detected theme alongside `terminologie` in the same provenance subtree
 
-If `bank.yml` is absent: write to `.docs/` in the current directory and warn.
+If `bank.yml` is absent: write to `.docs/<provenance>/` in the current directory and warn.
 
 Templates for all themes: see `@references/templates-standard.md` and `@references/templates-optional.md`.
 
@@ -22,12 +23,14 @@ Templates for all themes: see `@references/templates-standard.md` and `@referenc
 
 ### Step 0 — Load context
 
-1. Read `bank.yml` from the current directory.
+1. **Determine provenance**: `--homemade` → `mj/` subtree (homemade/non-canon) ; otherwise → `canon/` subtree (default). If the provenance of a source is unclear, ask once before extracting; if a single source visibly mixes canonical and homemade material, split the extraction per provenance rather than dumping both into one subtree.
+2. Read `bank.yml` from the current directory.
    - Extract `document.univers` → universe slug
    - Extract `docs.terminologie` → output path for terminology
    - Extract remaining `docs.*` paths → output paths for other themes
-   - If `bank.yml` absent → warn "bank.yml not found, outputs will go to .docs/", continue.
-2. All source paths and output paths are resolved relative to the current directory.
+   - **Insert the provenance subtree** (`canon/` or `mj/`) into the resolved output paths.
+   - If `bank.yml` absent → warn "bank.yml not found, outputs will go to .docs/<provenance>/", continue.
+3. All source paths and output paths are resolved relative to the current directory.
 
 ### Step 1 — Validate sources
 
@@ -122,6 +125,8 @@ Fichier cible : [factions.md]
 Quelle source fait autorité ? (A / B / fusionner / ignorer)
 ```
 
+**Canon vs maison :** en extraction `--homemade`, si le contenu contredit une entrée existante de `canon/`, **le canon fait autorité** — ne pas l'écraser. Signaler la divergence et écrire la version maison dans `mj/` en la marquant comme variante (ou demander arbitrage). Une entité déjà présente en `canon/` n'est pas redupliquée en `mj/` : la fiche maison `[[lie]]` l'entrée canon et n'ajoute que ce qui diffère.
+
 ### Step 7 — Preview before synthesis
 
 ```
@@ -210,4 +215,4 @@ Renommer les sources traitées avec le suffixe `.processed`.
 
 ## Test
 
-After `lore-extract <univers> <source>`, verify that `<univers>/.docs/terminologie.md` has been created (or updated), contains a term table, and respects the 250-line limit. If sources contain a contradiction, verify that the user was prompted to arbitrate before writing.
+After `lore-extract <univers> <source>`, verify that the terminology file has been created (or updated) under the correct provenance subtree — `.docs/canon/terminologie.md` by default, `.docs/mj/terminologie.md` with `--homemade` — contains a term table, and respects the 250-line limit. Canon and homemade content are never mixed in the same file. If sources contain a contradiction (incl. homemade vs canon), verify that the user was prompted to arbitrate before writing.

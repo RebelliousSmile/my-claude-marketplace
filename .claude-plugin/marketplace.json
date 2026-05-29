@@ -37,7 +37,7 @@
     },
     {
       "name": "writing",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "source": "./plugins/writing",
       "description": "Writing skills and workflows.",
       "recommended": false

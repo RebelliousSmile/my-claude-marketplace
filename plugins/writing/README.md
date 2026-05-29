@@ -18,7 +18,7 @@ Couvre le cycle de vie d'un projet narratif. Distinct de `doc-writer` (documenta
 | `tone-finder` | Génère ou met à jour un output-style pour un univers éditorial (depuis des textes sources) |
 | `research` | Recherche documentaire cross-référencée pour projets d'écriture |
 | `storyboard` | Identifie les moments visuels clés d'un chapitre et génère des briefs d'illustration |
-| `lore-extract` | Extrait et organise le lore d'un univers depuis des fichiers sources bruts |
+| `lore-extract` | Extrait et organise le lore d'un univers depuis des sources brutes, en séparant **canon** (`canon/`) et **maison** (`mj/`, option `--homemade`) — arborescence partagée avec `obsidian:rpg` |
 | `extract-pdf` | Pipeline multi-sessions d'extraction de contenu depuis de gros PDF, réparti dans le projet |
 | `rules-keeper` | Restructure un fichier de règles de jeu en format optimisé pour LLM (CHEATSHEET + LEXICON + PATTERNS) |
 | `tabula-rasa` | Réinitialise destructivement un projet — supprime le contenu généré (chapitres, TOC, WIP) |

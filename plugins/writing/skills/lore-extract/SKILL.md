@@ -1,7 +1,7 @@
 ---
 name: lore-extract
 model: sonnet
-description: Extracts and organizes universe lore from raw source files into structured thematic .docs/ files (terminologie, factions, histoire, géographie, personnages, and optional themes). Works from the current directory; reads bank.yml to resolve output paths. Use when processing PDF extracts, notes, or raw text into universe documentation ready for other writing skills. Do NOT use for web research — use `research` instead; do NOT use for PDF extraction — use `extract-pdf` first, then pipe output here.
+description: Extracts and organizes universe lore from raw source files into structured thematic .docs/ files (terminologie, factions, histoire, géographie, personnages, and optional themes), separating canonical lore (canon/) from homemade/user-created content (mj/). Works from the current directory; reads bank.yml to resolve output paths. Use when processing PDF extracts, notes, or raw text into universe documentation ready for other writing skills (and by obsidian:rpg for JDR universes). Do NOT use for web research — use `research` instead; do NOT use for PDF extraction — use `extract-pdf` first, then pipe output here.
 ---
 
 # Lore Extract
@@ -29,4 +29,5 @@ Trigger-to-action mapping:
 - Max 250 lines per output file. If exceeded → auto-synthesize; if still exceeded → request human arbitration.
 - All output in French. Universe-specific terms: keep original in parentheses on first mention.
 - Ask for arbitration when contradictions are found — never silently discard either version.
-- **Arborescence partagée** : la structure thématique `.docs/` (`terminologie.md`, `factions.md`, `personnages.md`, `histoire.md`, `geographie.md`, + optionnels) est réutilisée par le skill `obsidian:rpg` pour les données d'univers d'une campagne JDR. Pour ce cas d'usage, `lore-extract` écrit le **lore canon** extrait des sources dans `JDR/univers/<univers>/.docs/canon/` ; le contenu **créé par le maître de jeu** est écrit séparément par `rpg` dans `.docs/mj/` (même structure). Conserver les noms de fichiers et la règle « une info dans un seul fichier » pour l'interopérabilité.
+- **Canon vs maison (homemade)** : l'arborescence `.docs/` est scindée par provenance en deux sous-arbres thématiques identiques — `canon/` (lore **officiel**, extrait de sources canoniques) et `mj/` (contenu **maison / non-canon**, créé par l'auteur ou le maître de jeu). Router chaque extraction vers le bon sous-arbre : sources canoniques → `canon/` (défaut) ; sources/notes maison → `mj/` (option `--homemade`). Ne **jamais** mélanger les deux dans un même fichier ; le contenu maison ne doit pas contredire le canon en silence — signaler toute divergence (le canon fait autorité).
+- **Arborescence partagée** : ces sous-arbres `canon/` + `mj/` (mêmes noms de fichiers, règle « une info dans un seul fichier ») sont **partagés avec `obsidian:rpg`** pour les univers de JDR (`JDR/univers/<univers>/.docs/`) — `rpg` écrit le contenu MJ dans le même `mj/`. Conserver la structure pour l'interopérabilité.

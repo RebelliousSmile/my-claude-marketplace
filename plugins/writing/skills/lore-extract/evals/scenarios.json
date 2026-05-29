@@ -18,5 +18,13 @@
   {
     "prompt": "je veux transformer mes notes brutes en fichiers .docs structurés",
     "expect_action": "extract"
+  },
+  {
+    "prompt": "lore-extract mes-ajouts-perso.md --homemade",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "extrais ce supplément officiel dans le canon de l'univers",
+    "expect_action": "extract"
   }
 ]
