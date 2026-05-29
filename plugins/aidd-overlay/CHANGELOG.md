@@ -2,6 +2,10 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/aidd-overlay`.
 
+## [2.0.1] — 2026-05-29
+
+- Bump de synchronisation — aucun changement fonctionnel ; version montée en miroir de `sc-python` 0.4.9 dans le marketplace.
+
 ## [2.0.0] — 2026-05-29
 
 ### New alias — `aiddlegacy`

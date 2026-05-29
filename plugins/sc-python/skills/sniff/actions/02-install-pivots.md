@@ -11,7 +11,10 @@ Read the pivot manifeste emitted by `01-scan`. For each perf or data pivot liste
 | Source (in plugin) | Target (in project) |
 |---|---|
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/django.md` | `.claude/rules/07-quality/perf-pivots-django.md` |
+| `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/drf.md` | `.claude/rules/07-quality/perf-pivots-drf.md` |
+| `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/celery.md` | `.claude/rules/07-quality/perf-pivots-celery.md` |
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/fastapi.md` | `.claude/rules/07-quality/perf-pivots-fastapi.md` |
+| `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/httpx.md` | `.claude/rules/07-quality/perf-pivots-httpx.md` |
 
 ### Data pivots — install to `.claude/rules/07-quality/`
 
@@ -19,6 +22,15 @@ Read the pivot manifeste emitted by `01-scan`. For each perf or data pivot liste
 |---|---|
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/django-orm.md` | `.claude/rules/07-quality/data-pivots-django-orm.md` |
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/sqlalchemy.md` | `.claude/rules/07-quality/data-pivots-sqlalchemy.md` |
+| `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/data/datasets.md` | `.claude/rules/07-quality/data-pivots-datasets.md` |
+
+### Protocol pivots — install to `.claude/rules/07-quality/`
+
+Loaded by `/ap-optimize`, not by `web-optimize` or `data-optimize`.
+
+| Source (in plugin) | Target (in project) |
+|---|---|
+| `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/protocol/activitypub-django.md` | `.claude/rules/07-quality/ap-pivots-django-activitypub.md` |
 
 ### Install rules
 

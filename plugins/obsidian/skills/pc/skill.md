@@ -1,7 +1,7 @@
 ---
 name: pc
 description: >-
-  Manages JDR solo player-character files stored in JDR/pjs/<pj>/ — create a new PJ,
+  Manages JDR solo player-character files stored in JDR/<jeu>/pjs/<pj>/ — create a new PJ,
   fill or reorganize its files, log a game session (système de jeu + sous-systèmes), or display the
   character sheet. Use when the user invokes /obsidian:pc with a player-character intent.
   Do NOT use for campaign prep (scénarios, PNJ, factions) — use `rpg`; nor for live play
@@ -11,8 +11,10 @@ disable-model-invocation: true
 
 # PC — Player Character
 
-Manages player character folders stored in `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/`.
+Manages player character folders stored in `C:/Users/fxgui/Public/Notes/Perso/JDR/<jeu>/pjs/`.
 Routes to the appropriate action based on user intent.
+
+**Racine par jeu** — le coffre est rangé **par jeu** sous `JDR/<jeu>/`. Le `<jeu>` est le premier segment sous la racine du coffre, déduit du répertoire courant d'invocation (`pc` est lancé dans l'arborescence du jeu concerné). Les personnages vivent dans `JDR/<jeu>/pjs/<pj>/`.
 
 ## Available actions
 
@@ -36,11 +38,11 @@ Router — dispatches based on user intent:
 
 ## Transversal rules
 
-- PJ root: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/`
-- Template: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/_template/`
-- Manager script: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/pj-manager.py`
-- Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `pjs/` (excluding `_template`).
-- Rules reference (terminology and mechanics): the active game system plus the **generic subsystems** it uses (e.g. Parallaxe, Cinério, Muses et Oracles), as rules-keeper-optimized rules under `C:/Users/fxgui/Public/Notes/Perso/JDR/subsystems/<name>/canon|mj/` (official + house rules), produced by `writing:rules-keeper` and **shared with `rpg` and `solo-mc`**. Effective rules = canon + declared house rules.
+- PJ root: `C:/Users/fxgui/Public/Notes/Perso/JDR/<jeu>/pjs/` (`<jeu>` resolved from the current working directory)
+- Template (shared): `C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-template/`
+- Manager script (shared): `C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-manager.py`
+- Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `<jeu>/pjs/`.
+- Rules reference (terminology and mechanics): the active game system's rules at `JDR/<jeu>/systeme/{canon,mj}/` plus the **generic subsystems** it uses (e.g. Parallaxe, Cinério, Muses et Oracles), as rules-keeper-optimized rules under `JDR/<jeu>/subsystems/<name>/{canon,mj}/` (game-local) with fallback to the shared `C:/Users/fxgui/Public/Notes/Perso/JDR/subsystems/<name>/{canon,mj}/` (official + house rules), produced by `writing:rules-keeper` and **shared with `rpg` and `solo-mc`**. Effective rules = canon + declared house rules.
 - Never invent mechanics — always consult the references above.
 - **Parallaxe, Cinério et Muses et Oracles sont des sous-systèmes** (employés par le système de jeu — ce ne sont pas des jeux). Le `_template/` et `pj-manager.py` (hors dépôt) doivent refléter le système de jeu et ses sous-systèmes actifs ; pour tout terme mécanique, ce skill défère aux références rules-keeper ci-dessus.
 - Date format: `YYYY-MM-DD` throughout all files.
@@ -49,7 +51,7 @@ Router — dispatches based on user intent:
 
 Runs:
 ```bash
-python "C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/pj-manager.py" new "<nom>"
+python "C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-manager.py" new "<nom>" --into "C:/Users/fxgui/Public/Notes/Perso/JDR/<jeu>/pjs"
 ```
 
 The script copies the template, slugifies the name for the folder, and replaces `[Nom du PJ]` in all `.md` files.
@@ -122,13 +124,13 @@ Reports modified files at the end.
 
 Determines the active PJ:
 - If argument supplied (`/obsidian:pc show @<pj>`): use it
-- Otherwise read `.current-session` in `Mes PJs/`
+- Otherwise read `.current-session` at the vault root (`JDR/.current-session`)
 - If empty or missing: prompt the user
 
 Loads character state from (priority order):
-1. `<campagne>/sessions/.session-state.yaml` (if active session)
-2. `<campagne>/config.yaml`
-3. `<pj>/fiche_technique.md` and `<pj>/pj.md`
+1. `<jeu>/campagnes/<campagne>/sessions/.session-state.yaml` (if active session)
+2. `<jeu>/campagnes/<campagne>/config.yaml`
+3. `<jeu>/pjs/<pj>/fiche_technique.md` and `<jeu>/pjs/<pj>/pj.md`
 
 Displays a structured sheet with: progress statuses, themes, power/weakness tags, recent tag changes, active statuses, NPC relations, objectives.
 

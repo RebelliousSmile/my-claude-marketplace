@@ -2,7 +2,7 @@
 
 `bank.yml` is the canonical configuration file for a writing project. It declares all resources consumed by the workshop pipeline (forge, toc, write, review, tone-finder, persona, research, extract-pdf).
 
-Location: `<univers>/<projet>/bank.yml`
+Location: `<jeu>/ecrits/<projet>/bank.yml` — les chemins ci-dessous sont relatifs à la **racine du jeu** `<jeu>/` (coffre rangé par jeu). Les ressources d'univers vivent sous `univers/<univers>/`, le système du jeu sous `systeme/{canon,mj}/`, les sous-systèmes sous `subsystems/<nom>/{canon,mj}/`.
 
 ---
 
@@ -19,16 +19,16 @@ document:
 # Convention: <univers>-<type>.md
 # At least one key is required.
 output-style:
-  scenario: "<univers>/.output-styles/<univers>-scenario.md"
-  novel:    "<univers>/.output-styles/<univers>-novel.md"
-  roleplaying: "<univers>/.output-styles/<univers>-roleplaying.md"
-  guide:    "<univers>/.output-styles/<univers>-guide.md"
+  scenario: "univers/<univers>/.output-styles/<univers>-scenario.md"
+  novel:    "univers/<univers>/.output-styles/<univers>-novel.md"
+  roleplaying: "univers/<univers>/.output-styles/<univers>-roleplaying.md"
+  guide:    "univers/<univers>/.output-styles/<univers>-guide.md"
   projet:   ".output-styles/<projet>.md"    # Optional project-level override.
 
 # Universe and project documentation files.
 docs:
-  univers:      "<univers>/.docs/UNIVERS.md"       # Required. Universe overview.
-  terminologie: "<univers>/.docs/terminologie.md"  # Required. Canonical vocabulary.
+  univers:      "univers/<univers>/.docs/UNIVERS.md"       # Required. Universe overview.
+  terminologie: "univers/<univers>/.docs/terminologie.md"  # Required. Canonical vocabulary.
   projet:                                           # Optional. Project-specific docs.
     - ".docs/<file1>.md"
     - ".docs/<file2>.md"
@@ -42,7 +42,7 @@ personas:
   global:           # Optional. Reusable personas from the shared templates folder.
     - "docs/templates/personas/<id>.yml"
   univers:          # Universe-level personas (shared across projects in this universe).
-    - "<univers>/.templates/personas/<id>.yml"
+    - "univers/<univers>/.templates/personas/<id>.yml"
   projet:           # Project-specific personas.
     - ".templates/personas/<id>.yml"
 

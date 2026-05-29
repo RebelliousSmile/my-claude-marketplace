@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-python",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Python-specific skills and workflows: two-tier sniff (pivot model), audit (aidd-dev:reviewer), improve, legacy, log-analysis, teach (Django/FastAPI).",
   "author": {
     "name": "François-Xavier Guillois"
