@@ -1,5 +1,14 @@
 # Changelog — sc-js
 
+## [0.6.8] — 2026-05-29
+
+### Capability pivot — perf/vanilla.md
+
+- **§2 LCP** : ajout d'un cas explicite pour les `<img>` dont le `src` est absent du HTML brut (défini dynamiquement par JS) — le preload scanner est aveugle et le LCP est potentiellement retardé de plusieurs centaines de ms. Corriger : `src` statique par défaut dans le HTML + surcharge JS, ou `<link rel="preload">` mis à jour en JS en même temps que le `src`. Commande de détection ajoutée.
+- **§8 INP/TBT** : `{passive: true}` maintenant documenté comme **obligatoire** sur `scroll` et `touchstart` — sans cet option le navigateur attend la fin du handler avant de scroller (jank tactile, TBT dégradé). Commande de détection ajoutée.
+
+> Learnings issus du premier audit `web-optimize` sur un projet vanilla réel (SmartLockers/multisite-clients, 2026-05-29).
+
 ## [0.6.7] — 2026-05-29
 
 ### audit

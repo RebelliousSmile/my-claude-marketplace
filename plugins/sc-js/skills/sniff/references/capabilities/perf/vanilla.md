@@ -31,6 +31,8 @@ Stack-specific overrides for browser-targeting projects with no JS framework —
 - `<link rel="preload" as="image" imagesrcset="hero_480.webp 480w, hero_1024.webp 1024w" imagesizes="(max-width:640px) 480px, 1024px">` dans `<head>`
 - Jamais `loading="lazy"` sur l'image above-fold (retarde le LCP)
 - Responsive : `srcset`/`sizes` sur `<img>` (cf. `images/web-optimization.md`)
+- ⚠️ `<img>` dont le `src` est absent du HTML brut (défini dynamiquement par JS) → le preload scanner est aveugle → candidat LCP non préchargé → retard potentiel de plusieurs centaines de ms. Corriger : ajouter un `src` statique par défaut dans l'attribut HTML et surcharger en JS si nécessaire, ou ajouter un `<link rel="preload" as="image">` mis à jour en JS en même temps que le changement de `src`
+- Détection : `grep -n '<img' index.html | grep -v 'src='` — repère les `<img>` above-fold sans attribut `src` statique
 
 ## §3 — CLS
 
@@ -68,6 +70,8 @@ Stack-specific overrides for browser-targeting projects with no JS framework —
 - Délégation d'événements plutôt qu'un listener par élément sur les longues listes
 - `IntersectionObserver` pour déclencher le JS below-fold seulement quand visible
 - Pas de framework = pas de batching automatique → regrouper les écritures DOM, lire puis écrire (éviter le layout thrashing)
+- `{passive: true}` **obligatoire** sur tous les listeners `scroll` et `touchstart` : sans cette option le navigateur attend la fin du handler avant de scroller → jank tactile, TBT dégradé
+- Détection : `grep -rn "addEventListener.*scroll\|addEventListener.*touchstart" --include="*.js" . | grep -v passive`
 
 ## §9 — Backend
 
