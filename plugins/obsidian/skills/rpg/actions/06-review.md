@@ -17,7 +17,7 @@ Lire la prep de campagne (`synopsis.md`, `scenarios/`, `prep/`, `fronts.md`, `co
 5. **PNJ jouables** (warning) — chaque PNJ en jeu a motivation + secret/levier + une voix.
 6. **Liens & arborescence univers** (warning) — les `[[liens]]` scénario→univers (canon/ et mj/) résolvent ; aucune donnée d'univers dupliquée côté campagne ; `index.md` à jour.
 7. **Conformité config** (note) — ton/rythme/chaos de la prep cohérents avec `config.yaml`.
-8. **Parallaxe** (bloquant) — aucune mécanique Parallaxe inventée hors de la référence.
+8. **Sous-système Parallaxe** (bloquant) — aucune mécanique inventée hors de la référence (système de jeu + sous-système Parallaxe).
 
 ## Outputs
 

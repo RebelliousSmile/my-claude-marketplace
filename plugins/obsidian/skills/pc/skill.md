@@ -2,7 +2,7 @@
 name: pc
 description: >-
   Manages JDR solo player-character files stored in JDR/pjs/<pj>/ — create a new PJ,
-  fill or reorganize its files, log a game session (système Parallaxe), or display the
+  fill or reorganize its files, log a game session (sous-système Parallaxe), or display the
   character sheet. Use when the user invokes /obsidian:pc with a player-character intent.
   Do NOT use for campaign prep (scénarios, PNJ, factions) — use `rpg`; nor for live play
   (scene, oracle, roll) — use `solo-mc`.
@@ -21,7 +21,7 @@ Routes to the appropriate action based on user intent.
 | 01  | `new`         | Create a new PJ folder from the `_template/`                      | PJ name                   |
 | 02  | `fill`        | Fill PJ files from a pasted text (brainstorm, notes, etc.)        | PJ name, source text      |
 | 03  | `reorganize`  | Redistribute content to the 6 standard files                      | PJ name or loose .md file |
-| 04  | `log-session` | Update PJ files after a Parallaxe game session                    | PJ name, session info     |
+| 04  | `log-session` | Update PJ files after a game session (sous-système Parallaxe)      | PJ name, session info     |
 | 05  | `show`        | Display the current character sheet (tags, statuses, relations)   | PJ name or active session |
 
 ## Default flow
@@ -40,9 +40,9 @@ Router — dispatches based on user intent:
 - Template: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/_template/`
 - Manager script: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/pj-manager.py`
 - Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `pjs/` (excluding `_template`).
-- Parallaxe reference for terminology and mechanics: the **rules-keeper-optimized rules** in `C:/Users/fxgui/Public/Notes/Perso/JDR/parallaxe/canon/` (official) + `JDR/parallaxe/mj/` (house rules), produced by `writing:rules-keeper` and **shared with `rpg` and `solo-mc`**. Effective rules = canon + declared house rules.
-- Never invent Parallaxe mechanics — always consult the reference above.
-- Système : **Parallaxe**. Le `_template/` et `pj-manager.py` (hors dépôt) doivent refléter Parallaxe ; pour tout terme mécanique, ce skill défère à la référence rules-keeper ci-dessus.
+- Rules reference (terminology and mechanics): the active game system plus the **Parallaxe subsystem** it uses, as rules-keeper-optimized rules. Parallaxe lives in `C:/Users/fxgui/Public/Notes/Perso/JDR/parallaxe/canon/` (official subsystem rules) + `JDR/parallaxe/mj/` (house rules), produced by `writing:rules-keeper` and **shared with `rpg` and `solo-mc`**. Effective rules = canon + declared house rules.
+- Never invent mechanics — always consult the references above.
+- **Parallaxe est un sous-système** (employé par le système de jeu, ce n'est pas le jeu lui-même). Le `_template/` et `pj-manager.py` (hors dépôt) doivent refléter ce sous-système ; pour tout terme mécanique, ce skill défère à la référence rules-keeper ci-dessus.
 - Date format: `YYYY-MM-DD` throughout all files.
 
 ## Action: new
