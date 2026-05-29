@@ -23,8 +23,8 @@ Découpage des trois skills : `pc` = la fiche du personnage-joueur · `rpg` = la
 | 01  | `campaign`     | Amorce la couche de prep d'une campagne (synopsis, thèmes, index)     | nom de campagne              |
 | 02  | `scenario`     | Écrit un scénario / une situation jouable                             | campagne, pitch/idée         |
 | 03  | `prep-session` | Prépare la prochaine session (scènes probables, accroches, tables)    | campagne, n° de session      |
-| 04  | `npc`          | Crée / développe un PNJ de campagne                                   | campagne, nom/rôle du PNJ    |
-| 05  | `faction`      | Crée / développe une faction + ses fronts (horloges)                  | campagne, nom de faction     |
+| 04  | `npc`          | Crée / développe un PNJ d'univers (durable, partagé)                  | univers/campagne, nom du PNJ |
+| 05  | `faction`      | Faction (univers) + ses fronts/horloges actifs (campagne)            | campagne, nom de faction     |
 | 06  | `review`       | Vérifie la cohérence et l'état de jouabilité de la prep               | campagne                     |
 
 ## Default flow
@@ -44,7 +44,8 @@ Routeur — dispatch selon l'intention :
 - **Deux niveaux à distinguer** :
   - **Données univers (durables, transverses aux campagnes)** — terminologie, factions, personnages, lieux/géographie, histoire. Elles vivent dans l'**arborescence partagée avec `lore-extract`** : `JDR/univers/<univers>/.docs/` en fichiers thématiques (`terminologie.md`, `factions.md`, `personnages.md`, `histoire.md`, `geographie.md`, + optionnels `magie.md`, `technologie.md`, `creatures.md`, `religions.md`, `economie.md`). Un univers documenté via `lore-extract` est directement réutilisable ici, et réciproquement.
   - **Prep de campagne (spécifique à une partie)** — scénarios, prep de session, fronts/horloges actifs, accroches PJ. Elle vit **dans le dossier de campagne** : `JDR/<campagne>/{scenarios,prep}/` + l'état des fronts.
-- **Conventions de l'arborescence univers** (alignées sur `lore-extract`) : une information dans **un seul fichier** (les autres référencent/`[[lient]]`) ; max ~250 lignes par fichier (sinon synthétiser) ; rédaction en français ; ne jamais écraser un fichier `.docs/` existant — compléter.
+- **Conventions de l'arborescence univers** (alignées sur `lore-extract`) : une information dans **un seul fichier** (les autres référencent/`[[lient]]`) ; max ~250 lignes par fichier (sinon synthétiser) ; rédaction en français ; ne jamais écraser un fichier `.docs/` existant — compléter. Pour que les `.docs/` coïncident, `lore-extract` doit cibler `JDR/univers/<univers>/` (via son `bank.yml` ou son répertoire courant).
+- **PJ canonique vs instance de campagne** : le personnage durable vit dans `JDR/pjs/<pj>/` (skill `pc`, source de l'`intention.md`) ; l'instance jouée d'une campagne vit dans `JDR/<campagne>/pj/` (`solo-mc`) et **référence** le PJ canonique. `rpg` s'ancre toujours sur l'`intention.md` canonique de `pc` ; si seul un PJ de campagne existe, le signaler et proposer de le rattacher à un PJ `pc`.
 - La campagne déclare son univers (`config.yaml › universe`) ; à défaut, demander quel univers (`JDR/univers/<univers>/`).
 - Demander le nom de la campagne s'il n'est pas dans `$ARGUMENTS` ; lister les campagnes existantes sous `JDR/` (dossiers contenant un `config.yaml`).
 - Si `config.yaml` est absent, **ne pas dupliquer** le questionnaire : orienter vers `/solo-mc setup` pour le créer, puis revenir préparer.

@@ -1,6 +1,6 @@
 ---
 name: solo-mc
-description: Solo tabletop RPG game master assistant. Routes player intents to the right action: starting or resuming sessions, generating scenes, querying the oracle, rolling dice, displaying character sheets, checking game status, reviewing narrative context, setting up a new campaign, creating characters, ending sessions, or exporting journals to PDF. Triggers when the user's message relates to solo RPG gameplay, session management, or campaign/character management. Do NOT use for general fiction writing, world-building outside an active campaign, or non-RPG creative writing.
+description: Solo tabletop RPG game master assistant. Routes player intents to the right action: starting or resuming sessions, generating scenes, querying the oracle, rolling dice, displaying character sheets, checking game status, reviewing narrative context, setting up a new campaign, creating characters, ending sessions, or exporting journals to PDF. Triggers when the user's message relates to solo RPG gameplay, session management, or campaign/character management. Do NOT use for campaign preparation (scenarios, NPCs, factions, session prep → use `rpg`), for general fiction writing, world-building outside an active campaign, or non-RPG creative writing.
 disable-model-invocation: false
 ---
 
@@ -47,6 +47,6 @@ Dispatch by intent — route to the action that matches the user's message:
 - **T1** — Always detect the active campaign from `.current-session` before asking the user.
 - **T2** — Active agents: `mj-solo-agent` (narrative), `oracle-agent` (fate), `narrateur-latex-agent` (PDF). Invoke the right one per action.
 - **T3** — Game state lives in `<campaign>/sessions/.session-state.yaml`. Read before every action; write only on `play-end`.
-- **T4** — Player character sheet lives in `<campaign>/pj/<name>.md`. Never overwrite without explicit player confirmation.
+- **T4** — The in-play character sheet lives in `<campaign>/pj/<name>.md`. When a canonical character exists in `JDR/pjs/<pj>/` (skill `pc`), the campaign sheet references it (same character, play-time instance). Never overwrite without explicit player confirmation.
 - **T5** — When the game system cannot be detected from `config.yaml`, ask once then remember for the session.
 - **T6** — System mechanics (oracle, dice, character creation, scene rules) come from the active system's **rules-keeper-optimized rules file** (CHEATSHEET / LEXICON / PATTERNS / ENTITY TEMPLATES / FULL REFERENCE), produced by `writing:rules-keeper`. Consult it; never invent mechanics. For the **Parallaxe** system used by the obsidian solo suite (`pc`, `rpg`), this file lives in `JDR/parallaxe/` — the **same artifact** these skills reference.
