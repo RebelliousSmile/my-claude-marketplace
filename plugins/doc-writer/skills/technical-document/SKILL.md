@@ -17,7 +17,7 @@ Produces developer- and operator-facing documentation. Selects the appropriate t
 
 | # | Action | Role | Input |
 |---|--------|------|-------|
-| 01 | `scope` | Determine document type, audience and sources | request + codebase |
+| 01 | `scope` | Determine document type, audience and sources | subject (`$ARGUMENTS`) + codebase |
 | 02 | `write` | Write the document from the type's template | scoped type + sources |
 | 03 | `verify` | Check examples compile/match, links resolve, claims match the code | a draft document |
 
@@ -34,6 +34,7 @@ Trigger-to-action mapping:
 ## Transversal rules
 
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` first.
+- The **subject** (what to document: a system, module, API, or operation) is given up front via `$ARGUMENTS`; if it's missing, ask for it once before starting.
 - **Rédaction en français par défaut** — la prose est en français (sauf demande explicite d'une autre langue) ; le code, les signatures, les commandes et les libellés gardent leur forme d'origine.
 - Match the document type's structure from `references/doc-types.md` — don't invent a shape.
 - **Ground every technical claim in the code**: read the relevant source before asserting behavior; cite `file:symbol`/`file:line` where useful.

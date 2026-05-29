@@ -17,7 +17,7 @@ Produces documentation for end users: clear, task-oriented, assuming no internal
 
 | # | Action | Role | Input |
 |---|--------|------|-------|
-| 01 | `outline` | Clarify product, audience and tasks; build a task-based table of contents | product + audience + task list |
+| 01 | `outline` | Clarify the subject, audience and tasks; build a task-based table of contents | subject (`$ARGUMENTS`) + audience + tasks |
 | 02 | `write` | Write the guide sections from the outline | approved outline |
 | 03 | `review` | Usability/readability pass (jargon, task completeness, consistency) | a draft guide |
 
@@ -34,6 +34,7 @@ Trigger-to-action mapping:
 ## Transversal rules
 
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` first.
+- The **subject** (the product, feature or area to document) is given up front via `$ARGUMENTS`; if it's missing, ask for it once before starting.
 - **Rédaction en français par défaut** — le guide est écrit en français (sauf demande explicite d'une autre langue) ; seuls les libellés d'UI gardent leur forme d'origine.
 - **Task-oriented**: one section per user goal, titled by the goal ("Send an invoice"), not by the UI ("The Invoices screen").
 - Plain language; assume no internal/technical knowledge; define any unavoidable term.

@@ -1,6 +1,6 @@
 # Technical document types
 
-Pick the type that matches the request, then follow its structure. One document = one type; if a request spans two, write two linked documents.
+Pick the type that matches the subject, then follow its structure. One document = one type; if a subject spans two, write two linked documents.
 
 ## Architecture overview
 

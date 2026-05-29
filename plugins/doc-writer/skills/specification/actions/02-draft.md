@@ -8,7 +8,8 @@ Write the specification from the elicited context.
 
 ## Process
 
-1. **Write all sections** in the order of `${CLAUDE_PLUGIN_ROOT}/skills/specification/references/spec-structure.md`: context & objectives, stakeholders, scope (in/out), functional requirements, non-functional requirements, constraints, deliverables, acceptance criteria, planning, assumptions & open questions.
+0. **Start from the template** `${CLAUDE_PLUGIN_ROOT}/skills/specification/references/spec-template.md` — copy its skeleton (metadata header + the 10 sections) and fill it. The template fixes the base structure; `spec-structure.md` holds the rules.
+1. **Fill every section** in the template's order, applying `${CLAUDE_PLUGIN_ROOT}/skills/specification/references/spec-structure.md`: context & objectives, stakeholders, scope (in/out), functional requirements, non-functional requirements, constraints, deliverables, acceptance criteria, planning, assumptions & open questions. Remove the template's HTML guidance comments and any unused placeholder rows.
 2. **Requirements**: number each (`FR-n`, `NFR-n`), keep one requirement per statement, write testable wording, assign a MoSCoW priority, and pair each with an acceptance criterion. Use the table format from the structure reference.
 3. **Keep solution out of requirements**: imposed technical choices go in Constraints; functional requirements describe *what*, not *how*.
 4. **Non-functional**: quantify (latency, uptime %, WCAG level, throughput) rather than adjectives.
@@ -17,7 +18,7 @@ Write the specification from the elicited context.
 
 ## Outputs
 
-The drafted specification (Markdown by default) with uniquely identified, prioritized requirements and a populated assumptions/open-questions section.
+The drafted specification (Markdown, from the template) with uniquely identified, prioritized requirements and a populated assumptions/open-questions section. No HTML guidance comments or empty placeholder rows remain.
 
 ## Test
 

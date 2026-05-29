@@ -44,6 +44,7 @@ Trigger-to-action mapping:
 
 ## References
 
+- `references/spec-template.md` — the fillable French cahier-des-charges skeleton (base structure)
 - `references/spec-structure.md` — the sections of the specification and the rules for requirements
 - `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` — shared documentation ethos
 
