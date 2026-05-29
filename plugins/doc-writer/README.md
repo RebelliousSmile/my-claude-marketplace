@@ -50,6 +50,16 @@ Pour **injecter un autre style**, passer `--style <chemin>` à l'invocation :
 
 Le fichier fourni remplace alors le style par défaut (la structure et les règles de fond restent).
 
+## Format de sortie
+
+Markdown par défaut (source de vérité, éditable et versionnable). Pour exporter vers **ICML** (Adobe InCopy/InDesign), passer `--format icml` :
+
+```
+/doc-writer:specification "cahier des charges plateforme" --format icml
+```
+
+L'export écrit d'abord le `.md` sur disque (pandoc ne convertit pas une sortie en chat), puis convertit (`pandoc <nom>.md -t icml -o <nom>.icml`) ; le `.md` reste la source, le `.icml` est généré. Si pandoc est absent ou non exécutable, le `.md` est conservé et la commande est indiquée — voir `references/export-icml.md`. Prérequis : [pandoc](https://pandoc.org/installing.html).
+
 ## Démarrage rapide
 
 ```

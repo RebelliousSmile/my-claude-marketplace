@@ -32,6 +32,14 @@ The ethos every `doc-writer` skill follows, whatever the document type. Referenc
 - Then load `<path>` and follow it **instead of** the default style (structure and content rules are unchanged).
 - If `<path>` cannot be read, **do not silently fall back** to the default: report it and ask for the correct path, since the override was explicit.
 
+## Output format
+
+- **Markdown is the default and the source of truth** — always produce the document in Markdown first.
+- A user can request another format with `--format <markdown|icml>` in `$ARGUMENTS`. **Parse this flag out of `$ARGUMENTS`** (like `--style`), so it never pollutes the subject.
+- `--format icml` exports the finished Markdown to ICML (Adobe InCopy/InDesign) **via pandoc** — see `${CLAUDE_PLUGIN_ROOT}/references/export-icml.md`. The Markdown remains the editable source; the ICML is a generated export, never hand-written.
+- **ICML export implies a file workflow**: pandoc converts a file, not chat output — so `--format icml` writes the Markdown to disk first (path from the user, else a slug of the subject), overriding the inline-by-default rule.
+- If pandoc is unavailable **or shell execution isn't permitted**, report it and keep the Markdown; never hand-roll ICML XML.
+
 ## Output destination
 
 - **Produce in the conversation by default** — print the document inline, without wrapping it in an outer ` ```markdown ` fence (that would break inner code blocks).

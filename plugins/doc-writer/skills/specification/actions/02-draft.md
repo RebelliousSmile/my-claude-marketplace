@@ -15,10 +15,11 @@ Write the specification from the elicited context.
 4. **Non-functional**: quantify (latency, uptime %, WCAG level, throughput) rather than adjectives.
 5. **Acceptance criteria**: measurable, mapped to the requirements/deliverables they close.
 6. **Assumptions & open questions**: carry every gap from `elicit`; never fill a missing figure with an invented one.
+7. **Export (if requested)**: if `--format icml` was passed, export the finished Markdown to ICML per `${CLAUDE_PLUGIN_ROOT}/references/export-icml.md`. The Markdown stays the source.
 
 ## Outputs
 
-The drafted specification (Markdown, from the template) with uniquely identified, prioritized requirements and a populated assumptions/open-questions section. No HTML guidance comments or empty placeholder rows remain.
+The drafted specification (Markdown, from the template; plus a `.icml` export when `--format icml`) with uniquely identified, prioritized requirements and a populated assumptions/open-questions section. No HTML guidance comments or empty placeholder rows remain.
 
 ## Test
 
