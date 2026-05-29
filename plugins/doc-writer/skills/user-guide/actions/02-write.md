@@ -9,6 +9,7 @@ Write the guide sections from the approved outline.
 
 ## Process
 
+0. **Load the output style**: `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/user-guide.md` by default, or the file passed via `--style <path>`. Apply its voice, tense, callouts and formatting throughout.
 1. **Write section by section** following the outline and `${CLAUDE_PLUGIN_ROOT}/skills/user-guide/references/user-guide-structure.md`.
 2. **Getting started**: the shortest end-to-end path to a first success; numbered, one action per step, each stating the visible result.
 3. **Task sections**: a one-line purpose, then numbered imperative steps, the expected result, and common variations. Keep UI labels exact.

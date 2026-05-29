@@ -35,6 +35,7 @@ Trigger-to-action mapping:
 
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` and `references/spec-structure.md` first.
 - **Rédaction en français par défaut** — le cahier des charges est rédigé en français (sauf demande explicite d'une autre langue) ; les termes techniques consacrés gardent leur forme d'origine.
+- **Output style**: follow `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/specification.md` for voice and formatting by default. To inject a different one, pass `--style <path>` in `$ARGUMENTS`; load that file and follow it instead.
 - **Every requirement is atomic, uniquely identified, prioritized, and verifiable.** IDs like `FR-1`, `NFR-1`; priority via MoSCoW (Must/Should/Could/Won't).
 - Scope is explicit on **both** sides: an "out of scope" list is mandatory.
 - Acceptance criteria are measurable — a criterion you cannot test is not done.
@@ -46,6 +47,7 @@ Trigger-to-action mapping:
 
 - `references/spec-template.md` — the fillable French cahier-des-charges skeleton (base structure)
 - `references/spec-structure.md` — the sections of the specification and the rules for requirements
+- `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/specification.md` — default voice/formatting (override with `--style <path>`)
 - `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` — shared documentation ethos
 
 ## Evals

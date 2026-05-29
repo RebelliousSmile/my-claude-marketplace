@@ -34,6 +34,22 @@ Principes partagés : `references/doc-principles.md`.
 | README de dépôt | `aidd-overlay:readme` |
 | Rédaction narrative (roman, JDR) | plugin `writing` |
 
+## Styles de sortie
+
+Chaque type de document a un **style de sortie** par défaut (voix, ton, temps, formatage, encarts) dans `assets/output-styles/` :
+
+- `assets/output-styles/user-guide.md` — vouvoiement, impératif, encarts Astuce/Attention/Note
+- `assets/output-styles/technical-document.md` — neutre, présent, code/tableaux/Mermaid
+- `assets/output-styles/specification.md` — formel, normatif (« doit »), tables d'exigences
+
+Pour **injecter un autre style**, passer `--style <chemin>` à l'invocation :
+
+```
+/doc-writer:user-guide "manuel d'onboarding" --style chemin/vers/mon-style.md
+```
+
+Le fichier fourni remplace alors le style par défaut (la structure et les règles de fond restent).
+
 ## Démarrage rapide
 
 ```

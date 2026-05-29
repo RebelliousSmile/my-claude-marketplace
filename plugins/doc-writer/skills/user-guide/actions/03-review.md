@@ -17,6 +17,7 @@ Check, and fix in place (or report if read-only is requested):
 4. **Terminology consistency** — one term per concept; UI labels match the product exactly.
 5. **Structure & scannability** — goal-titled sections, headings, short paragraphs, troubleshooting as symptom→cause→fix.
 6. **Truthfulness** — no invented features/behavior; visuals are real or marked as `[screenshot: …]` placeholders.
+7. **Style compliance** — matches the active output style (default `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/user-guide.md`, or the `--style <path>` override): voice, tense, callout format, headings.
 
 ## Outputs
 
