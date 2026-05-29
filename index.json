@@ -7,6 +7,18 @@
       "version": "1.7.1"
     },
     {
+      "id": "design",
+      "name": "design",
+      "description": "Mobile-first responsive design system: from-reference / from-brief intakes (core trio first, never emoji), W3C tokens + CSS/Tailwind adapters, living HTML wireframes, reusable components with options, compliance audit, doctor + refactor for production codebases, and export-wordpress (theme.json + block patterns).",
+      "version": "0.2.0"
+    },
+    {
+      "id": "doc-writer",
+      "name": "doc-writer",
+      "description": "Professional documentation authoring: user-guide (end-user manuals), technical-document (developer/architecture/API docs), and specification (cahier des charges — requirements documents).",
+      "version": "0.1.0"
+    },
+    {
       "id": "gamedesign",
       "name": "gamedesign",
       "description": "Game design skills and workflows.",

@@ -6,7 +6,7 @@ Generate a WordPress `theme.json` (v3) from `design/tokens.json`.
 
 - `design/tokens.json` (required).
 - `theme_dir` — the target block theme directory (ask if unknown; default the project root or `wp-content/themes/<slug>/`).
-- The mapping: `references/theme-json-mapping.md`.
+- The mapping: `${CLAUDE_PLUGIN_ROOT}/skills/export-wordpress/references/theme-json-mapping.md`.
 
 ## Process
 

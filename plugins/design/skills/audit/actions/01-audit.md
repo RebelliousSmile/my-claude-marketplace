@@ -12,7 +12,7 @@ Run the compliance checklist against a target and report violations with fixes.
 
 1. **Load the system**. If `design/tokens.json` is absent, stop: tell the user to run `from-reference`/`from-brief` — there is nothing to audit against.
 2. **Resolve the target** file set.
-3. **Run `references/checklist.md`** category by category against each file:
+3. **Run `${CLAUDE_PLUGIN_ROOT}/skills/audit/references/checklist.md`** category by category against each file:
    - Scan for hardcoded colors/sizes; cross-check used `var(--…)`/Tailwind classes exist in the adapters.
    - Detect `max-width`-first patterns and base-layer media queries.
    - Check enriched regions are min-width-revealed and tagged; check no required content is mobile-hidden.

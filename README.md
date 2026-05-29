@@ -51,6 +51,7 @@ Ou via commande dans le projet :
 | Type de projet | Plugin à activer |
 |---|---|
 | Design system / UI mobile-first | `design@my-marketplace` |
+| Documentation (guides, technique, cahier des charges) | `doc-writer@my-marketplace` |
 | Web JavaScript / Nuxt / Vue | `sc-js@my-marketplace` |
 | Web PHP | `sc-php@my-marketplace` |
 | Web Python | `sc-python@my-marketplace` |
@@ -67,7 +68,8 @@ Ou via commande dans le projet :
 | Plugin | `recommended` | Description |
 |---|---|---|
 | `aidd-overlay` | ✅ | Socle commun — workflows projet-agnostiques |
-| `design` | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit |
+| `design` | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit, doctor/refactor (prod), export WordPress |
+| `doc-writer` | — | Documentation : guides utilisateur, documents techniques, cahiers des charges (specification) |
 | `sc-js` | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
 | `sc-php` | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
 | `sc-python` | — | Stack Python : Django / FastAPI |
@@ -124,6 +126,20 @@ Philosophie : décider vite le trio palette / typo / icônes (jamais d'émoticon
 | `export-wordpress` | `/design:export-wordpress` | Bascule un design vers WordPress : `theme.json` (v3) + block patterns |
 
 Artefacts produits dans le projet : `design/tokens.json` (source W3C DTCG), `design/design-system.md`, `design/adapters/{tokens.css,theme.css}` (générés), `design/components/*.md`, `design/wireframes/*.html`.
+
+---
+
+## doc-writer
+
+Rédaction de documentation professionnelle. Distinct du plugin `writing` (narratif) et du skill `aidd-overlay:readme` (README de dépôt).
+
+### Skills
+
+| Skill | Déclencheur | Description |
+|---|---|---|
+| `user-guide` | `/doc-writer:user-guide` | Documentation utilisateur final, orientée tâches (prise en main, how-to, dépannage, FAQ) — outline → write → review |
+| `technical-document` | `/doc-writer:technical-document` | Doc développeur/ops (architecture, API, intégration, runbook, design note), vérifiée contre le code — scope → write → verify |
+| `specification` | `/doc-writer:specification` | Cahier des charges : exigences fonctionnelles/non-fonctionnelles (ID + MoSCoW + critère d'acceptation), périmètre in/out, livrables — elicit → draft → challenge |
 
 ---
 

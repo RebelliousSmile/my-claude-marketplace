@@ -1,0 +1,11 @@
+[
+  { "prompt": "write the specification for our new booking platform", "expect_action": "elicit" },
+  { "prompt": "draft a cahier des charges for this project", "expect_action": "elicit" },
+  { "prompt": "formalize this client need into a requirements document", "expect_action": "elicit" },
+  { "prompt": "what do we need to know before writing the spec", "expect_action": "elicit" },
+  { "prompt": "draft the specification from this context brief", "expect_action": "draft" },
+  { "prompt": "challenge this specification, are the requirements testable", "expect_action": "challenge" },
+  { "prompt": "review the cahier des charges for ambiguity and contradictions", "expect_action": "challenge" },
+  { "prompt": "write a user guide for the app", "expect_action": null },
+  { "prompt": "document the API endpoints", "expect_action": null }
+]

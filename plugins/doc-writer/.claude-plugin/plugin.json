@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "doc-writer",
+  "version": "0.1.0",
+  "description": "Professional documentation authoring: user-guide (end-user manuals), technical-document (developer/architecture/API docs), and specification (cahier des charges — requirements documents).",
+  "author": {
+    "name": "François-Xavier Guillois"
+  }
+}
