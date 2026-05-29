@@ -13,6 +13,12 @@
       "version": "0.2.0"
     },
     {
+      "id": "doc-writer",
+      "name": "doc-writer",
+      "description": "Professional documentation authoring: user-guide (end-user manuals), technical-document (developer/architecture/API docs), and specification (cahier des charges — requirements documents).",
+      "version": "0.1.0"
+    },
+    {
       "id": "gamedesign",
       "name": "gamedesign",
       "description": "Game design skills and workflows.",

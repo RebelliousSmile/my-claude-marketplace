@@ -9,6 +9,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnemen
 ### Ajouté
 
 - **Plugin `design`** (0.2.0) — design system mobile-first et responsive : intakes `from-reference` / `from-brief`, tokens W3C (DTCG) + adaptateurs CSS/Tailwind générés, wireframes HTML vivants, composants réutilisables à options, `audit` de conformité, `doctor` + `refactor` pour le code en production, et `export-wordpress` (`theme.json` v3 + block patterns). Règle « jamais d'émoticons » et décision du trio palette/typo/icônes en priorité.
+- **Plugin `doc-writer`** (0.1.0) — rédaction de documentation professionnelle : `user-guide` (manuels utilisateur), `technical-document` (architecture / API / runbook, vérifiés contre le code) et `specification` (cahier des charges — exigences avec ID, priorité MoSCoW et critères d'acceptation).
 - **`LICENSE`** (MIT), **`CONTRIBUTING.md`** et ce **`CHANGELOG.md`** à la racine.
 
 ## [1.0.0]

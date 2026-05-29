@@ -1,0 +1,12 @@
+[
+  { "prompt": "document the architecture of this service", "expect_action": "scope" },
+  { "prompt": "write the API reference for the payments module", "expect_action": "scope" },
+  { "prompt": "write an integration guide for our SDK", "expect_action": "scope" },
+  { "prompt": "create a runbook for the database failover", "expect_action": "scope" },
+  { "prompt": "write a design note for the new caching layer", "expect_action": "scope" },
+  { "prompt": "write the architecture doc from this outline and sources", "expect_action": "write" },
+  { "prompt": "verify the code examples in this technical doc still work", "expect_action": "verify" },
+  { "prompt": "fact-check this API documentation against the code", "expect_action": "verify" },
+  { "prompt": "write a user manual for end users", "expect_action": null },
+  { "prompt": "draft the project specification", "expect_action": null }
+]
