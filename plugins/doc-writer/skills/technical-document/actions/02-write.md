@@ -16,10 +16,11 @@ Write the document from the scoped type's template, grounded in the code.
 4. **Cite** `file:symbol` or `file:line` where it helps a reader navigate; link ADRs/existing docs instead of restating decisions.
 5. **Diagrams**: use Mermaid (sequence/flow/component) the reader can edit; describe in text what isn't drawable.
 6. **Mark assumptions**: anything you could not verify from source is flagged, not asserted.
+7. **Export (if requested)**: if `--format icml` was passed, export the finished Markdown to ICML per `${CLAUDE_PLUGIN_ROOT}/references/export-icml.md`. The Markdown stays the source.
 
 ## Outputs
 
-The drafted technical document (Markdown by default), with code citations and an assumptions/open-questions section where source was missing.
+The drafted technical document (Markdown by default; plus a `.icml` export when `--format icml`), with code citations and an assumptions/open-questions section where source was missing.
 
 ## Test
 

@@ -15,6 +15,11 @@ Initial release. Professional documentation authoring, three skills.
 - One default **output style** per document type, in each skill's `references/output-style.md` — voice, tone, tense, formatting, callouts (French).
 - Each skill accepts `--style <path>` in `$ARGUMENTS` to **inject a different output style** in place of the default; the flag is parsed out of `$ARGUMENTS` (the rest is the subject), and a missing path is reported rather than silently falling back. Structure and content rules are unchanged.
 
+### Output format
+
+- Markdown is the default and the source of truth.
+- Each skill accepts `--format icml` in `$ARGUMENTS` to export the finished document to **ICML** (Adobe InCopy/InDesign) via pandoc (`references/export-icml.md`). The Markdown stays the editable source; ICML is generated, never hand-written; a missing pandoc is reported rather than producing invalid XML.
+
 ### Conventions
 
 - Shared documentation ethos in `references/doc-principles.md`, referenced by all skills via `${CLAUDE_PLUGIN_ROOT}`.

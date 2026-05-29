@@ -36,6 +36,7 @@ Trigger-to-action mapping:
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` and `references/spec-structure.md` first.
 - **Rédaction en français par défaut** — le cahier des charges est rédigé en français (sauf demande explicite d'une autre langue) ; les termes techniques consacrés gardent leur forme d'origine.
 - **Output style**: follow `${CLAUDE_PLUGIN_ROOT}/skills/specification/references/output-style.md` for voice and formatting by default. To inject a different one, pass `--style <path>` in `$ARGUMENTS`; load that file and follow it instead.
+- **Output format**: Markdown by default. `--format icml` exports the finished cahier des charges to ICML (Adobe InCopy/InDesign) via pandoc — see `${CLAUDE_PLUGIN_ROOT}/references/export-icml.md`. Markdown stays the source.
 - **Every requirement is atomic, uniquely identified, prioritized, and verifiable.** IDs like `FR-1`, `NFR-1`; priority via MoSCoW (Must/Should/Could/Won't).
 - Scope is explicit on **both** sides: an "out of scope" list is mandatory.
 - Acceptance criteria are measurable — a criterion you cannot test is not done.

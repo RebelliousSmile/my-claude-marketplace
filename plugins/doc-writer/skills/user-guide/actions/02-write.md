@@ -17,10 +17,11 @@ Write the guide sections from the approved outline.
 5. **Visuals**: insert `[screenshot: <what it shows>]` placeholders where they help; never fabricate UI you haven't seen.
 6. **Plain language**: short sentences, define any unavoidable term, no internal jargon, no marketing words.
 7. **Assumptions**: where source was missing, write the most likely steps and list them in an assumptions note rather than presenting guesses as fact.
+8. **Export (if requested)**: if `--format icml` was passed, export the finished Markdown to ICML per `${CLAUDE_PLUGIN_ROOT}/references/export-icml.md`. The Markdown stays the source.
 
 ## Outputs
 
-The drafted user guide (Markdown by default), plus an assumptions note listing anything written without confirmed source.
+The drafted user guide (Markdown by default; plus a `.icml` export when `--format icml`), plus an assumptions note listing anything written without confirmed source.
 
 ## Test
 
