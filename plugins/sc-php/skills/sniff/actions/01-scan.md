@@ -110,6 +110,24 @@ Examples of gaps to report:
 
 List all gaps explicitly in the output.
 
+### Step 8 — Build Skills support summary
+
+**This step is mandatory. Do not skip it.**
+
+For each downstream skill, determine readiness based on the results of Steps 5–7:
+
+| Skill | Ready if… | Not applicable if… |
+|---|---|---|
+| `/web-optimize` | ≥ 1 perf pivot is MISSING or UP-TO-DATE | no perf pivot applicable |
+| `/data-optimize` | ≥ 1 data pivot is MISSING or UP-TO-DATE | no data pivot applicable |
+| `/sc-php:audit` | always ready (capability pivots always loaded) | — |
+
+For each skill, emit one line:
+- `✅ /skill-name — reason` (ready or will be ready after install)
+- `— /skill-name — NOT APPLICABLE — reason` (no applicable pivot)
+
+This summary MUST appear in the output as the `Skills support:` section, immediately before `Gaps`.
+
 ## Output
 
 > **FORMAT CONSTRAINTS — do not deviate:**

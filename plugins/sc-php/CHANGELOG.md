@@ -1,5 +1,10 @@
 # Changelog — sc-php
 
+## v0.4.4 — 2026-05-29
+
+### Fixed
+- `sniff/01-scan.md`: ajoute Step 8 comme étape de traitement explicite pour la section `Skills support` — le modèle l'omettait car elle n'apparaissait que dans le template de sortie, jamais dans le processus.
+
 ## v0.4.3 — 2026-05-29
 
 ### Fixed
