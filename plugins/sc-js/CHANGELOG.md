@@ -1,5 +1,18 @@
 # Changelog — sc-js
 
+## [0.6.7] — 2026-05-29
+
+### audit
+
+- **Step 3 — review targets are now stack-aware**, not Vue-biased. A table maps each detected stack (Vue/Nuxt, SvelteKit, Alpine, **vanilla web**, Node backend) to its typical targets, with linter/test config and `tests/` always included. Vanilla web explicitly covers `*.html` inline styles/scripts and JS-generated DOM.
+- **`quality_score` now uses a fixed rubric** (reproducible across runs): 100 − 10×major − 3×minor, floored at 0; N/A pivots cost 0. The reviewer must show the arithmetic.
+- **Per-pivot status table is now mandatory** — one row per loaded pivot (`✅ verified` / `⚠️ N major · M minor` / `➖ N/A`), so the completion claim is auditable at a glance, not only the clean pivots.
+- **Removed the hard-coded `sc-js 0.4.0` version string** from the criteria-document example.
+
+### Capability pivot
+
+- **`tools/playwright.md` reframed: perf measurement + functional-E2E reliability.** Most projects use Playwright for functional E2E, not perf — the pivot now has a dedicated reliability section (ban `waitForTimeout`, resilient role/testid selectors, test isolation, web-first assertions). A perf pivot against a purely functional suite is N/A, not a violation.
+
 ## [0.6.6] — 2026-05-29
 
 ### sniff

@@ -1,6 +1,8 @@
-# Playwright — mesure de performance web
+# Playwright — mesure de performance web + fiabilité E2E
 
-Pivot orienté **vérification perf** — pas E2E fonctionnel. Chargé par `web-optimize` au §11 Verification.
+Deux usages, selon comment le projet utilise Playwright :
+- **Mesure de performance** (sections CWV / throttling / traces ci-dessous) — chargé par `web-optimize` au §11 Verification.
+- **Fiabilité de la suite E2E fonctionnelle** (section dédiée en bas) — la plupart des projets utilisent Playwright pour de l'E2E, pas de la perf. À l'audit, si aucun harness perf n'existe, ce n'est **pas une violation** (N/A) ; revoir alors la suite contre les critères de fiabilité.
 
 ## Mesurer les Core Web Vitals
 
@@ -80,9 +82,25 @@ const jsTotal = responses
 console.log(`JS total: ${(jsTotal / 1024).toFixed(1)} KB`);
 ```
 
+## Fiabilité E2E fonctionnel
+
+S'applique à toute suite Playwright fonctionnelle (l'usage dominant). Indépendant de la perf.
+
+- **Bannir `waitForTimeout(ms)`** — attente arbitraire = test flaky (trop court → échec aléatoire, trop long → suite lente). Remplacer par une attente sur état :
+  ```js
+  // ❌ await page.waitForTimeout(2000)
+  await page.waitForLoadState('networkidle')        // réseau stabilisé
+  await expect(page.getByRole('dialog')).toBeVisible()  // attente liée à l'assertion (auto-retry)
+  await page.getByTestId('row').waitFor()            // élément précis
+  ```
+- **Sélecteurs résilients** : `getByRole`/`getByLabel`/`getByTestId` plutôt que des sélecteurs CSS/XPath positionnels (`.col > div:nth-child(3)`) qui cassent au moindre changement de markup.
+- **Isolation des tests** : pas d'état partagé entre tests ; `beforeEach` pour remettre à zéro (session, storage). Un test ne doit jamais dépendre de l'ordre d'exécution.
+- **Web-first assertions** : `await expect(locator).toHaveText(...)` (auto-retry intégré) plutôt que lire une valeur puis `expect(value)` (snapshot figé, pas de retry).
+- **Pas de `page.$()` / `elementHandle`** pour les assertions → préférer les `locator` (lazy, auto-waiting).
+
 ## Anti-patterns
 
 - Mesurer sans throttling → résultats non représentatifs (machine dev = fibre + CPU haut de gamme)
 - Un seul run → variance PSI ±15 normale ; toujours ≥ 5 runs, médiane comme référence
 - Comparer LCP entre pages différentes → mesurer toujours la même URL avant/après
-- `waitForTimeout()` pour stabiliser → utiliser `waitForLoadState('networkidle')` ou un sélecteur précis
+- `waitForTimeout()` pour stabiliser → utiliser `waitForLoadState('networkidle')` ou un sélecteur précis (vaut pour la perf **et** l'E2E fonctionnel)
