@@ -24,4 +24,4 @@ Render the layout plan as a standalone, viewable mobile-first HTML wireframe.
 
 ## Test
 
-The file opens standalone, links `../adapters/tokens.css`, restructures at the breakpoint literals (each annotated with its token), reveals enriched regions only at `min-width`, shows the mobile-only pattern replaced on desktop, and contains no hardcoded color/size outside the annotated breakpoint literals. Running `/design:audit design/wireframes/<story-slug>.html` reports no blocking violations.
+The file opens standalone, links `../adapters/tokens.css`, restructures at the breakpoint literals (each annotated with its token), reveals enriched regions only at `min-width`, shows the mobile-only pattern replaced on desktop, and the content surface uses tokens (no hardcoded color/size outside the annotated breakpoint literals, `var()` fallbacks, and the fenced greybox annotation layer). Running `/design:audit design/wireframes/<story-slug>.html` reports no blocking violations (the annotation layer is exempt per the audit checklist).

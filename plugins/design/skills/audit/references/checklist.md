@@ -4,12 +4,19 @@ Run every applicable category against the target. Each finding records: severity
 
 ## 1 — Token discipline (`08-design/4-design-tokens`)
 
+Scope: this category targets the **documented token dimensions** — color, typography, spacing, radius, shadow, border width, motion, icon. Structural layout values (grid track sizes, flex bases, `1fr`, container widths) are **not** flagged unless a matching token exists for them.
+
 - [ ] **blocking** No hardcoded hex/rgb/hsl colors — must be `var(--color-…)` or a Tailwind token class.
 - [ ] **blocking** No hardcoded px/rem font sizes or spacing — must come from `font.size.*` / `space.*` tokens.
 - [ ] **warning** Semantic tokens used in components, not raw neutral ramps.
 - [ ] **warning** Radius, shadow, border-width, motion come from tokens.
 - [ ] **blocking** Adapter values match `tokens.json` (no drift); generated files unedited.
-- Exception: breakpoint **px literals inside `@media` conditions** are allowed (var() is illegal there) **only if** annotated with the mirrored breakpoint token.
+
+Exemptions (not violations):
+
+- **`var()` fallbacks** — `var(--token, <fallback>)` is allowed; it references the token first.
+- **Breakpoint `@media` literals** — px literals inside `@media` conditions are allowed (var() is illegal there) **only if** annotated with the mirrored breakpoint token.
+- **Fenced wireframe scaffolding** — a clearly-labeled, non-system annotation layer (e.g. the greybox helpers, `[data-enrich]` / `[data-mobile-only]` affordances marked "not part of the design system") is out of scope when auditing a `design/wireframes/*.html` file. Production pages/components have no such layer and are audited in full.
 
 ## 2 — Mobile-first (`08-design/1-mobile-first`)
 

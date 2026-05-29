@@ -14,7 +14,7 @@ Ingest the handed-over reference and gather concrete visual evidence to extract 
 
 1. **Identify the reference type** and load it:
    - Image → Read the file to view it.
-   - URL → fetch the page; if responsive evidence matters, note layout at a narrow and a wide width.
+   - URL → fetch the page; if responsive evidence matters, note layout at a narrow and a wide width. If fetching is unavailable in this environment, ask the user for a screenshot or the stylesheet instead — do not guess values.
    - CSS/Figma export → read the source directly (most reliable — values are explicit).
 2. **Catalog observed values** into a working note (not yet tokens):
    - Colors actually used (backgrounds, text, accents, borders, states) with rough hex.
