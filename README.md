@@ -65,19 +65,21 @@ Ou via commande dans le projet :
 
 ## Plugins disponibles
 
-| Plugin | `recommended` | Description |
-|---|---|---|
-| `aidd-overlay` | ✅ | Socle commun — workflows projet-agnostiques |
-| `design` | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit, doctor/refactor (prod), export WordPress |
-| `doc-writer` | — | Documentation : guides utilisateur, documents techniques, cahiers des charges (specification) |
-| `sc-js` | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
-| `sc-php` | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
-| `sc-python` | — | Stack Python : Django / FastAPI |
-| `sc-rust` | — | Stack Rust : Axum / Actix-web |
-| `sc-tiers` | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
-| `gamedesign` | — | Game design : dialogue, bank d'assets |
-| `writing` | — | Rédaction : ton, style, typographie, chapitres |
-| `obsidian` | — | Gestion notes Obsidian — projets Pro et PJ JDR solo |
+| Plugin | Doc | `recommended` | Description |
+|---|---|---|---|
+| [`aidd-overlay`](plugins/aidd-overlay) | — | ✅ | Socle commun — workflows projet-agnostiques |
+| [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit, doctor/refactor (prod), export WordPress |
+| [`doc-writer`](plugins/doc-writer/README.md) | [README](plugins/doc-writer/README.md) · [CHANGELOG](plugins/doc-writer/CHANGELOG.md) | — | Documentation : guides utilisateur, documents techniques, cahiers des charges (specification) |
+| [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
+| [`sc-php`](plugins/sc-php) | [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
+| [`sc-python`](plugins/sc-python) | — | — | Stack Python : Django / FastAPI |
+| [`sc-rust`](plugins/sc-rust) | — | — | Stack Rust : Axum / Actix-web |
+| [`sc-tiers`](plugins/sc-tiers) | — | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
+| [`gamedesign`](plugins/gamedesign) | — | — | Game design : dialogue, bank d'assets |
+| [`writing`](plugins/writing) | — | — | Rédaction : ton, style, typographie, chapitres |
+| [`obsidian`](plugins/obsidian) | — | — | Gestion notes Obsidian — projets Pro et PJ JDR solo |
+
+> Colonne **Doc** : lien vers le README et le CHANGELOG du plugin quand ils existent. Les plugins sans README dédié pointent vers leur dossier source. README + CHANGELOG présents : `design`, `doc-writer`, `sc-js`. CHANGELOG seul : `sc-php`. Sans README ni CHANGELOG dédiés : `aidd-overlay`, `gamedesign`, `obsidian`, `sc-python`, `sc-rust`, `sc-tiers`, `writing`.
 
 ---
 
