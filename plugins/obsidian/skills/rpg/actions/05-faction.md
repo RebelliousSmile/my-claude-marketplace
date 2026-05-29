@@ -1,28 +1,28 @@
 # 05 - faction
 
-Crée ou développe une faction et ses **fronts** (horloges/comptes à rebours), moteur de la pression de campagne.
+Crée ou développe une faction (lore d'univers durable) **et** ses **fronts** (horloges actives, état de campagne).
+
+Distinction clé : la **faction** est une donnée d'univers (durable, transverse) → arborescence partagée ; ses **fronts/horloges** sont l'**état d'une partie** → côté campagne.
 
 ## Inputs
 
-- `campagne` (requis) — nom de la campagne.
-- `faction` — nom ; sinon, proposer à partir du `synopsis.md`.
+- `campagne` (requis) — nom de la campagne (pour les fronts) ; son `config.yaml › universe` désigne l'univers.
+- `faction` — nom ; sinon, proposer à partir du `synopsis.md` ou des `factions.md` de l'univers.
 
 ## Process
 
-1. **Lire le contexte** : `synopsis.md`, `config.yaml` (chaos, difficulté), PNJ existants.
-2. **Définir la faction** :
-   - Nature, ressources, territoire / sphère d'influence.
-   - **Agenda** : le but à long terme.
-   - **Fronts (horloges)** : 1–3 comptes à rebours concrets (`◷ 0/4 → événement`), avec ce qui les fait avancer et ce qui se produit à échéance. Ce sont les horloges que `solo-mc` fera progresser au jeu.
-   - **PNJ clés** : `[[lier]]` vers `pnjs/` (en proposer via `npc`).
-   - **Pression sur le PJ** : comment l'agenda menace la ligne rouge / les enjeux du PJ.
-3. **Lier** scénarios concernés ; mettre à jour `index.md` (section fronts en cours).
-4. **Écrire** `JDR/<campagne>/factions/<slug>.md` (compléter sans écraser).
+1. **Lire le contexte** : `JDR/univers/<univers>/.docs/factions.md` et `personnages.md`, `synopsis.md`, `config.yaml` (chaos, difficulté).
+2. **Définir la faction (durable)** : nature, ressources, territoire / sphère d'influence, **agenda** (but à long terme), PNJ clés (`[[lier]]` vers `personnages.md`).
+   → Écrire/compléter dans `JDR/univers/<univers>/.docs/factions.md` (arborescence partagée avec `lore-extract` : une info dans un seul fichier, ne pas écraser).
+3. **Définir les fronts (campagne)** : 1–3 horloges concrètes (`◷ 0/4 → événement`), ce qui les fait avancer, ce qui se produit à échéance, et la **pression sur le PJ** (menace sur la ligne rouge / les enjeux). Ce sont les horloges que `solo-mc` fera progresser au jeu.
+   → Écrire dans `JDR/<campagne>/fronts.md` (état de partie), en `[[liant]]` la faction d'univers.
+4. Mettre à jour l'`index.md` de la campagne (section fronts en cours).
 
 ## Outputs
 
-`JDR/<campagne>/factions/<slug>.md` (nature, agenda, fronts/horloges, PNJ clés, pression sur le PJ) + `index.md` à jour.
+- Faction durable dans `JDR/univers/<univers>/.docs/factions.md` (nature, agenda, PNJ clés).
+- Fronts/horloges actifs dans `JDR/<campagne>/fronts.md`, liés à la faction + à la pression sur le PJ.
 
 ## Test
 
-La faction a un agenda et au moins une horloge chiffrée (état actuel + déclencheur + échéance), et au moins un lien vers un PNJ ou un scénario de la campagne.
+La faction durable est dans `factions.md` de l'univers (non dupliquée), avec un agenda ; au moins une horloge chiffrée (état + déclencheur + échéance) existe dans `JDR/<campagne>/fronts.md` et référence la faction.

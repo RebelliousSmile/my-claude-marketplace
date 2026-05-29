@@ -4,7 +4,7 @@
       "id": "aidd-overlay",
       "name": "aidd-overlay",
       "description": "Extends the AIDD framework with project-agnostic workflows: interactive codebase quiz (dig), memory maintenance (harvest, reconcile-normative), obsolescence detection (taste), prospective analysis (foresee), performance audits (data-optimize, web-optimize), project health reporting (status), and planning utilities (decompose, journey, changelog, end-plan). Alias chains: rechallenge, afterplan, endtask, endplan, bump-plugin, previously.",
-      "version": "1.7.1"
+      "version": "1.9.0"
     },
     {
       "id": "design",
@@ -51,7 +51,7 @@
     {
       "id": "obsidian",
       "name": "obsidian",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc) plus scenario writing and campaign preparation (rpg).",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc), scenario writing and campaign preparation (rpg), and live play (solo-mc).",
       "version": "0.4.0"
     },
     {

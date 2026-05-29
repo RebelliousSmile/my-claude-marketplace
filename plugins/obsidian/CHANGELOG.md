@@ -5,7 +5,12 @@
 ## [0.4.0] — 2026-05-29
 
 ### Added
-- **`rpg`** — prep MJ du JDR solo : écriture de scénarios et préparation de campagne. Actions : `campaign` (amorce de la couche prep + synopsis), `scenario` (situation jouable : lieux, PNJ, fronts, amorces, issues), `prep-session` (objectif, scènes probables, questions oracle pré-armées, tables, accroches), `npc` (PNJ de campagne), `faction` (factions + fronts/horloges), `review` (cohérence et jouabilité). Complète `pc` (fiches PJ) et `solo-mc` (jeu en direct, plugin aidd-overlay) ; campagne dans `JDR/<campagne>/`, ancrée sur l'`intention.md` du PJ et le système Jauges & Tarot.
+- **`rpg`** — prep MJ du JDR solo : écriture de scénarios et préparation de campagne. Actions : `campaign` (couche prep + synopsis + rattachement univers), `scenario` (situation jouable : lieux, PNJ, fronts, amorces, issues), `prep-session` (objectif, scènes probables, questions oracle pré-armées, tables, accroches), `npc`, `faction` (faction durable + fronts/horloges), `review` (cohérence et jouabilité). Complète `pc` (fiches PJ) et `solo-mc` (jeu en direct) ; campagne dans `JDR/<campagne>/`, ancrée sur l'`intention.md` du PJ et le système **Parallaxe**.
+- **`solo-mc`** — maître de jeu du JDR solo en direct (play, scene, oracle, roll, setup, journal-pdf…), **déplacé depuis `aidd-overlay`** pour regrouper la suite JDR solo. Skill inchangé.
+
+### Changed
+- **`pc` : système Parallaxe** (auparavant Jauges & Tarot). Les termes de mécanique J&T (jauge narrative, échos, points de destin, as/cavaliers…) sont remplacés par une déférence à la référence Parallaxe ; le `_template/`, `pj-manager.py` et `parallaxe-synthese.md` (hors dépôt) doivent être alignés côté coffre.
+- **Données univers partagées** : `rpg` consigne le lore durable (terminologie, factions, personnages, lieux, histoire) dans `JDR/univers/<univers>/.docs/`, **même arborescence que `lore-extract`** (plugin writing).
 
 ## [0.3.1] — 2026-05-29 (baseline)
 

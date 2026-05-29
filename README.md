@@ -79,7 +79,7 @@ Le **détail des skills de chaque plugin vit dans son propre README** (colonne D
 | [`sc-tiers`](plugins/sc-tiers/README.md) | [README](plugins/sc-tiers/README.md) · [CHANGELOG](plugins/sc-tiers/CHANGELOG.md) | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
 | [`gamedesign`](plugins/gamedesign/README.md) | [README](plugins/gamedesign/README.md) · [CHANGELOG](plugins/gamedesign/CHANGELOG.md) | — | Game design (8-MINE) : timelines dialogiques, bank d'assets |
 | [`writing`](plugins/writing/README.md) | [README](plugins/writing/README.md) · [CHANGELOG](plugins/writing/CHANGELOG.md) | — | Rédaction narrative : concept, TOC, chapitres, ton, lore, relecture |
-| [`obsidian`](plugins/obsidian/README.md) | [README](plugins/obsidian/README.md) · [CHANGELOG](plugins/obsidian/CHANGELOG.md) | — | Notes Obsidian — projets Pro, JDR solo (PJ, scénarios, prep de campagne), tri d'emails |
+| [`obsidian`](plugins/obsidian/README.md) | [README](plugins/obsidian/README.md) · [CHANGELOG](plugins/obsidian/CHANGELOG.md) | — | Notes Obsidian — projets Pro, JDR solo (PJ, scénarios, prep de campagne, jeu en direct), tri d'emails |
 
 > Tous les plugins ont un README et un CHANGELOG.
 

@@ -2,9 +2,10 @@
 name: pc
 description: >-
   Manages JDR solo player-character files stored in JDR/pjs/<pj>/ — create a new PJ,
-  fill or reorganize its files, log a game session (Jauges & Tarot), or display the
+  fill or reorganize its files, log a game session (système Parallaxe), or display the
   character sheet. Use when the user invokes /obsidian:pc with a player-character intent.
-  Do NOT use for campaign-level features (oracle, scene, roll) — those stay in jdr/.claude.
+  Do NOT use for campaign prep (scénarios, PNJ, factions) — use `rpg`; nor for live play
+  (scene, oracle, roll) — use `solo-mc`.
 disable-model-invocation: true
 ---
 
@@ -20,7 +21,7 @@ Routes to the appropriate action based on user intent.
 | 01  | `new`         | Create a new PJ folder from the `_template/`                      | PJ name                   |
 | 02  | `fill`        | Fill PJ files from a pasted text (brainstorm, notes, etc.)        | PJ name, source text      |
 | 03  | `reorganize`  | Redistribute content to the 6 standard files                      | PJ name or loose .md file |
-| 04  | `log-session` | Update PJ files after a Jauges & Tarot game session               | PJ name, session info     |
+| 04  | `log-session` | Update PJ files after a Parallaxe game session                    | PJ name, session info     |
 | 05  | `show`        | Display the current character sheet (tags, statuses, relations)   | PJ name or active session |
 
 ## Default flow
@@ -39,8 +40,9 @@ Router — dispatches based on user intent:
 - Template: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/_template/`
 - Manager script: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/pj-manager.py`
 - Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `pjs/` (excluding `_template`).
-- J&T reference for terminology: `C:/Users/fxgui/Public/Notes/Perso/JDR/jauges-et-tarot/jauges-tarot-synthese.md`
-- Never invent J&T mechanics — always consult the reference above.
+- Parallaxe reference for terminology and mechanics: `C:/Users/fxgui/Public/Notes/Perso/JDR/parallaxe/parallaxe-synthese.md`
+- Never invent Parallaxe mechanics — always consult the reference above.
+- Système : **Parallaxe**. Le `_template/`, `pj-manager.py` et la référence ci-dessus (hors dépôt) doivent refléter Parallaxe ; ce skill défère à la référence pour tout terme mécanique.
 - Date format: `YYYY-MM-DD` throughout all files.
 
 ## Action: new
@@ -67,7 +69,7 @@ Asks the user to paste the source text, then:
    - Identity, facade, background, personality, world relationship → `pj.md`
    - Stats, power/weakness tags, equipment, mechanics → `fiche_technique.md`
    - Themes, tone, truths, line rouge, visceral question → `intention.md`
-   - Jauge Narrative, échos, challenges, descriptions, PD → `etat-jeu.md`
+   - État mécanique de jeu (jauges, ressources, statuts, compteurs selon Parallaxe) → `etat-jeu.md`
    - Scene ideas, open threads → `backlog.md`
 
 2. Distributes content into the relevant files. Preserves existing content — completes, never overwrites.
@@ -84,7 +86,7 @@ Reports modified files and lists sections still marked `[À compléter]`.
 2. Presents a redistribution plan before writing anything:
    - Which source content goes to which target file
    - Which missing files will be created from template
-   - Which content belongs outside `pjs/` (campaign-level: PNJs, rules, context)
+   - Which content belongs outside `pjs/` (campaign prep → `rpg` ; univers durable → arborescence `lore-extract`/`rpg` ; jeu en direct → `solo-mc`)
    - Which content is ambiguous and needs user arbitration
 3. Waits for user validation.
 4. If source is a single `.md`: creates `pjs/<slug>/` first, then copies missing files from template.
@@ -95,8 +97,8 @@ Redistribution rules:
 - `pj.md` ← identity, name, age, gender, origin, social facade, background, personality, world relationship
 - `fiche_technique.md` ← stats, attributes, skills, power/weakness tags, spells, equipment, persistent statuses
 - `intention.md` ← themes, tone, truths, what I want to experience/avoid, visceral question, story threads
-- `etat-jeu.md` ← Jauge Narrative, échos (Charge Mentale), PD pile, Challenges, Descriptions, As/Cavaliers, suspended Lignes de Temps
-- `journal.md` ← dated session reports, played scenes, generated/resolved échos, dénouements (newest first)
+- `etat-jeu.md` ← état mécanique de jeu selon Parallaxe : jauges, ressources, statuts, compteurs et éléments en suspens (voir la référence Parallaxe)
+- `journal.md` ← dated session reports, played scenes, mechanical events and session outcomes per Parallaxe (newest first)
 - `backlog.md` ← scene ideas, threads to revive, open questions, narrative todo
 
 ## Action: log-session
@@ -104,14 +106,13 @@ Redistribution rules:
 Asks the user for:
 1. Session number and date (default: today)
 2. Played scenes (short summary per scene)
-3. Échos: newly generated, resolved
-4. Points de Destin gained / spent
-5. Re-remplissage or dénouement triggered?
-6. Final table state: Jauge Narrative position, active échos count, PD in pile, active Challenges
+3. Mechanical events of the session (resources gained/spent, statuses, counters) per Parallaxe
+4. Notable outcomes / turning points of the session
+5. Final mechanical state of the sheet per Parallaxe (jauges, ressources, statuts, compteurs, éléments en suspens)
 
 Then updates:
-1. **`journal.md`** — new entry at the top (newest first) with scenes, échos, PD, re-remplissage/dénouement, free notes
-2. **`etat-jeu.md`** — snapshot update: Jauge Narrative, Charge Mentale échos table, PD counter, active Challenges, Descriptions, As/Cavaliers, suspended Lignes de Temps
+1. **`journal.md`** — new entry at the top (newest first) with scenes, mechanical events, outcomes, free notes
+2. **`etat-jeu.md`** — snapshot of the current mechanical state per Parallaxe (jauges, ressources, statuts, compteurs, éléments en suspens)
 3. **`intention.md`** — proposes an update if a new story thread emerged, the visceral question evolved, or a theme shifted
 4. **`backlog.md`** — proposes adding new scene ideas and open questions that emerged
 

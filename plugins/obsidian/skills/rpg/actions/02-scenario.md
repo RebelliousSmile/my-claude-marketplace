@@ -9,22 +9,22 @@
 
 ## Process
 
-1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté), `factions/` (fronts en cours), `pnjs/` existants, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale).
+1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté, univers), les données d'univers `JDR/univers/<univers>/.docs/` (`personnages.md`, `factions.md`, `geographie.md`), les fronts actifs `JDR/<campagne>/fronts.md`, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale).
 2. **Construire en situation, pas en intrigue linéaire** (adapté au solo) :
    - **Prémisse & enjeu** : ce qui est vrai au départ, ce qui va déraper si le PJ n'agit pas.
-   - **Lieux** : 3–6 lieux clés (ambiance, ce qu'on y trouve, accroche sensorielle).
-   - **PNJ impliqués** : référencer/`[[lier]]` les fiches de `pnjs/` ; en proposer de nouveaux à créer via `npc`.
-   - **Fronts & horloges** : ce qui avance en arrière-plan (lier aux `factions/`).
+   - **Lieux** : 3–6 lieux clés ; les lieux durables vivent dans l'univers (`geographie.md`) — les `[[lier]]`, n'inscrire ici que leur mise en jeu (ambiance, ce qu'on y trouve maintenant).
+   - **PNJ impliqués** : `[[lier]]` les fiches de l'univers (`personnages.md`) ; en proposer de nouveaux via `npc` (créés côté univers).
+   - **Fronts & horloges** : ce qui avance en arrière-plan (lier à `fronts.md` de la campagne et aux factions d'univers).
    - **Amorces de scènes** : 4–8 scènes-germes (déclencheur + tension), pas un script figé.
    - **Issues possibles** : succès / échec / coût, et conséquences sur les fronts.
-   - **Récompenses** : matérielles, narratives, échos J&T (consulter la référence J&T).
+   - **Récompenses** : matérielles, narratives, et toute récompense mécanique propre à Parallaxe (consulter la référence Parallaxe — ne pas inventer).
 3. **Ancrer sur le PJ** : au moins une scène-germe touche la ligne rouge ou la question viscérale du PJ.
-4. **Écrire** `JDR/<campagne>/scenarios/<slug>.md` ; mettre à jour `index.md`.
+4. **Écrire** `JDR/<campagne>/scenarios/<slug>.md` (le scénario est de la prep de campagne ; lieux/PNJ/factions durables restent dans l'univers, liés) ; mettre à jour `index.md`.
 
 ## Outputs
 
-`JDR/<campagne>/scenarios/<slug>.md` (prémisse, lieux, PNJ, fronts, amorces, issues, récompenses) + `index.md` à jour. Lister les PNJ/factions à créer et les `[À compléter]`.
+`JDR/<campagne>/scenarios/<slug>.md` (prémisse, lieux liés, PNJ liés, fronts, amorces, issues, récompenses) + `index.md` à jour. Lister les PNJ/factions/lieux d'univers à créer (via `npc`/`faction`/`lore-extract`) et les `[À compléter]`.
 
 ## Test
 
-Le scénario contient au moins prémisse + lieux + amorces de scènes + issues possibles, référence des PNJ/fronts de la campagne, et au moins une amorce touche la ligne rouge ou la question viscérale du PJ.
+Le scénario contient au moins prémisse + lieux + amorces de scènes + issues possibles, `[[lie]]` les PNJ/factions/lieux à l'univers (sans les dupliquer) et les fronts à la campagne, et au moins une amorce touche la ligne rouge ou la question viscérale du PJ.

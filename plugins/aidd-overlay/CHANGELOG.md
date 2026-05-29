@@ -2,12 +2,17 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/aidd-overlay`.
 
-## [1.8.0] — 2026-05-29 (baseline)
+## [1.9.0] — 2026-05-29 (baseline)
 
-Socle commun, projet-agnostique. Skills : `alias`, `harvest`, `reconcile-normative`, `taste`, `foresee`, `dig`, `web-optimize`, `data-optimize`, `readme`, `changelog`, `decompose`, `journey`, `status`, `solo-mc`.
+Socle commun, projet-agnostique. Skills : `alias`, `harvest`, `reconcile-normative`, `taste`, `foresee`, `dig`, `web-optimize`, `data-optimize`, `readme`, `changelog`, `decompose`, `journey`, `status`.
+
+### Changed
+- **`solo-mc` déplacé vers le plugin `obsidian`** (`/obsidian:solo-mc`) — regroupement de la suite JDR solo (pc, rpg, solo-mc) dans obsidian. Le skill lui-même est inchangé.
+
+## [1.8.0]
 
 ### Added
-- `solo-mc` — assistant maître de jeu JDR solo (routage des intentions du joueur).
+- `solo-mc` — assistant maître de jeu JDR solo (routage des intentions du joueur). *(déplacé vers obsidian en 1.9.0)*
 - `alias` : action `skillconf` — audit + classification des skills, mise à jour des `skillOverrides` (réduction de la troncature de contexte), ciblant `.claude/settings.json` du projet.
 
 ### Changed

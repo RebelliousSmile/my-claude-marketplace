@@ -41,10 +41,14 @@ Routeur — dispatch selon l'intention :
 ## Transversal rules
 
 - Racine JDR : `C:/Users/fxgui/Public/Notes/Perso/JDR/`. Une campagne vit dans `JDR/<campagne>/` (même convention que `solo-mc`), avec `config.yaml`, `sessions/`, `pj/`.
-- Couche de prep écrite **dans le dossier de campagne**, à côté de `config.yaml` : `scenarios/`, `pnjs/`, `factions/`, `prep/`.
+- **Deux niveaux à distinguer** :
+  - **Données univers (durables, transverses aux campagnes)** — terminologie, factions, personnages, lieux/géographie, histoire. Elles vivent dans l'**arborescence partagée avec `lore-extract`** : `JDR/univers/<univers>/.docs/` en fichiers thématiques (`terminologie.md`, `factions.md`, `personnages.md`, `histoire.md`, `geographie.md`, + optionnels `magie.md`, `technologie.md`, `creatures.md`, `religions.md`, `economie.md`). Un univers documenté via `lore-extract` est directement réutilisable ici, et réciproquement.
+  - **Prep de campagne (spécifique à une partie)** — scénarios, prep de session, fronts/horloges actifs, accroches PJ. Elle vit **dans le dossier de campagne** : `JDR/<campagne>/{scenarios,prep}/` + l'état des fronts.
+- **Conventions de l'arborescence univers** (alignées sur `lore-extract`) : une information dans **un seul fichier** (les autres référencent/`[[lient]]`) ; max ~250 lignes par fichier (sinon synthétiser) ; rédaction en français ; ne jamais écraser un fichier `.docs/` existant — compléter.
+- La campagne déclare son univers (`config.yaml › universe`) ; à défaut, demander quel univers (`JDR/univers/<univers>/`).
 - Demander le nom de la campagne s'il n'est pas dans `$ARGUMENTS` ; lister les campagnes existantes sous `JDR/` (dossiers contenant un `config.yaml`).
 - Si `config.yaml` est absent, **ne pas dupliquer** le questionnaire : orienter vers `/solo-mc setup` pour le créer, puis revenir préparer.
-- Référence Jauges & Tarot : `C:/Users/fxgui/Public/Notes/Perso/JDR/jauges-et-tarot/jauges-tarot-synthese.md`. **Ne jamais inventer de mécanique J&T** — toujours consulter cette référence.
+- Référence Parallaxe : `C:/Users/fxgui/Public/Notes/Perso/JDR/parallaxe/parallaxe-synthese.md`. **Ne jamais inventer de mécanique Parallaxe** — toujours consulter cette référence.
 - Servir le PJ : ancrer scénarios et sessions sur l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale) géré par `pc`. La prep sert les enjeux du joueur, pas l'inverse.
 - Lire `config.yaml` (ton, rythme, difficulté, chaos, profondeur PNJ/lieux) et s'y conformer.
 - La prep est **consommée par `solo-mc`** au moment du jeu (scènes, oracle, fronts/horloges) ; ne jamais jouer en direct ici.
@@ -54,8 +58,9 @@ Routeur — dispatch selon l'intention :
 ## Références externes (coffre)
 
 - `JDR/<campagne>/config.yaml` — paramètres de campagne (créés par `solo-mc setup`)
+- `JDR/univers/<univers>/.docs/` — données univers durables, **arborescence thématique partagée avec `lore-extract`** (writing)
 - `JDR/pjs/<pj>/intention.md` — thèmes, ligne rouge, question viscérale du PJ (skill `pc`)
-- `JDR/jauges-et-tarot/jauges-tarot-synthese.md` — mécaniques J&T
+- `JDR/parallaxe/parallaxe-synthese.md` — mécaniques Parallaxe
 
 ## Evals
 

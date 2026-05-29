@@ -21,7 +21,6 @@ Plugin principal, installé globalement (`recommended`). Il ne cible pas une sta
 | `decompose` | `/decompose` | Décompose un objectif en graphe de dépendances (méthode Mikado) |
 | `journey` | `/journey` | Exécute un parcours utilisateur depuis une issue GitHub/GitLab (résultats Playwright) |
 | `status` | `/status` | Santé projet — synthèse/export de la mémoire, rapport de santé, snapshot |
-| `solo-mc` | `/solo-mc` | Assistant maître de jeu JDR solo — route les intentions du joueur vers la bonne action |
 
 Chaînes d'alias fournies (via `alias`) : `rechallenge`, `afterplan`, `endtask`, `endplan`, `bump-plugin`, `previously`.
 

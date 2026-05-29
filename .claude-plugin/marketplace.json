@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "aidd-overlay",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "source": "./plugins/aidd-overlay",
       "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, status. Alias: rechallenge, afterdev, endtask, endplan, bump-plugin, previously, smarten, skillconf.",
       "recommended": true
@@ -81,7 +81,7 @@
       "name": "obsidian",
       "version": "0.4.0",
       "source": "./plugins/obsidian",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc) plus scenario writing and campaign preparation (rpg).",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc), scenario writing and campaign preparation (rpg), and live play (solo-mc).",
       "recommended": false
     }
   ]
