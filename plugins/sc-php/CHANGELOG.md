@@ -1,5 +1,10 @@
 # Changelog — sc-php
 
+## v0.4.6 — 2026-05-29
+
+### Fixed
+- `sniff/01-scan.md`: déplace `Skills support` après `Gaps`, en dernière position avant `→ Proceed` — le modèle sautait la section quand elle était intercalée entre deux sections qu'il génère naturellement.
+
 ## v0.4.5 — 2026-05-29
 
 ### Fixed

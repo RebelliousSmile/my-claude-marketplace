@@ -126,7 +126,7 @@ For each skill, emit one line:
 - `✅ /skill-name — reason` (ready or will be ready after install)
 - `— /skill-name — NOT APPLICABLE — reason` (no applicable pivot)
 
-This summary MUST appear in the output as the `Skills support:` section, immediately before `Gaps`.
+This summary MUST be the **last thing you write** in Action 01, immediately before the `→ Proceed to 02-install-pivots.` line. It comes after Gaps.
 
 **Example — vanilla PHP (no framework, no ORM):**
 ```
@@ -187,13 +187,13 @@ Data pivots (→ 02-install-pivots will write to .claude/rules/07-quality/):
   data/eloquent.md → data-pivots-eloquent.md  MISSING
   data/doctrine.md → data-pivots-doctrine.md  NOT-APPLICABLE (Doctrine not detected)
 
+Gaps (no plugin pivot):
+  livewire/livewire — no Livewire capability pivot in plugin
+
 Skills support:
   /web-optimize  ✅ (perf-pivots-laravel.md — MISSING, will be installed)
   /data-optimize ✅ (data-pivots-eloquent.md — MISSING, will be installed)
   /sc-php:audit  ✅ (capability pivots: php/solid.md, testing/bruno.md)
-
-Gaps (no plugin pivot):
-  livewire/livewire — no Livewire capability pivot in plugin
 
 → Proceed to 02-install-pivots.
 ```
