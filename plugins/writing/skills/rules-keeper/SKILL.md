@@ -1,7 +1,7 @@
 ---
 name: rules-keeper
 model: sonnet
-description: Restructures any game rules file into an LLM-optimized format (CHEATSHEET + LEXICON + PATTERNS + ENTITY TEMPLATES + FULL REFERENCE) ready for use by `write` and `review` skills. Use when integrating a new game system, when rules files are verbose or poorly structured, or when merging a supplement into an existing rules file. Do NOT use for extracting lore or universe documentation — use `lore-extract` instead; do NOT use to write new rules from scratch — use `write` instead.
+description: Restructures any game rules file into an LLM-optimized format (CHEATSHEET + LEXICON + PATTERNS + ENTITY TEMPLATES + FULL REFERENCE) ready for use by `write` and `review` skills — and by the obsidian solo-RPG suite (`solo-mc`, `pc`, `rpg`) as the shared system-rules reference. Use when integrating a new game system, when rules files are verbose or poorly structured, or when merging a supplement into an existing rules file. Do NOT use for extracting lore or universe documentation — use `lore-extract` instead; do NOT use to write new rules from scratch — use `write` instead.
 ---
 
 # Rules Keeper
@@ -34,6 +34,7 @@ Trigger-to-action mapping:
 - **LEXICON is always required** — even if the source is already in French. It maps game jargon to the exact French terms used in writing output. A source in French still contains system-specific jargon that must be normalized.
 - Template files (PC, NPC, obstacle, asset) are created as side artifacts in `.templates/`.
 - On conflict between base file and supplement: always ask — never silently resolve.
+- **Sortie partagée** : le fichier de règles optimisé est aussi l'artefact de référence du système pour la suite JDR solo d'obsidian (`solo-mc`, `pc`, `rpg`) — mécaniques, oracle, création de personnage. Pour le système Parallaxe, le maintenir dans `JDR/parallaxe/`. Conserver les sections (CHEATSHEET / LEXICON / PATTERNS / ENTITY TEMPLATES / FULL REFERENCE) pour l'interopérabilité entre les deux usages.
 
 ## References
 

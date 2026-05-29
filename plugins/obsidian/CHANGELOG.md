@@ -9,8 +9,9 @@
 - **`solo-mc`** — maître de jeu du JDR solo en direct (play, scene, oracle, roll, setup, journal-pdf…), **déplacé depuis `aidd-overlay`** pour regrouper la suite JDR solo. Skill inchangé.
 
 ### Changed
-- **`pc` : système Parallaxe** (auparavant Jauges & Tarot). Les termes de mécanique J&T (jauge narrative, échos, points de destin, as/cavaliers…) sont remplacés par une déférence à la référence Parallaxe ; le `_template/`, `pj-manager.py` et `parallaxe-synthese.md` (hors dépôt) doivent être alignés côté coffre.
+- **`pc` : système Parallaxe** (auparavant Jauges & Tarot). Les termes de mécanique J&T (jauge narrative, échos, points de destin, as/cavaliers…) sont remplacés par une déférence à la référence Parallaxe ; le `_template/`, `pj-manager.py` et les règles `JDR/parallaxe/` (hors dépôt) doivent être alignés côté coffre.
 - **Données univers partagées** : `rpg` consigne le lore durable (terminologie, factions, personnages, lieux, histoire) dans `JDR/univers/<univers>/.docs/`, **même arborescence que `lore-extract`** (plugin writing).
+- **Règles système partagées** : `pc`, `rpg` et `solo-mc` consultent la **même référence de règles** (Parallaxe), maintenue au format `writing:rules-keeper` (CHEATSHEET / LEXICON / PATTERNS / FULL REFERENCE) dans `JDR/parallaxe/`. Aucune mécanique inventée hors de ce fichier.
 
 ## [0.3.1] — 2026-05-29 (baseline)
 

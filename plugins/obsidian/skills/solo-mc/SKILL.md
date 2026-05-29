@@ -49,3 +49,4 @@ Dispatch by intent — route to the action that matches the user's message:
 - **T3** — Game state lives in `<campaign>/sessions/.session-state.yaml`. Read before every action; write only on `play-end`.
 - **T4** — Player character sheet lives in `<campaign>/pj/<name>.md`. Never overwrite without explicit player confirmation.
 - **T5** — When the game system cannot be detected from `config.yaml`, ask once then remember for the session.
+- **T6** — System mechanics (oracle, dice, character creation, scene rules) come from the active system's **rules-keeper-optimized rules file** (CHEATSHEET / LEXICON / PATTERNS / ENTITY TEMPLATES / FULL REFERENCE), produced by `writing:rules-keeper`. Consult it; never invent mechanics. For the **Parallaxe** system used by the obsidian solo suite (`pc`, `rpg`), this file lives in `JDR/parallaxe/` — the **same artifact** these skills reference.

@@ -40,9 +40,9 @@ Router — dispatches based on user intent:
 - Template: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/_template/`
 - Manager script: `C:/Users/fxgui/Public/Notes/Perso/JDR/pjs/pj-manager.py`
 - Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `pjs/` (excluding `_template`).
-- Parallaxe reference for terminology and mechanics: `C:/Users/fxgui/Public/Notes/Perso/JDR/parallaxe/parallaxe-synthese.md`
+- Parallaxe reference for terminology and mechanics: the **rules-keeper-optimized rules** in `C:/Users/fxgui/Public/Notes/Perso/JDR/parallaxe/` (CHEATSHEET / LEXICON / PATTERNS / FULL REFERENCE), produced by `writing:rules-keeper` and **shared with `rpg` and `solo-mc`** (same artifact).
 - Never invent Parallaxe mechanics — always consult the reference above.
-- Système : **Parallaxe**. Le `_template/`, `pj-manager.py` et la référence ci-dessus (hors dépôt) doivent refléter Parallaxe ; ce skill défère à la référence pour tout terme mécanique.
+- Système : **Parallaxe**. Le `_template/` et `pj-manager.py` (hors dépôt) doivent refléter Parallaxe ; pour tout terme mécanique, ce skill défère à la référence rules-keeper ci-dessus.
 - Date format: `YYYY-MM-DD` throughout all files.
 
 ## Action: new
