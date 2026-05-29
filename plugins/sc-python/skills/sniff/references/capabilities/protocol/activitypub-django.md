@@ -87,6 +87,27 @@ Stack-specific checklist for `/ap-optimize` when a Django ActivityPub implementa
       except (httpx.TransientError, httpx.TimeoutException) as exc:
           raise self.retry(exc=exc, countdown=2 ** self.request.retries * 60)
   ```
+- **`acks_late=True` + limites de temps obligatoires** sur le task de livraison — sans ça, un worker mort perd la tâche silencieusement et une livraison longue bloque un worker indéfiniment :
+  ```python
+  @shared_task(bind=True, max_retries=5, acks_late=True,
+               soft_time_limit=60, time_limit=90)
+  def deliver_activity(self, activity_id, recipient_inbox):
+      try:
+          ...
+      except SoftTimeLimitExceeded:
+          raise self.retry(countdown=2 ** self.request.retries * 60)
+      except (httpx.TransientError, httpx.TimeoutException) as exc:
+          raise self.retry(exc=exc, countdown=2 ** self.request.retries * 60)
+  ```
+- **Signer les activités de réponse sortantes** (Accept, Reject, Announce) — pas seulement les livraisons initiales ; toute activité sortante doit être signée avec la clé privée de l'acteur local concerné :
+  ```python
+  # ✅ — Accept signé avec les clés de target (l'acteur local qui accepte)
+  send_accept_follow(actor=target, follow_activity=activity)
+
+  # ❌ — Accept envoyé sans signature
+  httpx.post(inbox_url, json=accept_payload)
+  ```
+  Détecter : `grep -rn "send_accept\|send_reject\|send_announce" . --include="*.py" -A 3 | grep -v "sign\|signing_key"` — hit sans signature = 🔴
 - **Un task par destinataire** — jamais un seul task qui itère sur tous les followers (perte de tolérance aux pannes par destinataire, timeout global)
 - **Circuit breaker par domaine** — après N échecs consécutifs vers un domaine, passer en mode backoff ; respecter `410 Gone` → supprimer le follower local
 - **Queue dédiée** `ap_delivery` — séparer de la queue Celery générale pour éviter la famine des tâches AP derrière des tâches longues
@@ -96,7 +117,22 @@ Stack-specific checklist for `/ap-optimize` when a Django ActivityPub implementa
 
 - **Namespace `@context` stable** — jamais `settings.DOMAIN` dans le namespace ; utiliser `"https://www.w3.org/ns/activitystreams"` littéral (la casse du namespace entre deux domaines d'un même projet casse la federation)
 - **`Content-Type` à l'envoi** : `application/ld+json; profile="https://www.w3.org/ns/activitystreams"` — pas `application/json`, pas `application/activity+json` seul
-- **`id` = URL absolue** — jamais `f"/activities/{pk}"`, toujours `f"https://{settings.DOMAIN}/activities/{pk}"` (AS2 §2.0)
+- **`id` = URL absolue sur toutes les activités sortantes** — jamais `f"/activities/{pk}"`, toujours `f"https://{settings.DOMAIN}/activities/{pk}"` (AS2 §2.0) ; s'applique aussi aux `Accept`, `Reject`, `Announce` — tout objet AP sans `id` absolu est non conforme :
+  ```python
+  # ✅
+  def build_accept(follow_activity, actor):
+      return {
+          "@context": "https://www.w3.org/ns/activitystreams",
+          "type": "Accept",
+          "id": f"https://{settings.DOMAIN}/activities/accept/{uuid4()}",
+          "actor": actor.ap_id,
+          "object": follow_activity["id"],
+      }
+
+  # ❌ — Accept sans id, non conforme AS2
+  {"type": "Accept", "actor": actor.ap_id, "object": follow_id}
+  ```
+  Détecter : `grep -rn '"type": "Accept"\|"type": "Reject"\|"type": "Announce"' . --include="*.py" -A 5 | grep -v '"id"'` — manque d'`id` = 🟡
 - **Outbox paginé** — `OrderedCollection` avec `first` pointant vers `OrderedCollectionPage` ; chaque page avec `partOf`, `next`, `prev` (AP §4.1) :
   ```python
   # Collection racine
@@ -142,6 +178,25 @@ Stack-specific checklist for `/ap-optimize` when a Django ActivityPub implementa
 - **Timeout sur fetch acteur** : `httpx.Timeout(connect=5.0, read=10.0)` — sans timeout, un acteur distant lent bloque le worker
 - **Vérifier HTTPS obligatoire** en prod — rejeter tout acteur avec URL `http://`
 - Détecter : `grep -rn "fetch_actor\|get_actor\|httpx\.get\|requests\.get" . --include="*.py" -A 2 | grep -v "validate\|allowlist\|127\.\|localhost"` — hit sans validation = 🔴 OWASP A10
+
+## §4b — Cache de clés publiques
+
+- **TTL obligatoire** sur `PublicKeyCache` — une clé mise en cache indéfiniment empêche la rotation de clé chez un pair (la nouvelle clé ne sera jamais récupérée) ; TTL recommandé : 24h
+  ```python
+  # Vérifier avant d'utiliser une clé en cache
+  if cache_entry.updated_at < timezone.now() - timedelta(hours=24):
+      cache_entry.delete()
+      return fetch_fresh_key(actor_url)
+  ```
+- **`Update(Person)` reçu → invalider le cache** — quand un acteur distant envoie une activité `Update` sur son propre profil, invalider immédiatement sa clé en cache local :
+  ```python
+  def handle_update_person(activity):
+      actor_url = activity["object"]["id"]
+      PublicKeyCache.objects.filter(actor_url=actor_url).delete()
+      # Re-fetch à la prochaine livraison reçue
+  ```
+  Sans cette invalidation, une rotation de clé côté pair casse silencieusement la vérification de signature pour cet acteur.
+- **Détecter les caches sans TTL** : `grep -rn "PublicKeyCache\|public_key_cache" . --include="*.py" | grep -v "ttl\|expires\|updated_at\|timedelta"` — hit sans TTL = 🟡
 
 ## §5 — Observability
 

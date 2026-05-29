@@ -65,7 +65,7 @@
     },
     {
       "name": "sc-python",
-      "version": "0.5.1",
+      "version": "0.5.2",
       "source": "./plugins/sc-python",
       "description": "Python ecosystem: two-tier sniff (pivot model), audit, improve, legacy, teach. Perf pivots: Django, DRF, Celery, FastAPI, httpx, Flask (gap). Data pivots: Django ORM, SQLAlchemy, HuggingFace datasets. Capability pivots: Python idioms, spaCy NLP.",
       "recommended": false

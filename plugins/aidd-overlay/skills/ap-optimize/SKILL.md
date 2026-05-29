@@ -31,7 +31,7 @@ Run a structured ActivityPub federation audit on a project — covering inbox pr
 - Recommend changes only after reading at least these 3 files: (a) inbox view, (b) signature verification module, (c) delivery task. Generic advice without this evidence is rejected
 - One row per checklist item, with `🟢 / 🟡 / 🔴 / N/A` + `file:line` references when actionable
 - Output goes to `aidd_docs/tasks/audits/<yyyy_mm_dd>_ap-<stack>-<scope-slug>.md`. If `aidd_docs/` does not exist, fallback to `docs/ap-audits/<yyyy_mm_dd>_ap-<stack>-<scope-slug>.md` (create dir if needed)
-- If a same-day rerun produces a new file for the same scope, append `-v2`, `-v3` to the slug rather than overwriting
+- If a same-day rerun produces a new file for the same scope, list existing files in the output directory first, find the highest existing suffix (`-v2`, `-v3`…), then append the next one — never attempt to write without checking existence first
 - **Primary deterministic metrics**: inbox duplicate rate (`ProcessedActivity` / total inbox POSTs), delivery success rate, queue depth. Latency is secondary
 - Cross-check every finding against `references/ap-protocol-specs.md` — a recommendation without spec anchor is rejected
 
@@ -109,7 +109,7 @@ flowchart LR
 **Do:**
 
 1. Scan `.claude/rules/07-quality/ap-pivots-*.md` for matching stack
-2. If found → load as primary source, proceed to Step 3
+2. If found → load as primary source. Then **also load all supplementary pivots** present in `.claude/rules/07-quality/` — `perf-pivots-*.md` and `data-pivots-*.md` — to extend coverage with stack-specific patterns (e.g. Celery delivery, DRF serializer N+1). Concatenate with the AP pivot, AP pivot takes precedence on conflicts.
 3. If not found → look for `aidd_docs/templates/dev/ap_checklist_<stack>.md`
 4. If neither found → halt and ask user:
    > "No AP pivot exists for `<stack>`. Options: (a) install a `sc-*` plugin that covers this stack, (b) generate `ap_checklist_<stack>.md` from `references/ap-protocol-specs.md` fallback, or (c) abort."
