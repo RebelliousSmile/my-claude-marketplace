@@ -77,4 +77,4 @@ Les règles s'installent dans `.claude/rules/08-design/` et s'auto-chargent à l
 
 ## Licence
 
-MIT — voir [LICENSE](LICENSE).
+MIT — voir [LICENSE](../../LICENSE).

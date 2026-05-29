@@ -7,6 +7,12 @@
       "version": "1.7.1"
     },
     {
+      "id": "design",
+      "name": "design",
+      "description": "Mobile-first responsive design system: from-reference / from-brief intakes (core trio first, never emoji), W3C tokens + CSS/Tailwind adapters, living HTML wireframes, reusable components with options, compliance audit, doctor + refactor for production codebases, and export-wordpress (theme.json + block patterns).",
+      "version": "0.2.0"
+    },
+    {
       "id": "gamedesign",
       "name": "gamedesign",
       "description": "Game design skills and workflows.",
