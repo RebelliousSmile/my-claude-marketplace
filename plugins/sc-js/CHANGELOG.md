@@ -1,5 +1,17 @@
 # Changelog — sc-js
 
+## [0.6.6] — 2026-05-29
+
+### sniff
+
+- **Vanilla web now has a perf pivot.** New `perf/vanilla.md` (§0–§11) — render-blocking scripts, native lazy-loading, `<script type="module">` code-splitting, `requestIdleCallback`/INP, manual caching with `gulp-rev`. Installed as `perf-pivots-vanilla.md` for framework-less web projects (Gulp/BrowserSync/manual bundle), consumed by `web-optimize` like any other perf pivot.
+- **`01-scan` Step 5 — `styling/css-transitions.md` now applies to vanilla web.** The condition wrongly required a framework (`runtime = "web"` *(frontend framework detected)*); it now matches any `runtime = "web"`, framework or vanilla. CSS transitions were being silently dropped from the manifeste of framework-less projects.
+- **`01-scan` Step 3 — `✅ Vanilla web` line is now mandatory in the structured Framework block**, not only in the prose summary.
+
+### New capability pivot
+
+- **`perf/vanilla.md`** — perf overrides for browser projects with no JS framework.
+
 ## [0.6.5] — 2026-05-29
 
 ### sniff

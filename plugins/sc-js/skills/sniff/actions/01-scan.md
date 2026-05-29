@@ -41,7 +41,7 @@ If `package.json` is absent, abort:
 
 A project may match multiple (e.g. Vue + Vite → Vue SPA).
 
-**Vanilla web** is a real classification, not a fallback to improvise around. When no framework signal matches and the runtime is `web`, emit `✅ Vanilla web (no JS framework)` and, if present, name the build/dev tooling in parentheses for context only — e.g. `Vanilla web (no JS framework) — build: Gulp, dev server: BrowserSync`. Do **not** invent framework labels like "Gulp SPA": Gulp and BrowserSync are build/dev tooling, not frameworks. There is no perf pivot for vanilla web today (the perf pivots in Step 5 cover Nuxt/Vue/Vite/Alpine/SvelteKit/Astro/11ty only) — so `02-install-pivots` installs nothing for a vanilla project, which is expected, not a defect.
+**Vanilla web** is a real classification, not a fallback to improvise around. When no framework signal matches and the runtime is `web`, **always emit the line `✅ Vanilla web (no JS framework)` in the Framework block of the structured output** (not only in the prose summary) and, if present, name the build/dev tooling in parentheses for context only — e.g. `✅ Vanilla web (no JS framework) — build: Gulp, dev server: BrowserSync`. Do **not** invent framework labels like "Gulp SPA": Gulp and BrowserSync are build/dev tooling, not frameworks. Vanilla web **has its own perf pivot** (`perf/vanilla.md` → `perf-pivots-vanilla.md`), installed by `02-install-pivots` like any other perf pivot.
 
 **SvelteKit adapter detection** — when SvelteKit is detected, read `svelte.config.js` or `svelte.config.ts` to identify the adapter import:
 
@@ -101,7 +101,7 @@ For each capability, evaluate the detection condition **against `package.json` o
 
 | Capability | Condition | Pivot path |
 |---|---|---|
-| CSS transitions | `runtime = "web"` (frontend framework detected) | `styling/css-transitions.md` |
+| CSS transitions | `runtime = "web"` (any web project — framework **or** vanilla) | `styling/css-transitions.md` |
 
 #### Icons
 
@@ -162,6 +162,7 @@ These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`
 | Alpine.js detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/alpine.md` | `.claude/rules/07-quality/perf-pivots-alpine.md` |
 | Astro or 11ty detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/static.md` | `.claude/rules/07-quality/perf-pivots-static.md` |
 | SvelteKit detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/sveltekit.md` | `.claude/rules/07-quality/perf-pivots-sveltekit.md` |
+| Vanilla web (`runtime = "web"`, no framework matched) | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/vanilla.md` | `.claude/rules/07-quality/perf-pivots-vanilla.md` |
 
 #### Data pivots — install targets (consumed by `data-optimize`)
 

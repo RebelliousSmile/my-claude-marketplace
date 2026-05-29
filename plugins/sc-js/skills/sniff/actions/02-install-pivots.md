@@ -16,6 +16,7 @@ Read the pivot manifeste emitted by `01-scan`. For each perf or data pivot liste
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/alpine.md` | `.claude/rules/07-quality/perf-pivots-alpine.md` |
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/static.md` | `.claude/rules/07-quality/perf-pivots-static.md` |
 | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/sveltekit.md` | `.claude/rules/07-quality/perf-pivots-sveltekit.md` |
+| `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/perf/vanilla.md` | `.claude/rules/07-quality/perf-pivots-vanilla.md` |
 
 ### Data pivots — install to `.claude/rules/07-quality/`
 
@@ -66,7 +67,7 @@ Pick the header by what actually happened — never claim "installed" when nothi
 
 ### Case B — nothing to install (no applicable perf/data pivot)
 
-Use this header verbatim when the manifeste lists no perf and no data pivot (e.g. a vanilla-web or framework-less project). Do **not** write `pivots installed` in this case.
+Use this header verbatim when the manifeste lists no perf and no data pivot (e.g. a pure Node.js backend with no ORM, or a desktop runtime). Note: a vanilla-web project is **not** a no-op — it installs `perf-pivots-vanilla.md` (Case A). Do **not** write `pivots installed` when nothing was written.
 
 ```
 ✅ sc-js sniff — nothing to install
