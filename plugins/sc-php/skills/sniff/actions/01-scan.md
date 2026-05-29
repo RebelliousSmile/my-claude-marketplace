@@ -128,6 +128,22 @@ For each skill, emit one line:
 
 This summary MUST appear in the output as the `Skills support:` section, immediately before `Gaps`.
 
+**Example — vanilla PHP (no framework, no ORM):**
+```
+Skills support:
+  — /web-optimize  — NOT APPLICABLE (no framework detected)
+  — /data-optimize — NOT APPLICABLE (no ORM detected)
+  ✅ /sc-php:audit  (capability pivots: php/solid.md, testing/bruno.md)
+```
+
+**Example — Laravel + Eloquent:**
+```
+Skills support:
+  ✅ /web-optimize  (perf-pivots-laravel.md — MISSING, will be installed)
+  ✅ /data-optimize (data-pivots-eloquent.md — MISSING, will be installed)
+  ✅ /sc-php:audit  (capability pivots: php/solid.md)
+```
+
 ## Output
 
 > **FORMAT CONSTRAINTS — do not deviate:**

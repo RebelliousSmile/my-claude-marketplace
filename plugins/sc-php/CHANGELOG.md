@@ -1,5 +1,10 @@
 # Changelog — sc-php
 
+## v0.4.5 — 2026-05-29
+
+### Fixed
+- `sniff/01-scan.md` Step 8: ajoute deux exemples concrets (vanilla PHP et Laravel+Eloquent) pour la section `Skills support` — le modèle sautait la section quand tous les pivots étaient NOT-APPLICABLE, faute d'exemple couvrant ce cas.
+
 ## v0.4.4 — 2026-05-29
 
 ### Fixed
