@@ -1,9 +1,0 @@
-{
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "writing",
-  "version": "0.3.0",
-  "description": "Writing skills and workflows.",
-  "author": {
-    "name": "François-Xavier Guillois"
-  }
-}

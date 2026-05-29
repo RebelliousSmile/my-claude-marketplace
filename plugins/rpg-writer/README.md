@@ -1,4 +1,4 @@
-# writing
+# rpg-writer
 
 *Rédaction narrative (romans, scénarios JDR, guides) : du concept à la relecture, en passant par la TOC, l'écriture des chapitres, le ton et le lore.*
 

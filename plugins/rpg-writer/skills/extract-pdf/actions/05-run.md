@@ -42,7 +42,7 @@ Autonomous extraction loop: find the next TODO chunk in `progress.md`, extract i
    ✓ Chunk XX (pages A–B) — done.
    Saved: [list of classified files written]
    Chunks remaining: K / N
-   → Run /writing:extract-pdf run to continue.
+   → Run /rpg-writer:extract-pdf run to continue.
    ```
 
 ## Rules

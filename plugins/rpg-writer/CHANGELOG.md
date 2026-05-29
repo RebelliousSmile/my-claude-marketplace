@@ -1,6 +1,11 @@
-# Changelog — writing
+# Changelog — rpg-writer
 
-> Baseline établie le 2026-05-29 à partir de l'état courant. Détail : `git log -- plugins/writing`.
+> Baseline établie le 2026-05-29 à partir de l'état courant. Détail : `git log -- plugins/rpg-writer` (avant 0.4.0 : `git log -- plugins/writing`).
+
+## [0.4.0] — 2026-05-29
+
+### Changed
+- **Plugin renommé `writing` → `rpg-writer`.** Breaking : l'identifiant marketplace devient `rpg-writer@my-marketplace` et les skills s'invoquent via `/rpg-writer:<skill>` (ex. `/rpg-writer:lore-extract`, `/rpg-writer:extract-pdf`). Mettre à jour `enabledPlugins` dans les `settings.json` qui activaient `writing@my-marketplace`. Aucun skill ni comportement modifié — renommage pur.
 
 ## [0.3.0] — 2026-05-29
 
@@ -15,4 +20,4 @@ Rédaction narrative (romans, scénarios JDR, guides). Skills : `setup`, `forge`
 Cycle de vie couvert : initialisation projet (`setup`), concept (`forge`), table des matières (`toc`), écriture des chapitres (`write`), amélioration (`upgrade`), relecture par persona (`review`/`persona`), style (`tone-finder`), recherche et lore (`research`/`lore-extract`/`extract-pdf`), illustration (`storyboard`), règles de jeu (`rules-keeper`), réinitialisation (`tabula-rasa`).
 
 ## Antérieur
-- Voir `git log -- plugins/writing` pour l'historique complet.
+- Voir `git log -- plugins/rpg-writer plugins/writing` pour l'historique complet (le plugin s'appelait `writing` avant 0.4.0).

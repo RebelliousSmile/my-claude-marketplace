@@ -25,10 +25,10 @@
       "version": "0.2.0"
     },
     {
-      "id": "writing",
-      "name": "writing",
-      "description": "Writing skills and workflows.",
-      "version": "0.3.0"
+      "id": "rpg-writer",
+      "name": "rpg-writer",
+      "description": "Narrative writing skills and workflows (novels, TTRPG scenarios, guides): concept, TOC, chapters, tone, lore, review.",
+      "version": "0.4.0"
     },
     {
       "id": "sc-js",
