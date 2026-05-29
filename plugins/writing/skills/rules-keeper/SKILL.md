@@ -38,7 +38,7 @@ Trigger-to-action mapping:
   - `canon/` — règles officielles, restructurées depuis le livre de règles (défaut). Font foi.
   - `mj/` — règles maison / *house rules* (option `--homemade`). Un **overlay** qui ne reprend que les règles modifiées et **déclare explicitement** quelle règle canon il remplace/étend (jamais de divergence silencieuse). Au jeu, une house rule déclarée prime ; sinon le canon s'applique.
   Ne jamais mélanger canon et maison dans un même fichier. Les sections optimisées (CHEATSHEET / LEXICON / PATTERNS / ENTITY TEMPLATES / FULL REFERENCE) sont conservées dans chaque sous-arbre.
-- **Sortie partagée** : ces sous-arbres sont l'artefact de référence des règles pour la suite JDR solo d'obsidian (`solo-mc`, `pc`, `rpg`) — mécaniques, oracle, création de personnage. Vaut aussi bien pour un système de jeu que pour un **sous-système** (module de règles employé par un jeu). Ex. : le sous-système **Parallaxe** → `JDR/parallaxe/canon/` (officiel) + `JDR/parallaxe/mj/` (house rules). Même logique de provenance que `lore-extract`.
+- **Sortie partagée** : ces sous-arbres sont l'artefact de référence des règles pour la suite JDR solo d'obsidian (`solo-mc`, `pc`, `rpg`) — mécaniques, oracle, création de personnage. Vaut aussi bien pour un système de jeu que pour un **sous-système générique** (module de règles réutilisable employé par un jeu). Ex. de sous-systèmes : **Parallaxe**, **Cinério**, **Muses et Oracles** → `JDR/subsystems/<nom>/canon/` (officiel) + `JDR/subsystems/<nom>/mj/` (house rules). Même logique de provenance que `lore-extract`.
 
 ## References
 

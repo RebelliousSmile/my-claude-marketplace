@@ -17,7 +17,7 @@ Lire la prep de campagne (`synopsis.md`, `scenarios/`, `prep/`, `fronts.md`, `co
 5. **PNJ jouables** (warning) — chaque PNJ en jeu a motivation + secret/levier + une voix.
 6. **Liens & arborescence univers** (warning) — les `[[liens]]` scénario→univers (canon/ et mj/) résolvent ; aucune donnée d'univers dupliquée côté campagne ; `index.md` à jour.
 7. **Conformité config** (note) — ton/rythme/chaos de la prep cohérents avec `config.yaml`.
-8. **Sous-système Parallaxe** (bloquant) — aucune mécanique inventée hors de la référence (système de jeu + sous-système Parallaxe).
+8. **Sous-systèmes** (bloquant) — aucune mécanique inventée hors des références (système de jeu + sous-systèmes actifs).
 
 ## Outputs
 
@@ -25,4 +25,4 @@ Un rapport par sévérité (bloquant / warning / note) avec, pour chaque constat
 
 ## Test
 
-Chaque constat cite un fichier et un correctif ; le verdict est « prêt à jouer » seulement si aucun bloquant ne subsiste (service du PJ, fronts chiffrés, provenance canon/MJ respectée, Parallaxe conforme).
+Chaque constat cite un fichier et un correctif ; le verdict est « prêt à jouer » seulement si aucun bloquant ne subsiste (service du PJ, fronts chiffrés, provenance canon/MJ respectée, sous-systèmes conformes).
