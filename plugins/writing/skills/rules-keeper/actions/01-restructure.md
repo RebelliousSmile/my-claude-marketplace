@@ -5,11 +5,13 @@ Restructure a single rules file into the LLM-optimized 6-section format.
 ## Inputs
 
 - `rules-file` (required) — path to the rules file to restructure (any format, any game system)
+- `--homemade` (optional) — provenance: the input is house rules / homebrew, not the official ruleset. The result is a **house-rules overlay** that lives in the `mj/` subtree and must declare which canon rules it overrides/extends. Default (no flag): canonical ruleset → `canon/` subtree.
 
 ## Outputs
 
-- Overwritten `<rules-file>.md` in optimized format
+- Restructured rules in optimized format, written under the **provenance subtree** — `canon/` (default) or `mj/` (`--homemade`); for the shared RPG vault, `JDR/<système>/canon/` or `JDR/<système>/mj/`.
 - Backup at `<rules-file>.original.md` (created before overwrite; skipped if already exists)
+- For `--homemade`: each restructured rule **references the canon rule it modifies** (section/heading) and states the override — never a silent divergence; canon and house rules are never merged into one file.
 - Side artifacts in `.templates/` (same directory level as rules file):
   - `<system>-pc.template.md`
   - `<system>-npc.template.md`

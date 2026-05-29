@@ -54,7 +54,7 @@ Routeur — dispatch selon l'intention :
 - La campagne déclare son univers (`config.yaml › universe`) ; à défaut, demander quel univers (`JDR/univers/<univers>/`).
 - Demander le nom de la campagne s'il n'est pas dans `$ARGUMENTS` ; lister les campagnes existantes sous `JDR/` (dossiers contenant un `config.yaml`).
 - Si `config.yaml` est absent, **ne pas dupliquer** le questionnaire : orienter vers `/solo-mc setup` pour le créer, puis revenir préparer.
-- Référence Parallaxe : les **règles au format rules-keeper** (CHEATSHEET / LEXICON / PATTERNS / ENTITY TEMPLATES / FULL REFERENCE) dans `C:/Users/fxgui/Public/Notes/Perso/JDR/parallaxe/`, produites/maintenues par `writing:rules-keeper` et **partagées avec `solo-mc` et `pc`** (même artefact). **Ne jamais inventer de mécanique Parallaxe** — toujours consulter cette référence.
+- Référence Parallaxe : les **règles au format rules-keeper**, scindées en `C:/Users/fxgui/Public/Notes/Perso/JDR/parallaxe/canon/` (ruleset officiel) + `JDR/parallaxe/mj/` (house rules du MJ), produites/maintenues par `writing:rules-keeper` et **partagées avec `solo-mc` et `pc`**. Règles effectives = canon + house rules déclarées (les house rules priment là où elles le déclarent). **Ne jamais inventer de mécanique Parallaxe** — toujours consulter cette référence.
 - Servir le PJ : ancrer scénarios et sessions sur l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale) géré par `pc`. La prep sert les enjeux du joueur, pas l'inverse.
 - Lire `config.yaml` (ton, rythme, difficulté, chaos, profondeur PNJ/lieux) et s'y conformer.
 - La prep est **consommée par `solo-mc`** au moment du jeu (scènes, oracle, fronts/horloges) ; ne jamais jouer en direct ici.
@@ -67,7 +67,7 @@ Routeur — dispatch selon l'intention :
 - `JDR/univers/<univers>/.docs/canon/` — lore officiel (lecture seule pour `rpg` ; écrit par `lore-extract`)
 - `JDR/univers/<univers>/.docs/mj/` — contenu créé par le MJ (écrit par `rpg`) ; même arborescence thématique que `canon/`
 - `JDR/pjs/<pj>/intention.md` — thèmes, ligne rouge, question viscérale du PJ (skill `pc`)
-- `JDR/parallaxe/` — règles Parallaxe au format rules-keeper (produites par `writing:rules-keeper`), partagées avec `solo-mc` et `pc`
+- `JDR/parallaxe/canon/` + `JDR/parallaxe/mj/` — règles Parallaxe (officielles + house rules) au format rules-keeper (`writing:rules-keeper`), partagées avec `solo-mc` et `pc`
 
 ## Evals
 

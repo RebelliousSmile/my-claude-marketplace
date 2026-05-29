@@ -20,7 +20,7 @@ Plugin personnel orienté coffre Obsidian (chemins et conventions propres à l'a
 
 Arborescence : la **campagne** vit dans `JDR/<campagne>/` (`config.yaml`, `sessions/`, `pj/` + prep `scenarios/`, `prep/`, `fronts.md`) ; les **données d'univers durables** (terminologie, factions, personnages, lieux, histoire) vivent dans `JDR/univers/<univers>/.docs/`, **scindées par provenance** : `canon/` (lore officiel, écrit par `lore-extract`) et `mj/` (contenu créé par le maître de jeu, écrit par `rpg`) — même structure thématique, **partagée avec `lore-extract`** (plugin `writing`). `rpg` n'écrit jamais dans `canon/`.
 
-Les **règles du système (Parallaxe)** sont maintenues au format `writing:rules-keeper` (CHEATSHEET / LEXICON / PATTERNS / FULL REFERENCE) dans `JDR/parallaxe/` et constituent **l'unique référence partagée** par `pc`, `rpg` et `solo-mc` — aucune mécanique n'est inventée hors de ce fichier.
+Les **règles du système (Parallaxe)** sont maintenues au format `writing:rules-keeper`, elles aussi **scindées canon / mj** : `JDR/parallaxe/canon/` (ruleset officiel) + `JDR/parallaxe/mj/` (house rules du MJ, qui déclarent ce qu'elles modifient). C'est **l'unique référence partagée** par `pc`, `rpg` et `solo-mc` ; règles effectives = canon + house rules déclarées, aucune mécanique inventée hors de cette référence.
 
 ## Licence
 

@@ -11,7 +11,7 @@
 ### Changed
 - **`pc` : système Parallaxe** (auparavant Jauges & Tarot). Les termes de mécanique J&T (jauge narrative, échos, points de destin, as/cavaliers…) sont remplacés par une déférence à la référence Parallaxe ; le `_template/`, `pj-manager.py` et les règles `JDR/parallaxe/` (hors dépôt) doivent être alignés côté coffre.
 - **Données univers partagées, scindées canon / MJ** : l'univers vit dans `JDR/univers/<univers>/.docs/` avec deux sous-arbres thématiques identiques — `canon/` (lore officiel, écrit par `lore-extract`) et `mj/` (contenu créé par le maître de jeu, écrit par `rpg`). `rpg` n'écrit jamais dans `canon/` et ne contredit pas le canon en silence. Même arborescence partagée avec `lore-extract` (plugin writing).
-- **Règles système partagées** : `pc`, `rpg` et `solo-mc` consultent la **même référence de règles** (Parallaxe), maintenue au format `writing:rules-keeper` (CHEATSHEET / LEXICON / PATTERNS / FULL REFERENCE) dans `JDR/parallaxe/`. Aucune mécanique inventée hors de ce fichier.
+- **Règles système partagées, scindées canon / mj** : `pc`, `rpg` et `solo-mc` consultent la même référence de règles (Parallaxe) au format `writing:rules-keeper`, en `JDR/parallaxe/canon/` (officiel) + `JDR/parallaxe/mj/` (house rules du MJ qui déclarent leurs overrides). Règles effectives = canon + house rules déclarées ; aucune mécanique inventée hors de cette référence.
 
 ## [0.3.1] — 2026-05-29 (baseline)
 

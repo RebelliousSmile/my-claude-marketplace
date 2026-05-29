@@ -5,6 +5,7 @@
 ## [0.3.0] — 2026-05-29
 
 ### Changed
+- **`rules-keeper` distingue canon et maison (mj)** : le ruleset **officiel** est restructuré dans `canon/` (défaut) ; les **house rules** du MJ dans `mj/` (option `--homemade`), sous forme d'overlay qui déclare explicitement les règles canon qu'il modifie (jamais de divergence silencieuse). Règles effectives = canon + house rules déclarées. Mêmes sous-arbres partagés avec `obsidian:{pc,rpg,solo-mc}` (`JDR/parallaxe/{canon,mj}/`).
 - **`lore-extract` distingue canon et maison (homemade)** : l'arborescence `.docs/` est scindée en deux sous-arbres thématiques identiques — `canon/` (lore officiel extrait des sources, défaut) et `mj/` (contenu maison/non-canon, option `--homemade`). Canon et maison ne sont jamais mélangés dans un même fichier ; le contenu maison ne contredit pas le canon en silence (canon = autorité). Ces sous-arbres sont **partagés avec `obsidian:rpg`** (qui écrit son contenu MJ dans le même `mj/`).
 
 ## [0.2.0] — 2026-05-29 (baseline)

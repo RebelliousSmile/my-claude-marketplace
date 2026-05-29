@@ -20,7 +20,7 @@ Couvre le cycle de vie d'un projet narratif. Distinct de `doc-writer` (documenta
 | `storyboard` | Identifie les moments visuels clés d'un chapitre et génère des briefs d'illustration |
 | `lore-extract` | Extrait et organise le lore d'un univers depuis des sources brutes, en séparant **canon** (`canon/`) et **maison** (`mj/`, option `--homemade`) — arborescence partagée avec `obsidian:rpg` |
 | `extract-pdf` | Pipeline multi-sessions d'extraction de contenu depuis de gros PDF, réparti dans le projet |
-| `rules-keeper` | Restructure un fichier de règles de jeu en format optimisé pour LLM (CHEATSHEET + LEXICON + PATTERNS) |
+| `rules-keeper` | Restructure un fichier de règles de jeu en format optimisé pour LLM (CHEATSHEET + LEXICON + PATTERNS), en séparant **canon** (`canon/`) et **house rules** du MJ (`mj/`, `--homemade`) — arborescence partagée avec `obsidian:{pc,rpg,solo-mc}` |
 | `tabula-rasa` | Réinitialise destructivement un projet — supprime le contenu généré (chapitres, TOC, WIP) |
 
 ## Licence
