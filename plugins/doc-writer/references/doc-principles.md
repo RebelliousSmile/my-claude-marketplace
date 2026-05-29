@@ -25,6 +25,13 @@ The ethos every `doc-writer` skill follows, whatever the document type. Referenc
 - Conserver les termes techniques consacrés et les libellés d'UI dans leur forme d'origine (ne pas traduire un label produit anglais) — mais la prose qui les entoure reste en français.
 - Pas d'emoji dans le corps d'un document livré/versionné, sauf demande explicite.
 
+## Output style override
+
+- Each skill follows a default **output style** (its own `references/output-style.md`) for voice and formatting.
+- A user can inject a different one with `--style <path>` in `$ARGUMENTS`. **Parse this flag out of `$ARGUMENTS` first** — the remainder is the document subject, never polluted by the flag.
+- Then load `<path>` and follow it **instead of** the default style (structure and content rules are unchanged).
+- If `<path>` cannot be read, **do not silently fall back** to the default: report it and ask for the correct path, since the override was explicit.
+
 ## Output destination
 
 - **Produce in the conversation by default** — print the document inline, without wrapping it in an outer ` ```markdown ` fence (that would break inner code blocks).

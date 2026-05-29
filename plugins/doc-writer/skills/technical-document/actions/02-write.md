@@ -9,7 +9,7 @@ Write the document from the scoped type's template, grounded in the code.
 
 ## Process
 
-0. **Load the output style**: `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/technical-document.md` by default, or the file passed via `--style <path>`. Apply its voice, tense and formatting (code blocks, citation format, tables, Mermaid) throughout.
+0. **Load the output style**: `${CLAUDE_PLUGIN_ROOT}/skills/technical-document/references/output-style.md` by default, or the file passed via `--style <path>`. Apply its voice, tense and formatting (code blocks, citation format, tables, Mermaid) throughout.
 1. **Read the sources first.** Confirm behavior, signatures, params, errors, and flow from the actual code before writing them.
 2. **Write section by section** per the type's structure in `${CLAUDE_PLUGIN_ROOT}/skills/technical-document/references/doc-types.md`.
 3. **Examples are real**: copy signatures/requests/commands from the code or a validated run. Never present illustrative pseudo-code as working.

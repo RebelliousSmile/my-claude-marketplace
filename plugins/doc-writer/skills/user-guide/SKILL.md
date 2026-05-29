@@ -36,7 +36,7 @@ Trigger-to-action mapping:
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` first.
 - The **subject** (the product, feature or area to document) is given up front via `$ARGUMENTS`; if it's missing, ask for it once before starting.
 - **Rédaction en français par défaut** — le guide est écrit en français (sauf demande explicite d'une autre langue) ; seuls les libellés d'UI gardent leur forme d'origine.
-- **Output style**: follow `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/user-guide.md` for voice and formatting by default. To inject a different one, pass `--style <path>` in `$ARGUMENTS`; load that file and follow it instead.
+- **Output style**: follow `${CLAUDE_PLUGIN_ROOT}/skills/user-guide/references/output-style.md` for voice and formatting by default. To inject a different one, pass `--style <path>` in `$ARGUMENTS`; load that file and follow it instead.
 - **Task-oriented**: one section per user goal, titled by the goal ("Send an invoice"), not by the UI ("The Invoices screen").
 - Plain language; assume no internal/technical knowledge; define any unavoidable term.
 - Steps are numbered, imperative, one action each, and state the expected result.
@@ -47,7 +47,7 @@ Trigger-to-action mapping:
 ## References
 
 - `references/user-guide-structure.md` — the sections of a complete user guide and what each contains
-- `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/user-guide.md` — default voice/formatting (override with `--style <path>`)
+- `${CLAUDE_PLUGIN_ROOT}/skills/user-guide/references/output-style.md` — default voice/formatting (override with `--style <path>`)
 - `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` — shared documentation ethos
 
 ## Evals

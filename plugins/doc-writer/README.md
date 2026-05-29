@@ -36,11 +36,11 @@ Principes partagés : `references/doc-principles.md`.
 
 ## Styles de sortie
 
-Chaque type de document a un **style de sortie** par défaut (voix, ton, temps, formatage, encarts) dans `assets/output-styles/` :
+Chaque type de document a un **style de sortie** par défaut (voix, ton, temps, formatage, encarts), dans le `references/` de son skill :
 
-- `assets/output-styles/user-guide.md` — vouvoiement, impératif, encarts Astuce/Attention/Note
-- `assets/output-styles/technical-document.md` — neutre, présent, code/tableaux/Mermaid
-- `assets/output-styles/specification.md` — formel, normatif (« doit »), tables d'exigences
+- `skills/user-guide/references/output-style.md` — vouvoiement, impératif, encarts Astuce/Attention/Note
+- `skills/technical-document/references/output-style.md` — neutre, présent, code/tableaux/Mermaid
+- `skills/specification/references/output-style.md` — formel, normatif (« doit »), tables d'exigences
 
 Pour **injecter un autre style**, passer `--style <chemin>` à l'invocation :
 

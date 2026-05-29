@@ -36,7 +36,7 @@ Trigger-to-action mapping:
 - Read `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` first.
 - The **subject** (what to document: a system, module, API, or operation) is given up front via `$ARGUMENTS`; if it's missing, ask for it once before starting.
 - **Rédaction en français par défaut** — la prose est en français (sauf demande explicite d'une autre langue) ; le code, les signatures, les commandes et les libellés gardent leur forme d'origine.
-- **Output style**: follow `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/technical-document.md` for voice and formatting by default. To inject a different one, pass `--style <path>` in `$ARGUMENTS`; load that file and follow it instead.
+- **Output style**: follow `${CLAUDE_PLUGIN_ROOT}/skills/technical-document/references/output-style.md` for voice and formatting by default. To inject a different one, pass `--style <path>` in `$ARGUMENTS`; load that file and follow it instead.
 - Match the document type's structure from `references/doc-types.md` — don't invent a shape.
 - **Ground every technical claim in the code**: read the relevant source before asserting behavior; cite `file:symbol`/`file:line` where useful.
 - Examples must be real and runnable — copy from or validate against the codebase, never illustrative pseudo-code presented as working.
@@ -47,7 +47,7 @@ Trigger-to-action mapping:
 ## References
 
 - `references/doc-types.md` — per-type required structure (architecture, API, integration, runbook, design note)
-- `${CLAUDE_PLUGIN_ROOT}/assets/output-styles/technical-document.md` — default voice/formatting (override with `--style <path>`)
+- `${CLAUDE_PLUGIN_ROOT}/skills/technical-document/references/output-style.md` — default voice/formatting (override with `--style <path>`)
 - `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md` — shared documentation ethos
 
 ## Evals

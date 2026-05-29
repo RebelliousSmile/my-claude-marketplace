@@ -12,8 +12,8 @@ Initial release. Professional documentation authoring, three skills.
 
 ### Output styles
 
-- One default **output style** per document type in `assets/output-styles/` (`user-guide.md`, `technical-document.md`, `specification.md`) — voice, tone, tense, formatting, callouts (French).
-- Each skill accepts `--style <path>` in `$ARGUMENTS` to **inject a different output style** in place of the default; structure and content rules are unchanged.
+- One default **output style** per document type, in each skill's `references/output-style.md` — voice, tone, tense, formatting, callouts (French).
+- Each skill accepts `--style <path>` in `$ARGUMENTS` to **inject a different output style** in place of the default; the flag is parsed out of `$ARGUMENTS` (the rest is the subject), and a missing path is reported rather than silently falling back. Structure and content rules are unchanged.
 
 ### Conventions
 
