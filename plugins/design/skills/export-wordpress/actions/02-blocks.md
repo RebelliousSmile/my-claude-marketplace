@@ -9,7 +9,7 @@ Convert wireframes/components into WordPress block patterns or templates, with t
 
 ## Process
 
-1. **Choose the bridging strategy** (see `references/theme-json-mapping.md`):
+1. **Choose the bridging strategy** (see `${CLAUDE_PLUGIN_ROOT}/skills/export-wordpress/references/theme-json-mapping.md`):
    - Fast switch → **enqueue `design/adapters/tokens.css`** so existing `var(--…)` keep resolving.
    - WP-native → also emit a bridge mapping `--color-…`/`--space-…` to `--wp--preset--…`.
    Enqueue via the theme's `functions.php` (`wp_enqueue_style`) or `@import` in the theme stylesheet; report which.

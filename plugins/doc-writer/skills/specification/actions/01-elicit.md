@@ -9,7 +9,7 @@ Gather the context needed to write a complete specification.
 ## Process
 
 1. **Extract what's already known** from the need: objective, users, scope hints, constraints, deliverables, any budget/timeline.
-2. **Check the blocking gaps** against `references/spec-structure.md`:
+2. **Check the blocking gaps** against `${CLAUDE_PLUGIN_ROOT}/skills/specification/references/spec-structure.md`:
    - Business objective and success measure.
    - Users/stakeholders and who validates.
    - Scope boundaries (what is explicitly *not* wanted).

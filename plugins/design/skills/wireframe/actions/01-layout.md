@@ -14,7 +14,7 @@ Turn a user story into a per-breakpoint layout plan grounded in the design syste
 3. **Plan enrichment** for ≥ tablet and ≥ desktop: what is *added* (panels, columns, denser views, previews). Keep it additive — same information architecture, more density/affordance. Assign each enriched region a `data-enrich` tier (`md`/`lg`).
 4. **Plan mobile-only UX**: any pattern that should exist only on small screens (bottom sheet, sticky CTA, swipe), each paired with its desktop equivalent and confirmed to yield the same outcome.
 5. **Map to components**: name the inventory components each region uses. Flag any needed component that the inventory lacks — it's a candidate for `/design:component`.
-6. **Fill** `references/layout-plan-template.md` with the above.
+6. **Fill** `${CLAUDE_PLUGIN_ROOT}/skills/wireframe/references/layout-plan-template.md` with the above.
 
 ## Outputs
 

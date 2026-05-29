@@ -8,7 +8,7 @@ Write the specification from the elicited context.
 
 ## Process
 
-1. **Write all sections** in the order of `references/spec-structure.md`: context & objectives, stakeholders, scope (in/out), functional requirements, non-functional requirements, constraints, deliverables, acceptance criteria, planning, assumptions & open questions.
+1. **Write all sections** in the order of `${CLAUDE_PLUGIN_ROOT}/skills/specification/references/spec-structure.md`: context & objectives, stakeholders, scope (in/out), functional requirements, non-functional requirements, constraints, deliverables, acceptance criteria, planning, assumptions & open questions.
 2. **Requirements**: number each (`FR-n`, `NFR-n`), keep one requirement per statement, write testable wording, assign a MoSCoW priority, and pair each with an acceptance criterion. Use the table format from the structure reference.
 3. **Keep solution out of requirements**: imposed technical choices go in Constraints; functional requirements describe *what*, not *how*.
 4. **Non-functional**: quantify (latency, uptime %, WCAG level, throughput) rather than adjectives.

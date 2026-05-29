@@ -25,6 +25,13 @@ The ethos every `doc-writer` skill follows, whatever the document type. Referenc
 - Conserver les termes techniques consacrés et les libellés d'UI dans leur forme d'origine (ne pas traduire un label produit anglais) — mais la prose qui les entoure reste en français.
 - Pas d'emoji dans le corps d'un document livré/versionné, sauf demande explicite.
 
+## Output destination
+
+- **Produce in the conversation by default** — print the document inline, without wrapping it in an outer ` ```markdown ` fence (that would break inner code blocks).
+- **Write a file only when asked**, or when the user gives a target path; then create it there.
+- **Never overwrite silently**: if the target file already exists and was not produced earlier in this same run, show what changes or ask before replacing it.
+- **Revising (review / verify / challenge)**: if the document is a file, edit it in place; if it lives only in the conversation, return the corrected version. If the user asked for a read-only pass, report findings and do not edit.
+
 ## Done
 
 - The outline's promise is fully covered, every example is real, every link resolves, and assumptions are listed where facts were missing.

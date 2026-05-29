@@ -5,7 +5,7 @@ Render the layout plan as a standalone, viewable mobile-first HTML wireframe.
 ## Inputs
 
 - The layout plan from `01-layout`.
-- `references/wireframe-template.html` — the scaffold to adapt.
+- `${CLAUDE_PLUGIN_ROOT}/skills/wireframe/references/wireframe-template.html` — the scaffold to adapt.
 - `design/adapters/tokens.css` — the tokens the wireframe links.
 
 ## Process

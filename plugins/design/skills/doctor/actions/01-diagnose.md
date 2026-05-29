@@ -24,7 +24,7 @@ Scan a production codebase and produce a measured design-health report.
    - **Emoji used as icons** — search for emoji codepoints in UI/templates; record each location (blocking smell).
    - Contrast failures (compute from used colors), missing `:focus`, sub-44px targets, heading/landmark problems.
 5. **Reverse-engineer de-facto tokens**: the dominant value per dimension — the implicit system already in use and the cleanest crystallization candidate. Note the de-facto core trio (palette / type / icon set) and how scattered each is.
-6. **Fill** `references/health-report-template.md`.
+6. **Fill** `${CLAUDE_PLUGIN_ROOT}/skills/doctor/references/health-report-template.md`.
 
 ## Outputs
 

@@ -9,7 +9,7 @@ Write the guide sections from the approved outline.
 
 ## Process
 
-1. **Write section by section** following the outline and `references/user-guide-structure.md`.
+1. **Write section by section** following the outline and `${CLAUDE_PLUGIN_ROOT}/skills/user-guide/references/user-guide-structure.md`.
 2. **Getting started**: the shortest end-to-end path to a first success; numbered, one action per step, each stating the visible result.
 3. **Task sections**: a one-line purpose, then numbered imperative steps, the expected result, and common variations. Keep UI labels exact.
 4. **Troubleshooting**: symptom → cause → fix, for errors real users hit.
