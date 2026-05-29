@@ -85,3 +85,6 @@ Source: https://www.rfc-editor.org/rfc/rfc7033
 | Outbox sans pagination | AP §4.1 — `OrderedCollection` sans `first` = non conforme |
 | Fetch acteur sans cache | Non normatif mais pattern universel — fetch/request = DoS sur instances populaires |
 | SSRF sur URL acteur non validée | OWASP A10 — Server-Side Request Forgery |
+| Livraison avant `transaction.on_commit` | AP §5.2 — une activité livrée avant le commit de la transaction référence un objet inexistant en DB côté destinataire ; le task doit être enqueué via `transaction.on_commit(lambda: deliver.delay(...))` |
+| Implémentation inbox sécurisée non routée (code mort) | AP §5.1 — si la view routée dans `urls.py` diffère de l'implémentation avec vérification de signature, les contrôles de sécurité sont inopérants en production ; vérifier systématiquement que la view importée dans le routeur est celle qui contient la logique de sécurité |
+| `coverage.omit` ou `# pragma: no cover` sur les chemins AP critiques | Sécurité — omit les chemins de vérification de signature, d'idempotence et de livraison de la couverture de test crée un faux sentiment de sécurité ; les chemins AP critiques doivent avoir une couverture de test explicite |

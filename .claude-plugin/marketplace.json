@@ -37,7 +37,7 @@
     },
     {
       "name": "rpg-writer",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "source": "./plugins/rpg-writer",
       "description": "Narrative writing skills and workflows (novels, TTRPG scenarios, guides): concept, TOC, chapters, tone, lore, review.",
       "recommended": false
@@ -65,7 +65,7 @@
     },
     {
       "name": "sc-python",
-      "version": "0.4.9",
+      "version": "0.5.1",
       "source": "./plugins/sc-python",
       "description": "Python ecosystem: two-tier sniff (pivot model), audit, improve, legacy, teach. Perf pivots: Django, DRF, Celery, FastAPI, httpx, Flask (gap). Data pivots: Django ORM, SQLAlchemy, HuggingFace datasets. Capability pivots: Python idioms, spaCy NLP.",
       "recommended": false
@@ -79,7 +79,7 @@
     },
     {
       "name": "obsidian",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "source": "./plugins/obsidian",
       "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc), scenario writing and campaign preparation (rpg), and live play (solo-mc).",
       "recommended": false

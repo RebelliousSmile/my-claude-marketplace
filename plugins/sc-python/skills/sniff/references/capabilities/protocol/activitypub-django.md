@@ -19,8 +19,15 @@ Stack-specific checklist for `/ap-optimize` when a Django ActivityPub implementa
 - Détecter le pattern d'implémentation : custom (signals + models + tasks) vs librairie (rare en Django)
 - Vérifier la présence d'un modèle `ProcessedActivity` (garde d'idempotence) :
   `grep -rn "ProcessedActivity" . --include="*.py" | head -5`
-- Vérifier que `inbox` est routé vers la bonne view :
-  `grep -rn "inbox" */urls.py`
+- **Détecter le code mort inbox** — vérifier que la view importée dans `urls.py` est bien celle qui contient la vérification de signature :
+  ```bash
+  # Quelle view est effectivement routée ?
+  grep -rn "inbox" */urls.py activitypub/urls.py
+  # La view routée contient-elle la vérification de signature ?
+  grep -rn "verify_signature\|check_signature" activitypub/views.py activitypub/inbox.py
+  ```
+  Si `views.py` est routé mais que `verify_signature` n'y est que dans `inbox.py` → code mort critique.
+- Vérifier la couverture de test sur les chemins critiques — `coverage.omit` ou `# pragma: no cover` sur `inbox.py`, `signatures.py` ou `tasks.py` → faux sentiment de sécurité.
 - Baseline avant toute recommandation :
   ```bash
   python manage.py shell -c "from activitypub.models import ProcessedActivity; print(ProcessedActivity.objects.count())"
