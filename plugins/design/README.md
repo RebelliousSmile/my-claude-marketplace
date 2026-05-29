@@ -2,7 +2,7 @@
 
 *Plugin de design system mobile-first et responsive : de la référence ou du brief jusqu'à des pages vérifiées, sans réinventer un système à chaque écran.*
 
-Inspiré de la philosophie « ne jamais livrer de l'UI générique par défaut, établir d'abord un design system puis vérifier que le rendu le respecte » — condensé en 6 skills au lieu de plusieurs dizaines.
+Inspiré de la philosophie « ne jamais livrer de l'UI générique par défaut, établir d'abord un design system puis vérifier que le rendu le respecte » — condensé en 9 skills au lieu de plusieurs dizaines.
 
 ## Philosophie
 
@@ -42,7 +42,7 @@ brief / user story  ──▶ /design:from-brief      ┘
 
 | Skill | Déclencheur | Description |
 |---|---|---|
-| `setup` | `/design:setup` | Installe les règles mobile-first/responsive/a11y dans `.claude/rules/08-design/` |
+| `setup` | `/design:setup` | Installe les 7 règles mobile-first / responsive / iconographie / a11y dans `.claude/rules/08-design/` |
 | `from-reference` | `/design:from-reference` | Établit le design system depuis une référence (screenshot, URL, Figma, CSS) — capture → extract → write-system |
 | `from-brief` | `/design:from-brief` | Établit le design system depuis un besoin/user story — clarify → derive → write-system |
 | `wireframe` | `/design:wireframe` | User story → preview HTML mobile-first annoté (enrichi / mobile-only) — layout → render |

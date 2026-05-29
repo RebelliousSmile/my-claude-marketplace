@@ -67,7 +67,7 @@ Ou via commande dans le projet :
 | Plugin | `recommended` | Description |
 |---|---|---|
 | `aidd-overlay` | ✅ | Socle commun — workflows projet-agnostiques |
-| `design` | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit |
+| `design` | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit, doctor/refactor (prod), export WordPress |
 | `sc-js` | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
 | `sc-php` | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
 | `sc-python` | — | Stack Python : Django / FastAPI |
