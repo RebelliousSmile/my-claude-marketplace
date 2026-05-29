@@ -1,6 +1,6 @@
 # my-claude-marketplace
 
-Marketplace personnelle de plugins Claude Code, construite comme overlay du framework [AIDD](https://github.com/ai-driven-dev/aidd-framework).
+Marketplace personnelle de plugins Claude Code, qui inclut overlay du framework [AIDD](https://github.com/ai-driven-dev/aidd-framework) que j'utilise pour tous mes développements. 
 
 ## Installation
 
@@ -80,32 +80,4 @@ Le **détail des skills de chaque plugin vit dans son propre README** (colonne D
 | [`gamedesign`](plugins/gamedesign/README.md) | [README](plugins/gamedesign/README.md) · [CHANGELOG](plugins/gamedesign/CHANGELOG.md) | — | Game design (8-MINE) : timelines dialogiques, bank d'assets |
 | [`rpg-writer`](plugins/rpg-writer/README.md) | [README](plugins/rpg-writer/README.md) · [CHANGELOG](plugins/rpg-writer/CHANGELOG.md) | — | Rédaction narrative : concept, TOC, chapitres, ton, lore, relecture |
 | [`obsidian`](plugins/obsidian/README.md) | [README](plugins/obsidian/README.md) · [CHANGELOG](plugins/obsidian/CHANGELOG.md) | — | Notes Obsidian — projets Pro, JDR solo (PJ, scénarios, prep de campagne, jeu en direct), tri d'emails |
-
-> Tous les plugins ont un README et un CHANGELOG.
-
----
-
-## Prérequis
-
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) ≥ 1.x
-- [AIDD framework](https://github.com/ai-driven-dev/aidd-framework) installé
-- `gh` CLI pour les skills interagissant avec GitHub
-
----
-
-## Maintenance du cache
-
-Les plugins sont mis en cache à l'installation dans `~/.claude/plugins/cache/`. `/reload-plugins` recharge depuis ce cache — il ne re-synchronise **pas** depuis la source.
-
-Après avoir ajouté ou modifié des fichiers dans la source :
-
-```powershell
-# Copier un nouveau skill dans le cache (exemple : sc-js sniff)
-Copy-Item -Path ".\plugins\sc-js\skills\sniff" `
-          -Destination "$env:USERPROFILE\.claude\plugins\cache\aidd-overlay\sc-js\0.1.0\skills\sniff" `
-          -Recurse -Force
-```
-
-Puis faire `/reload-plugins` dans Claude Code.
-
-> Pour forcer une réinstallation complète : supprimer le répertoire `~/.claude/plugins/cache/aidd-overlay/<plugin>/` et réinstaller via `/plugin install <plugin>@my-marketplace`.
+supprimer le répertoire `~/.claude/plugins/cache/aidd-overlay/<plugin>/` et réinstaller via `/plugin install <plugin>@my-marketplace`.
