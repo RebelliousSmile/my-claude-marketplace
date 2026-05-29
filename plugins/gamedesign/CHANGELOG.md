@@ -1,0 +1,14 @@
+# Changelog — gamedesign
+
+> Baseline établie le 2026-05-29 à partir de l'état courant. Détail : `git log -- plugins/gamedesign`.
+
+## [0.2.0] — 2026-05-29 (baseline)
+
+Game design pour le projet 8-MINE. Skills :
+
+- `bank` — gère le registre de ressources (`bank.yml`) : init et challenge de la bank d'assets narrative.
+- `dialogic-draft` — pipeline d'écriture séquentiel des timelines Dialogic (spec de scène, comportement PNJ, arcs, DTL).
+- `dialogic-review` — revue/validation des timelines et du graphe narratif (précheck, persona, audit de graphe, gestion des nœuds).
+
+## Antérieur
+- Voir `git log -- plugins/gamedesign` pour l'historique complet.

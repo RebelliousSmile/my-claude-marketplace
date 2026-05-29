@@ -69,19 +69,19 @@ Le **détail des skills de chaque plugin vit dans son propre README** (colonne D
 
 | Plugin | Doc | `recommended` | Description |
 |---|---|---|---|
-| [`aidd-overlay`](plugins/aidd-overlay/README.md) | [README](plugins/aidd-overlay/README.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
+| [`aidd-overlay`](plugins/aidd-overlay/README.md) | [README](plugins/aidd-overlay/README.md) · [CHANGELOG](plugins/aidd-overlay/CHANGELOG.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
 | [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit, doctor/refactor (prod), export WordPress |
 | [`doc-writer`](plugins/doc-writer/README.md) | [README](plugins/doc-writer/README.md) · [CHANGELOG](plugins/doc-writer/CHANGELOG.md) | — | Documentation : guides utilisateur, documents techniques, cahiers des charges (specification) |
 | [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
 | [`sc-php`](plugins/sc-php/README.md) | [README](plugins/sc-php/README.md) · [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
-| [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) | — | Stack Python : Django / FastAPI / Flask |
-| [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) | — | Stack Rust : Axum / Actix-web |
-| [`sc-tiers`](plugins/sc-tiers/README.md) | [README](plugins/sc-tiers/README.md) | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
-| [`gamedesign`](plugins/gamedesign/README.md) | [README](plugins/gamedesign/README.md) | — | Game design (8-MINE) : timelines dialogiques, bank d'assets |
-| [`writing`](plugins/writing/README.md) | [README](plugins/writing/README.md) | — | Rédaction narrative : concept, TOC, chapitres, ton, lore, relecture |
-| [`obsidian`](plugins/obsidian/README.md) | [README](plugins/obsidian/README.md) | — | Notes Obsidian — projets Pro, PJ JDR solo, tri d'emails |
+| [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) · [CHANGELOG](plugins/sc-python/CHANGELOG.md) | — | Stack Python : Django / FastAPI / Flask |
+| [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) · [CHANGELOG](plugins/sc-rust/CHANGELOG.md) | — | Stack Rust : Axum / Actix-web |
+| [`sc-tiers`](plugins/sc-tiers/README.md) | [README](plugins/sc-tiers/README.md) · [CHANGELOG](plugins/sc-tiers/CHANGELOG.md) | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
+| [`gamedesign`](plugins/gamedesign/README.md) | [README](plugins/gamedesign/README.md) · [CHANGELOG](plugins/gamedesign/CHANGELOG.md) | — | Game design (8-MINE) : timelines dialogiques, bank d'assets |
+| [`writing`](plugins/writing/README.md) | [README](plugins/writing/README.md) · [CHANGELOG](plugins/writing/CHANGELOG.md) | — | Rédaction narrative : concept, TOC, chapitres, ton, lore, relecture |
+| [`obsidian`](plugins/obsidian/README.md) | [README](plugins/obsidian/README.md) · [CHANGELOG](plugins/obsidian/CHANGELOG.md) | — | Notes Obsidian — projets Pro, PJ JDR solo, tri d'emails |
 
-> Tous les plugins ont un README. CHANGELOG présent pour : `design`, `doc-writer`, `sc-js`, `sc-php`.
+> Tous les plugins ont un README et un CHANGELOG.
 
 ---
 
