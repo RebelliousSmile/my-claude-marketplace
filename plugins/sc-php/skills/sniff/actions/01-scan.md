@@ -198,4 +198,12 @@ Skills support:
 → Proceed to 02-install-pivots.
 ```
 
-Then proceed to action `02-install-pivots`.
+### Closing gate — run before proceeding to 02-install-pivots
+
+Before writing `→ Proceed to 02-install-pivots`, answer these three questions in your output:
+
+1. Did your output above include a `Skills support:` block? (yes / no)
+2. If no → write it now, using the vanilla PHP example from Step 8 as a guide.
+3. Once the `Skills support:` block is present → write `→ Proceed to 02-install-pivots.`
+
+Do not skip this gate. The gate output itself is not shown to the user — only the Skills support block and the proceed line are emitted.

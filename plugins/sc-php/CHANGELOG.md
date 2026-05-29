@@ -1,5 +1,10 @@
 # Changelog — sc-php
 
+## v0.4.7 — 2026-05-29
+
+### Fixed
+- `sniff/01-scan.md`: ajoute une closing gate avant `→ Proceed` — le modèle doit explicitement vérifier la présence du bloc `Skills support` et l'écrire s'il est absent.
+
 ## v0.4.6 — 2026-05-29
 
 ### Fixed
