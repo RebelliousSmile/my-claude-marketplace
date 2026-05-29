@@ -34,5 +34,6 @@ Trigger-to-action mapping:
 
 ## External data
 
-- `bank.yml` at project root — declares all documentation files to cross-reference.
+- `bank.yml` at `<projet-root>` — declares all documentation files to cross-reference.
 - `.toc/INDEX.md` — produced by `generate-toc`, consumed by `write-toc-chapter`.
+- `setup/references/vault-layout.md` — path-variable convention (`<univers-root>`, `<projet-root>`, …).

@@ -2,10 +2,13 @@
 
 Merge a supplement or errata into an existing optimized rules file.
 
+> `base-file` vit dans `<systeme-root>/canon/` (ou `<subsys-root>/canon/`). `supplement` vit dans `<systeme-root>/sources/<source>/` (ou `<subsys-root>/sources/<source>/`) si issu du pipeline `extract-pdf`.
+> Voir `@setup/references/vault-layout.md` pour la convention complète.
+
 ## Inputs
 
-- `base-file` (required) — path to the existing optimized rules file (must already be in rules-keeper format)
-- `supplement` (required) — path to the supplement or errata file to merge
+- `base-file` (required) — chemin vers le fichier de règles optimisé existant (doit déjà être au format rules-keeper) ; typiquement `<systeme-root>/canon/<fichier>.md` ou `<subsys-root>/canon/<fichier>.md`.
+- `supplement` (required) — chemin vers le fichier de supplément ou d'errata à fusionner ; typiquement `<systeme-root>/sources/<source>/rules.md` si issu d'`extract-pdf`.
 
 ## Process
 

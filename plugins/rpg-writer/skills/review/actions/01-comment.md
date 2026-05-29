@@ -35,7 +35,7 @@ Saved to: `.wip/comments/<chapitre>-personas.md`
 
 ## Process
 
-1. Discover personas in priority order: `<univers>/<projet>/.templates/personas/*.yml` → `<univers>/.templates/personas/*.yml` → `docs/templates/personas/*.yml`. Load the requested IDs or auto-select based on `document.type`.
+1. Discover personas in priority order: `<projet-root>/.templates/personas/*.yml` → `<univers-root>/.templates/personas/*.yml` → `<vault>/_shared/personas/*.yml`. Load the requested IDs or auto-select based on `document.type`. (`<projet-root>` = `<jeu>/ecrits/<projet>/`, `<univers-root>` = `<jeu>/univers/<univers>/`, `<vault>` = `C:/Users/fxgui/Public/Notes/Perso/JDR/`. See `setup/references/vault-layout.md`.)
 2. For each persona: check `loading_strategy`. If `from_bank_yml` → load references from bank.yml (rules-files, universe docs) excluding declared exclusions. Else load static reference list.
 3. **Mandatory pre-scoring checks (before scoring)**:
    - 3a. **Cross-reference check** (scenario/roleplaying only): verify all statblocks, mechanic values, and NPC names against `pj.md` and `document-rules.md`. Any mismatch → 🔴 CRITICAL `[CROSS-REF FAIL]`.

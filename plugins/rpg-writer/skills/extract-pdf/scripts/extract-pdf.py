@@ -358,37 +358,75 @@ Context from progress.md:
     return success
 
 
+def resolve_by_game_paths(progress: dict) -> dict:
+    """
+    Resolve by-game vault paths from progress metadata.
+
+    progress['project'] is expected to be '<jeu>/ecrits/<projet>'.
+    Returns dict with 'jeu', 'univers_root', 'systeme_root', 'project_root'.
+    Falls back to best-effort if the format is non-standard (logs a warning).
+    """
+    vault = Path('C:/Users/fxgui/Public/Notes/Perso/JDR')
+    project_str = progress.get('project', '') or ''
+    univers = progress.get('univers', '') or ''
+
+    # Expect format: <jeu>/ecrits/<projet>
+    parts = Path(project_str).parts
+    jeu = None
+    if len(parts) >= 1:
+        jeu = vault / parts[0]
+
+    univers_root = jeu / 'univers' / univers if jeu and univers else None
+    systeme_root = jeu / 'systeme' if jeu else None
+    project_root = vault / project_str if project_str else None
+
+    if not (univers_root and univers_root.exists()):
+        # Fallback: try absolute path from progress
+        if project_root and project_root.exists():
+            print(f"[WARN] <univers-root> not found at {univers_root}, using project path as fallback")
+        else:
+            print(f"[WARN] Could not resolve by-game paths from project='{project_str}' univers='{univers}'")
+
+    return {
+        'jeu': jeu,
+        'univers_root': univers_root,
+        'systeme_root': systeme_root,
+        'project_root': project_root,
+    }
+
+
 def distribute_content(progress: dict) -> bool:
     """Run Phase C: Distribute extracted content with git stash."""
-    root = get_project_root()
     source_name = progress['source_name']
+    paths = resolve_by_game_paths(progress)
+
+    univers_root = paths['univers_root']
+    systeme_root = paths['systeme_root']
+    project_root = paths['project_root']
 
     # Git stash before distribution
-    univers_path = root / progress['univers'] if progress['univers'] else None
-    project_path = root / progress['project'] if progress['project'] else None
-
     stashed = []
-    if univers_path and univers_path.exists():
-        if git_stash_push(univers_path, source_name):
-            stashed.append(('univers', univers_path))
-            print(f"[INFO] Stashed {univers_path}")
-
-    if project_path and project_path.exists() and project_path != univers_path:
-        if git_stash_push(project_path, source_name):
-            stashed.append(('project', project_path))
-            print(f"[INFO] Stashed {project_path}")
+    for label, path in [('univers', univers_root), ('systeme', systeme_root), ('project', project_root)]:
+        if path and path.exists():
+            if git_stash_push(path, source_name):
+                stashed.append((label, path))
+                print(f"[INFO] Stashed {label}: {path}")
 
     prompt = f"""@docs/prompts/workshop/extract-distribute.prompt.md {progress['file']}
 
 Final distribution:
 1. Merge all classified content
-2. Distribute to univers destinations
+2. Distribute to sources/ reference destinations (not canon/)
+   - Lore/terminology → <univers-root>/sources/<source-name>/
+   - Rules → <systeme-root>/sources/<source-name>/
 3. Generate report
 4. Ask for validation before cleanup
 
 Context:
 - Univers: {progress['univers']}
 - Project: {progress['project']}
+- univers-root: {univers_root}
+- systeme-root: {systeme_root}
 - Stashed repos: {[str(p) for _, p in stashed]}"""
 
     success = run_claude_session(prompt, "Distributing extracted content")

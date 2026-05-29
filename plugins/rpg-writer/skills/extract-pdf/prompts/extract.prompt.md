@@ -8,6 +8,9 @@ argument-hint: <project-path> <source-pdf>
 
 Arguments reçus : `<project_path> <source_pdf>`
 
+> **Rôle** : prépare l'espace de travail pour l'extraction. Les sources de référence seront écrites dans `<univers-root>/sources/` et `<systeme-root>/sources/` lors de la phase Distribute. Jamais dans `canon/`.
+> Voir `@setup/references/vault-layout.md` pour la convention des chemins.
+
 ---
 
 ## Goal
@@ -111,6 +114,7 @@ List created chunks and note page ranges and estimated character counts (~2500 c
 Create `docs/extraction/<source-name>/progress.md` with exact format below.
 
 > ⚠️ Format strict — respecter les noms de colonnes et les valeurs de statut exactement.
+> `<project_path>` doit être au format `<jeu>/ecrits/<projet>`.
 
 ```markdown
 # Extraction Progress: <source-name>

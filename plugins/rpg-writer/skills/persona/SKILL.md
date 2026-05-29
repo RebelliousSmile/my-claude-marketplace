@@ -8,6 +8,8 @@ description: Creates and refines reader persona YAML files used by the review pi
 
 Manages reader personas consumed by the `review:comment` action. Two operations: **generate** creates a new YAML persona from a description; **train** refines an existing persona by analyzing patterns across accumulated comment feedback files to sharpen scoring criteria, must-haves, and deal-breakers.
 
+> Path variables: see `setup/references/vault-layout.md`.
+
 ## Available actions
 
 | #   | Action     | Role                                                             | Input                                          |
@@ -23,7 +25,10 @@ Trigger-to-action mapping:
 
 ## Transversal rules
 
-- Persona YAML files are stored in: `<univers>/<projet>/.templates/personas/<id>.yml` (project-level), `<univers>/.templates/personas/<id>.yml` (universe-level), or `docs/templates/personas/<id>.yml` (global).
+- Persona resolution waterfall (first match wins):
+  1. **projet** → `<projet-root>/.templates/personas/<id>.yml`
+  2. **univers** → `<univers-root>/.templates/personas/<id>.yml`
+  3. **shared** → `<vault>/_shared/personas/<id>.yml`
 - Persona IDs are kebab-case slugs: `gm-practitioner`, `casual-reader`, `fan-wot`.
 - Scoring criterion weights MUST sum to 1.0.
 - `train` reads only `.wip/comments/*.md` files declared by the `--feedback-files` glob; never invent patterns.
@@ -31,5 +36,5 @@ Trigger-to-action mapping:
 
 ## External data
 
-- `bank.yml` → `docs.personas.*` — maps persona IDs to file paths.
+- `bank.yml` → `personas.<tier>` — maps persona tiers (projet / univers / shared) to file path lists.
 - `.wip/comments/<id>-*.md` — feedback files consumed by `train`.

@@ -12,7 +12,7 @@ Conversational partner for narrative concept development. Reads the project's `b
 
 | #   | Action  | Role                                                      | Input                             |
 | --- | ------- | --------------------------------------------------------- | --------------------------------- |
-| 01  | `forge` | Challenge and iterate on a writing project's overview    | project path `<univers>/<projet>` |
+| 01  | `forge` | Challenge and iterate on a writing project's overview    | project path `<jeu>/ecrits/<projet>` |
 
 ## Default flow
 
@@ -34,6 +34,7 @@ Trigger-to-action mapping:
 ## References
 
 - `references/overview-checklist.md` — exit criteria per document type (novel / scenario / roleplaying / guide)
+- `setup/references/vault-layout.md` — path-variable convention (`<univers-root>`, `<projet-root>`, …)
 
 ## Evals
 

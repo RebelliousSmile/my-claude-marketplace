@@ -4,7 +4,7 @@ Session 1 du pipeline d'extraction PDF : valider l'environnement, découper le P
 
 ## Inputs
 
-- `project_path` (required) — string, format `<univers>/<projet>`
+- `project_path` (required) — string, format `<jeu>/ecrits/<projet>` (résolu depuis `<vault>/`)
 - `source_document` (required) — chemin vers le PDF source
 
 ## Outputs
@@ -25,7 +25,7 @@ Format `progress.md` :
 # Extraction Progress: <source-name>
 
 **Source:** <source_document>
-**Project:** <univers>/<projet>
+**Project:** <jeu>/ecrits/<projet>
 **Univers:** <univers>
 **Total chunks:** N
 **Date started:** YYYY-MM-DD
@@ -42,7 +42,7 @@ Format `progress.md` :
 
 ## Process
 
-1. Vérifier que `bank.yml` existe dans le répertoire courant. Sinon → STOP : "Lancer le skill depuis le répertoire du projet (`<univers>/<projet>/`) ou exécuter `setup init` d'abord."
+1. Vérifier que `bank.yml` existe dans le répertoire courant. Sinon → STOP : "Lancer le skill depuis le répertoire du projet (`<jeu>/ecrits/<projet>/`) ou exécuter `setup init` d'abord."
 2. Extraire depuis `bank.yml` : `document.univers`, `document.name`.
 3. Vérifier que `<source_document>` existe et est lisible (header `%PDF-`).
 4. `<source-name>` = nom du fichier sans extension.

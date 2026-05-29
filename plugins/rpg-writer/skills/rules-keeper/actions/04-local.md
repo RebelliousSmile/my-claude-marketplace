@@ -2,23 +2,32 @@
 
 Generate a `document-rules.md` for rules that are specific to one document (scenario, campaign, supplement) — as opposed to the base game system.
 
+> Les règles locales vivent dans `<projet-root>/.docs/document-rules.md`. Les références au système de jeu pointent vers `<systeme-root>/canon/` (ou `<subsys-root>/canon/`). Tous les chemins sont résolus via les variables de chemin par jeu.
+> Voir `@setup/references/vault-layout.md` pour la convention complète.
+
 ## Inputs
 
-- `project-path` (required) — path to the project directory containing `bank.yml`
-- `source` (optional) — source file to extract local rules from (defaults to `overview.md`)
+- `project-path` (required) — chemin vers le répertoire du projet contenant `bank.yml` ; format attendu `<jeu>/ecrits/<projet>` (résolu depuis `<vault>/`). Correspond à `<projet-root>`.
+- `source` (optional) — fichier source depuis lequel extraire les règles locales (par défaut `overview.md`)
 
 ## Outputs
 
-- `<project-path>/.docs/document-rules.md`
-- bank.yml updated to reference the new file under `docs.projet`
+- `<projet-root>/.docs/document-rules.md`
+- bank.yml mis à jour pour référencer le nouveau fichier sous `docs.projet`
 
 ## Process
 
 ### Step 1 — Load context
 
 Read `bank.yml` from `<project-path>`. Extract:
-- `univers` — for cross-referencing system rules-files
-- `rules-files` — paths to system rules already available
+- `document.univers` → slug univers
+- `rules-files` → chemins vers les fichiers de règles système déjà disponibles
+
+Résoudre les chemins par jeu :
+- `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`), déduit du `project-path` ou du CWD
+- `<systeme-root>` = `<jeu>/systeme/` (canon/ + mj/)
+- `<subsys-root>` = `<jeu>/subsystems/<nom>/` (repli : `<vault>/subsystems/<nom>/`)
+- Les `rules-files` déclarés dans `bank.yml` pointent typiquement vers `<systeme-root>/canon/<fichier>.md` ou `<subsys-root>/canon/<fichier>.md`
 
 If no `rules-files` declared: warn that local rules won't be able to reference the system rules.
 
@@ -48,9 +57,9 @@ Extract only rules that are **specific to this document**:
 | Mechanic | Classification | Reason |
 |----------|----------------|--------|
 | "La Coche de lien de Toravel donne accès à Pelive" | Local | References a document-specific NPC and merveille |
-| "Un jet de Sang difficile se coche en astral" | System | General astral stress rule, applies in any Nadir game |
+| "Un jet de Sang difficile se coche en astral" | System | General astral stress rule, applies in any Nadir game → belongs in `<systeme-root>/canon/` |
 | "En acte I, le Seuil force un Contrecoup supplémentaire" | Local | Specific to this campaign's act structure |
-| "2d6 + compétence vs difficulté" | System | Core resolution — already in rules-files |
+| "2d6 + compétence vs difficulté" | System | Core resolution — already in `<systeme-root>/canon/rules-files` |
 
 If a candidate is ambiguous: present it to the user with the two options rather than deciding unilaterally.
 
@@ -86,11 +95,11 @@ If a "local" rule is actually a general mechanic: flag it and suggest running `r
 
 ## Interactions avec les Règles Système
 
-- [System rule] + [local rule] = [how they combine]
+- [System rule from `<systeme-root>/canon/<fichier>.md`] + [local rule] = [how they combine]
 
 ---
 **Document :** [project name]
-**Règles système :** [reference to .rules-files/ path]
+**Règles système :** [reference to `<systeme-root>/canon/<fichier>.md` or `<subsys-root>/canon/<fichier>.md`]
 **Màj :** [date]
 ```
 
@@ -108,4 +117,4 @@ bank.yml mis à jour.
 
 ## Test
 
-After `rules-keeper --local <project>`, verify that `<project>/.docs/document-rules.md` exists, contains at least one mechanic section, and that `bank.yml` references it under `docs.projet`.
+After `rules-keeper --local <project>`, verify that `<projet-root>/.docs/document-rules.md` exists, contains at least one mechanic section, that `bank.yml` references it under `docs.projet`, and that any system rule reference points to `<systeme-root>/canon/<fichier>.md` (not to a flat unprefixed path).

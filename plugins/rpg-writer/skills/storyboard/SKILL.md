@@ -35,3 +35,4 @@ Trigger-to-action mapping :
 
 - `bank.yml` — liste les docs univers (personnages, lieux, terminologie, output-style).
 - `.storyboard/<chapitre>-moments.md` — liste des moments extraits, consommée par `describe`.
+- `setup/references/vault-layout.md` — convention des variables de chemin (`<univers-root>`, `<projet-root>`, …).

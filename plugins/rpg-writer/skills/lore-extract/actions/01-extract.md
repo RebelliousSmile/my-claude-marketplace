@@ -1,21 +1,26 @@
 # 01 - Extract
 
-Transform raw source files into structured thematic `.docs/` files for a universe project.
+Ventiler les sources de référence d'un univers vers les fichiers thématiques canoniques.
+
+> **Position dans le pipeline** : `lore-extract` consomme les sources de référence brutes produites par `extract-pdf` (`<univers-root>/sources/<source>/`) et les ventile vers `<univers-root>/.docs/canon/` (ou `mj/` avec `--homemade`). Il ne lit jamais directement les PDF et n'écrit jamais dans `sources/`.
+> Voir `@setup/references/vault-layout.md` pour la convention complète.
 
 ## Inputs
 
-- `sources` (required) — one or more file paths to process (relative to current directory)
-- `--update` (optional) — incremental mode: enrich existing files, skip already-processed sources
-- `--force` (optional) — regenerate all files even if they already exist
-- `--homemade` (optional) — provenance: the sources are homemade/user-created (non-canon). Output goes to the `mj/` subtree. Default (no flag) treats sources as canonical → `canon/` subtree.
+- `sources` (required) — un ou plusieurs chemins de fichiers à traiter. Format privilégié : `<univers-root>/sources/<source>/<fichier>.md` (output d'`extract-pdf`). Les fichiers raw ou notes personnelles sont aussi acceptés.
+- `--update` (optional) — mode incrémental : enrichit les fichiers existants, ignore les sources déjà traitées
+- `--force` (optional) — régénère tous les fichiers même s'ils existent déjà
+- `--homemade` (optional) — provenance : les sources sont maison/non-canoniques. La sortie va dans le sous-arbre `mj/`. Par défaut (sans flag), les sources sont traitées comme canoniques → sous-arbre `canon/`.
 
 ## Outputs
 
-Paths resolved from `bank.yml` (current directory), under the **provenance subtree** `canon/` (default) or `mj/` (`--homemade`):
-- `<docs-root>/<provenance>/terminologie.md` — always written
-- One file per detected theme alongside `terminologie` in the same provenance subtree
+Chemins résolus depuis `bank.yml` (répertoire courant), sous le **sous-arbre de provenance** `canon/` (défaut) ou `mj/` (`--homemade`) :
+- `<univers-root>/.docs/<provenance>/terminologie.md` — toujours écrit
+- Un fichier par thème détecté dans le même sous-arbre de provenance
 
-If `bank.yml` is absent: write to `.docs/<provenance>/` in the current directory and warn.
+Si `bank.yml` est absent : écrire dans `.docs/<provenance>/` dans le répertoire courant et avertir.
+
+> `<univers-root>` = `<jeu>/univers/<univers>/` — résolu depuis `bank.yml` (`document.univers`) et le premier segment du CWD sous `<vault>` (`<jeu>`).
 
 Templates for all themes: see `@references/templates-standard.md` and `@references/templates-optional.md`.
 
@@ -26,11 +31,14 @@ Templates for all themes: see `@references/templates-standard.md` and `@referenc
 1. **Determine provenance**: `--homemade` → `mj/` subtree (homemade/non-canon) ; otherwise → `canon/` subtree (default). If the provenance of a source is unclear, ask once before extracting; if a single source visibly mixes canonical and homemade material, split the extraction per provenance rather than dumping both into one subtree.
 2. Read `bank.yml` from the current directory.
    - Extract `document.univers` → universe slug
-   - Extract `docs.terminologie` → output path for terminology
-   - Extract remaining `docs.*` paths → output paths for other themes
-   - **Insert the provenance subtree** (`canon/` or `mj/`) into the resolved output paths.
-   - If `bank.yml` absent → warn "bank.yml not found, outputs will go to .docs/<provenance>/", continue.
-3. All source paths and output paths are resolved relative to the current directory.
+   - Resolve `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`), déduit du CWD ou de `bank.yml`
+   - Resolve `<univers-root>` = `<jeu>/univers/<document.univers>/`
+   - Output root = `<univers-root>/.docs/<provenance>/` (`canon/` or `mj/`)
+   - Extract `docs.terminologie` → overrides output path for terminology if present
+   - Extract remaining `docs.*` paths → override output paths for other themes if present
+   - If `bank.yml` absent → warn "bank.yml not found, outputs will go to `.docs/<provenance>/`", continue.
+3. All source paths and output paths are resolved relative to the current directory (or as absolute by-game paths).
+4. **Si les sources proviennent d'`extract-pdf`** : elles se trouvent dans `<univers-root>/sources/<source>/`. Lister les fichiers disponibles si aucune source n'est fournie explicitement et en proposer une sélection à l'utilisateur.
 
 ### Step 1 — Validate sources
 
@@ -215,4 +223,4 @@ Renommer les sources traitées avec le suffixe `.processed`.
 
 ## Test
 
-After `lore-extract <univers> <source>`, verify that the terminology file has been created (or updated) under the correct provenance subtree — `.docs/canon/terminologie.md` by default, `.docs/mj/terminologie.md` with `--homemade` — contains a term table, and respects the 250-line limit. Canon and homemade content are never mixed in the same file. If sources contain a contradiction (incl. homemade vs canon), verify that the user was prompted to arbitrate before writing.
+After `lore-extract <univers-root>/sources/<source>/lore.md`, verify that the terminology file has been created (or updated) at `<univers-root>/.docs/canon/terminologie.md` (default) or `<univers-root>/.docs/mj/terminologie.md` (with `--homemade`), contains a term table, and respects the 250-line limit. Canon and homemade content are never mixed in the same file. Input files in `<univers-root>/sources/<source>/` are never modified. If sources contain a contradiction (incl. homemade vs canon), verify that the user was prompted to arbitrate before writing.

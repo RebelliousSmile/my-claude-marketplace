@@ -38,10 +38,11 @@ Trigger-to-action mapping:
 ## References
 
 - `references/typographie.md` — French typography rules (guillemets, tirets, espaces insécables, etc.)
+- `setup/references/vault-layout.md` — path-variable convention (`<univers-root>`, `<projet-root>`, `<vault>`, …)
 
 ## External data
 
 - `bank.yml` — declares output-style, universe docs, personas.
-- `<univers>/.templates/personas/*.yml` — reader persona definitions.
+- Persona discovery order: `<projet-root>/.templates/personas/` → `<univers-root>/.templates/personas/` → `<vault>/_shared/personas/`.
 - `.toc/toc-chapter<NN>.md` — chapter spec for cross-referencing.
-- `<univers>/.docs/terminologie.md` — canonical terminology.
+- `<univers-root>/.docs/canon/terminologie.md` — canonical terminology.

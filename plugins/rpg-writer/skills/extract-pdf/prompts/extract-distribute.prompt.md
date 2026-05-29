@@ -1,10 +1,13 @@
 ---
 name: extract-distribute
-description: Merge extracted content and distribute to project destinations
+description: Merge extracted content and distribute to reference sources/ destinations
 argument-hint: <progress-file>
 ---
 
 # Distribute Extracted Content
+
+> **Frontière** : `extract-pdf` écrit uniquement dans `sources/` (jamais dans `canon/` ni `mj/`).
+> Voir `@setup/references/vault-layout.md` pour la convention complète.
 
 ## Context
 
@@ -16,7 +19,7 @@ argument-hint: <progress-file>
 
 ## Goal
 
-Merge all classified content, distribute to destinations, with git stash rollback.
+Merge all classified content, distribute to `sources/` reference destinations, with git stash rollback.
 
 ---
 
@@ -24,19 +27,24 @@ Merge all classified content, distribute to destinations, with git stash rollbac
 
 1. Parse progress file:
    - `Source` → original PDF path
-   - `Project` → project path
-   - `Univers` → destination universe
+   - `Project` → project path (`<jeu>/ecrits/<projet>`)
+   - `Univers` → universe slug
 
-2. Verify ALL chunks have status `done`
+2. Resolve paths:
+   - `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`), déduit du champ `Project`
+   - `<univers-root>` = `<jeu>/univers/<univers>/`
+   - `<systeme-root>` = `<jeu>/systeme/`
+
+3. Verify ALL chunks have status `done`
    - IF any `pending` → STOP, list missing chunks
 
-3. List files in `classified/`:
+4. List files in `classified/`:
    ```bash
    dir /b "docs\extraction\<source-name>\classified"   # Windows
    ls "docs/extraction/<source-name>/classified"       # Unix
    ```
 
-4. Calculate total size:
+5. Calculate total size:
    - IF total > 80000 chars → warn, suggest batch processing
 
 ---
@@ -65,7 +73,10 @@ For each file in `classified/`:
 
 ```bash
 # Stash universe changes
-git -C "<univers>" stash push -m "pre-extraction-<source-name>"
+git -C "<univers-root>" stash push -m "pre-extraction-<source-name>"
+
+# Stash system changes (if different repo)
+git -C "<systeme-root>" stash push -m "pre-extraction-<source-name>"
 
 # Stash project changes (if different repo)
 git -C "<project>" stash push -m "pre-extraction-<source-name>"
@@ -83,12 +94,17 @@ For each category with content:
 
 | Classified | Destination | Action |
 |------------|-------------|--------|
-| `lore*.md` | `<univers>/.docs/UNIVERS.md` | append |
-| `terminology*.md` | `<univers>/.docs/terminologie.md` | merge |
-| `style*.md` | `<univers>/.output-styles/<univers>-<source>.md` | create |
-| `rules*.md` | `docs/rules-files/<source>.md` | create |
-| `structure*.md` | `<project>/toc.md` | create/update |
-| `templates*.md` | `<univers>/.templates/latex-patterns.md` | append |
+| `lore*.md` | `<univers-root>/sources/<source-name>/lore.md` | create/append |
+| `terminology*.md` | `<univers-root>/sources/<source-name>/terminology.md` | create/merge |
+| `rules*.md` | `<systeme-root>/sources/<source-name>/rules.md` | create/append |
+| `style*.md` | `<univers-root>/.output-styles/<univers>-<source-name>.md` | create |
+| `structure*.md` | `<project>/.toc/INDEX.md` | create/update |
+| `templates*.md` | `<univers-root>/.templates/latex-patterns.md` | append |
+
+> Lore et terminologie → `<univers-root>/sources/<source-name>/` (référence univers).
+> Règles → `<systeme-root>/sources/<source-name>/` (référence système).
+> Style et templates → artefacts de commodité sous `<univers-root>`.
+> Ne jamais écrire dans `<univers-root>/.docs/canon/` ni `<systeme-root>/canon/` depuis ce prompt.
 
 **For each distribution:**
 
@@ -135,16 +151,21 @@ For each approved distribution:
 ### IF `Y` (validate):
 
 ```bash
-# Commit universe changes
-git -C "<univers>" add .docs/ .output-styles/ .templates/
-git -C "<univers>" commit -m "Extract: <source-name>"
+# Commit universe reference sources
+git -C "<univers-root>" add "sources/<source-name>/" ".output-styles/" ".templates/"
+git -C "<univers-root>" commit -m "Extract sources: <source-name> (univers)"
 
-# Commit project changes
+# Commit system reference sources
+git -C "<systeme-root>" add "sources/<source-name>/"
+git -C "<systeme-root>" commit -m "Extract sources: <source-name> (systeme)"
+
+# Commit project changes (.toc)
 git -C "<project>" add .
-git -C "<project>" commit -m "Extract: <source-name>"
+git -C "<project>" commit -m "Extract sources: <source-name>"
 
 # Drop stashes (no longer needed)
-git -C "<univers>" stash drop
+git -C "<univers-root>" stash drop
+git -C "<systeme-root>" stash drop
 git -C "<project>" stash drop
 ```
 
@@ -152,8 +173,12 @@ git -C "<project>" stash drop
 
 ```bash
 # Restore universe
-git -C "<univers>" checkout .
-git -C "<univers>" stash pop
+git -C "<univers-root>" checkout .
+git -C "<univers-root>" stash pop
+
+# Restore system
+git -C "<systeme-root>" checkout .
+git -C "<systeme-root>" stash pop
 
 # Restore project
 git -C "<project>" checkout .
@@ -165,7 +190,8 @@ git -C "<project>" stash pop
 ### IF `diff` (review changes):
 
 ```bash
-git -C "<univers>" diff
+git -C "<univers-root>" diff
+git -C "<systeme-root>" diff
 git -C "<project>" diff
 ```
 
@@ -186,21 +212,22 @@ git -C "<project>" diff
 - Chunks processed: [N]
 - Total characters: [X]
 
-## Distribution
+## Distribution (sources de référence)
 
 | Category | Sections | Chars | Destination | Action |
 |----------|----------|-------|-------------|--------|
-| Lore | X | Y | .docs/UNIVERS.md | appended |
-| Terminology | X | Y | .docs/terminologie.md | merged |
-| Style | X | Y | .output-styles/... | created |
-| Rules | X | Y | docs/rules-files/... | created |
-| Structure | X | Y | toc.md | created |
-| Templates | X | Y | .templates/... | appended |
+| Lore | X | Y | <univers-root>/sources/<source-name>/lore.md | created |
+| Terminology | X | Y | <univers-root>/sources/<source-name>/terminology.md | created |
+| Rules | X | Y | <systeme-root>/sources/<source-name>/rules.md | created |
+| Style | X | Y | <univers-root>/.output-styles/... | created |
+| Structure | X | Y | .toc/INDEX.md | created |
+| Templates | X | Y | <univers-root>/.templates/... | appended |
 
 ## Git Commits
 
-- `<univers>`: [commit hash] "Extract: <source-name>"
-- `<project>`: [commit hash] "Extract: <source-name>"
+- `<univers-root>`: [commit hash] "Extract sources: <source-name> (univers)"
+- `<systeme-root>`: [commit hash] "Extract sources: <source-name> (systeme)"
+- `<project>`: [commit hash] "Extract sources: <source-name>"
 
 ## Coverage
 
@@ -208,10 +235,15 @@ git -C "<project>" diff
 - Total source: Y chars
 - Coverage: XX%
 
-## Files Modified
+## Files Created
 
 1. `<path>` - [action]
 2. ...
+
+## Prochaines étapes
+
+- Lore → `lore-extract <univers-root>/sources/<source-name>/lore.md` pour ventiler vers `<univers-root>/.docs/canon/`
+- Règles → `rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md` pour ventiler vers `<systeme-root>/canon/`
 ```
 
 ---
@@ -241,14 +273,19 @@ python -c "from pathlib import Path; from datetime import date; Path('docs/extra
 ```
 Extraction complete!
 
-Fichiers crees/modifies:
-- [list with paths]
+Sources de référence créées :
+- [list with paths under sources/]
 
-Commits:
-- <univers>: [hash]
+Commits :
+- <univers-root>: [hash]
+- <systeme-root>: [hash]
 - <project>: [hash]
 
 Archive: docs/extraction/<source-name>/DONE-YYYY-MM-DD.md
+
+Prochaines étapes :
+  lore-extract <univers-root>/sources/<source-name>/lore.md
+  rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md
 
 Pour supprimer l'archive:
   python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>')"

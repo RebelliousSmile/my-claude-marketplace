@@ -2,10 +2,16 @@
 
 Create a new reader persona YAML file from a description or profile.
 
+> Path variables: see `setup/references/vault-layout.md`.
+> Persona resolution waterfall (first match wins):
+>   1. `<projet-root>/.templates/personas/` — project-specific
+>   2. `<univers-root>/.templates/personas/` — universe-level
+>   3. `<vault>/_shared/personas/` — agnostic, shared across all games
+
 ## Inputs
 
 - `description` (required) — free-form description of the reader (e.g. `"WoT fan reader"`, `"RPG game master, experienced with ADRENALINE system"`)
-- `universe` (optional) — if specified, places the persona at universe level; otherwise at global level
+- `universe` (optional) — if specified, places the persona at universe level; otherwise at shared level
 
 ## Outputs
 
@@ -57,15 +63,17 @@ Saved to: `<target>/.templates/personas/<id>.yml`
 
 1. Parse the description: identify persona archetype (fan reader, game master, casual reader, genre newcomer, etc.), domain expertise level, specific universe knowledge if mentioned.
 2. Derive the persona ID: kebab-case slug from the description (e.g. `"WoT fan reader"` → `fan-wot`). Check for ID conflicts in the target directory.
-3. Determine target path:
-   - Universe specified → `<univers>/.templates/personas/<id>.yml`
-   - No universe → `docs/templates/personas/<id>.yml`
+3. Determine target path using the resolution waterfall:
+   - `universe` specified AND project context active → `<univers-root>/.templates/personas/<id>.yml`
+   - `universe` specified, no project context → `<univers-root>/.templates/personas/<id>.yml`
+   - No universe specified → `<vault>/_shared/personas/<id>.yml` (agnostic persona shared across all games)
+   - To place at project level explicitly → `<projet-root>/.templates/personas/<id>.yml`
 4. Generate the YAML structure: fill all fields based on the description. Derive `expectations.must_have` from the persona's archetype and domain knowledge. Derive `deal_breakers` from what would break immersion for this reader type.
 5. Infer criterion weights: weight the criterion the persona cares about most at 0.30; distribute the remaining 0.70 across the others. Weights MUST sum to 1.0.
 6. Present the draft YAML to the user: "Does this persona match your vision? Anything to adjust?" Revise if needed.
 7. Write to the target path.
-8. Suggest updating `bank.yml > docs.personas.<id>` to point to the new file.
+8. Suggest updating `bank.yml > personas.<tier>` to point to the new file, where `<tier>` is one of `projet`, `univers`, or `shared`.
 
 ## Test
 
-After `generate "WoT fan reader"`, verify that a `.yml` file exists in the target personas directory, contains all required fields (id, name, reading_style, expectations, criteria), and that criteria weights sum to exactly 1.0.
+After `generate "WoT fan reader"` (no universe), verify that a `.yml` file exists in `<vault>/_shared/personas/`, contains all required fields (id, name, reading_style, expectations, criteria), and that criteria weights sum to exactly 1.0.

@@ -6,6 +6,9 @@ argument-hint: <progress-file> [chunk-number]
 
 # Extract Single Chunk
 
+> **Rôle** : extrait et classe le contenu d'un chunk dans `classified/`. Ces fichiers classifiés seront versés dans `<univers-root>/sources/<source>/` et `<systeme-root>/sources/<source>/` lors de la phase Distribute — jamais dans `canon/`.
+> Voir `@setup/references/vault-layout.md` pour la convention des chemins.
+
 ## Context
 
 ### Progress File

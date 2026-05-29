@@ -1,12 +1,15 @@
 ---
 name: extract-pdf
-description: Multi-session pipeline for extracting content from large PDF files and distributing it into project documentation (universe docs, terminologie.md, chapters). Use when importing an existing PDF (rulebook, novel, source document) into the workshop structure across multiple sessions. Do NOT use for web research — use `research` instead; do NOT use for writing new content — use `write` instead.
+description: Multi-session pipeline for extracting content from large PDF files and distributing it into reference source documents under sources/. Use when importing an existing PDF (rulebook, novel, source document) into the by-game vault structure across multiple sessions. Do NOT use for web research — use `research` instead; do NOT use for writing new content — use `write` instead. Do NOT use to produce final canon — run `lore-extract` (lore) and `rules-keeper` (rules) on the resulting sources/ files to ventilate into canon/.
 disable-model-invocation: true
 ---
 
 # Extract PDF
 
 Four-phase pipeline for large PDF extraction across multiple Claude Code sessions.
+
+> **Rôle dans le pipeline canon** : `extract-pdf` produit des **sources de référence brutes** sous `sources/` (`<univers-root>/sources/<source>/` pour le lore, `<systeme-root>/sources/<source>/` pour les règles). Il ne ventile jamais vers `canon/` ni `mj/` directement — c'est le rôle de `lore-extract` et `rules-keeper`.
+> Voir `@setup/references/vault-layout.md` pour la convention complète des chemins.
 
 ## Two modes
 
@@ -59,7 +62,9 @@ python scripts/extract-pdf.py --status docs/extraction/<source>/progress.md
 
 ## Transversal rules
 
-- **Appeler le skill depuis le répertoire du projet** (`<univers>/<projet>/`). Tous les chemins relatifs (`docs/`, `scripts/`, `bank.yml`) sont résolus depuis ce répertoire.
+- **Appeler le skill depuis le répertoire du projet** (`<jeu>/ecrits/<projet>/`). Tous les chemins relatifs (`docs/`, `scripts/`, `bank.yml`) sont résolus depuis ce répertoire.
+- `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`) ; déduit du CWD ou de `bank.yml`.
+- Les sources de référence extraites atterrissent dans `<univers-root>/sources/<source>/` (lore) et `<systeme-root>/sources/<source>/` (règles) — jamais dans `canon/`.
 - One chunk per session for large PDFs (>50 pages).
 - Intermediate results stored in `docs/extraction/<source-name>/`.
 - NEVER invent content not present in the source PDF.
@@ -67,6 +72,10 @@ python scripts/extract-pdf.py --status docs/extraction/<source>/progress.md
 - Ask user validation before writing classified files.
 - `progress.md` tracks which chunks are done and which remain.
 - Statuts valides dans `progress.md` : **`pending`** / **`done`** / **`failed`** (pas `TODO`/`DONE`).
+
+## References
+
+- `@setup/references/vault-layout.md` — convention des chemins par jeu, pipeline canon, frontière extract-pdf / lore-extract / rules-keeper.
 
 ## External data
 

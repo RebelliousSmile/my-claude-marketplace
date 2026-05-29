@@ -23,7 +23,10 @@ Trigger-to-action mapping:
 
 ## Transversal rules
 
-- `research`: minimum 3 distinct web searches; cross-reference ≥ 3 different sources; compare ALL findings with existing universe docs; flag contradictions explicitly; save report to `docs/research/<slug>-<date>.md`.
-- `extract-terminology`: never invent terms not present in the source; organize output by category (proper nouns, places, organizations, concepts, mechanics); append to or create `<univers>/.docs/terminologie.md`.
+- `research` IS a canon producer: cross-verified findings go to `<univers-root>/.docs/canon/`; the working report goes to `<projet-root>/research/<slug>-<date>.md`.
+- `research`: minimum 3 distinct web searches; cross-reference ≥ 3 different sources; compare ALL findings with existing universe docs under `<univers-root>/.docs/canon/`; flag contradictions explicitly.
+- `extract-terminology`: never invent terms not present in the source; organize output by category (proper nouns, places, organizations, concepts, mechanics); append to or create `<univers-root>/.docs/canon/terminologie.md`. It is the terminology-focused complement of `lore-extract` (both write `canon/`).
 - Both actions must validate before writing files.
 - If web search is unavailable, state clearly and suggest manual research fallback.
+
+> Path variables: see `setup/references/vault-layout.md`.

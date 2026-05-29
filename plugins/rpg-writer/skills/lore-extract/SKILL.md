@@ -8,6 +8,10 @@ description: Extracts and organizes universe lore from raw source files into str
 
 Transforms raw source files into thematic `.docs/` files for a universe. Detects themes automatically, validates with the user, extracts and deduplicates across themes, synthesizes if files exceed 250 lines, and resolves contradictions interactively.
 
+## References
+
+- `@setup/references/vault-layout.md` — convention des chemins par jeu, pipeline canon, frontière extract-pdf / lore-extract / rules-keeper.
+
 ## Available actions
 
 | #   | Action    | Role                                                         | Input                                       |

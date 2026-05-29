@@ -64,11 +64,13 @@ Create a new output-style file for a universe from source documents (source mode
 - [ ] [criterion 1]
 ```
 
-Saved to: `<univers>/.output-styles/<univers>-<type>.md`
+Saved to: `<univers-root>/.output-styles/<univers>-<type>.md`
+
+> Path variable: `<univers-root>` = `<jeu>/univers/<univers>/`. See `setup/references/vault-layout.md`.
 
 ## Process
 
-1. Check for existing styles in `<univers>/.output-styles/`. List them. If `--extend`, load the existing file before proceeding.
+1. Check for existing styles in `<univers-root>/.output-styles/`. List them. If `--extend`, load the existing file before proceeding.
 2. **Detect mode**:
    - Complete source files provided → MODE SOURCE (steps 2a–2c).
    - No source files → MODE QUESTIONNAIRE (step 3).
@@ -79,9 +81,9 @@ Saved to: `<univers>/.output-styles/<univers>-<type>.md`
 6. **MODE HYBRID**: execute steps 2a–2b on available sources, identify gaps, ask only the questionnaire questions that cover missing areas.
 7. **Generate output-style file** using the schema in Outputs above. All examples must be drawn from the real source or co-constructed with the user — never generic placeholders.
 8. **Validate**: compare generated style characteristics against source (source mode) or present for user confirmation (questionnaire mode). Adjust if needed.
-9. Write to `<univers>/.output-styles/<univers>-<type>.md`. Update `bank.yml > output-style.<type>` to point to the new file.
+9. Write to `<univers-root>/.output-styles/<univers>-<type>.md`. Update `bank.yml > output-style.<type>` to point to the new file.
 10. Report: file created, version, metrics (prose/list ratio, paragraphs per concept, example count), bank.yml field updated.
 
 ## Test
 
-After `analyze <univers>`, verify that `<univers>/.output-styles/<univers>-novel.md` (or the requested type) exists, contains a non-empty "Philosophie d'écriture" section and at least one real example, and that `bank.yml > output-style` is updated.
+After `analyze <univers>`, verify that `<univers-root>/.output-styles/<univers>-novel.md` (or the requested type) exists, contains a non-empty "Philosophie d'écriture" section and at least one real example, and that `bank.yml > output-style` is updated.

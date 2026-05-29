@@ -10,7 +10,7 @@ Update an existing output-style file based on patterns extracted from accumulate
 
 ## Outputs
 
-Updated `<univers>/.output-styles/<univers>-<type>.md` (version incremented) plus a changelog entry:
+Updated `<univers-root>/.output-styles/<univers>-<type>.md` (version incremented) plus a changelog entry:
 
 ```markdown
 # Changelog Output-Style : [Univers]
@@ -30,7 +30,7 @@ Updated `<univers>/.output-styles/<univers>-<type>.md` (version incremented) plu
 - Personas improved: [persona] (+N pts)
 ```
 
-Saved to: `.docs/output-style-changelog.md`
+Saved to: `<univers-root>/.docs/output-style-changelog.md`
 
 ## Process
 
@@ -43,12 +43,12 @@ Saved to: `.docs/output-style-changelog.md`
    - Estimate impact: affected chapters count, score improvement per persona
 5. **Validate pattern-by-pattern**: present each proposed change with options `[Apply] [Modify] [Skip]`. Wait for user decision on each.
 6. For each approved change:
-   - Update the relevant section of `<univers>/.output-styles/<univers>-<type>.md`.
+   - Update the relevant section of `<univers-root>/.output-styles/<univers>-<type>.md`.
    - Increment version: minor fix → X.Y+1, structural change → X+1.0.
 7. Write updated output-style file(s).
-8. Create/append changelog entry to `.docs/output-style-changelog.md`.
+8. Create/append changelog entry to `<univers-root>/.docs/output-style-changelog.md`.
 9. Generate remediation plan: which chapters need re-processing with `doctor`, which should be re-evaluated with `comment`.
 
 ## Test
 
-After `improve <univers> --improve-from-feedback`, verify that the output-style file's version has incremented, `.docs/output-style-changelog.md` contains an entry for today's date, and the remediation plan lists at least one chapter to re-process.
+After `improve <univers> --improve-from-feedback`, verify that the output-style file's version has incremented, `<univers-root>/.docs/output-style-changelog.md` contains an entry for today's date, and the remediation plan lists at least one chapter to re-process.

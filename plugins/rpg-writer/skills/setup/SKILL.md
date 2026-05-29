@@ -6,13 +6,13 @@ disable-model-invocation: true
 
 # Setup
 
-Bootstraps a new writing project or audits an existing one against its `bank.yml` declarations. Runs in two modes: **init** (create what is missing) and **audit** (report only, zero writes). Both modes resolve `<univers>/<projet>` path segments and validate the directory tree required by the workshop pipeline.
+Bootstraps a new writing project or audits an existing one against its `bank.yml` declarations. Runs in two modes: **init** (create what is missing) and **audit** (report only, zero writes). Both modes resolve `<jeu>/ecrits/<projet>` path format and validate the by-game directory tree required by the workshop pipeline.
 
 ## Available actions
 
 | #   | Action  | Role                                                          | Input                                      |
 | --- | ------- | ------------------------------------------------------------- | ------------------------------------------ |
-| 01  | `init`  | Create project structure and write bank.yml after validation  | project path `<univers>/<projet>`          |
+| 01  | `init`  | Create project structure and write bank.yml after validation  | project path `<jeu>/ecrits/<projet>`       |
 | 02  | `audit` | Check integrity of an existing project — no modifications     | project path + `--integrity-check` flag    |
 
 ## Default flow
@@ -33,3 +33,4 @@ Trigger-to-action mapping:
 ## References
 
 - `references/bank-yml.md` — bank.yml schema and field descriptions
+- `references/vault-layout.md` — single source of truth for all path variables (`<jeu>`, `<univers-root>`, `<projet-root>`, etc.)

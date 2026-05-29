@@ -32,10 +32,12 @@ Plus a completion report (same format as `write-novel`).
 
 ## Process
 
+> Path variables: `<univers-root>` = `<jeu>/univers/<univers>/`, `<systeme-root>` = `<jeu>/systeme/`, `<projet-root>` = `<jeu>/ecrits/<projet>/`. See `setup/references/vault-layout.md`.
+
 1. Load `bank.yml`. Extract: universe path, output-style, TOC, `rules-files`, `document.type`.
-2. Load the output-style file (roleplaying type): `<univers>/.output-styles/<univers>-roleplaying.md`.
-3. Load universe docs: `UNIVERS.md`, `terminologie.md`.
-4. Load ALL rules-files declared in `bank.yml > rules-files`: game system rules, project-specific mechanics, Calling/livret templates.
+2. Load the output-style file (roleplaying type) declared in `bank.yml > output-style.roleplaying` (resolves under `<univers-root>/.output-styles/`).
+3. Load ALL universe docs declared in `bank.yml > docs`. These span both `<univers-root>/.docs/canon/` (official lore) and `<univers-root>/.docs/mj/` (MJ additions). Load every file listed — do NOT limit to specific filenames.
+4. Load ALL rules-files declared in `bank.yml > rules-files` (resolves under `<systeme-root>/`): game system rules, project-specific mechanics, Calling/livret templates.
 5. Load `.toc/toc-chapter<NN>.md`. If missing, check `.toc/INDEX.md` for the chapter entry.
 6. **If `--feedback`**: load persona comment file. **Do NOT read the existing chapter.** Extract constraints (same process as `write-novel` step 5a–5d).
 7. **Pre-writing checks (RPG-specific)**:

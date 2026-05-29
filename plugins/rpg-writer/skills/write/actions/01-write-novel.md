@@ -37,9 +37,11 @@ Elements: Locations [list], Characters [list], Terminology [list]
 
 ## Process
 
+> Path variables: `<univers-root>` = `<jeu>/univers/<univers>/`, `<systeme-root>` = `<jeu>/systeme/`, `<projet-root>` = `<jeu>/ecrits/<projet>/`. See `setup/references/vault-layout.md`.
+
 1. Load `bank.yml`. Extract: universe path, output-style path(s), TOC path, `document.type`.
-2. Load the output-style file(s): global + project override if `.claude/output-style.md` exists.
-3. Load universe docs: `UNIVERS.md`, `terminologie.md`, `style-guide.md`.
+2. Load the output-style file(s) declared in `bank.yml > output-style` (resolves under `<univers-root>/.output-styles/`). Apply project override if `.claude/output-style.md` exists.
+3. Load ALL universe docs declared in `bank.yml > docs`. These span both `<univers-root>/.docs/canon/` (official lore) and `<univers-root>/.docs/mj/` (MJ additions). Load every file listed — do NOT limit to specific filenames.
 4. Load `.toc/toc-chapter<NN>.md`. If missing, check `.toc/INDEX.md` for the chapter entry.
 5. **If `--feedback`**: load the persona comment file. **Do NOT read the existing chapter.** Extract writing constraints (step 5a → 5d):
    - 5a. Structural constraints: for each persona capped at ≤11/20 by must-haves, extract missing must-haves as structural directives.

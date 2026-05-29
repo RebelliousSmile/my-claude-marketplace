@@ -2,6 +2,9 @@
 
 Restructure all rules files in the project's rules-files directory.
 
+> **Position dans le pipeline** : restructure les sources de référence de règles (`<systeme-root>/sources/<source>/rules.md`) ou les fichiers de règles listés dans `bank.yml`. Les outputs atterrissent dans `<systeme-root>/canon/` (ou `<subsys-root>/canon/`).
+> Voir `@setup/references/vault-layout.md` pour la convention complète.
+
 ## Inputs
 
 *(no argument — reads rules-files paths from bank.yml)*
@@ -12,7 +15,7 @@ Restructure all rules files in the project's rules-files directory.
 
 Locate `bank.yml` by searching in order: current working directory → parent directories up to project root. Use the first `bank.yml` found.
 
-Read `bank.yml`. Extract all paths under `rules-files` (including nested keys — collect all string values that are `.md` paths).
+Read `bank.yml`. Extract all paths under `rules-files` (including nested keys — collect all string values that are `.md` paths). Also check `<systeme-root>/sources/` for unprocessed source bundles produced by `extract-pdf`.
 List files found. If none: stop and report.
 
 ### Step 2 — Filter

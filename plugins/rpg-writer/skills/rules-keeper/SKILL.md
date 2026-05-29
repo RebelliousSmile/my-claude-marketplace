@@ -42,6 +42,7 @@ Trigger-to-action mapping:
 
 ## References
 
+- `@setup/references/vault-layout.md` — convention des chemins par jeu, pipeline canon, frontière extract-pdf / lore-extract / rules-keeper.
 - `references/output-format.md` — complete annotated output format with all 6 sections
 - `references/entity-templates.md` — base templates for PC, NPC, obstacle, and asset
 

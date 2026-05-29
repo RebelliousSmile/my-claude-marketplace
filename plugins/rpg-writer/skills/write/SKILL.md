@@ -33,9 +33,21 @@ Both actions follow the same internal steps: Load → Analyze → Draft → Brai
 - Mark key point coverage with hidden HTML comments: `<!-- KEY_POINT: [desc] - COVERED -->`.
 - French typography: guillemets « », tirets cadratins —, points de suspension …, espaces insécables.
 
+## Path variables
+
+| Variable | Resolved value |
+|----------|----------------|
+| `<univers-root>` | `<jeu>/univers/<univers>/` |
+| `<systeme-root>` | `<jeu>/systeme/` |
+| `<projet-root>` | `<jeu>/ecrits/<projet>/` |
+
+Full convention: `setup/references/vault-layout.md`.
+
 ## External data
 
-- `bank.yml` — declares output-style paths, universe docs, TOC, personas.
+- `bank.yml` — declares output-style paths, universe docs, TOC, personas, rules-files.
 - `.toc/toc-chapter<NN>.md` — chapter spec (synopsis, key points, tone, length).
-- `<univers>/.output-styles/<univers>-<type>.md` — writing conventions.
-- `<univers>/.docs/UNIVERS.md`, `terminologie.md` — universe documentation.
+- `<univers-root>/.output-styles/<univers>-<type>.md` — writing conventions (path declared in `bank.yml > output-style`).
+- `<univers-root>/.docs/canon/` — official lore (terminologie, factions, histoire, …).
+- `<univers-root>/.docs/mj/` — MJ additions. Both `canon/` and `mj/` are loaded via the `bank.yml > docs` list.
+- `<systeme-root>/` — rules-files (loaded via `bank.yml > rules-files`).

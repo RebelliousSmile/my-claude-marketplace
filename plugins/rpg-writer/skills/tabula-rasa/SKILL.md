@@ -12,7 +12,7 @@ Destructive project reset. Removes generated files (chapters, TOC entries, WIP a
 
 | #   | Action  | Role                                                 | Input                             |
 | --- | ------- | ---------------------------------------------------- | --------------------------------- |
-| 01  | `reset` | Archive + delete generated project content           | project path `<univers>/<projet>` |
+| 01  | `reset` | Archive + delete generated project content           | project path `<jeu>/ecrits/<projet>` |
 
 ## Default flow
 
@@ -20,8 +20,10 @@ Single action: `01`. No auto-trigger.
 
 ## Transversal rules
 
-- ALWAYS offer a backup before deletion (archive to `.backup/<projet>-<timestamp>.zip` or copy).
+- ALWAYS offer a backup before deletion (archive to `<projet-root>/.backup/<projet>-<timestamp>/` or git stash).
 - ALWAYS show the exact file list that will be deleted and ask explicit confirmation (`yes / no`).
-- NEVER delete `bank.yml`, `<univers>/.docs/`, `<univers>/.output-styles/`, `<univers>/.templates/`.
-- If user confirms: delete `chapitres/`, `.toc/`, `.wip/`. Preserve `docs/research/` unless explicitly requested.
-- Log the reset with timestamp to `.backup/reset-log.md`.
+- NEVER delete `bank.yml`, `<univers-root>/.docs/`, `<univers-root>/.output-styles/`, `<univers-root>/.templates/`.
+- If user confirms: delete `<projet-root>/chapitres/`, `<projet-root>/.toc/`, `<projet-root>/.wip/`. Preserve `<projet-root>/research/` unless explicitly requested.
+- Log the reset with timestamp to `<projet-root>/.backup/reset-log.md`.
+
+> Path variables: see `setup/references/vault-layout.md`.
