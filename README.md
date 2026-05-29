@@ -65,200 +65,23 @@ Ou via commande dans le projet :
 
 ## Plugins disponibles
 
+Le **détail des skills de chaque plugin vit dans son propre README** (colonne Doc) — ce tableau est l'index.
+
 | Plugin | Doc | `recommended` | Description |
 |---|---|---|---|
-| [`aidd-overlay`](plugins/aidd-overlay) | — | ✅ | Socle commun — workflows projet-agnostiques |
+| [`aidd-overlay`](plugins/aidd-overlay/README.md) | [README](plugins/aidd-overlay/README.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
 | [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit, doctor/refactor (prod), export WordPress |
 | [`doc-writer`](plugins/doc-writer/README.md) | [README](plugins/doc-writer/README.md) · [CHANGELOG](plugins/doc-writer/CHANGELOG.md) | — | Documentation : guides utilisateur, documents techniques, cahiers des charges (specification) |
 | [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
-| [`sc-php`](plugins/sc-php) | [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
-| [`sc-python`](plugins/sc-python) | — | — | Stack Python : Django / FastAPI |
-| [`sc-rust`](plugins/sc-rust) | — | — | Stack Rust : Axum / Actix-web |
-| [`sc-tiers`](plugins/sc-tiers) | — | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
-| [`gamedesign`](plugins/gamedesign) | — | — | Game design : dialogue, bank d'assets |
-| [`writing`](plugins/writing) | — | — | Rédaction : ton, style, typographie, chapitres |
-| [`obsidian`](plugins/obsidian) | — | — | Gestion notes Obsidian — projets Pro et PJ JDR solo |
+| [`sc-php`](plugins/sc-php/README.md) | [README](plugins/sc-php/README.md) · [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
+| [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) | — | Stack Python : Django / FastAPI / Flask |
+| [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) | — | Stack Rust : Axum / Actix-web |
+| [`sc-tiers`](plugins/sc-tiers/README.md) | [README](plugins/sc-tiers/README.md) | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
+| [`gamedesign`](plugins/gamedesign/README.md) | [README](plugins/gamedesign/README.md) | — | Game design (8-MINE) : timelines dialogiques, bank d'assets |
+| [`writing`](plugins/writing/README.md) | [README](plugins/writing/README.md) | — | Rédaction narrative : concept, TOC, chapitres, ton, lore, relecture |
+| [`obsidian`](plugins/obsidian/README.md) | [README](plugins/obsidian/README.md) | — | Notes Obsidian — projets Pro, PJ JDR solo, tri d'emails |
 
-> Colonne **Doc** : lien vers le README et le CHANGELOG du plugin quand ils existent. Les plugins sans README dédié pointent vers leur dossier source. README + CHANGELOG présents : `design`, `doc-writer`, `sc-js`. CHANGELOG seul : `sc-php`. Sans README ni CHANGELOG dédiés : `aidd-overlay`, `gamedesign`, `obsidian`, `sc-python`, `sc-rust`, `sc-tiers`, `writing`.
-
----
-
-## aidd-overlay
-
-Plugin principal, installé globalement. Étend le framework AIDD avec des workflows transversaux.
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `alias` | `/alias` | Enchaîne des skills AIDD en une commande (plan→challenge, implement→review) |
-| `harvest` | `/harvest` | Maintenance globale — réconcilie le tracker, extrait les décisions, purge les éphémères |
-| `reconcile-normative` | `/reconcile-normative` | Détecte doublons, contradictions et règles obsolètes entre archives, mémoire et règles actives |
-| `taste` | `/taste [fichier]` | Détecte les contenus obsolètes — assess-doc (claims vs codebase) ou assess-code (imports, symboles) |
-| `foresee` | `/foresee <cible> [--depth N]` | Analyse prospective — problèmes à moyen terme sur docs, code ou dépendances |
-| `dig` | `/dig` | Quiz interactif sur le codebase ou la memory bank — 5 questions, /20 |
-| `web-optimize` | `/web-optimize` | Audit perf web (LCP, CLS, INP, bundle, N+1) avec roadmap priorisée |
-| `data-optimize` | `/data-optimize` | Audit perf données (N+1, index, pagination, cache) |
-| `readme` | `/readme` | Rédige ou met à jour un README.md (write depuis zéro, update par section) |
-| `previously` | `/previously` | Snapshot synthétique du projet (tests, activité, santé) |
-| `decompose` | `/decompose` | Décompose un objectif en graphe Mikado |
-| `journey` | `/journey` | Teste un parcours utilisateur depuis une issue |
-| `changelog` | `/changelog` | Génère/met à jour CHANGELOG.md depuis git |
-
----
-
-## design
-
-Plugin de design system mobile-first et responsive. Deux entrées (référence fournie ou brief/user story) convergent vers un système complet, puis production de wireframes et composants vérifiés contre ce système.
-
-Philosophie : décider vite le trio palette / typo / icônes (jamais d'émoticons), établir les tokens, oser le contenu enrichi sur grand écran (toujours additif) et l'UX mobile-only (avec équivalent desktop), contrôler la conformité — et intervenir aussi sur des projets déjà en production.
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `setup` | `/design:setup` | Installe les règles mobile-first / responsive / iconographie / a11y dans `.claude/rules/08-design/` |
-| `from-reference` | `/design:from-reference` | Établit le design system depuis une référence (screenshot, URL, Figma, CSS) |
-| `from-brief` | `/design:from-brief` | Établit le design system depuis un besoin / user story (sans référence) |
-| `wireframe` | `/design:wireframe` | User story → preview HTML mobile-first annoté (enrichi / mobile-only) |
-| `component` | `/design:component` | Composant réutilisable à options/variants — spec puis implémentation |
-| `audit` | `/design:audit` | Vérifie wireframes / pages / composants contre le système (rapport par sévérité, `--fix`) |
-| `doctor` | `/design:doctor` | Diagnostic design d'un projet déjà en production + ordonnance de remédiation |
-| `refactor` | `/design:refactor` | Migration incrémentale d'un code existant vers les tokens (vérifiée par audit) |
-| `export-wordpress` | `/design:export-wordpress` | Bascule un design vers WordPress : `theme.json` (v3) + block patterns |
-
-Artefacts produits dans le projet : `design/tokens.json` (source W3C DTCG), `design/design-system.md`, `design/adapters/{tokens.css,theme.css}` (générés), `design/components/*.md`, `design/wireframes/*.html`.
-
----
-
-## doc-writer
-
-Rédaction de documentation professionnelle. Distinct du plugin `writing` (narratif) et du skill `aidd-overlay:readme` (README de dépôt).
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `user-guide` | `/doc-writer:user-guide` | Documentation utilisateur final, orientée tâches (prise en main, how-to, dépannage, FAQ) — outline → write → review |
-| `technical-document` | `/doc-writer:technical-document` | Doc développeur/ops (architecture, API, intégration, runbook, design note), vérifiée contre le code — scope → write → verify |
-| `specification` | `/doc-writer:specification` | Cahier des charges : exigences fonctionnelles/non-fonctionnelles (ID + MoSCoW + critère d'acceptation), périmètre in/out, livrables — elicit → draft → challenge |
-
----
-
-## sc-js
-
-Pour les stacks JavaScript (Nuxt 3, Vue SPA, Vite, Alpine.js, Astro, 11ty).
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `setup` | `/sc-js:setup` | Installe **toutes** les règles JS/TS (coding rules + perf pivots + data pivots) dans `.claude/rules/` |
-| `sniff` | `/sc-js:sniff` | Détecte le framework et les ORMs depuis `package.json`, puis installe/met à jour uniquement les règles pertinentes |
-
----
-
-## sc-php
-
-Pour les stacks PHP (Laravel, Symfony, WordPress, HTMX).
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `sniff` | `/sc-php:sniff` | Détecte la stack depuis `composer.json` et sentinelles, puis installe/met à jour uniquement les règles pertinentes |
-| `audit` | `/sc-php:audit` | Délègue la revue PHP à `aidd-dev:reviewer` en chargeant les pivots de capacité applicables |
-| `log-analysis` | `/sc-php:log-analysis` | Analyse les logs PHP/Apache/Nginx (local, Docker, prod SSH) — tail, parse-errors, search, summarize |
-| `bruno` | `/sc-php:bruno` | Tests API Bruno en CLI — scripts, environnements, assertions |
-
-Note: skill `bruno` is PHP-specific and is intentionally not propagated to sc-python/sc-rust.
-
----
-
-## sc-python
-
-Pour les stacks Python (Django, FastAPI, Flask).
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `setup` | `/sc-python:setup` | Installe **toutes** les règles Python (perf pivots + data pivots) dans `.claude/rules/` |
-| `sniff` | `/sc-python:sniff` | Détecte la stack depuis les manifests Python, puis installe/met à jour uniquement les règles pertinentes |
-
----
-
-## sc-rust
-
-Pour les stacks Rust (Axum, Actix-web).
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `setup` | `/sc-rust:setup` | Installe **toutes** les règles Rust (perf pivots + data pivots) dans `.claude/rules/` |
-| `sniff` | `/sc-rust:sniff` | Détecte les crates depuis `Cargo.toml`, puis installe/met à jour uniquement les règles pertinentes |
-
----
-
-## sc-tiers
-
-Pour les projets intégrant des services SaaS tiers.
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `setup` | `/sc-tiers:setup` | Installe les règles de consommation SaaS (Firebase, Klaviyo, GTM, Clarity, PSI/Lighthouse) + data pivots (Supabase, DynamoDB, Hasura) dans `.claude/rules/` |
-
----
-
-## gamedesign
-
-Pour les projets de jeux vidéo.
-
-### Skills
-
-| Skill | Description |
-|---|---|
-| `dialogic-draft` | Rédaction de scènes dialogiques (spec, PNJ, arcs, DTL) |
-| `dialogic-review` | Revue de graphes dialogiques (précheck, persona, audit, nœuds) |
-| `bank` | Initialisation et challenge d'une bank d'assets narrative |
-
----
-
-## writing
-
-Pour les projets rédactionnels (romans, RPG, guides, articles).
-
-### Skills
-
-| Skill | Description |
-|---|---|
-| `forge` | Développe et challenge le concept d'un projet narratif jusqu'à validation de la structure |
-| `toc` | Génère la table des matières depuis un document source |
-| `write` | Rédige des chapitres narratifs (roman ou RPG) en Markdown, selon la TOC |
-| `upgrade` | Améliore itérativement un texte ou un prompt d'atelier par critique structurée |
-| `review` | Pipeline de relecture qualitative basée sur persona (analyse, audit, nœuds) |
-| `tone-finder` | Génère ou met à jour un fichier de style pour un univers éditorial |
-| `persona` | Crée et affine des fichiers YAML de persona lecteur pour le pipeline de relecture |
-| `research` | Recherche documentaire cross-référencée pour projets d'écriture |
-| `storyboard` | Identifie les moments visuels clés d'un chapitre et génère des briefs d'illustration |
-| `lore-extract` | Extrait et organise le lore d'un univers depuis des fichiers sources bruts |
-| `rules-keeper` | Restructure un fichier de règles de jeu en format optimisé pour LLM |
-
----
-
-## obsidian
-
-Pour la gestion des notes Obsidian — projets Pro et personnages JDR solo.
-
-### Skills
-
-| Skill | Déclencheur | Description |
-|---|---|---|
-| `project` | `/obsidian:project` | Gestion des projets Pro : create, fill, reorganize, log-session, log-meeting, add-invoice, export-rag |
-| `pc` | `/obsidian:pc` | Gestion des PJ JDR solo (Jauges & Tarot) : new, fill, reorganize, log-session, show |
+> Tous les plugins ont un README. CHANGELOG présent pour : `design`, `doc-writer`, `sc-js`, `sc-php`.
 
 ---
 
