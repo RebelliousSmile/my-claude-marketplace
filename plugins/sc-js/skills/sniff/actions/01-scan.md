@@ -37,8 +37,11 @@ If `package.json` is absent, abort:
 | `alpinejs` or `@alpinejs/core` | Alpine.js |
 | `astro` | Astro |
 | `@11ty/eleventy` | 11ty |
+| (none of the above, `runtime = "web"`) | Vanilla web (no JS framework) |
 
 A project may match multiple (e.g. Vue + Vite → Vue SPA).
+
+**Vanilla web** is a real classification, not a fallback to improvise around. When no framework signal matches and the runtime is `web`, emit `✅ Vanilla web (no JS framework)` and, if present, name the build/dev tooling in parentheses for context only — e.g. `Vanilla web (no JS framework) — build: Gulp, dev server: BrowserSync`. Do **not** invent framework labels like "Gulp SPA": Gulp and BrowserSync are build/dev tooling, not frameworks. There is no perf pivot for vanilla web today (the perf pivots in Step 5 cover Nuxt/Vue/Vite/Alpine/SvelteKit/Astro/11ty only) — so `02-install-pivots` installs nothing for a vanilla project, which is expected, not a defect.
 
 **SvelteKit adapter detection** — when SvelteKit is detected, read `svelte.config.js` or `svelte.config.ts` to identify the adapter import:
 
@@ -144,6 +147,7 @@ For each capability, evaluate the detection condition **against `package.json` o
 |---|---|---|
 | Biome | `@biomejs/biome` in devDependencies | `tools/biome.md` |
 | Playwright perf | `@playwright/test` or `playwright` or `playwright-core` in devDependencies | `tools/playwright.md` |
+| Vitest | `vitest` in devDependencies | `tools/vitest.md` |
 
 #### Perf pivots — install targets (consumed by `web-optimize`)
 
@@ -171,21 +175,32 @@ These pivots are installed to `.claude/rules/07-quality/` by `02-install-pivots`
 
 ### Step 6 — Detect gaps
 
-A **gap** is a capability that is detected but for which the plugin has no matching pivot.
+A **gap** is a package detected in `dependencies`/`devDependencies` that has no matching pivot in Step 5. Scan **all** entries — not just framework libraries — then sort each gap into one of three buckets. The buckets exist so the single actionable signal (capability gaps worth authoring a pivot for) is not drowned out by noise.
 
-Scan **all** entries in `dependencies` and `devDependencies` — not just framework libraries. For every package that represents a capability (state management, data access, UI, tooling, networking, i18n, file formats, etc.) and has no matching pivot in Step 5, report it as a gap.
+#### Bucket A — Capability gaps (pivot candidates)
 
-**Do not omit gaps because they seem minor or niche** — list every one so the caller can decide. A gap reported consistently across runs is more useful than one that disappears.
+A package that represents an **application capability** the plugin could plausibly cover with a future pivot: state management, data access, UI widgets, networking, i18n, file formats, rich-text/canvas rendering, etc.
+
+These are the actionable gaps. List **every one explicitly** — do not omit a capability gap because it seems minor or niche. A capability gap reported consistently across runs is the signal that tells the maintainer which pivot to author next.
 
 Examples (non-exhaustive):
-- `vue-router` — routing, no pivot
-- `vue-i18n` / `i18next` / homemade lang store — localisation, no pivot
-- `yaml` / `js-yaml` — YAML parsing, no pivot
-- `socket.io-client` — WebSocket, no pivot
-- `konva` — canvas rendering, no pivot
-- `@vueuse/core` — composables, no pivot
+- `vue-router` — routing
+- `vue-i18n` / `i18next` / homemade lang store — localisation
+- `yaml` / `js-yaml` — YAML parsing
+- `socket.io-client` — WebSocket
+- `konva` — canvas rendering
+- `quill` / `@tiptap/core` — rich-text editor
+- `@vueuse/core` — composables
 
-List all gaps explicitly in the output. Never silently drop a gap between runs.
+#### Bucket B — Tooling / infra (no pivot expected)
+
+Build systems, dev servers, test runners without a pivot, env loaders, DOM emulators, bundler plugins — infrastructure, not application capability. A pivot here is unlikely, so these are **context, not actionable gaps**. Report them grouped and condensed (one line per family), e.g. `gulp + gulp-* plugins (build)`, `browser-sync (dev server)`, `jsdom (test DOM)`, `dotenv (env)`. Never expand a tooling family into one line per plugin.
+
+#### Bucket C — Private / workspace packages (excluded)
+
+Packages internal to this repository or its monorepo — a pivot can **never** exist for them, so they are **not gaps**. Exclude (do not list) any dependency whose scope matches the project's own scope: read the `name` field of `package.json`; if it is scoped (`@scope/...`), exclude every dependency under that same `@scope/`. Also exclude `workspace:`-protocol dependencies and `file:`/`link:` local paths. If any were excluded, note only the count, e.g. `2 private @smartlockers/* workspace packages excluded`.
+
+Never silently drop a **capability gap** (bucket A) between runs. Buckets B and C are summarized by design, not dropped silently — the output still accounts for them.
 
 ## Output
 
@@ -226,11 +241,21 @@ Perf pivots (→ 02-install-pivots will write to .claude/rules/07-quality/):
 Data pivots:
   — none detected
 
-Gaps (no plugin pivot):
+Gaps — capability (pivot candidates):
   — none detected
+
+Gaps — tooling / infra (no pivot expected):
+  — none detected
+
+Excluded:
+  — none (no private/workspace packages)
 
 → Proceed to 02-install-pivots to write perf/data pivots.
 → Use pivot manifeste as input for /sc-js:audit.
 ```
+
+### Closing summary constraint
+
+If a free-text summary is emitted after the structured output, it **must not contradict the manifeste**: never describe as a "gap" any capability that appears in the pivot manifeste above (e.g. if `tools/playwright.md` is listed as applicable, Playwright is covered — it is not a gap). Only bucket-A capability gaps may be called gaps in prose. When in doubt, defer to the structured manifeste, which is authoritative.
 
 Then proceed to action `02-install-pivots`.

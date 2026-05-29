@@ -1,5 +1,69 @@
 # Changelog — sc-js
 
+## [0.6.4] — 2026-05-29
+
+### sniff
+
+- **`01-scan` Step 6 — gaps sorted into three buckets.** Capability gaps (pivot candidates) are still listed exhaustively; tooling/infra (build systems, dev servers, test runners, env loaders, DOM emulators) is condensed one line per family; private/workspace packages are **excluded** by scope-matching the project's own `@scope/` (plus `workspace:`/`file:`/`link:` deps). Stops internal monorepo packages and build tooling from drowning out the actionable signal.
+- **`01-scan` Step 3 — "Vanilla web (no JS framework)" is now a formal classification.** No more improvised labels like "Gulp SPA": Gulp/BrowserSync are named as build/dev tooling for context only, and the absence of a vanilla perf pivot is documented as expected, not a defect.
+- **Vitest detection** — `vitest` in devDependencies now maps to the new `tools/vitest.md` pivot instead of being reported as a gap (parity with the existing Playwright/Biome tooling pivots).
+- **Closing-summary constraint** — any free-text summary must not call something a "gap" if it appears in the pivot manifeste; the structured manifeste is authoritative.
+
+### New capability pivot
+
+- **`tools/vitest.md`** — Vitest config, `@vitest/coverage-v8` thresholds, CI (`vitest run`) vs watch modes, anti-patterns.
+
+## [0.6.3] — 2026-05-28
+
+- **Alpine.js component pivot** (`components/alpine-x-data.md`) and **Express MVC pivot** (`server/express-mvc.md`) added, with detection wired into `sniff`.
+- **`01-scan` Step 5 — invented pivots forbidden.** A pivot path is only added to the manifeste after verifying the file physically exists in the plugin; otherwise the capability is reported as a gap.
+
+## [0.6.2] — 2026-05-28
+
+- **`01-scan` Step 5 — pivots decided from `package.json` only**, never by inspecting source files. The sniff maps what is available; `/sc-js:audit` decides whether a pattern is missing or misused.
+- **`/sc-js:audit` fixes** — all applicable pivots reported as covered, fixed severity scale, and a score with explicit breakdown.
+
+## [0.6.1] — 2026-05-28
+
+- **Playwright perf pivot** (`tools/playwright.md`) + detection — Core Web Vitals measurement, network/CPU throttling, trace capture, Lighthouse integration.
+- **`01-scan` Step 2 — `node` runtime for pure backends** (Fastify/Express/Koa/NestJS with no frontend framework) — avoids applying browser-specific pivots to Node.js APIs.
+- **`01-scan` Step 3 — SvelteKit adapter detection** (reads `svelte.config.*`) and **Step 6 — exhaustive gaps** that no longer go silent between runs.
+
+## [0.6.0] — 2026-05-28
+
+- **SvelteKit perf pivot** (`perf/sveltekit.md`) with `ssr/storage-guards.md`, adapter-static vs adapter-node guidance.
+- **Svelte stores pivot** (`state/svelte-stores.md`) — writable/derived/readable, auto-subscription, anti-patterns.
+- **Biome pivot** (`tools/biome.md`) — config, CI (`biome ci`), pre-commit, anti-patterns.
+- All three wired into `sniff` (and `improve`) detection.
+
+## [0.5.6] — 2026-05-28
+
+- **`legacy` skill** — added Svelte 4→5 runes and SvelteKit 1→2 migration references.
+
+## [0.5.5] — 2026-05-28
+
+- **`improve` Step 1.5** — wired 5 previously-missing capability pivots, added SvelteKit detection.
+
+## [0.5.4] — 2026-05-28
+
+- **`improve` Step 1.5** — load applicable capability pivots so stack-specific anti-patterns are checked during improvement.
+
+## [0.5.3] — 2026-05-28
+
+- **TypeScript capability pivot** (`typescript.md`) — detected in `sniff`, guarded in `improve`.
+
+## [0.5.2] — 2026-05-28
+
+- **Guard against installing capability rules** — reinforces the 0.4.0 contract that capability pivots are read from the plugin at audit time, never written to the project.
+
+## [0.5.1] — 2026-05-28
+
+- **`legacy` skill references** added (migration knowledge files).
+
+## [0.5.0] — 2026-05-28
+
+- **New skills: `improve`, `legacy`, `teach`.** `improve` applies stack-specific fixes, `legacy` handles framework migrations, `teach` explains JS patterns.
+
 ## [0.4.0] — 2026-05-28
 
 ### Breaking changes
