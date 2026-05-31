@@ -1,6 +1,6 @@
 # Design health report — <project>
 
-> Produced by `doctor/01-diagnose`. Read-only diagnosis of a production codebase with no clean design system.
+> Produced by `diagnose/01-diagnose`. Read-only diagnosis of a production codebase with no clean design system.
 
 ## Headline
 

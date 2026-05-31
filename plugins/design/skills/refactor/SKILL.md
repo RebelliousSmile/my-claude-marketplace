@@ -3,7 +3,7 @@ name: refactor
 model: sonnet
 description: >-
   Migrates existing production UI into compliance with the project's design system, incrementally and safely.
-  Use after doctor (diagnosis) and from-reference (target tokens) to replace hardcoded values with tokens, convert
+  Use after diagnose (the health report) and from-reference (target tokens) to replace hardcoded values with tokens, convert
   max-width-first CSS to mobile-first, dedupe forked components into options-driven ones, and swap emoji for the
   chosen icon set — in reviewable batches, each verified by audit. Edits source. Do NOT use to create the system
   (from-reference/from-brief) or to build new UI from scratch (wireframe/component).
@@ -11,7 +11,7 @@ description: >-
 
 # refactor
 
-Brings UI **already in production** into line with an established design system. It applies the migration `doctor` prescribed: token substitution, mobile-first conversion, component de-duplication, and emoji→icon replacement — in small, reviewable batches, each gated by `audit`.
+Brings UI **already in production** into line with an established design system. It applies the migration `diagnose` prescribed: token substitution, mobile-first conversion, component de-duplication, and emoji→icon replacement — in small, reviewable batches, each gated by `audit`.
 
 Safety first: production code changes are scoped, behavior-preserving by default, and verified before moving on.
 
@@ -33,7 +33,7 @@ Trigger-to-action mapping:
 
 ## Transversal rules
 
-- A target system must exist (`design/tokens.json`). If not, stop and route to `from-reference`/`from-brief`; if undiagnosed, suggest `doctor` first.
+- A target system must exist (`design/tokens.json`). If not, stop and route to `from-reference`/`from-brief`; if undiagnosed, suggest `diagnose` first.
 - **Behavior-preserving by default**: substitutions must not change the rendered result unless the change is the explicit goal (e.g., fixing a contrast failure) — and then say so.
 - Work in **reviewable batches**, lowest risk first: mechanical token/emoji substitutions before structural mobile-first/component changes.
 - Never edit generated adapter files; fix the source that consumes them.

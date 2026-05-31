@@ -1,5 +1,5 @@
 ---
-name: doctor
+name: diagnose
 model: sonnet
 description: >-
   Diagnoses the design health of a project already in production that has no clean design system.
@@ -9,9 +9,9 @@ description: >-
   Use as the entry point on legacy/production UI. Pair with from-reference (to crystallize tokens) then refactor (to migrate).
 ---
 
-# doctor
+# diagnose
 
-The triage entry point for UI **already in production**. Where `audit` checks a project *against* an established system, `doctor` runs when there is **no clean system yet**: it scans what the codebase actually does, quantifies the mess, and prescribes the fastest route to a coherent design system.
+The triage entry point for UI **already in production**. Where `audit` checks a project *against* an established system, `diagnose` runs when there is **no clean system yet**: it scans what the codebase actually does, quantifies the mess, and prescribes the fastest route to a coherent design system.
 
 Read-only: it diagnoses and prescribes. `from-reference` then crystallizes the tokens; `refactor` applies the migration.
 

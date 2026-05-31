@@ -6,7 +6,7 @@ Build a batched, risk-ordered migration plan to bring a scope into compliance.
 
 - `scope` (required) — files/globs to migrate.
 - `design/tokens.json` + `design/design-system.md` (the target).
-- Optional: the `doctor` health report (reuse its findings instead of re-scanning).
+- Optional: the `diagnose` health report (reuse its findings instead of re-scanning).
 
 ## Process
 

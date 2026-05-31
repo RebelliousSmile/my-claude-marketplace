@@ -14,7 +14,7 @@ Inspiré de la philosophie « ne jamais livrer de l'UI générique par défaut, 
 - **Tokens comme source de vérité** : `design/tokens.json` (W3C DTCG) → adaptateurs CSS et Tailwind générés. Aucune valeur en dur.
 - **Composants à options** : on étend par variantes, on ne duplique pas.
 - **Contrôle** : un audit vérifie wireframes, pages et composants contre le système.
-- **Production aussi** : `doctor` diagnostique un legacy, `refactor` le migre, `export-wordpress` bascule vers un thème bloc.
+- **Production aussi** : `diagnose` diagnostique un legacy, `refactor` le migre, `export-wordpress` bascule vers un thème bloc.
 
 ## Workflow
 
@@ -34,7 +34,7 @@ brief / user story  ──▶ /design:from-brief      ┘
                               /design:export-wordpress ──▶  theme.json + block patterns
 
    Projet déjà en prod :
-   /design:doctor   ──▶  diagnostic + ordonnance
+   /design:diagnose ──▶  diagnostic + ordonnance
    /design:refactor ──▶  migration incrémentale vers les tokens (vérifiée par audit)
 ```
 
@@ -48,7 +48,7 @@ brief / user story  ──▶ /design:from-brief      ┘
 | `wireframe` | `/design:wireframe` | User story → preview HTML mobile-first annoté (enrichi / mobile-only) — layout → render |
 | `component` | `/design:component` | Composant réutilisable à options — spec → implement |
 | `audit` | `/design:audit` | Vérifie wireframe/page/composant contre le système — rapport par sévérité (+ `--fix`) |
-| `doctor` | `/design:doctor` | Diagnostic design d'un projet en prod (sprawl, hardcodé, émoticons, a11y) + ordonnance — diagnose → prescribe |
+| `diagnose` | `/design:diagnose` | Diagnostic design d'un projet en prod (sprawl, hardcodé, émoticons, a11y) + ordonnance — diagnose → prescribe |
 | `refactor` | `/design:refactor` | Migration incrémentale d'un code existant vers les tokens — plan → apply (vérifié par audit) |
 | `export-wordpress` | `/design:export-wordpress` | tokens → `theme.json` (v3) + wireframes/composants → block patterns — theme-json → blocks |
 

@@ -1,5 +1,11 @@
 # Changelog — design
 
+## [0.2.1] — 2026-05-31
+
+### Changed
+
+- **`doctor` renommé `diagnose`** (invocation : `/design:diagnose`). Le nom nu `doctor` entrait en collision avec le `/doctor` natif de Claude Code, qui résolvait `/doctor` vers ce skill. Aucun changement de comportement ni d'actions (`diagnose → prescribe`).
+
 ## [0.2.0] — 2026-05-28
 
 ### New skills
