@@ -16,7 +16,7 @@
     "expect_action": "extract"
   },
   {
-    "prompt": "je veux transformer mes notes brutes en fichiers .docs structurés",
+    "prompt": "je veux transformer mes notes brutes en fichiers thématiques structurés (canon/mj)",
     "expect_action": "extract"
   },
   {

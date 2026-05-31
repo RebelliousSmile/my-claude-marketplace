@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant. Détail : `git log -- plugins/rpg-writer` (avant 0.4.0 : `git log -- plugins/writing`).
 
+## [0.6.0] — 2026-05-31
+
+### Changed
+- **Lore d'univers : `.docs/{canon,mj}/` → `{canon,mj}/` (dossiers visibles).** Le lore quitte le wrapper `.docs/` (masqué par Obsidian) pour vivre directement sous `univers/<univers>/canon/` et `univers/<univers>/mj/`, aligné sur `systeme/{canon,mj}/` et `subsystems/<nom>/{canon,mj}/`. Une seule règle dans tout le coffre : `<root>/{canon,mj}/`. **Breaking** : les `bank.yml` et `config.yaml` qui pointaient vers `univers/<univers>/.docs/canon/` doivent retirer le `.docs/`. `.docs/` reste réservé aux docs internes des projets d'écriture (`ecrits/<projet>/.docs/` : `document-rules.md`, `scenarios-details.md`…). Skills alignés : `lore-extract`, `research`, `review`, `write`, `toc`, `forge`, `setup` (init + audit + `bank-yml.md` + `vault-layout.md`), `rules-keeper`, `tone-finder`, `upgrade`, `tabula-rasa`, `extract-pdf`.
+- **`.gitignore` (`tnn-jdr`)** : exceptions `!**/univers/*/canon/**` et `!**/univers/*/mj/**` ajoutées (parallèles à `!**/systeme/canon/**`), avec ré-ignore des `sources/` nichés. `!**/.docs/**` conservé pour les projets d'écriture.
+
 ## [0.4.0] — 2026-05-29
 
 ### Changed

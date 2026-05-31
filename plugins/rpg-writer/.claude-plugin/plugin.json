@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "rpg-writer",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Narrative writing skills and workflows (novels, TTRPG scenarios, guides): concept, TOC, chapters, tone, lore, review.",
   "author": {
     "name": "François-Xavier Guillois"

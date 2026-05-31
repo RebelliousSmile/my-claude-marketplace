@@ -2,7 +2,7 @@
 
 Ventiler les sources de référence d'un univers vers les fichiers thématiques canoniques.
 
-> **Position dans le pipeline** : `lore-extract` consomme les sources de référence brutes produites par `extract-pdf` (`<univers-root>/sources/<source>/`) et les ventile vers `<univers-root>/.docs/canon/` (ou `mj/` avec `--homemade`). Il ne lit jamais directement les PDF et n'écrit jamais dans `sources/`.
+> **Position dans le pipeline** : `lore-extract` consomme les sources de référence brutes produites par `extract-pdf` (`<univers-root>/sources/<source>/`) et les ventile vers `<univers-root>/canon/` (ou `mj/` avec `--homemade`). Il ne lit jamais directement les PDF et n'écrit jamais dans `sources/`.
 > Voir `@setup/references/vault-layout.md` pour la convention complète.
 
 ## Inputs
@@ -15,10 +15,10 @@ Ventiler les sources de référence d'un univers vers les fichiers thématiques 
 ## Outputs
 
 Chemins résolus depuis `bank.yml` (répertoire courant), sous le **sous-arbre de provenance** `canon/` (défaut) ou `mj/` (`--homemade`) :
-- `<univers-root>/.docs/<provenance>/terminologie.md` — toujours écrit
+- `<univers-root>/<provenance>/terminologie.md` — toujours écrit
 - Un fichier par thème détecté dans le même sous-arbre de provenance
 
-Si `bank.yml` est absent : écrire dans `.docs/<provenance>/` dans le répertoire courant et avertir.
+Si `bank.yml` est absent : écrire dans `<provenance>/` dans le répertoire courant et avertir.
 
 > `<univers-root>` = `<jeu>/univers/<univers>/` — résolu depuis `bank.yml` (`document.univers`) et le premier segment du CWD sous `<vault>` (`<jeu>`).
 
@@ -33,10 +33,10 @@ Templates for all themes: see `@references/templates-standard.md` and `@referenc
    - Extract `document.univers` → universe slug
    - Resolve `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`), déduit du CWD ou de `bank.yml`
    - Resolve `<univers-root>` = `<jeu>/univers/<document.univers>/`
-   - Output root = `<univers-root>/.docs/<provenance>/` (`canon/` or `mj/`)
+   - Output root = `<univers-root>/<provenance>/` (`canon/` or `mj/`)
    - Extract `docs.terminologie` → overrides output path for terminology if present
    - Extract remaining `docs.*` paths → override output paths for other themes if present
-   - If `bank.yml` absent → warn "bank.yml not found, outputs will go to `.docs/<provenance>/`", continue.
+   - If `bank.yml` absent → warn "bank.yml not found, outputs will go to `<provenance>/`", continue.
 3. All source paths and output paths are resolved relative to the current directory (or as absolute by-game paths).
 4. **Si les sources proviennent d'`extract-pdf`** : elles se trouvent dans `<univers-root>/sources/<source>/`. Lister les fichiers disponibles si aucune source n'est fournie explicitement et en proposer une sélection à l'utilisateur.
 
@@ -47,7 +47,7 @@ For each source file:
 - [ ] File is not empty
 - [ ] Encoding is readable (UTF-8 or convertible)
 
-If `--update`: list existing `.docs/` files, identify already-processed sources, process only new ones.
+If `--update`: list existing `canon/` and `mj/` files, identify already-processed sources, process only new ones.
 
 On error, report and ask: `Continuer avec les autres sources ? (oui/non)`
 
@@ -223,4 +223,4 @@ Renommer les sources traitées avec le suffixe `.processed`.
 
 ## Test
 
-After `lore-extract <univers-root>/sources/<source>/lore.md`, verify that the terminology file has been created (or updated) at `<univers-root>/.docs/canon/terminologie.md` (default) or `<univers-root>/.docs/mj/terminologie.md` (with `--homemade`), contains a term table, and respects the 250-line limit. Canon and homemade content are never mixed in the same file. Input files in `<univers-root>/sources/<source>/` are never modified. If sources contain a contradiction (incl. homemade vs canon), verify that the user was prompted to arbitrate before writing.
+After `lore-extract <univers-root>/sources/<source>/lore.md`, verify that the terminology file has been created (or updated) at `<univers-root>/canon/terminologie.md` (default) or `<univers-root>/mj/terminologie.md` (with `--homemade`), contains a term table, and respects the 250-line limit. Canon and homemade content are never mixed in the same file. Input files in `<univers-root>/sources/<source>/` are never modified. If sources contain a contradiction (incl. homemade vs canon), verify that the user was prompted to arbitrate before writing.

@@ -8,7 +8,7 @@ Vérifie la cohérence et l'état de jouabilité de la prep avant de jouer avec 
 
 ## Process
 
-Lire la prep de campagne (`synopsis.md`, `scenarios/`, `prep/`, `fronts.md`, `config.yaml`), les données d'univers liées (`JDR/<jeu>/univers/<univers>/.docs/canon/` et `.docs/mj/` : `personnages.md`, `factions.md`, `geographie.md`) et l'`intention.md` du PJ, puis vérifier — signaler par sévérité, corriger sur demande :
+Lire la prep de campagne (`synopsis.md`, `scenarios/`, `prep/`, `fronts.md`, `config.yaml`), les données d'univers liées (`JDR/<jeu>/univers/<univers>/canon/` et `mj/` : `personnages.md`, `factions.md`, `geographie.md`) et l'`intention.md` du PJ, puis vérifier — signaler par sévérité, corriger sur demande :
 
 1. **Service du PJ** (bloquant) — au moins un scénario/accroche touche la ligne rouge ou la question viscérale du PJ ; sinon la prep ne sert pas le joueur.
 2. **Fronts jouables** (bloquant) — chaque faction active a au moins une horloge chiffrée (état + déclencheur + échéance) dans `fronts.md`, que `solo-mc` peut faire avancer.

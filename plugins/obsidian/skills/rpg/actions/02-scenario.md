@@ -9,7 +9,7 @@
 
 ## Process
 
-1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté, univers), les données d'univers **canon ET MJ** (`JDR/<jeu>/univers/<univers>/.docs/canon/` et `.docs/mj/` : `personnages.md`, `factions.md`, `geographie.md`), les fronts actifs `JDR/<jeu>/campagnes/<campagne>/fronts.md`, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale). Le canon prime ; le MJ étend.
+1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté, univers), les données d'univers **canon ET MJ** (`JDR/<jeu>/univers/<univers>/canon/` et `mj/` : `personnages.md`, `factions.md`, `geographie.md`), les fronts actifs `JDR/<jeu>/campagnes/<campagne>/fronts.md`, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale). Le canon prime ; le MJ étend.
 2. **Construire en situation, pas en intrigue linéaire** (adapté au solo) :
    - **Prémisse & enjeu** : ce qui est vrai au départ, ce qui va déraper si le PJ n'agit pas.
    - **Lieux** : 3–6 lieux clés ; `[[lier]]` les lieux existants (`canon/` ou `mj/geographie.md`), créer les nouveaux (invention MJ) dans `mj/geographie.md` ; n'inscrire ici que leur mise en jeu (ambiance, ce qu'on y trouve maintenant).

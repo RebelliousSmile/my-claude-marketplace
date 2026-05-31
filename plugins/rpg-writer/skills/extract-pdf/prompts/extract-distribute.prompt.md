@@ -105,7 +105,7 @@ For each category with content:
 > Lore et terminologie → `<univers-root>/sources/<source-name>/` (référence univers).
 > Règles → `<systeme-root>/sources/<source-name>/` (référence système).
 > Style et templates → artefacts de commodité sous `<univers-root>`.
-> Ne jamais écrire dans `<univers-root>/.docs/canon/` ni `<systeme-root>/canon/` depuis ce prompt.
+> Ne jamais écrire dans `<univers-root>/canon/` ni `<systeme-root>/canon/` depuis ce prompt.
 
 **For each distribution:**
 
@@ -244,7 +244,7 @@ git -C "<project>" diff
 
 ## Prochaines étapes
 
-- Lore → `lore-extract <univers-root>/sources/<source-name>/lore.md` pour ventiler vers `<univers-root>/.docs/canon/`
+- Lore → `lore-extract <univers-root>/sources/<source-name>/lore.md` pour ventiler vers `<univers-root>/canon/`
 - Règles → `rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md` pour ventiler vers `<systeme-root>/canon/`
 ```
 

@@ -51,7 +51,7 @@ Analyze a source document and generate `.toc/INDEX.md` — a complete table of c
 1. Load the source document from `$ARGUMENTS` (typically inside `<projet-root>`).
 2. Load `bank.yml`: extract `document.type`, `univers`, `output-style`, `docs`, `rules-files`, `personas`.
 3. Load the overview file from the path declared in `bank.yml > overview:` (if it exists and differs from source).
-4. Cross-reference documentation: load ALL files declared in `bank.yml` sections `docs` and `rules-files`. Universe docs span both `<univers-root>/.docs/canon/` (official lore) and `<univers-root>/.docs/mj/` (MJ additions). Rules-files resolve under `<systeme-root>/`. Build a "constraints to distribute" list: mechanical rules, characters, factions, terminology.
+4. Cross-reference documentation: load ALL files declared in `bank.yml` sections `docs` and `rules-files`. Universe docs span both `<univers-root>/canon/` (official lore) and `<univers-root>/mj/` (MJ additions). Rules-files resolve under `<systeme-root>/`. Build a "constraints to distribute" list: mechanical rules, characters, factions, terminology.
 5. Parse the source: identify acts/parts/chapters/scenes structure. Extract: themes, characters, locations, narrative points.
 6. **Propose the chapter breakdown to the user**: list proposed chapters with titles. Ask: "Does this structure work? Should any chapters be merged, split, or reordered?" Wait for confirmation before continuing.
 7. Create `.toc/` directory if it does not exist.

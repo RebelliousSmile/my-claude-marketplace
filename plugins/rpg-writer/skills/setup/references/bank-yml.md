@@ -32,16 +32,16 @@ output-style:
 # Paths relative to <jeu>/
 docs:
   # --- Universe docs (canon tier — official lore from lore-extract/research) ---
-  univers:      "univers/<univers>/.docs/canon/UNIVERS.md"       # Required. Universe overview.
-  terminologie: "univers/<univers>/.docs/canon/terminologie.md"  # Required. Canonical vocabulary.
+  univers:      "univers/<univers>/canon/UNIVERS.md"       # Required. Universe overview.
+  terminologie: "univers/<univers>/canon/terminologie.md"  # Required. Canonical vocabulary.
   # Additional named canon keys are allowed:
-  # factions:   "univers/<univers>/.docs/canon/factions.md"
-  # personnages: "univers/<univers>/.docs/canon/personnages.md"
-  # histoire:   "univers/<univers>/.docs/canon/histoire.md"
+  # factions:   "univers/<univers>/canon/factions.md"
+  # personnages: "univers/<univers>/canon/personnages.md"
+  # histoire:   "univers/<univers>/canon/histoire.md"
 
   # --- Universe docs (mj tier — homemade/house content) ---
-  # mj-notes:  "univers/<univers>/.docs/mj/<file>.md"
-  # mj-npc:    "univers/<univers>/.docs/mj/pnj.md"
+  # mj-notes:  "univers/<univers>/mj/<file>.md"
+  # mj-npc:    "univers/<univers>/mj/pnj.md"
 
   # --- Project-specific docs ---
   projet:                                           # Optional. Project-specific docs.
@@ -108,8 +108,8 @@ metadata:
 | `document.univers` | ✅ | Must match directory |
 | `document.type` | ✅ | novel / roleplaying / scenario / guide |
 | `output-style` (≥1 key) | ✅ | File must exist on disk |
-| `docs.univers` | ✅ | Points to `.docs/canon/UNIVERS.md` |
-| `docs.terminologie` | ✅ | Points to `.docs/canon/terminologie.md` |
+| `docs.univers` | ✅ | Points to `canon/UNIVERS.md` |
+| `docs.terminologie` | ✅ | Points to `canon/terminologie.md` |
 | `overview` | ✅ | |
 | `toc.fichier` | ✅ | May not exist yet on disk |
 | `personas` | Recommended | Required for `review comment` |
@@ -130,7 +130,7 @@ For persona files: additionally check that `criteria` weights sum to 1.0.
 
 For `output-style` files: additionally check that each has at least a `## Philosophie d'écriture` section.
 
-For `docs.univers` and `docs.terminologie`: confirm path is inside `.docs/canon/` (warn if pointing elsewhere).
+For `docs.univers` and `docs.terminologie`: confirm path is inside `canon/` (warn if pointing elsewhere).
 
 ---
 

@@ -4,7 +4,7 @@ Destructively reset a writing project: extract narrative essence into `overview.
 
 > Path variables: see `setup/references/vault-layout.md`.
 > `<projet-root>` = `<jeu>/ecrits/<projet>/` — bank.yml and all project files live here.
-> Universe docs (`<univers-root>/.docs/`), output-styles, and personas are NEVER deleted.
+> Universe docs (`<univers-root>/`), output-styles, and personas are NEVER deleted.
 
 ## Inputs
 
@@ -116,4 +116,4 @@ Directories `<projet-root>/.toc/`, `<projet-root>/chapitres/`, `<projet-root>/.w
 
 ## Test
 
-After `tabula-rasa reset <jeu>/ecrits/<projet>` on a project with at least one chapter file: confirm that (1) `<projet-root>/overview.md` is non-empty and ≤ 500 lines, (2) `<projet-root>/chapitres/` and `<projet-root>/.toc/` directories exist but contain no files, (3) `<projet-root>/.backup/reset-log.md` has been updated with the reset timestamp, and (4) a backup exists (git stash or `.backup/` folder). Confirm that `<univers-root>/.docs/` was NOT touched.
+After `tabula-rasa reset <jeu>/ecrits/<projet>` on a project with at least one chapter file: confirm that (1) `<projet-root>/overview.md` is non-empty and ≤ 500 lines, (2) `<projet-root>/chapitres/` and `<projet-root>/.toc/` directories exist but contain no files, (3) `<projet-root>/.backup/reset-log.md` has been updated with the reset timestamp, and (4) a backup exists (git stash or `.backup/` folder). Confirm that `<univers-root>/` was NOT touched.

@@ -115,7 +115,7 @@ Sources de référence créées ou enrichies :
 ## Prochaines étapes (suggérer à l'utilisateur)
 
 Une fois les sources créées, lancer la ventilation vers canon :
-- **Lore** : `lore-extract <univers-root>/sources/<source-name>/lore.md` → alimente `<univers-root>/.docs/canon/`
+- **Lore** : `lore-extract <univers-root>/sources/<source-name>/lore.md` → alimente `<univers-root>/canon/`
 - **Règles** : `rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md` → alimente `<systeme-root>/canon/`
 
 ## Test

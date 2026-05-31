@@ -1,9 +1,9 @@
 # 02 - Extract Terminology
 
-Distill terminology, proper nouns, and world-building elements from universe source documents into `<univers-root>/.docs/canon/terminologie.md`.
+Distill terminology, proper nouns, and world-building elements from universe source documents into `<univers-root>/canon/terminologie.md`.
 
 > Path variables: see `setup/references/vault-layout.md`.
-> `extract-terminology` is a canon producer: its output lands in `<univers-root>/.docs/canon/terminologie.md`.
+> `extract-terminology` is a canon producer: its output lands in `<univers-root>/canon/terminologie.md`.
 > It is the terminology-focused complement of `lore-extract` (both write `canon/`; `lore-extract` remains the primary thematic ventilator for lore files).
 
 ## Inputs
@@ -13,7 +13,7 @@ Distill terminology, proper nouns, and world-building elements from universe sou
 
 ## Outputs
 
-Appended or created `<univers-root>/.docs/canon/terminologie.md`:
+Appended or created `<univers-root>/canon/terminologie.md`:
 
 ```markdown
 # Terminologie : [Univers]
@@ -49,7 +49,7 @@ Appended or created `<univers-root>/.docs/canon/terminologie.md`:
 ## Process
 
 1. Load the source files from `$ARGUMENTS`.
-2. Load the existing `<univers-root>/.docs/canon/terminologie.md` if it exists (to avoid duplicates and preserve existing entries).
+2. Load the existing `<univers-root>/canon/terminologie.md` if it exists (to avoid duplicates and preserve existing entries).
 3. **Pass 1 — Scan for proper nouns**: extract all capitalized terms, italicized terms, foreign-language words. Build a raw candidate list.
 4. **Pass 2 — Classify** each candidate:
    - Characters → "Personnages" section
@@ -61,8 +61,8 @@ Appended or created `<univers-root>/.docs/canon/terminologie.md`:
 6. **Merge with existing terminologie.md**: for terms already present → update if new info found; for new terms → append. Never delete existing entries unless the user requests it.
 7. Determine recommended text format: italics for untranslated foreign terms, no italics for proper nouns. Add "Format recommandé" column for the "Termes Étrangers" section.
 8. Present the new/updated entries to the user: "Found N new terms, updated M. Confirm to save?"
-9. Write to `<univers-root>/.docs/canon/terminologie.md`. Update the "Last updated" date.
+9. Write to `<univers-root>/canon/terminologie.md`. Update the "Last updated" date.
 
 ## Test
 
-After `extract-terminology <univers> <source-file>`, verify that `<univers-root>/.docs/canon/terminologie.md` has been created or updated with at least one term from the source file, and that the "Last updated" date reflects today.
+After `extract-terminology <univers> <source-file>`, verify that `<univers-root>/canon/terminologie.md` has been created or updated with at least one term from the source file, and that the "Last updated" date reflects today.

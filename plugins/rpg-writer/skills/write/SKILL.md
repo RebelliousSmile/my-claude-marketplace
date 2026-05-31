@@ -32,7 +32,7 @@ Both actions follow the same internal steps: Load → Analyze → Draft → Brai
 - `--feedback` mode: FULL rewrite from TOC, not a patch. Never read the existing chapter. Persona feedback becomes writing constraints, not a diff to apply.
 - Mark key point coverage with hidden HTML comments: `<!-- KEY_POINT: [desc] - COVERED -->`.
 - French typography: guillemets « », tirets cadratins —, points de suspension …, espaces insécables.
-- **Setup après clone (`tnn-jdr`)** — Les `rules-files` du système (`<systeme-root>/canon/`) et tous les `sources/` ne sont **pas versionnés** (gitignored). Après un clone sur une nouvelle machine, `<systeme-root>/canon/` est absent : relancer `extract-pdf` puis `rules-keeper` pour le régénérer avant d'écrire règles/scénarios qui en dépendent. Le lore `<univers-root>/.docs/canon/` et `.docs/mj/` sont versionnés et survivent au clone.
+- **Setup après clone (`tnn-jdr`)** — Les `rules-files` du système (`<systeme-root>/canon/`) et tous les `sources/` ne sont **pas versionnés** (gitignored). Après un clone sur une nouvelle machine, `<systeme-root>/canon/` est absent : relancer `extract-pdf` puis `rules-keeper` pour le régénérer avant d'écrire règles/scénarios qui en dépendent. Le lore `<univers-root>/canon/` et `mj/` sont versionnés et survivent au clone.
 
 ## Path variables
 
@@ -49,6 +49,6 @@ Full convention: `setup/references/vault-layout.md`.
 - `bank.yml` — declares output-style paths, universe docs, TOC, personas, rules-files.
 - `.toc/toc-chapter<NN>.md` — chapter spec (synopsis, key points, tone, length).
 - `<univers-root>/.output-styles/<univers>-<type>.md` — writing conventions (path declared in `bank.yml > output-style`).
-- `<univers-root>/.docs/canon/` — official lore (terminologie, factions, histoire, …).
-- `<univers-root>/.docs/mj/` — MJ additions. Both `canon/` and `mj/` are loaded via the `bank.yml > docs` list.
+- `<univers-root>/canon/` — official lore (terminologie, factions, histoire, …).
+- `<univers-root>/mj/` — MJ additions. Both `canon/` and `mj/` are loaded via the `bank.yml > docs` list.
 - `<systeme-root>/` — rules-files (loaded via `bank.yml > rules-files`).

@@ -40,7 +40,7 @@ Plus optional detail files for projects with 3+ distinct parts:
 ## Process
 
 1. Load `bank.yml`. If absent or invalid → STOP and ask user to run `setup init <project_path>` first.
-2. Load ALL files declared in `bank.yml`: overview, output-style, and every doc listed in `bank.yml > docs`. Universe docs span both `<univers-root>/.docs/canon/` (official lore) and `<univers-root>/.docs/mj/` (MJ additions). Note `document.type` (default: "scenario").
+2. Load ALL files declared in `bank.yml`: overview, output-style, and every doc listed in `bank.yml > docs`. Universe docs span both `<univers-root>/canon/` (official lore) and `<univers-root>/mj/` (MJ additions). Note `document.type` (default: "scenario").
 3. Check overview state:
    - No overview file → prompt for a minimal description (concept, genre/tone, protagonists). Create a typed template from user responses.
    - Minimal overview (fewer than 2 complete sections) → proceed directly to step 4.

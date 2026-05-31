@@ -43,13 +43,13 @@ Routeur — dispatch selon l'intention :
 - **Racine par jeu** : le coffre `C:/Users/fxgui/Public/Notes/Perso/JDR/` est rangé **par jeu** sous `JDR/<jeu>/` (`<jeu>` = premier segment sous la racine, déduit du répertoire courant). Une campagne vit dans `JDR/<jeu>/campagnes/<campagne>/` (même convention que `solo-mc`), avec `config.yaml`, `sessions/`, `pj/`.
 - **`<univers-root>` (résolution de l'univers)** : un **setting est un univers du jeu**, rangé au niveau jeu `JDR/<jeu>/univers/<univers>/` — même s'il est vaste (gamme étendue, plusieurs éditions, ex. 7ème Mer / Théah pour le jeu Noblesse Oblige). Un jeu peut avoir **plusieurs univers** ; chaque univers est partagé par le **groupe de campagnes** qui s'y déroulent. La campagne déclare le sien (`config.yaml › univers: <slug>`). Dans les règles ci-dessous, `<univers-root>` = `JDR/<jeu>/univers/<univers>/`.
 - **Deux niveaux à distinguer** :
-  - **Données univers (durables, transverses aux campagnes)** — terminologie, factions, personnages, lieux/géographie, histoire. Elles vivent dans l'**arborescence partagée avec `lore-extract`** : `<univers-root>/.docs/`, **scindée par provenance en deux sous-arbres thématiques identiques** :
+  - **Données univers (durables, transverses aux campagnes)** — terminologie, factions, personnages, lieux/géographie, histoire. Elles vivent dans l'**arborescence partagée avec `lore-extract`** : `<univers-root>/`, **scindée par provenance en deux sous-arbres thématiques identiques** :
     - `canon/` — lore **officiel/établi**, extrait des sources via `lore-extract`. Fait autorité.
     - `mj/` — contenu **créé par le maître de jeu** (inventé pour le jeu), écrit par `rpg`.
 
     Chaque sous-arbre contient les mêmes fichiers (`terminologie.md`, `factions.md`, `personnages.md`, `histoire.md`, `geographie.md`, + optionnels `magie.md`, `technologie.md`, `creatures.md`, `religions.md`, `economie.md`).
   - **Prep de campagne (spécifique à une partie)** — scénarios, prep de session, fronts/horloges actifs, accroches PJ. Elle vit **dans le dossier de campagne** : `JDR/<jeu>/campagnes/<campagne>/{scenarios,prep}/` + l'état des fronts.
-- **Conventions de l'arborescence univers** (alignées sur `lore-extract`) : une information dans **un seul fichier** (les autres référencent/`[[lient]]`) ; max ~250 lignes par fichier (sinon synthétiser) ; rédaction en français ; ne jamais écraser un fichier existant — compléter. Pour que les fichiers coïncident, `lore-extract` doit cibler `<univers-root>/.docs/canon/` (via son `bank.yml` ou son répertoire courant).
+- **Conventions de l'arborescence univers** (alignées sur `lore-extract`) : une information dans **un seul fichier** (les autres référencent/`[[lient]]`) ; max ~250 lignes par fichier (sinon synthétiser) ; rédaction en français ; ne jamais écraser un fichier existant — compléter. Pour que les fichiers coïncident, `lore-extract` doit cibler `<univers-root>/canon/` (via son `bank.yml` ou son répertoire courant).
 - **Provenance canon vs MJ** : `rpg` écrit **uniquement dans `mj/`** (contenu créé par le maître de jeu) et ne modifie **jamais `canon/`** (réservé à `lore-extract`, qui fait autorité). Une entité vit dans **un seul** sous-arbre — si le MJ étend une entité canon, créer la fiche dans `mj/` qui `[[lie]]` l'entrée canon, sans la dupliquer. Le contenu MJ ne doit **pas contredire le canon en silence** : signaler toute divergence. En lecture, `canon/` prime pour les faits établis, `mj/` ajoute la couche MJ.
 - **PJ canonique vs instance de campagne** : le personnage durable vit dans `JDR/<jeu>/pjs/<pj>/` (skill `pc`, source de l'`intention.md`) ; l'instance jouée d'une campagne vit dans `JDR/<jeu>/campagnes/<campagne>/pj/` (`solo-mc`) et **référence** le PJ canonique. `rpg` s'ancre toujours sur l'`intention.md` canonique de `pc` ; si seul un PJ de campagne existe, le signaler et proposer de le rattacher à un PJ `pc`.
 - La campagne déclare son univers (`config.yaml › univers: <slug>` → `JDR/<jeu>/univers/<univers>/` ; un jeu peut en avoir plusieurs) ; à défaut, demander quel univers et le lister sous `JDR/<jeu>/univers/`.
@@ -65,8 +65,8 @@ Routeur — dispatch selon l'intention :
 ## Références externes (coffre)
 
 - `JDR/<jeu>/campagnes/<campagne>/config.yaml` — paramètres de campagne (créés par `solo-mc setup`)
-- `JDR/<jeu>/univers/<univers>/.docs/canon/` — lore officiel (lecture seule pour `rpg` ; écrit par `lore-extract`)
-- `JDR/<jeu>/univers/<univers>/.docs/mj/` — contenu créé par le MJ (écrit par `rpg`) ; même arborescence thématique que `canon/`
+- `JDR/<jeu>/univers/<univers>/canon/` — lore officiel (lecture seule pour `rpg` ; écrit par `lore-extract`)
+- `JDR/<jeu>/univers/<univers>/mj/` — contenu créé par le MJ (écrit par `rpg`) ; même arborescence thématique que `canon/`
 - `JDR/<jeu>/pjs/<pj>/intention.md` — thèmes, ligne rouge, question viscérale du PJ (skill `pc`)
 - `JDR/<jeu>/systeme/{canon,mj}/` — règles du **système de jeu** (format rules-keeper) ; seule référence mécanique de `rpg`. Les sous-systèmes (`JDR/<jeu>/subsystems/`) sont consommés par `solo-mc` uniquement.
 

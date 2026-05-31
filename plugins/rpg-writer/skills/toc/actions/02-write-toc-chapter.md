@@ -54,7 +54,7 @@ Saved to: `.toc/toc-chapter<NN>.md`
 
 1. Load `.toc/INDEX.md` (inside `<projet-root>/.toc/`). Locate the entry for chapter `<NN>`. If not found → ABORT and ask user to run `generate-toc` first.
 2. Load `bank.yml`: extract `output-style`, `docs`, `rules-files`, `personas`.
-3. Load all cross-reference docs declared in bank.yml relevant to this chapter (characters, rules, locations mentioned in key points). Universe docs span both `<univers-root>/.docs/canon/` and `<univers-root>/.docs/mj/`; rules-files resolve under `<systeme-root>/`.
+3. Load all cross-reference docs declared in bank.yml relevant to this chapter (characters, rules, locations mentioned in key points). Universe docs span both `<univers-root>/canon/` and `<univers-root>/mj/`; rules-files resolve under `<systeme-root>/`.
 4. Expand the INDEX.md entry into the full spec format:
    - **Synopsis**: elaborate to 2–3 precise sentences covering the full arc of the chapter.
    - **Points clés**: expand each bullet with detail; where `[INTRO]` tags exist, specify full description format; where `[REF ChXX]` tags exist, specify abbreviated reference format.

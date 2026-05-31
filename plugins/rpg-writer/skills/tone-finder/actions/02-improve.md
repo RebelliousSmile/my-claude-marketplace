@@ -30,7 +30,7 @@ Updated `<univers-root>/.output-styles/<univers>-<type>.md` (version incremented
 - Personas improved: [persona] (+N pts)
 ```
 
-Saved to: `<univers-root>/.docs/output-style-changelog.md`
+Saved to: `<univers-root>/output-style-changelog.md`
 
 ## Process
 
@@ -46,9 +46,9 @@ Saved to: `<univers-root>/.docs/output-style-changelog.md`
    - Update the relevant section of `<univers-root>/.output-styles/<univers>-<type>.md`.
    - Increment version: minor fix → X.Y+1, structural change → X+1.0.
 7. Write updated output-style file(s).
-8. Create/append changelog entry to `<univers-root>/.docs/output-style-changelog.md`.
+8. Create/append changelog entry to `<univers-root>/output-style-changelog.md`.
 9. Generate remediation plan: which chapters need re-processing with `doctor`, which should be re-evaluated with `comment`.
 
 ## Test
 
-After `improve <univers> --improve-from-feedback`, verify that the output-style file's version has incremented, `<univers-root>/.docs/output-style-changelog.md` contains an entry for today's date, and the remediation plan lists at least one chapter to re-process.
+After `improve <univers> --improve-from-feedback`, verify that the output-style file's version has incremented, `<univers-root>/output-style-changelog.md` contains an entry for today's date, and the remediation plan lists at least one chapter to re-process.

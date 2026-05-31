@@ -31,14 +31,13 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
 └── <jeu>/
     ├── univers/
     │   └── <univers>/
-    │       ├── .docs/
-    │       │   ├── canon/          ← lore officiel ventilé depuis sources/
-    │       │   │   ├── terminologie.md
-    │       │   │   ├── factions.md
-    │       │   │   ├── histoire.md
-    │       │   │   └── ...
-    │       │   └── mj/             ← contenu maison (non-canon)
-    │       │       └── ...
+    │       ├── canon/              ← lore officiel ventilé depuis sources/
+    │       │   ├── terminologie.md
+    │       │   ├── factions.md
+    │       │   ├── histoire.md
+    │       │   └── ...
+    │       ├── mj/                 ← contenu maison (non-canon)
+    │       │   └── ...
     │       ├── sources/
     │       │   └── <source>/       ← documents de référence bruts (extract-pdf)
     │       │       ├── lore.md
@@ -86,7 +85,7 @@ extract-pdf          → sources de référence brutes (fidèles, non interprét
     ├── lore/terminologie → <univers-root>/sources/<source>/
     └── règles           → <systeme-root>/sources/<source>/
                                       ↓
-lore-extract         → ventile sources/ vers <univers-root>/.docs/canon/  (ou mj/)
+lore-extract         → ventile sources/ vers <univers-root>/canon/        (ou mj/)
 rules-keeper         → ventile sources/ vers <systeme-root>/canon/         (ou mj/)
                         (ou <subsys-root>/canon/ pour les sous-systèmes)
 ```
@@ -98,9 +97,9 @@ Son output (`sources/`) est un document de référence brut qui attend la ventil
 
 | Input (sources de référence) | Output (canon ventilé) |
 |------------------------------|------------------------|
-| `<univers-root>/sources/<source>/lore.md` | `<univers-root>/.docs/canon/<theme>.md` |
-| `<univers-root>/sources/<source>/terminology.md` | `<univers-root>/.docs/canon/terminologie.md` |
-| Sources maison (`--homemade`) | `<univers-root>/.docs/mj/<theme>.md` |
+| `<univers-root>/sources/<source>/lore.md` | `<univers-root>/canon/<theme>.md` |
+| `<univers-root>/sources/<source>/terminology.md` | `<univers-root>/canon/terminologie.md` |
+| Sources maison (`--homemade`) | `<univers-root>/mj/<theme>.md` |
 
 ### Ventilation règles → sources/ → canon/
 
@@ -125,40 +124,48 @@ Ne jamais renommer ni déplacer ces dossiers sans coordination avec le plugin ob
 
 ## Versioning & gitignore (dépôt `tnn-jdr`)
 
-Le dépôt `tnn-jdr` ne versionne **que le contenu personnel**. Tout ce qui dérive de matériel commercial (extractions brutes de PDF, canon de règles régénérable) est exclu par `.gitignore`.
+Le dépôt `tnn-jdr` versionne tout le contenu personnel et les sorties des outils (lore-extract, rules-keeper). Seules les sources brutes (extractions PDF, dumps) sont exclues — elles sont volumineuses, dérivées de matériel commercial, et régénérables.
 
 **Patterns gitignored** :
 
 | Pattern | Ce qu'il couvre |
 |---------|-----------------|
-| `**/sources/` | **Toutes** les sources brutes : `<univers-root>/sources/`, `<systeme-root>/sources/`, `<subsys-root>/sources/` (extractions `extract-pdf`) |
-| `**/systeme/canon/` | Le canon **du système de jeu** uniquement (`<systeme-root>/canon/`) — sortie de `rules-keeper` |
+| `**/sources/` | Toutes les sources brutes : `<univers-root>/sources/`, `<systeme-root>/sources/`, `<subsys-root>/sources/` |
 | `**/fulltext.md` | Dumps PDF directs (`extract-pdf`) |
 
-**Versionné vs non-versionné** — attention, le glob `**/systeme/canon/` ne matche que le segment littéral `systeme/canon` :
+**Exceptions (un-ignore)** — le `.gitignore` ajoute explicitement :
+
+| Pattern | Effet |
+|---------|-------|
+| `!**/systeme/canon/**` | Le canon du système est versionné — les agents (`solo-mc`, `pc`, `write`) en ont besoin après un clone |
+| `!**/univers/*/canon/**` · `!**/univers/*/mj/**` | Le lore d'univers est versionné au même titre, même si un sous-dossier porte un nom ignoré (`*pdf_*`, `nobf00_*`…) |
+| `!**/.docs/**` | Conservé pour les projets d'écriture (`ecrits/<projet>/.docs/` : `document-rules.md`, `scenarios-details.md`…) |
+| `**/systeme/canon/**/sources/` · `**/univers/*/{canon,mj}/**/sources/` | Ré-ignore les `sources/` bruts nichés dans un canon/mj |
+
+**Versionné vs non-versionné** :
 
 | Chemin | Rôle | Statut |
 |--------|------|--------|
-| `<systeme-root>/canon/` | Règles officielles du système (rules-keeper) | ❌ gitignored |
+| `<systeme-root>/canon/` | Règles officielles du système (rules-keeper) | ✅ versionné |
 | `<systeme-root>/mj/` | Règles maison du système | ✅ versionné |
-| `<univers-root>/.docs/canon/` | Lore officiel (lore-extract) | ✅ versionné |
-| `<univers-root>/.docs/mj/` | Lore maison | ✅ versionné |
+| `<systeme-root>/sources/` | Sources brutes règles (extract-pdf) | ❌ gitignored |
+| `<univers-root>/canon/` | Lore officiel (lore-extract) | ✅ versionné |
+| `<univers-root>/mj/` | Lore maison | ✅ versionné |
+| `<univers-root>/{canon,mj}/**/sources/` | Sources brutes nichées dans canon/mj | ❌ gitignored |
+| `<univers-root>/sources/` | Sources brutes lore (extract-pdf) | ❌ gitignored |
 | `<subsys-root>/canon/` | Canon des sous-systèmes (Parallaxe…) | ✅ versionné |
-| `**/sources/<source>/` | Sources brutes (extract-pdf) | ❌ gitignored |
-
-> Seul le **canon du système** disparaît parmi les canons. Le lore canon, les canons de sous-systèmes et tous les `mj/` survivent au clone.
 
 ### Conséquence après un clone sur une nouvelle machine
 
-`systeme/canon/` et tous les `sources/` sont **absents**. Les consommateurs du système de jeu (`solo-mc`, `pc`, `rpg`, `write`) sont dégradés jusqu'à régénération. Comme l'**input** (`sources/`) ET l'**output** (`systeme/canon/`) sont gitignored, la reconstruction part **du PDF commercial** :
+Seuls les dossiers `sources/` sont **absents**. Tous les canons (système, lore, sous-systèmes) et tous les `mj/` survivent au clone — les agents (`solo-mc`, `pc`, `rpg`, `write`) sont opérationnels immédiatement.
+
+Pour **enrichir** le lore ou les règles à partir de nouveaux PDFs, reconstituer les sources via `extract-pdf` puis relancer `lore-extract` / `rules-keeper`.
 
 ```
 PDF officiel (hors dépôt)
     ↓ extract-pdf            → reconstitue <systeme-root>/sources/<source>/
-    ↓ rules-keeper           → ventile vers <systeme-root>/canon/
-    └ (lore : extract-pdf → <univers-root>/sources/ → lore-extract → .docs/canon/)
+    ↓ rules-keeper --update  → met à jour <systeme-root>/canon/
+    └ (lore : extract-pdf → <univers-root>/sources/ → lore-extract --update → <univers-root>/canon/)
 ```
-
-Le lore `.docs/canon/` étant versionné, `lore-extract` n'a besoin d'être relancé que pour **enrichir** le lore (pas pour le restaurer).
 
 > **Pour réutiliser cette convention dans vos propres agents** : pointez-les vers ce fichier (`@setup/references/vault-layout.md`) plutôt que de redupliquer la règle. C'est la référence unique de l'arborescence ET du versioning du vault.
