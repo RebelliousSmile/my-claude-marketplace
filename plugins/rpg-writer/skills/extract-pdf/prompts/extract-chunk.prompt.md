@@ -41,20 +41,17 @@ Extract and classify content from chunk $CHUNK (or next pending chunk).
 
 ## Step 1: Extract Text
 
-Identify chunk file:
-```
-docs/extraction/<source-name>/chunks/chunk_XX.pdf
+Identify chunk file (id `XX` → glob, nom réel `<source-name>_partXX_p<début>-<fin>.pdf`):
+```bash
+CHUNK_PDF=$(python -c "import glob; print(glob.glob('docs/extraction/<source-name>/chunks/*_partXX_*.pdf')[0])")
 ```
 
 Extract with available tool:
 ```bash
-pdftotext -layout "docs/extraction/<source-name>/chunks/chunk_XX.pdf" -
+pdftotext -layout "$CHUNK_PDF" -
 ```
 
-IF garbled (>30% non-printable):
-```bash
-tesseract "docs/extraction/<source-name>/chunks/chunk_XX.pdf" stdout -l fra
-```
+IF garbled (>30% non-printable) — tesseract n'accepte pas de PDF, convertir d'abord en images (voir action 02 / 04).
 
 Save raw text:
 ```bash
@@ -126,7 +123,7 @@ Progression: X/N chunks (XX%)
 
 IF more pending chunks:
 ```
-Prochain: chunk_YY
+Prochain: chunk id YY (fichier <source-name>_partYY_p…-…​.pdf)
 Commande: Reprendre: docs/extraction/<source-name>/progress.md
 ```
 

@@ -37,7 +37,7 @@ Diagnostiquer les anomalies du pipeline d'extraction : chunks manquants, texte g
 - Recommandation : fusionner en gardant la définition la plus longue
 
 ### [PROGRESS] Incohérence
-- chunk_03.pdf marqué `done` mais raw/chunk_03.txt est vide
+- le chunk id 03 marqué `done` mais raw/chunk_03.txt est vide
 - Recommandation : réinitialiser à `pending` et retraiter
 
 ## Recommended Actions
@@ -57,8 +57,8 @@ Diagnostiquer les anomalies du pipeline d'extraction : chunks manquants, texte g
    ```
 5. **Si `chunk_id` spécifié** → focus sur ce chunk. Sinon → audit complet.
 6. **Intégrité des fichiers** :
-   - Pour chaque chunk `done` : vérifier que `docs/extraction/<source-name>/chunks/chunk_XX.pdf` ET `docs/extraction/<source-name>/raw/chunk_XX.txt` existent et sont non-vides.
-   - Pour chaque chunk `pending` : vérifier que `docs/extraction/<source-name>/chunks/chunk_XX.pdf` existe.
+   - Pour chaque chunk `done` : vérifier que le PDF `docs/extraction/<source-name>/chunks/*_part<XX>_*.pdf` ET `docs/extraction/<source-name>/raw/chunk_XX.txt` existent et sont non-vides.
+   - Pour chaque chunk `pending` : vérifier que le PDF `docs/extraction/<source-name>/chunks/*_part<XX>_*.pdf` existe.
    - Pour chaque chunk `failed` : noter l'erreur connue.
 7. **Qualité du texte brut** :
    ```python

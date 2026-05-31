@@ -94,6 +94,7 @@ For each category with content:
 
 | Classified | Destination | Action |
 |------------|-------------|--------|
+| `raw/chunk_*.txt` (assemblés) | `<univers-root>/sources/<source-name>/fulltext.md` (+ `<systeme-root>/…` si règles) | create — brut intégral, **ne jamais jeter** |
 | `lore*.md` | `<univers-root>/sources/<source-name>/lore.md` | create/append |
 | `terminology*.md` | `<univers-root>/sources/<source-name>/terminology.md` | create/merge |
 | `rules*.md` | `<systeme-root>/sources/<source-name>/rules.md` | create/append |
@@ -216,6 +217,7 @@ git -C "<project>" diff
 
 | Category | Sections | Chars | Destination | Action |
 |----------|----------|-------|-------------|--------|
+| Brut (fulltext) | — | Y | <univers-root>/sources/<source-name>/fulltext.md | created |
 | Lore | X | Y | <univers-root>/sources/<source-name>/lore.md | created |
 | Terminology | X | Y | <univers-root>/sources/<source-name>/terminology.md | created |
 | Rules | X | Y | <systeme-root>/sources/<source-name>/rules.md | created |
@@ -250,10 +252,26 @@ git -C "<project>" diff
 
 ## Step 7: Cleanup
 
-**Remove extraction workspace (cross-platform):**
+**D'abord, préserver le texte brut** (assembler `raw/chunk_*.txt` en `fulltext.md` dans chaque `sources/<source-name>/` peuplé) :
 
 ```bash
-# Python (works on Windows and Unix)
+python -c "
+from pathlib import Path
+base = Path('docs/extraction/<source-name>/raw')
+chunks = sorted(base.glob('chunk_*.txt'))
+full = '\n\n'.join(p.read_text(encoding='utf-8') for p in chunks)
+header = '# <source-name> — TEXTE BRUT INTÉGRAL\n\n> Contenu d\'extraction brut (normalisé). Matériau de référence ; la synthèse est dans canon/ (via lore-extract/rules-keeper).\n\n---\n\n'
+for root in ['<univers-root>/sources/<source-name>', '<systeme-root>/sources/<source-name>']:
+    d = Path(root)
+    if d.exists():
+        (d / 'fulltext.md').write_text(header + full, encoding='utf-8')
+"
+```
+
+**Seulement ensuite, supprimer le dossier de travail (cross-platform) :**
+
+```bash
+# Python (works on Windows and Unix) — fulltext.md déjà écrit dans sources/
 python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>/chunks', ignore_errors=True)"
 python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>/raw', ignore_errors=True)"
 python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>/classified', ignore_errors=True)"

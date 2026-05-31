@@ -107,6 +107,8 @@ python scripts/split-pdf.py <source_pdf> --pages-per-chunk 25 --output-dir docs/
 
 List created chunks and note page ranges and estimated character counts (~2500 chars/page).
 
+> `split-pdf.py` nomme les fichiers `<source>_part<NN>_p<début>-<fin>.pdf` (ex. `<source>_part01_p1-25.pdf`). C'est ce nom RÉEL qui figure dans la colonne `Chunk` de `progress.md`. L'`<chunk_id>` passé à `process-chunk` est le `<NN>` (zéro-padé) ; le chunk se localise par glob `chunks/*_part<NN>_*.pdf`.
+
 ---
 
 ## Step 4: Write progress.md
@@ -129,9 +131,11 @@ Create `docs/extraction/<source-name>/progress.md` with exact format below.
 
 | Chunk | Pages | Chars | Status | Session |
 |-------|-------|-------|--------|---------|
-| chunk_01.pdf | 1-25 | ~12500 | pending | - |
-| chunk_02.pdf | 26-50 | ~12500 | pending | - |
+| <source>_part01_p1-25.pdf | 1-25 | ~12500 | pending | - |
+| <source>_part02_p26-50.pdf | 26-50 | ~12500 | pending | - |
 ```
+
+> Colonne `Chunk` = nom de fichier RÉEL produit par `split-pdf.py` (`<source>_part<NN>_p<début>-<fin>.pdf`), pas un `chunk_NN.pdf` générique.
 
 Statuts valides : **`pending`** / **`done`** / **`failed`** — jamais `TODO` ni `DONE`.
 

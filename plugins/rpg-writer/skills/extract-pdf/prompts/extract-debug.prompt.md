@@ -104,13 +104,11 @@ for r in raw: print(f'  {r.name}: {r.stat().st_size} bytes')
 ### 3.3 Test Extraction on Failed Chunk
 
 ```bash
-pdftotext -layout "docs/extraction/<source-name>/chunks/chunk_XX.pdf" - | head -20
+CHUNK_PDF=$(python -c "import glob; print(glob.glob('docs/extraction/<source-name>/chunks/*_partXX_*.pdf')[0])")
+pdftotext -layout "$CHUNK_PDF" - | head -20
 ```
 
-IF garbled:
-```bash
-tesseract "docs/extraction/<source-name>/chunks/chunk_XX.pdf" stdout -l fra | head -20
-```
+IF garbled (tesseract n'accepte pas de PDF — convertir d'abord via `pdftoppm`, voir action 02).
 
 ---
 

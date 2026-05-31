@@ -164,7 +164,8 @@ def read_progress(progress_file: Path) -> dict:
 
     # Parse chunks table
     chunks = []
-    rows = re.findall(r'\| (chunk_\d+\.pdf) \| ([^|]+) \| ([^|]+) \| (pending|done|failed) \| ([^|]+) \|', content)
+    # Chunk filename = real split-pdf.py output `<source>_partNN_pX-Y.pdf` (legacy `chunk_NN.pdf` also matched).
+    rows = re.findall(r'\| ([^|]+\.pdf) \| ([^|]+) \| ([^|]+) \| (pending|done|failed) \| ([^|]+) \|', content)
     for chunk, pages, chars, status, session in rows:
         chunks.append({
             'name': chunk,
@@ -326,7 +327,9 @@ Do NOT process any chunks in this session."""
 
 def extract_chunk(progress: dict, chunk_name: str, retry: bool = False) -> bool:
     """Run Phase B: Extract single chunk."""
-    chunk_num = re.search(r'chunk_(\d+)', chunk_name).group(1)
+    # id = NN from `<source>_partNN_pX-Y.pdf` (or legacy `chunk_NN.pdf`)
+    m = re.search(r'_part(\d+)', chunk_name) or re.search(r'chunk_(\d+)', chunk_name)
+    chunk_num = m.group(1) if m else chunk_name
 
     action = "Retrying" if retry else "Extracting"
 
@@ -484,7 +487,22 @@ def cleanup_extraction(progress: dict) -> bool:
 
     extraction_dir = progress['file'].parent
 
-    # Remove temporary directories
+    # Preserve the raw full text BEFORE deleting anything: assemble raw/chunk_*.txt
+    # into fulltext.md kept in the (surviving) extraction dir. The distribute prompt
+    # also writes fulltext.md into sources/<source>/, but this guarantees no data loss
+    # even if that step was skipped. raw/ is the only verbatim copy of the document.
+    raw_dir = extraction_dir / 'raw'
+    if raw_dir.exists():
+        chunks = sorted(raw_dir.glob('*.txt'))
+        if chunks and not (extraction_dir / 'fulltext.md').exists():
+            header = (f"# {extraction_dir.name} — TEXTE BRUT INTÉGRAL\n\n"
+                      "> Contenu d'extraction brut (normalisé). Conservé au nettoyage. "
+                      "Copie de référence ; voir aussi sources/<source>/fulltext.md.\n\n---\n\n")
+            full = "\n\n".join(p.read_text(encoding='utf-8') for p in chunks)
+            (extraction_dir / 'fulltext.md').write_text(header + full, encoding='utf-8')
+            print(f"[OK] Preserved brut -> {extraction_dir / 'fulltext.md'}")
+
+    # Remove temporary directories (fulltext.md already preserved above)
     for subdir in ['chunks', 'raw', 'classified']:
         path = extraction_dir / subdir
         if path.exists():

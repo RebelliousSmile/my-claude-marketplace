@@ -18,9 +18,11 @@ Session finale : verser le contenu classifié dans les **sources de référence*
 ## Outputs
 
 Sources de référence créées ou enrichies :
-- `<univers-root>/sources/<source>/lore.md` — contenu narratif de référence
-- `<univers-root>/sources/<source>/terminology.md` — terminologie extraite
-- `<systeme-root>/sources/<source>/rules.md` — règles extraites
+- `<univers-root>/sources/<source>/fulltext.md` — **texte brut intégral** normalisé (le « contenu de l'extraction » ; assemblé depuis les chunks, conservé)
+- `<univers-root>/sources/<source>/lore.md` — contenu narratif de référence (bundle d'entrée pour `lore-extract`)
+- `<univers-root>/sources/<source>/terminology.md` — terminologie extraite (bundle d'entrée pour `lore-extract`)
+- `<systeme-root>/sources/<source>/fulltext.md` — texte brut intégral (si des règles ont été extraites)
+- `<systeme-root>/sources/<source>/rules.md` — règles extraites (bundle d'entrée pour `rules-keeper`)
 - `<univers-root>/.output-styles/<univers>-<source>.md` — directives de style (artefact de commodité)
 - `.toc/INDEX.md` — structure extraite (artefact de commodité, dans le projet)
 
@@ -53,6 +55,7 @@ Sources de référence créées ou enrichies :
 
    | Classified | Destination | Action |
    |------------|-------------|--------|
+   | `raw/chunk_*.txt` (assemblés) | `<univers-root>/sources/<source-name>/fulltext.md` (+ `<systeme-root>/…` si règles) | create — **brut intégral, ne jamais jeter** |
    | `lore*.md` | `<univers-root>/sources/<source-name>/lore.md` | create/append |
    | `terminology*.md` | `<univers-root>/sources/<source-name>/terminology.md` | create/merge |
    | `rules*.md` | `<systeme-root>/sources/<source-name>/rules.md` | create/append |
@@ -102,7 +105,12 @@ Sources de référence créées ou enrichies :
    git checkout . && git stash pop
    ```
 9. Générer le rapport de distribution (voir prompt `extract-distribute.prompt.md`).
-10. Nettoyage : supprimer `docs/extraction/<source-name>/chunks/`, `docs/extraction/<source-name>/raw/`, `docs/extraction/<source-name>/classified/`. Renommer `docs/extraction/<source-name>/progress.md` → `docs/extraction/<source-name>/DONE-YYYY-MM-DD.md`.
+10. Nettoyage — **conserver le brut d'abord** :
+    1. Assembler le texte brut normalisé des chunks (`docs/extraction/<source-name>/raw/chunk_*.txt`, dans l'ordre) en un seul `fulltext.md` (avec un en-tête de provenance) et l'écrire dans chaque `sources/<source-name>/` peuplé — `<univers-root>/sources/<source-name>/fulltext.md`, et `<systeme-root>/sources/<source-name>/fulltext.md` si des règles ont été extraites.
+    2. **Seulement après** que `fulltext.md` est écrit : supprimer le dossier de travail `docs/extraction/<source-name>/chunks/`, `…/raw/`, `…/classified/` (les bundles classifiés ont été fusionnés dans `sources/`).
+    3. Renommer `docs/extraction/<source-name>/progress.md` → `docs/extraction/<source-name>/DONE-YYYY-MM-DD.md`.
+
+    > Ne jamais supprimer `raw/` sans avoir d'abord écrit `fulltext.md` : c'est l'unique copie verbatim du document.
 
 ## Prochaines étapes (suggérer à l'utilisateur)
 
@@ -114,6 +122,7 @@ Une fois les sources créées, lancer la ventilation vers canon :
 
 Après `distribute <project_path> <source_name>` sur une extraction complète, vérifier que :
 - `docs/extraction/<source-name>/DONE-YYYY-MM-DD.md` existe (progress.md archivé)
+- `<univers-root>/sources/<source-name>/fulltext.md` existe et est non-vide (texte brut conservé)
 - `<univers-root>/sources/<source-name>/lore.md` et/ou `terminology.md` ont été créés
 - `<systeme-root>/sources/<source-name>/rules.md` a été créé (si des règles étaient présentes)
 - Aucun fichier n'a été écrit dans `canon/` ni `mj/`

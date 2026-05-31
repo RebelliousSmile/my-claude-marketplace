@@ -13,10 +13,10 @@ Session 1 du pipeline d'extraction PDF : valider l'environnement, découper le P
 docs/extraction/<source-name>/
   progress.md         — fichier de tracking avec liste des chunks et statuts
   chunks/
-    chunk_01.pdf      — premier chunk (PDF découpé, 25 pages max)
-    chunk_02.pdf
+    <source>_part01_p1-25.pdf   — premier chunk (PDF découpé, 25 pages max)
+    <source>_part02_p26-50.pdf
     ...
-  raw/                — dossier créé vide, rempli lors de process-chunk
+  raw/                — dossier créé vide, rempli lors de process-chunk (raw/chunk_<NN>.txt)
   classified/         — dossier créé vide, rempli lors de process-chunk
 ```
 
@@ -34,11 +34,12 @@ Format `progress.md` :
 
 | Chunk | Pages | Chars | Status | Session |
 |-------|-------|-------|--------|---------|
-| chunk_01.pdf | 1-25 | ~12500 | pending | - |
-| chunk_02.pdf | 26-50 | ~12500 | pending | - |
+| <source>_part01_p1-25.pdf | 1-25 | ~12500 | pending | - |
+| <source>_part02_p26-50.pdf | 26-50 | ~12500 | pending | - |
 ```
 
 > Statuts valides : **`pending`** / **`done`** / **`failed`**. Jamais `TODO` ni `DONE`.
+> Colonne `Chunk` = nom de fichier RÉEL produit par `split-pdf.py` : `<source>_part<NN>_p<début>-<fin>.pdf`. L'`<chunk_id>` (argument de `process-chunk`) est le `<NN>` zéro-padé.
 
 ## Process
 
@@ -61,4 +62,4 @@ Format `progress.md` :
 
 Après `setup <project_path> <source_document>`, vérifier que :
 - `docs/extraction/<source-name>/progress.md` existe avec au moins 1 chunk en statut `pending`
-- `docs/extraction/<source-name>/chunks/chunk_01.pdf` existe
+- le premier chunk existe dans `docs/extraction/<source-name>/chunks/` (ex. `<source>_part01_p1-25.pdf`)

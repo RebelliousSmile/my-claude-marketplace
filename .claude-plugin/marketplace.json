@@ -37,7 +37,7 @@
     },
     {
       "name": "rpg-writer",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "source": "./plugins/rpg-writer",
       "description": "Narrative writing skills and workflows (novels, TTRPG scenarios, guides): concept, TOC, chapters, tone, lore, review.",
       "recommended": false
