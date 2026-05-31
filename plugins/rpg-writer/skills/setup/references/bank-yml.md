@@ -14,7 +14,9 @@ Les ressources d'univers vivent sous `<univers-root>` = `<jeu>/univers/<univers>
 ```yaml
 document:
   name: "Project title"          # Required. Display name of the document.
-  univers: "univers-slug"        # Required. Must match the parent directory name.
+  univers: "univers-slug"        # Required. Must match an existing univers/<slug>/ dir
+                                 # under the game root (NOT the project folder name —
+                                 # plusieurs projets ecrits/ peuvent viser des univers différents).
   type: "scenario"               # Required. One of: novel | roleplaying | scenario | guide
                                  # Drives output-style selection and brainstorm/plan behavior.
 
