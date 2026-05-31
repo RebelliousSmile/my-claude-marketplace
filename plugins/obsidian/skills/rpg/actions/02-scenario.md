@@ -17,7 +17,7 @@
    - **Fronts & horloges** : ce qui avance en arrière-plan (lier à `fronts.md` de la campagne et aux factions d'univers).
    - **Amorces de scènes** : 4–8 scènes-germes (déclencheur + tension), pas un script figé.
    - **Issues possibles** : succès / échec / coût, et conséquences sur les fronts.
-   - **Récompenses** : matérielles, narratives, et toute récompense mécanique propre au système de jeu / aux sous-systèmes (consulter les références — ne pas inventer).
+   - **Récompenses** : matérielles, narratives, et toute récompense mécanique propre au système de jeu (consulter les références — ne pas inventer).
 3. **Ancrer sur le PJ** : au moins une scène-germe touche la ligne rouge ou la question viscérale du PJ.
 4. **Écrire** `JDR/<jeu>/campagnes/<campagne>/scenarios/<slug>.md` (le scénario est de la prep de campagne ; lieux/PNJ/factions durables restent dans l'univers, liés) ; mettre à jour `index.md`.
 

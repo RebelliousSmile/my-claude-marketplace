@@ -34,6 +34,7 @@ Trigger-to-action mapping:
 - Corrections priority: 🔴 Critical (grammar, orthography, terminology) → 🟡 Important (typography, Markdown format) → 🟢 Optional (style, flow).
 - Doctor applies ALL priority levels by default; the priorities appear in the report, not as filters.
 - Routing from `comment` to rewrite: if ≥2 personas scored ≤11/20 on structural must-haves → `write --feedback`.
+- **Setup après clone (`tnn-jdr`)** — La terminologie consommée (`<univers-root>/.docs/canon/terminologie.md`) est **versionnée** : elle survit au clone, donc `review` reste opérationnel. Contexte seulement : si la chaîne amont doit être régénérée, les `sources/` et `systeme/canon/` sont gitignored et nécessitent un re-run `extract-pdf` → `rules-keeper` / `lore-extract`.
 
 ## References
 

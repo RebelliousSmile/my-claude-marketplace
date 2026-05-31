@@ -32,6 +32,7 @@ Both actions follow the same internal steps: Load → Analyze → Draft → Brai
 - `--feedback` mode: FULL rewrite from TOC, not a patch. Never read the existing chapter. Persona feedback becomes writing constraints, not a diff to apply.
 - Mark key point coverage with hidden HTML comments: `<!-- KEY_POINT: [desc] - COVERED -->`.
 - French typography: guillemets « », tirets cadratins —, points de suspension …, espaces insécables.
+- **Setup après clone (`tnn-jdr`)** — Les `rules-files` du système (`<systeme-root>/canon/`) et tous les `sources/` ne sont **pas versionnés** (gitignored). Après un clone sur une nouvelle machine, `<systeme-root>/canon/` est absent : relancer `extract-pdf` puis `rules-keeper` pour le régénérer avant d'écrire règles/scénarios qui en dépendent. Le lore `<univers-root>/.docs/canon/` et `.docs/mj/` sont versionnés et survivent au clone.
 
 ## Path variables
 

@@ -116,3 +116,49 @@ Son output (`sources/`) est un document de référence brut qui attend la ventil
 
 Les sous-arbres `canon/` + `mj/` sont **partagés avec `obsidian:rpg`**.
 Ne jamais renommer ni déplacer ces dossiers sans coordination avec le plugin obsidian.
+
+**Consommation des règles** :
+- `systeme/{canon,mj}/` (système de jeu) — partagé entre `obsidian:solo-mc`, `pc`, `rpg`, et le writer (`rules-files` du bank.yml).
+- `subsystems/<nom>/{canon,mj}/` (sous-systèmes génériques : Parallaxe, Cinério, Muses et Oracles) — **produits par `rules-keeper`, consommés par `obsidian:solo-mc` uniquement** (outils de jeu en direct). Ni `pc`/`rpg` ni le writer ne les référencent.
+
+---
+
+## Versioning & gitignore (dépôt `tnn-jdr`)
+
+Le dépôt `tnn-jdr` ne versionne **que le contenu personnel**. Tout ce qui dérive de matériel commercial (extractions brutes de PDF, canon de règles régénérable) est exclu par `.gitignore`.
+
+**Patterns gitignored** :
+
+| Pattern | Ce qu'il couvre |
+|---------|-----------------|
+| `**/sources/` | **Toutes** les sources brutes : `<univers-root>/sources/`, `<systeme-root>/sources/`, `<subsys-root>/sources/` (extractions `extract-pdf`) |
+| `**/systeme/canon/` | Le canon **du système de jeu** uniquement (`<systeme-root>/canon/`) — sortie de `rules-keeper` |
+| `**/fulltext.md` | Dumps PDF directs (`extract-pdf`) |
+
+**Versionné vs non-versionné** — attention, le glob `**/systeme/canon/` ne matche que le segment littéral `systeme/canon` :
+
+| Chemin | Rôle | Statut |
+|--------|------|--------|
+| `<systeme-root>/canon/` | Règles officielles du système (rules-keeper) | ❌ gitignored |
+| `<systeme-root>/mj/` | Règles maison du système | ✅ versionné |
+| `<univers-root>/.docs/canon/` | Lore officiel (lore-extract) | ✅ versionné |
+| `<univers-root>/.docs/mj/` | Lore maison | ✅ versionné |
+| `<subsys-root>/canon/` | Canon des sous-systèmes (Parallaxe…) | ✅ versionné |
+| `**/sources/<source>/` | Sources brutes (extract-pdf) | ❌ gitignored |
+
+> Seul le **canon du système** disparaît parmi les canons. Le lore canon, les canons de sous-systèmes et tous les `mj/` survivent au clone.
+
+### Conséquence après un clone sur une nouvelle machine
+
+`systeme/canon/` et tous les `sources/` sont **absents**. Les consommateurs du système de jeu (`solo-mc`, `pc`, `rpg`, `write`) sont dégradés jusqu'à régénération. Comme l'**input** (`sources/`) ET l'**output** (`systeme/canon/`) sont gitignored, la reconstruction part **du PDF commercial** :
+
+```
+PDF officiel (hors dépôt)
+    ↓ extract-pdf            → reconstitue <systeme-root>/sources/<source>/
+    ↓ rules-keeper           → ventile vers <systeme-root>/canon/
+    └ (lore : extract-pdf → <univers-root>/sources/ → lore-extract → .docs/canon/)
+```
+
+Le lore `.docs/canon/` étant versionné, `lore-extract` n'a besoin d'être relancé que pour **enrichir** le lore (pas pour le restaurer).
+
+> **Pour réutiliser cette convention dans vos propres agents** : pointez-les vers ce fichier (`@setup/references/vault-layout.md`) plutôt que de redupliquer la règle. C'est la référence unique de l'arborescence ET du versioning du vault.

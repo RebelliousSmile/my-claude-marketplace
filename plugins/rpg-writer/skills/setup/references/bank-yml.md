@@ -76,12 +76,13 @@ toc:
 # Optional. Only relevant for scenario / roleplaying types.
 # Paths relative to <jeu>/
 rules-files:
-  systeme: "systeme/canon/<system>.md"         # Core rules (canonical tier — rules-keeper output).
-  regles-specifiques:                           # Additional rules references.
+  systeme: "systeme/canon/<system>.md"         # Core game-system rules (canonical tier — rules-keeper output).
+  regles-specifiques:                           # Additional game-system rules references.
     - "systeme/canon/<supplement>.md"           # More canonical rules.
-    - "subsystems/<nom>/canon/<file>.md"        # Subsystem canonical rules (<subsys-root>/canon/).
   # MJ/house rules may also be listed:
   # mj-rules: "systeme/mj/<file>.md"
+# NOTE: only the game system (systeme/) belongs here. Generic subsystems (subsystems/) are
+# live-play tools consumed by obsidian:solo-mc only — never referenced in a writing bank.yml.
 
 # ICML export configuration (InDesign pipeline).
 icml:

@@ -2,7 +2,7 @@
 name: pc
 description: >-
   Manages JDR solo player-character files stored in JDR/<jeu>/pjs/<pj>/ — create a new PJ,
-  fill or reorganize its files, log a game session (système de jeu + sous-systèmes), or display the
+  fill or reorganize its files, log a game session (système de jeu), or display the
   character sheet. Use when the user invokes /obsidian:pc with a player-character intent.
   Do NOT use for campaign prep (scénarios, PNJ, factions) — use `rpg`; nor for live play
   (scene, oracle, roll) — use `solo-mc`.
@@ -23,7 +23,7 @@ Routes to the appropriate action based on user intent.
 | 01  | `new`         | Create a new PJ folder from the `_template/`                      | PJ name                   |
 | 02  | `fill`        | Fill PJ files from a pasted text (brainstorm, notes, etc.)        | PJ name, source text      |
 | 03  | `reorganize`  | Redistribute content to the 6 standard files                      | PJ name or loose .md file |
-| 04  | `log-session` | Update PJ files after a game session (système de jeu + sous-systèmes)      | PJ name, session info     |
+| 04  | `log-session` | Update PJ files after a game session (système de jeu)      | PJ name, session info     |
 | 05  | `show`        | Display the current character sheet (tags, statuses, relations)   | PJ name or active session |
 
 ## Default flow
@@ -42,9 +42,10 @@ Router — dispatches based on user intent:
 - Template (shared): `C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-template/`
 - Manager script (shared): `C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-manager.py`
 - Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `<jeu>/pjs/`.
-- Rules reference (terminology and mechanics): the active game system's rules at `JDR/<jeu>/systeme/{canon,mj}/` plus the **generic subsystems** it uses (e.g. Parallaxe, Cinério, Muses et Oracles), as rules-keeper-optimized rules under `JDR/<jeu>/subsystems/<name>/{canon,mj}/` (game-local) with fallback to the shared `C:/Users/fxgui/Public/Notes/Perso/JDR/subsystems/<name>/{canon,mj}/` (official + house rules), produced by `writing:rules-keeper` and **shared with `rpg` and `solo-mc`**. Effective rules = canon + declared house rules.
+- Rules reference (terminology and mechanics): the active **game system**'s rules-keeper-optimized rules at `JDR/<jeu>/systeme/{canon,mj}/` (official `canon/` + GM house rules `mj/`), produced by `writing:rules-keeper`. Effective rules = canon + declared house rules. **Generic subsystems** (Parallaxe, Cinério, Muses et Oracles) are live-play tools consumed by `solo-mc` only — `pc` does not reference them.
 - Never invent mechanics — always consult the references above.
-- **Parallaxe, Cinério et Muses et Oracles sont des sous-systèmes** (employés par le système de jeu — ce ne sont pas des jeux). Le `_template/` et `pj-manager.py` (hors dépôt) doivent refléter le système de jeu et ses sous-systèmes actifs ; pour tout terme mécanique, ce skill défère aux références rules-keeper ci-dessus.
+- **Setup après clone (`tnn-jdr`)** — `systeme/canon/` (sortie de `rules-keeper`) et tous les `sources/` (entrées brutes des PDF) sont **gitignored** par convention : absents après un clone sur une nouvelle machine. Tant que `systeme/canon/` n'a pas été régénéré — relancer `extract-pdf` (PDF commercial requis) puis `rules-keeper` —, les références de règles ci-dessus sont indisponibles : n'inventer aucune mécanique, demander à l'utilisateur de lancer le setup. Les règles maison `systeme/mj/` et le lore `<univers>/.docs/canon/` sont versionnés et survivent au clone.
+- Le `_template/` et `pj-manager.py` (hors dépôt) reflètent le **système de jeu** actif ; pour tout terme mécanique, ce skill défère aux références rules-keeper du système de jeu ci-dessus. (Les sous-systèmes — Parallaxe, Cinério, Muses et Oracles — restent du ressort de `solo-mc`.)
 - Date format: `YYYY-MM-DD` throughout all files.
 
 ## Action: new
@@ -71,7 +72,7 @@ Asks the user to paste the source text, then:
    - Identity, facade, background, personality, world relationship → `pj.md`
    - Stats, power/weakness tags, equipment, mechanics → `fiche_technique.md`
    - Themes, tone, truths, line rouge, visceral question → `intention.md`
-   - État mécanique de jeu (jauges, ressources, statuts, compteurs selon les règles actives (système de jeu + sous-systèmes) → `etat-jeu.md`
+   - État mécanique de jeu (jauges, ressources, statuts, compteurs selon les règles actives (système de jeu) → `etat-jeu.md`
    - Scene ideas, open threads → `backlog.md`
 
 2. Distributes content into the relevant files. Preserves existing content — completes, never overwrites.
@@ -99,8 +100,8 @@ Redistribution rules:
 - `pj.md` ← identity, name, age, gender, origin, social facade, background, personality, world relationship
 - `fiche_technique.md` ← stats, attributes, skills, power/weakness tags, spells, equipment, persistent statuses
 - `intention.md` ← themes, tone, truths, what I want to experience/avoid, visceral question, story threads
-- `etat-jeu.md` ← état mécanique de jeu selon les règles actives (système de jeu + sous-systèmes) : jauges, ressources, statuts, compteurs et éléments en suspens
-- `journal.md` ← dated session reports, played scenes, mechanical events and session outcomes per the active rules (game system + subsystems) (newest first)
+- `etat-jeu.md` ← état mécanique de jeu selon les règles actives (système de jeu) : jauges, ressources, statuts, compteurs et éléments en suspens
+- `journal.md` ← dated session reports, played scenes, mechanical events and session outcomes per the active rules (game system) (newest first)
 - `backlog.md` ← scene ideas, threads to revive, open questions, narrative todo
 
 ## Action: log-session
@@ -108,13 +109,13 @@ Redistribution rules:
 Asks the user for:
 1. Session number and date (default: today)
 2. Played scenes (short summary per scene)
-3. Mechanical events of the session (resources gained/spent, statuses, counters) per the active rules (game system + subsystems)
+3. Mechanical events of the session (resources gained/spent, statuses, counters) per the active rules (game system)
 4. Notable outcomes / turning points of the session
-5. Final mechanical state of the sheet per the active rules (game system + subsystems) (jauges, ressources, statuts, compteurs, éléments en suspens)
+5. Final mechanical state of the sheet per the active rules (game system) (jauges, ressources, statuts, compteurs, éléments en suspens)
 
 Then updates:
 1. **`journal.md`** — new entry at the top (newest first) with scenes, mechanical events, outcomes, free notes
-2. **`etat-jeu.md`** — snapshot of the current mechanical state per the active rules (game system + subsystems) (jauges, ressources, statuts, compteurs, éléments en suspens)
+2. **`etat-jeu.md`** — snapshot of the current mechanical state per the active rules (game system) (jauges, ressources, statuts, compteurs, éléments en suspens)
 3. **`intention.md`** — proposes an update if a new story thread emerged, the visceral question evolved, or a theme shifted
 4. **`backlog.md`** — proposes adding new scene ideas and open questions that emerged
 

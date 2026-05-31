@@ -55,7 +55,7 @@ Routeur — dispatch selon l'intention :
 - La campagne déclare son univers (`config.yaml › univers: <slug>` → `JDR/<jeu>/univers/<univers>/` ; un jeu peut en avoir plusieurs) ; à défaut, demander quel univers et le lister sous `JDR/<jeu>/univers/`.
 - Demander le nom de la campagne s'il n'est pas dans `$ARGUMENTS` ; lister les campagnes existantes sous `JDR/<jeu>/campagnes/` (dossiers contenant un `config.yaml`).
 - Si `config.yaml` est absent, **ne pas dupliquer** le questionnaire : orienter vers `/solo-mc setup` pour le créer, puis revenir préparer.
-- **Sous-systèmes génériques** : des modules de règles réutilisables qui **se greffent sur le système de jeu** de la campagne (`config.yaml › system`) — p. ex. **Parallaxe**, **Cinério**, **Muses et Oracles**. Ce ne sont pas des jeux. Chacun a ses règles au format rules-keeper (`writing:rules-keeper`), scindées canon/mj, sous `JDR/<jeu>/subsystems/<sous-système>/{canon,mj}/` (local au jeu) avec repli sur les sous-systèmes **partagés** `C:/Users/fxgui/Public/Notes/Perso/JDR/subsystems/<sous-système>/{canon,mj}/` (réutilisables entre jeux/campagnes ; la campagne déclare les sous-systèmes actifs). Règles effectives = système de jeu + sous-systèmes actifs (canon + house rules déclarées). **Ne jamais inventer de mécanique** — toujours consulter ces références, partagées avec `solo-mc` et `pc`.
+- **Système de jeu** : pour toute mécanique (récompenses, tags PNJ, défis), `rpg` consulte les règles du système de jeu au format rules-keeper (`writing:rules-keeper`), scindées canon/mj, sous `JDR/<jeu>/systeme/{canon,mj}/`. Règles effectives = canon + house rules déclarées. **Ne jamais inventer de mécanique.** Les **sous-systèmes génériques** (Parallaxe, Cinério, Muses et Oracles) sont des **outils de jeu en direct** consommés par `solo-mc` uniquement — hors du ressort de `rpg`.
 - Servir le PJ : ancrer scénarios et sessions sur l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale) géré par `pc`. La prep sert les enjeux du joueur, pas l'inverse.
 - Lire `config.yaml` (ton, rythme, difficulté, chaos, profondeur PNJ/lieux) et s'y conformer.
 - La prep est **consommée par `solo-mc`** au moment du jeu (scènes, oracle, fronts/horloges) ; ne jamais jouer en direct ici.
@@ -68,8 +68,7 @@ Routeur — dispatch selon l'intention :
 - `JDR/<jeu>/univers/<univers>/.docs/canon/` — lore officiel (lecture seule pour `rpg` ; écrit par `lore-extract`)
 - `JDR/<jeu>/univers/<univers>/.docs/mj/` — contenu créé par le MJ (écrit par `rpg`) ; même arborescence thématique que `canon/`
 - `JDR/<jeu>/pjs/<pj>/intention.md` — thèmes, ligne rouge, question viscérale du PJ (skill `pc`)
-- `JDR/<jeu>/subsystems/<sous-système>/{canon,mj}/` (local) avec repli sur `JDR/subsystems/<sous-système>/{canon,mj}/` (partagé) — règles des **sous-systèmes génériques** (Parallaxe, Cinério, Muses et Oracles…), format rules-keeper (`writing:rules-keeper`), partagées avec `solo-mc` et `pc`
-- `JDR/<jeu>/systeme/{canon,mj}/` — règles du **système de jeu** lui-même (format rules-keeper)
+- `JDR/<jeu>/systeme/{canon,mj}/` — règles du **système de jeu** (format rules-keeper) ; seule référence mécanique de `rpg`. Les sous-systèmes (`JDR/<jeu>/subsystems/`) sont consommés par `solo-mc` uniquement.
 
 ## Evals
 

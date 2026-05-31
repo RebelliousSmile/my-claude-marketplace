@@ -5,6 +5,17 @@ Restructure all rules files in the project's rules-files directory.
 > **Position dans le pipeline** : restructure les sources de référence de règles (`<systeme-root>/sources/<source>/rules.md`) ou les fichiers de règles listés dans `bank.yml`. Les outputs atterrissent dans `<systeme-root>/canon/` (ou `<subsys-root>/canon/`).
 > Voir `@setup/references/vault-layout.md` pour la convention complète.
 
+## Setup from scratch (post-clone)
+
+Dans `tnn-jdr`, `systeme/canon/` (output) **et** les `sources/` (input) sont gitignored — donc absents après un clone sur une nouvelle machine. Pour reconstruire le canon du système à partir de zéro :
+
+1. **Détecter l'absence** — si `<systeme-root>/canon/` est absent/vide **et** qu'aucun bundle n'existe sous `<systeme-root>/sources/`, on est en setup from scratch.
+2. **Ré-extraire les sources** — fournir le PDF de règles commercial et lancer `extract-pdf` pour reconstituer `<systeme-root>/sources/<source>/rules.md` (+ terminology, etc.). `rules-keeper` n'écrit **jamais** dans `canon/` sans source.
+3. **Restructurer** — relancer cette action (`restructure-all`) : Step 1 détecte les nouveaux bundles sous `<systeme-root>/sources/` et les ventile vers `<systeme-root>/canon/`.
+4. **Vérifier les consommateurs** — `solo-mc`, `pc`, `rpg` et `write` redeviennent opérationnels une fois `systeme/canon/` régénéré. Les règles maison `systeme/mj/` et le lore `univers/<univers>/.docs/canon/` étaient déjà versionnés : rien à régénérer de ce côté.
+
+> Sans le PDF source, le canon **ne peut pas** être régénéré : ce contenu dérive de matériel commercial volontairement exclu du dépôt.
+
 ## Inputs
 
 *(no argument — reads rules-files paths from bank.yml)*
