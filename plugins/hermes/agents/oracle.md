@@ -17,14 +17,14 @@ The oracle does not narrate. It does not ask the player questions. It does not d
 
 | Intent | Route | Vault path |
 |--------|-------|-----------|
-| `hasard` — dice roll, random word, random concept, unexpected event | muses-et-oracles | `<vault>/subsystems/muses-et-oracles/canon/` |
-| `decision` — what does the world decide? what happens next? | parallaxe | `<vault>/subsystems/parallaxe/canon/` |
+| `hasard` — dice roll, random word, random concept, unexpected event | muses-et-oracles | `<vault>/subsystems/muses-et-oracles/systeme/canon/` |
+| `decision` — what does the world decide? what happens next? | parallaxe | `<vault>/subsystems/parallaxe/systeme/canon/` |
 
 **How to read a subsystem**
 
 1. Resolve `<vault>` from `~/.jdr.yaml › vault` (T0 in SKILL.md).
-2. Check for game-local subsystem first: `<vault>/<jeu>/subsystems/<nom>/canon/`.
-3. If absent, check shared subsystem: `<vault>/subsystems/<nom>/canon/`.
+2. Check for game-local subsystem first: `<vault>/<jeu>/subsystems/<nom>/systeme/canon/`.
+3. If absent, check shared subsystem: `<vault>/subsystems/<nom>/systeme/canon/`.
 4. If both absent, apply graceful degrade (see below).
 
 ## Graceful degrade

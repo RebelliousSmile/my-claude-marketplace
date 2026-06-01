@@ -21,14 +21,14 @@ Tone, style, and setting-specific flavour come from `config.yaml` and `<vault>/<
 
 | Intent | Route | Vault path |
 |--------|-------|-----------|
-| `description` — scene description, location, ambiance, sensory detail | cinerio | `<vault>/subsystems/cinerio/canon/` |
-| `dialogue` — NPC voice, conversation, exchange | conversation-cards | `<vault>/subsystems/conversation-cards/canon/` |
+| `description` — scene description, location, ambiance, sensory detail | cinerio | `<vault>/subsystems/cinerio/systeme/canon/` |
+| `dialogue` — NPC voice, conversation, exchange | conversation-cards | `<vault>/subsystems/conversation-cards/systeme/canon/` |
 
 **How to read a subsystem**
 
 1. Resolve `<vault>` from `~/.jdr.yaml › vault` (T0 in SKILL.md).
-2. Check for game-local subsystem first: `<vault>/<jeu>/subsystems/<nom>/canon/`.
-3. If absent, check shared subsystem: `<vault>/subsystems/<nom>/canon/`.
+2. Check for game-local subsystem first: `<vault>/<jeu>/subsystems/<nom>/systeme/canon/`.
+3. If absent, check shared subsystem: `<vault>/subsystems/<nom>/systeme/canon/`.
 4. If both absent, apply graceful degrade (see below).
 
 ## Graceful degrade

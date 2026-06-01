@@ -12,7 +12,7 @@ Start a new solo RPG session, loading the full campaign context.
 Session start confirmation including:
 - Campaign context summary (world, system, active arcs)
 - Character status snapshot
-- First scene prompt from `mj-solo-agent`
+- First scene prompt from `narrateur-agent`
 
 ## Process
 
@@ -24,7 +24,7 @@ Session start confirmation including:
 6. Write `.current-session` with the campaign's RELATIVE path (`<jeu>/campagnes/<campaign>`) — never a specific session-file path.
 7. Verify today's system date, then determine the session number `<N>` from the existing files in `<campaign>/sessions/` (the filesystem is the source of truth — do not trust `config.yaml` fields like `session_courante`/`last_played`).
 8. Create the session log file `<campaign>/sessions/session-<YYYY-MM-DD>-<N>.md` with a full header, including a "Précédemment…" recap of prior sessions and `active_character: <pj-slug>` so the field exists before any companion swap (T14 updates it to `<companion-slug>` and the return resets it to `<pj-slug>`). This file receives the continuous journaling (rule T10).
-9. Invoke `mj-solo-agent` with the loaded context; ask it to generate the opening scene.
+9. Invoke `narrateur-agent` with the loaded context; ask it to generate the opening scene.
 10. Display the session start summary: campaign, character, system, and first scene.
 
 ## Test
