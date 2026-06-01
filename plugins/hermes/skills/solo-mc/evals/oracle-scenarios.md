@@ -43,3 +43,12 @@ Vault root resolved from `~/.jdr.yaml › vault`. Shared subsystems at `<vault>/
 3. **Carte Pause (#54)** : pas explicitement traitée au filtrage parallaxe (conservée, ~2 %). [parallaxe.md + oracle.md] — corrigé côté agent.
 4. **Rebondissements** : lien carte-titre ↔ table de sous-options non spécifié dans oracle.md. — corrigé côté agent.
 5. **`validated: false`** sur cartes-standard & parallaxe ; fragments ambigus dans rebondissements. [qualité données vault]
+
+### 2026-06-01 — run 2 (programmatique `oracle-data-checks.py` + harnais qualitatif) — **23/23 + 9/9 PASS**
+
+- **Programmatique (23/23)** : table maître 200×17, invariant [d10]→oracle, distribution 40/40/40/40/20/20, parallaxe 54 + filtres + exclusions/exceptions, **couverture dés d4..d20** (toutes faces atteignables ; X hors-plage d6=2, d12=8), **conversation-cards 9 combos × 3 = 27**, Rebondissements (Focus 28 / Soudain 19 / Hors-sentiers 39 / Coup-de-théâtre 33).
+- **Harnais qualitatif (9/9)** : G1a repli game-local→partagé (monsterhearts → muses partagé) ; G1b subsystem absent (tarot) → `[HRP]` + dés système 2d6 ; R1-R4 routage (Oui/Non, génération objet, parallaxe filtré, Rebondissements) ; B1 bundle cohérent (1 carte #166 → attitude+émotion+météo) ; RB1/RB2 Rebondissements + Bonus.
+
+**Frictions → corrigées dans oracle.md** : (1) résolution chemin = tester le **chemin canon complet** (un `subsystems/` vide ne compte pas) ; (2) `[HRP]` de dégradation **nomme la formule** ; (3) note de routage « relance » (entropie→Rebondissements / blocage→parallaxe).
+
+⚠️ **À confirmer hors-test** : `~/.jdr.yaml` n'a rien renvoyé au harnais (clé `vault` introuvable). La résolution T0 retombe sur les défauts plateforme — fonctionne, mais le fichier de config par machine choisi semble **non encore créé** côté vault.

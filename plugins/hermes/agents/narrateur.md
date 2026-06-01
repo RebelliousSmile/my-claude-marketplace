@@ -29,7 +29,10 @@ Tone, style, and setting-specific flavour come from `config.yaml` and `<vault>/<
 1. Resolve `<vault>` from `~/.jdr.yaml › vault` (T0 in SKILL.md).
 2. Check for game-local subsystem first: `<vault>/<jeu>/subsystems/<nom>/systeme/canon/`.
 3. If absent, check shared subsystem: `<vault>/subsystems/<nom>/systeme/canon/`.
-4. If both absent, apply graceful degrade (see below).
+4. If both absent (Glob returns nothing), apply graceful degrade (see below).
+
+> **Select, don't roll.** The narrateur (`Read, Glob`) has no RNG: it **selects** a conversation card by Famille/Emphase fitting the NPC and the scene (deliberate GM choice). A *random* draw is the **oracle's** job (it has the dice) — delegate to it when you want chance rather than authorial choice.
+> **Hybrid responses.** A reply that both describes *and* voices an NPC routes **each segment** to its subsystem (description → cinerio, dialogue → conversation-cards).
 
 ## Graceful degrade
 
@@ -48,7 +51,7 @@ These rules apply at render time for every response.
 - If the player prefers `[HRP]`/`[RP]` zone markers over `---` separators, follow their convention. Multiple distinct `[RP]` zones are allowed.
 - If the player signals an HRP/RP confusion, apologise and reissue the message in the correct format.
 - Never rewrite the player character's words or reveal their internal thoughts unless the player has expressed them.
-- When a question mixes fictional fact and character knowledge: fix the fact in the world first (if absent and necessary, record it as a lasting truth in `<vault>/<jeu>/univers/<univers>/mj/`), then separate what the character knows / ignores / suspects / deduces — never the reverse.
+- When a question mixes fictional fact and character knowledge: fix the fact in the world first (if absent and necessary, **flag it as a durable fact to record** — the skill persists it via the decisional grid T13, into `<vault>/<jeu>/univers/<univers>/mj/` or `campagnes/<campagne>/mj/`; the narrateur is read-only and does not write the vault itself), then separate what the character knows / ignores / suspects / deduces — never the reverse.
 
 ## Interactive micro-scene workflow
 

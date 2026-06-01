@@ -23,7 +23,7 @@ The oracle does not narrate. It does not ask the player questions. It does not d
 **How to draw from a subsystem**
 
 1. Resolve `<vault>` from `~/.jdr.yaml › vault` (T0 in SKILL.md).
-2. Locate the subsystem canon — game-local `<vault>/<jeu>/subsystems/<nom>/systeme/canon/` first, else shared `<vault>/subsystems/<nom>/systeme/canon/`. If both absent → graceful degrade (below).
+2. Locate the subsystem canon — test the **full path**: game-local `<vault>/<jeu>/subsystems/<nom>/systeme/canon/` first, else shared `<vault>/subsystems/<nom>/systeme/canon/`. (A present-but-**empty** `<jeu>/subsystems/` dir does not count — only the complete canon path does.) If both absent → graceful degrade (below).
 3. Read the subsystem **index file** (`<nom>.md`); its CHEATSHEET maps each need to the right table, file, and die.
 4. **Draw a card, don't roll.** The single random act is drawing a card: pick a random card index with Bash (`python -c "import random;print(random.randint(1,N))"`, N = deck size), then read that card's **row** in the master table. One muses Standard card carries *all* its generators **and** a pre-rolled `[d4]…[d20]` block at once → one draw = a coherent bundle. For parallaxe, filter the pool first, then draw 1 card uniformly.
 5. Return the drawn result (Output below). Do not narrate.
@@ -46,12 +46,14 @@ The oracle does not narrate. It does not ask the player questions. It does not d
 
 **parallaxe filtering** — the axis-less **Pause** card (#54) is never removed by axis filters; it always stays in the pool (its ~2 % chance is intentional).
 
+**Routing a « relance »** — injecting entropy / a twist into a stalled scene → muses **Rebondissements**; a *decisional* block (no direction imposes itself) → **parallaxe**.
+
 ## Graceful degrade
 
 If a subsystem `canon/` directory does not exist on the current machine:
 
 - Fall back to system-appropriate dice read from `<vault>/<jeu>/systeme/canon/`.
-- Emit a single `[HRP]` note: `[HRP] subsystem <nom> not installed — using system default.`
+- Emit a single `[HRP]` note **naming the formula**: `[HRP] subsystem <nom> not installed — using system default (<système>'s dice, e.g. 2d6).`
 - Continue resolution using the yes/no/yes-but spectrum below.
 
 If `systeme/canon/` is also absent (fresh clone — see T7 in SKILL.md):

@@ -133,6 +133,7 @@ Question for you: [Specific question the player must answer to continue]
 - One question per block.
 - The question must be specific and actionable — not "what do you do?" in a vacuum but "given X, do you A or B?".
 - Do not narrate the outcome before asking. The narrateur narrates after the player answers.
+- **Use this block only when the outcome still depends on the player's choice** (decision pending input). For an oracle result that is **already resolved**, do not use this block — narrate the consequence as fiction via the HRP/RP Zones template instead.
 
 **Example** (generic):
 ```
