@@ -27,12 +27,12 @@ Créer / développer / interpréter un personnage · coopérer et rivaliser · s
 
 ## Statut de la recherche
 
-- [ ] Corpus à constituer (recherche par titre → sources Forge/blogs/articles/PTGPTB…).
-- [ ] Synthèse de **notre méthode** (ci-dessous) à rédiger une fois le corpus en main.
+- [x] **Corpus constitué** (recherche web, 24 techniques sourcées) → **[[corpus-recherche]]** (matière brute, sources réelles par fiche).
+- [x] **Notre méthode rédigée** (synthèse du corpus) → **[[methode-creation]]** : process en 8 étapes (ancrer canon+intention → amorce du PJ → carte de relations → fronts/secrets → PNJ → scénario en situation → entrelacer/arc → préparer la session) + garde-fou sécurité + check-list.
 
-## Notre méthode de création de contenu (À DÉFINIR après recherche)
+## Notre méthode de création de contenu
 
-*Placeholder.* Sortira du corpus : un **process `rpg`** original (probablement : partir du canon → R-map → situation & fronts → cadeaux empoisonnés / objectifs contradictoires ancrés sur l'intention du PJ → PNJ miroir → scènes qui comptent → cliffhanger), formulé comme **nos** étapes, pas comme une liste d'emprunts.
+→ Voir **[[methode-creation]]**. C'est la référence opérationnelle des actions `rpg`. Elle est **notre** formulation (pas une transposition) ; les techniques du corpus y sont citées comme inspirations, sources à l'appui. `methodes-mj.md` (ce fichier) reste la **carte des graines** et le rappel des contraintes.
 
 ---
 **Sources (recherche) :** *Mener des parties de jeu de rôle* (Lapin Marteau, t.1) · *Jouer des parties de jeu de rôle* (t.2) · *La Boîte à outils du meneur de jeu* (David & Larré, t.3, 2020). | **Màj :** 2026-06-01

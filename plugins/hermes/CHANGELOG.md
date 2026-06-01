@@ -1,5 +1,11 @@
 # Changelog — hermes
 
+## [0.2.0] — 2026-06-01
+
+### Changed
+- **`solo-mc` convertie au format natif Hermes Agent** (agentskills.io) : `SKILL.md` réécrite en sections When to Use / Quick Reference / Procedure / Pitfalls / Verification, **agent unique** (plus de sous-agents). Les ex-sous-agents `oracle` et `narrateur` deviennent des **modules** `references/oracle.md` / `references/narrateur.md` appliqués par l'agent ; `actions/` alignées (plus d'invocation de sous-agent) ; outils Hermes (`terminal` pour les vrais dés).
+- **Plugin = source Hermes** : `deploy-to-hermes.sh` copie la skill vers `~/.hermes/skills/rpg/solo-mc/` ; README réécrit (déploiement, modules, deux runtimes). La variante **Claude Code** est préservée dans `obsidian:solo-mc`.
+
 ## [0.1.0] — 2026-06-01
 
 ### Added

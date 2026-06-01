@@ -23,7 +23,7 @@ Oracle result:
 0. The oracle is called by the LLM when T13 (see SKILL.md) identifies a staked decision or a chance element — it is not a player-facing command; the player may never see the oracle call itself, only its narrative consequence. Routing: hasard (dice, random concept) → muses-et-oracles subsystem; decision (what does the world choose?) → parallaxe subsystem.
 1. Read `.current-session` to identify the active campaign.
 2. Read `<campaign>/config.yaml` to detect the game system and its oracle rules.
-3. Resolve by applying the oracle module (`references/oracle.md`) to the question, probability level, and game system.
+3. Invoke `oracle-agent` with the question, probability level, and game system.
 4. Display the dice result, answer category, and a short narrative interpretation.
 5. Append the oracle result to the current session file as a log entry.
 

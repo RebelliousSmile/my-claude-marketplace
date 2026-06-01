@@ -1,8 +1,10 @@
 # hermes
 
-*Plugin dont **tous** les composants (skills, agents) respectent strictement l'**architecture Hermes Agent** de Nous Research.*
+*Plugin **source** des skills **natives Hermes Agent** (Nous Research) : `solo-mc` y est écrite au format agentskills.io et **déployée** vers le runtime Hermes (`~/.hermes/skills/`, voir § 4) — elle n'est pas exécutée par Claude Code.*
 
-Ce plugin n'est pas qu'un conteneur : c'est un **contrat d'architecture**. Toute skill ou tout agent ajouté ici doit se conformer aux principes ci-dessous. La première skill hébergée, `solo-mc` (maître de jeu JDR solo en direct), sert de référence d'implémentation.
+> **Deux runtimes, deux portages.** Cette version cible **Hermes Agent** : **agent unique** (pas de sous-agents), déploiement `~/.hermes/skills/`. La version **Claude Code** (sous-agents, marketplace) vit dans **`obsidian:solo-mc`**. Les deux partagent le coffre `~/JDR/`.
+
+Le reste de ce README documente l'architecture Hermes que la skill respecte.
 
 ---
 
@@ -65,7 +67,7 @@ Un plugin Claude Code tourne sur Claude, pas sur un modèle Hermes : on n'hérit
 | Boucle `AIAgent` / dispatch d'intentions | La **skill routeur** (`SKILL.md`) : table d'actions + dispatch par intention |
 | Registre d'outils auto-enregistrés (schéma) | Le dossier **`actions/`** : un fichier numéroté par action, chacun avec `Inputs` (schéma), `Outputs`, `Process`, `Test` |
 | Format `<tools>` / `<tool_call>` / `<tool_response>` | Le contrat `Inputs → invocation → Outputs` de chaque action (entrées typées, sortie structurée) |
-| Sous-agents / outils spécialisés | Les **agents** du plugin (`agents/`), invoqués par la skill pour les tâches dédiées |
+| (Hermes = **agent unique**, pas de sous-agents) | Les **modules** `references/oracle.md` (décision) et `references/narrateur.md` (voix), **lus et appliqués par l'agent unique** — jamais des sous-agents |
 | Mémoire persistante (sessions SQLite) | L'état de jeu sur disque : `.session-state.yaml`, `.current-session`, journaux de session |
 | Prompt à trois tiers (stable/context/volatile) | **Stable** = règles transversales (identité, garde-fous) · **Context** = `config.yaml` + règles `canon/mj` · **Volatile** = `.session-state.yaml` lu à chaque action |
 | Prompt Stability / écritures atomiques | L'état est **lu à chaque action, écrit uniquement à `play-end`** — jamais muté en silence en cours de tour |
@@ -79,27 +81,39 @@ Un plugin Claude Code tourne sur Claude, pas sur un modèle Hermes : on n'hérit
 |---|---|---|
 | `solo-mc` | `/hermes:solo-mc` | Maître de jeu du JDR solo en direct : play, play-resume, play-end, scene, oracle, roll, pj, status, previously, setup, create-character, journal-pdf |
 
-### `solo-mc` — implémentation de référence
+### `solo-mc` — skill native Hermes
 
-La skill routeur dispatche l'intention du joueur vers l'une de ses 12 actions (`actions/01-play.md` … `12-journal-pdf.md`). Chaque action est un « outil » au sens Hermes : entrées typées, sortie structurée, test d'acceptation.
+`SKILL.md` est au format **agentskills.io** (When to Use / Quick Reference / Procedure / Pitfalls / Verification). L'**agent unique** Hermes exécute tout : il dispatche l'intention vers l'une des 12 actions (`actions/01-play.md` … `12-journal-pdf.md`, chargées à la demande) et applique ses **modules** :
 
-Deux agents portent les tâches spécialisées (le registre d'outils du plugin) :
-
-| Agent | Rôle |
+| Module (`references/`) | Rôle |
 |---|---|
-| `mj-solo` | Génération narrative des scènes (micro-séquences interactives, PNJ, rythme) |
-| `oracle` | Réponses oui/non et destin, jets adaptés au système, Facteur Chaos |
+| `oracle.md` | Moteur de **décision invisible** : tirage de carte (muses-et-oracles), recadrage (parallaxe), Facteur Chaos, vrais dés via `terminal` |
+| `narrateur.md` | **Voix du MJ** : narration (cinerio), dialogue (conversation-cards), conventions HRP/RP, boucle micro-scène |
+| `response-templates.md` | Templates de sortie (Scene / HRP-RP / Mechanical Q / Dialogue) |
 
-La mémoire persistante vit dans le coffre : `JDR/.current-session` (session active), `JDR/<jeu>/campagnes/<campagne>/sessions/.session-state.yaml` (état mécanique, **lu à chaque action, écrit à `play-end`**), et les journaux de session. Les règles (système + sous-systèmes, scindées `canon/mj`) sont la couche **context**, produites par `rpg-writer:rules-keeper` — jamais inventées.
+Ce ne sont **pas des sous-agents** (Hermes est mono-agent) : l'agent unique les lit à la demande et les applique lui-même.
 
-> `solo-mc` consomme la prep produite par `obsidian:rpg` et la fiche de PJ gérée par `obsidian:pc`. Le trio JDR solo est donc **réparti sur deux plugins** : `obsidian` (prep + fiche) et `hermes` (jeu en direct).
+La mémoire persistante vit dans le coffre : `<vault>/.current-session`, `…/sessions/.session-state.yaml` (lu à chaque action, écrit à `play-end`), journaux de session. Les règles (système + sous-systèmes `canon/mj`) sont la couche **context**, produites par `rpg-writer:rules-keeper`. `<vault>` est résolu par machine via `~/.jdr.yaml`.
+
+> `solo-mc` consomme la prep produite par `obsidian:rpg` et la fiche de PJ gérée par `obsidian:pc`.
 
 ---
 
-## 4. Ajouter un composant
+## 4. Déploiement vers Hermes Agent
 
-Avant d'ajouter une skill ou un agent ici, vérifier qu'il respecte le contrat de la section 1.4 :
-les actions exposent un schéma d'entrée/sortie explicite (§ 2), l'état persistant est lu en début et écrit atomiquement, et aucune mécanique n'est inventée hors des références `context`. Un composant qui ne tient pas ce contrat appartient à un autre plugin.
+Hermes charge les skills depuis `~/.hermes/skills/<catégorie>/<nom>/SKILL.md` — **pas** depuis le marketplace Claude Code. Sur la machine qui exécute Hermes (le serveur Linux) :
+
+```bash
+./deploy-to-hermes.sh   # copie skills/solo-mc → ~/.hermes/skills/rpg/solo-mc/
+```
+
+Prérequis sur cette machine : `~/.jdr.yaml` avec `vault:` (ex. `~/JDR`) et `git:`, et les sous-systèmes peuplés dans le coffre (`subsystems/<nom>/systeme/canon/`).
+
+---
+
+## 5. Ajouter un composant
+
+Avant d'ajouter une skill ici, vérifier qu'elle respecte le contrat de la section 1.4 et le format Hermes (agentskills.io, agent unique, modules en `references/`) : les actions exposent un schéma entrée/sortie explicite, l'état persistant est lu en début et écrit atomiquement, et aucune mécanique n'est inventée hors des références `context`. Un composant qui ne tient pas ce contrat appartient à un autre plugin.
 
 ## Licence
 

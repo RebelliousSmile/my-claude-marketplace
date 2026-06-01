@@ -45,6 +45,7 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
     │       │   └── ...
     │       ├── mj/                 ← contenu maison (non-canon)
     │       │   └── ...
+    │       ├── research/           ← rapports de recherche documentaire (research, portée univers)
     │       ├── sources/
     │       │   └── <source>/       ← documents de référence bruts (extract-pdf)
     │       │       ├── lore.md
@@ -77,10 +78,12 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
     │   └── <pj>/
     ├── campagnes/
     │   └── <campagne>/
-    │       └── mj/                 ← fiction décidée en partie (solo-mc)
+    │       ├── mj/                 ← fiction décidée en partie (solo-mc)
+    │       └── research/           ← rapports de recherche documentaire (research, portée campagne)
     └── ecrits/
         └── <projet>/
             ├── bank.yml
+            ├── research/           ← rapports de recherche documentaire (research, projet d'écriture)
             └── docs/
                 └── extraction/
                     └── <source>/   ← espace de travail temporaire (extract-pdf)
@@ -98,6 +101,20 @@ Quand `hermes:solo-mc` décide un fait en cours de partie, choisir la destinatio
 | `univers/<univers>/mj/` | Fait de portée mondiale, réutilisable entre campagnes |
 | `systeme/mj/solo.md` | Règle de conduite du jeu solo définie en partie pour fluidifier le système |
 | Log de session seul | Détail trivial / sans enjeu (pas de promotion nécessaire) |
+
+---
+
+## Recherche documentaire (`research`)
+
+Le skill `research` (rpg-writer) écrit selon une **portée** explicite (ne cible jamais « univers » par défaut) :
+
+| Portée | Rapport de travail | Trouvailles vérifiées |
+|--------|--------------------|-----------------------|
+| **Setting/univers** (savoir durable, partagé) | `<univers-root>/research/<slug>-<date>.md` | `<univers-root>/canon/<thème>.md` (canon partagé) |
+| **Campagne** (propre à une partie) | `<campagne-root>/research/<slug>-<date>.md` | restent dans la prep de campagne (par `rpg`) ; promues en canon partagé **seulement sur décision explicite** |
+| **Projet d'écriture** | `<projet-root>/research/<slug>-<date>.md` | `canon/` de l'univers du projet |
+
+Les rapports `research/` sont des **sorties d'outil versionnées** (au même titre que lore-extract / rules-keeper).
 
 ---
 
@@ -185,6 +202,7 @@ Le dépôt `tnn-jdr` (`https://git.lacontrevoie.fr/fxguillois/tnn-jdr`) versionn
 | `<subsys-root>/ecrits/<projet>/` | Projet de publication du sous-système (bank.yml, overview…) | ✅ versionné |
 | `<subsys-root>/systeme/sources/` | Sources brutes du sous-système (cartes, PDF) | ❌ gitignored |
 | `<campagne-root>/mj/` | Fiction de campagne décidée en partie (hermes:solo-mc) | ✅ versionné |
+| `<univers-root>/research/`, `<campagne-root>/research/`, `<projet-root>/research/` | Rapports de recherche documentaire (research) | ✅ versionné |
 
 ### Conséquence après un clone sur une nouvelle machine
 

@@ -26,7 +26,7 @@ A fully rendered scene including:
 2. Read `.current-session` to identify the active campaign.
 3. Read `<campaign>/sessions/.session-state.yaml` for current game state (location, active NPCs, ongoing statuses, countdowns).
 4. Read `<campaign>/config.yaml` for tone, pacing, and difficulty settings.
-5. Render the scene by applying the narration module (`references/narrateur.md`) to current state, optional `type`, and `context`.
+5. Invoke `narrateur-agent` with current state, optional `type`, and `context`.
 6. Display the scene output and append it to the current session file.
 
 ## Test
