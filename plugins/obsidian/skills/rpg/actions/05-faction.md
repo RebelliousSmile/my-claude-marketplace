@@ -6,7 +6,7 @@ Distinction clé : la **faction** est une donnée d'univers durable → sous-arb
 
 ## Inputs
 
-- `campagne` (requis) — nom de la campagne (pour les fronts) ; son `config.yaml › universe` désigne l'univers.
+- `campagne` (requis) — nom de la campagne (pour les fronts) ; son `config.yaml › univers` désigne l'univers.
 - `faction` — nom ; sinon, proposer à partir du `synopsis.md` ou des `factions.md` (`canon/` et `mj/`).
 
 ## Process

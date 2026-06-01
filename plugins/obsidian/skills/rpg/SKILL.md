@@ -40,7 +40,7 @@ Routeur — dispatch selon l'intention :
 
 ## Transversal rules
 
-- **Racine par jeu** : le coffre `C:/Users/fxgui/Public/Notes/Perso/JDR/` est rangé **par jeu** sous `JDR/<jeu>/` (`<jeu>` = premier segment sous la racine, déduit du répertoire courant). Une campagne vit dans `JDR/<jeu>/campagnes/<campagne>/` (même convention que `solo-mc`), avec `config.yaml`, `sessions/`, `pj/`.
+- **Racine par jeu** : le coffre `C:/Users/fxgui/Public/Notes/Perso/JDR/` est rangé **par jeu** sous `JDR/<jeu>/` (`<jeu>` = premier segment sous la racine, déduit du contexte de campagne actif via `.current-session`, pas d'un répertoire deviné). Une campagne vit dans `JDR/<jeu>/campagnes/<campagne>/` (même convention que `solo-mc`), avec `config.yaml`, `sessions/`, `pj/`.
 - **`<univers-root>` (résolution de l'univers)** : un **setting est un univers du jeu**, rangé au niveau jeu `JDR/<jeu>/univers/<univers>/` — même s'il est vaste (gamme étendue, plusieurs éditions, ex. 7ème Mer / Théah pour le jeu Noblesse Oblige). Un jeu peut avoir **plusieurs univers** ; chaque univers est partagé par le **groupe de campagnes** qui s'y déroulent. La campagne déclare le sien (`config.yaml › univers: <slug>`). Dans les règles ci-dessous, `<univers-root>` = `JDR/<jeu>/univers/<univers>/`.
 - **Deux niveaux à distinguer** :
   - **Données univers (durables, transverses aux campagnes)** — terminologie, factions, personnages, lieux/géographie, histoire. Elles vivent dans l'**arborescence partagée avec `lore-extract`** : `<univers-root>/`, **scindée par provenance en deux sous-arbres thématiques identiques** :
@@ -56,6 +56,7 @@ Routeur — dispatch selon l'intention :
 - Demander le nom de la campagne s'il n'est pas dans `$ARGUMENTS` ; lister les campagnes existantes sous `JDR/<jeu>/campagnes/` (dossiers contenant un `config.yaml`).
 - Si `config.yaml` est absent, **ne pas dupliquer** le questionnaire : orienter vers `/solo-mc setup` pour le créer, puis revenir préparer.
 - **Système de jeu** : pour toute mécanique (récompenses, tags PNJ, défis), `rpg` consulte les règles du système de jeu au format rules-keeper (`writing:rules-keeper`), scindées canon/mj, sous `JDR/<jeu>/systeme/{canon,mj}/`. Règles effectives = canon + house rules déclarées. **Ne jamais inventer de mécanique.** Les **sous-systèmes génériques** (Parallaxe, Cinério, Muses et Oracles) sont des **outils de jeu en direct** consommés par `solo-mc` uniquement — hors du ressort de `rpg`.
+- **Procédure Hermes vs matière JDR** : si la demande porte sur la manière de travailler de l'agent, la configuration Hermes, l'orchestration, ou le choix d'outils/skills, `rpg` s'appuie d'abord sur les skills Hermes pertinents pour le workflow. En revanche, la matière de jeu, le lore, les PNJ, les fronts et la campagne restent ancrés dans le coffre Obsidian.
 - Servir le PJ : ancrer scénarios et sessions sur l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale) géré par `pc`. La prep sert les enjeux du joueur, pas l'inverse.
 - Lire `config.yaml` (ton, rythme, difficulté, chaos, profondeur PNJ/lieux) et s'y conformer.
 - La prep est **consommée par `solo-mc`** au moment du jeu (scènes, oracle, fronts/horloges) ; ne jamais jouer en direct ici.

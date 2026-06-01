@@ -2,8 +2,8 @@
 name: pc
 description: >-
   Manages JDR solo player-character files stored in JDR/<jeu>/pjs/<pj>/ — create a new PJ,
-  fill or reorganize its files, log a game session (système de jeu), or display the
-  character sheet. Use when the user invokes /obsidian:pc with a player-character intent.
+  fill or reorganize its files, log a game session, or display the character sheet tied to
+  the active campaign. Use when the user's message is about PJ management in a solo JDR vault.
   Do NOT use for campaign prep (scénarios, PNJ, factions) — use `rpg`; nor for live play
   (scene, oracle, roll) — use `solo-mc`.
 disable-model-invocation: true
@@ -14,7 +14,7 @@ disable-model-invocation: true
 Manages player character folders stored in `C:/Users/fxgui/Public/Notes/Perso/JDR/<jeu>/pjs/`.
 Routes to the appropriate action based on user intent.
 
-**Racine par jeu** — le coffre est rangé **par jeu** sous `JDR/<jeu>/`. Le `<jeu>` est le premier segment sous la racine du coffre, déduit du répertoire courant d'invocation (`pc` est lancé dans l'arborescence du jeu concerné). Les personnages vivent dans `JDR/<jeu>/pjs/<pj>/`.
+**Racine par jeu** — le coffre est rangé **par jeu** sous `JDR/<jeu>/`. Le `<jeu>` est le premier segment sous la racine du coffre, déduit du contexte de campagne actif (`.current-session`), pas d'un répertoire deviné. Les personnages vivent dans `JDR/<jeu>/pjs/<pj>/`.
 
 ## Available actions
 
@@ -38,7 +38,7 @@ Router — dispatches based on user intent:
 
 ## Transversal rules
 
-- PJ root: `C:/Users/fxgui/Public/Notes/Perso/JDR/<jeu>/pjs/` (`<jeu>` resolved from the current working directory)
+- PJ root: `C:/Users/fxgui/Public/Notes/Perso/JDR/<jeu>/pjs/` (`<jeu>` resolved from the active campaign context / `.current-session`)
 - Template (shared): `C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-template/`
 - Manager script (shared): `C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-manager.py`
 - Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `<jeu>/pjs/`.
