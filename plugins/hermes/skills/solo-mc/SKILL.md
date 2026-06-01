@@ -59,6 +59,14 @@ Dispatch by intent — route to the action that matches the user's message:
 - **T10 — Journalisation narrative continue (obligatoire)** — Pendant une session active (`play` / `play-resume`), **avant de répondre**, archiver l'échange précédent (message RP du joueur + réponse MJ précédente) dans le fichier de log de session (`<vault>/<jeu>/campagnes/<campagne>/sessions/session-<YYYY-MM-DD>-<N>.md`, défini par `play`) : lire le log, y concaténer l'échange, écrire, **puis** répondre. Ce log narratif est **distinct** de `.session-state.yaml` (état mécanique, écrit au `play-end`). Les `[HRP]` sont loggés mais identifiés.
 - **T11 — Cohérence & continuité** — **Connaissances PNJ** : un PNJ ne révèle que ce qu'il peut logiquement savoir (événements vus, position dans l'intrigue) — vérifier avant tout dialogue. **Continuité** : recouper logs, fiches et état des sessions précédentes avant d'introduire un élément ; ne jamais contredire la chronologie établie en silence.
 - **T12 — Lire avant d'inventer** — Lire l'existant (campagnes, PJ, univers, logs) **avant** de poser des questions ou de générer. **Ne jamais inventer** de faits, situations ou lore non fournis par le joueur ou absents des fichiers : faire **jouer** le contenu, pas le créer. (Pour les mécaniques, voir T6.)
+- **T13 — Grille décisionnelle (anti-linéarité)** — Appliquer à chaque point de décision pendant le jeu :
+  - **Étape 1 — Canon du système actif** : l'élément est couvert par `systeme/` + `subsystems/` ? → appliquer la règle.
+  - **Étape 2 — Hors canon → jurisprudence** : le LLM tranche. Tout élément déclaré dans la fiction fait loi ensuite.
+  - **Étape 3 — Routage par enjeu** :
+    - **Trivial / sans conséquence** (couleur de cheveux d'un PNJ de fond, heure du jour) → décider en silence ; reste dans le log de session seul ; aucune promotion.
+    - **Nouveau lieu ou PNJ nommé** → le nommer, écrire une description d'une ligne, promouvoir dans `campagnes/<campagne>/mj/` (ou `univers/<univers>/mj/` si portée mondiale).
+    - **Décision à enjeu** (issue incertaine, conséquence joueur, embranchement narratif) → DOIT être résolue via l'oracle (muses-et-oracles pour le hasard ; parallaxe pour la décision) ; résultat relié à un test, une manœuvre ou un élément de règle ; ne JAMAIS narrer l'issue librement.
+  - **Heuristique** : « Si retirer le jet rendrait l'issue scénarisée/prévisible, c'est à enjeu. »
 
 ## Common Pitfalls
 
@@ -68,3 +76,4 @@ Dispatch by intent — route to the action that matches the user's message:
 - **Move sans trigger (trigger-first)** — lire la fiction, identifier le trigger prévu par le système, puis adjuger ; si aucun ne s'applique, réaction MC valide — jamais de mécanique ad hoc.
 - **Chronologie / continuité** — recouper les fichiers avant d'introduire un élément nouveau.
 - **Datation / numérotation de session** — vérifier la date système ; numéroter d'après les fichiers de `sessions/` (la vérité est dans le système de fichiers, **pas** dans `config.yaml › session_courante`/`last_played`, qui peuvent pointer une archive).
+- **Narrer une issue à enjeu sans test** — toute incertitude ou conséquence réelle doit passer par la grille décisionnelle T13 ; jamais résoudre en narrant directement le résultat.

@@ -21,11 +21,12 @@ A fully rendered scene including:
 
 ## Process
 
-1. Read `.current-session` to identify the active campaign.
-2. Read `<campaign>/sessions/.session-state.yaml` for current game state (location, active NPCs, ongoing statuses, countdowns).
-3. Read `<campaign>/config.yaml` for tone, pacing, and difficulty settings.
-4. Invoke `mj-solo-agent` with current state, optional `type`, and `context`.
-5. Display the scene output and append it to the current session file.
+1. Apply T13 decisional grid (see SKILL.md) to every element that will be introduced or resolved in this scene. Note: any new NPC or place introduced in the scene triggers the "new named element" branch of T13 — name it, write a one-line description, and promote to `campagnes/<campagne>/mj/` (or `univers/<univers>/mj/` if world-level).
+2. Read `.current-session` to identify the active campaign.
+3. Read `<campaign>/sessions/.session-state.yaml` for current game state (location, active NPCs, ongoing statuses, countdowns).
+4. Read `<campaign>/config.yaml` for tone, pacing, and difficulty settings.
+5. Invoke `mj-solo-agent` with current state, optional `type`, and `context`.
+6. Display the scene output and append it to the current session file.
 
 ## Test
 
