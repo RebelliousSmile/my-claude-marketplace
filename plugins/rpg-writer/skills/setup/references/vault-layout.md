@@ -65,11 +65,14 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
     │           ├── terminology.md
     │           └── ...
     ├── subsystems/
-    │   └── <nom>/
-    │       ├── canon/
-    │       ├── mj/
-    │       └── sources/
-    │           └── <source>/
+    │   └── <nom>/                  ← structuré comme un jeu : ecrits/ + systeme/
+    │       ├── ecrits/
+    │       │   └── <projet>/        ← description du sous-système pour publication (bank.yml, overview.md)
+    │       └── systeme/
+    │           ├── canon/           ← règles du sous-système consommées par les skills (rules-keeper)
+    │           ├── mj/
+    │           └── sources/
+    │               └── <source>/    ← cartes / règles brutes (extract-pdf)
     ├── pjs/
     │   └── <pj>/
     ├── campagnes/
@@ -109,7 +112,7 @@ extract-pdf          → sources de référence brutes (fidèles, non interprét
                                       ↓
 lore-extract         → ventile sources/ vers <univers-root>/canon/        (ou mj/)
 rules-keeper         → ventile sources/ vers <systeme-root>/canon/         (ou mj/)
-                        (ou <subsys-root>/canon/ pour les sous-systèmes)
+                        (ou <subsys-root>/systeme/canon/ pour les sous-systèmes)
 ```
 
 **Règle d'or :** `extract-pdf` n'écrit **jamais** dans `canon/` ni dans `mj/` directement.
@@ -128,7 +131,7 @@ Son output (`sources/`) est un document de référence brut qui attend la ventil
 | Input (sources de référence) | Output (canon ventilé) |
 |------------------------------|------------------------|
 | `<systeme-root>/sources/<source>/rules.md` | `<systeme-root>/canon/<fichier>.md` |
-| `<subsys-root>/sources/<source>/rules.md` | `<subsys-root>/canon/<fichier>.md` |
+| `<subsys-root>/systeme/sources/<source>/rules.md` | `<subsys-root>/systeme/canon/<fichier>.md` |
 | Règles maison (`--homemade`) | `<systeme-root>/mj/<fichier>.md` |
 
 > **`<systeme-root>/mj/solo.md` — house rules de jeu solo.** À côté des règles maison restructurées par `rules-keeper --homemade`, ce fichier recueille les **règles de conduite du jeu solo établies au fil de la partie** par l'agent `hermes:solo-mc` (adjudication des moves / réactions MC, conventions de table). C'est `hermes:solo-mc` qui l'écrit **en jeu**, pas `rules-keeper`. **N'y consigner que des règles** ; un fait de fiction durable va dans `<univers-root>/mj/`, jamais ici. Versionné (sous `mj/`), relu à chaque session.
@@ -142,7 +145,7 @@ Ne jamais renommer ni déplacer ces dossiers sans coordination avec le plugin ob
 
 **Consommation des règles** :
 - `systeme/{canon,mj}/` (système de jeu) — partagé entre `hermes:solo-mc`, `obsidian:pc`, `obsidian:rpg`, et le writer (`rules-files` du bank.yml). Le fichier `mj/solo.md` y est **écrit par `hermes:solo-mc`** en cours de partie (house rules de jeu solo).
-- `subsystems/<nom>/{canon,mj}/` (sous-systèmes génériques : Parallaxe, Cinério, Muses et Oracles) — **produits par `rules-keeper`, consommés par `hermes:solo-mc` uniquement** (outils de jeu en direct). Ni `pc`/`rpg` ni le writer ne les référencent.
+- `subsystems/<nom>/systeme/{canon,mj}/` (sous-systèmes génériques : Parallaxe, Cinério, Muses et Oracles) — **produits par `rules-keeper`, consommés par `hermes:solo-mc` uniquement** (outils de jeu en direct). Ni `pc`/`rpg` ni le writer ne les référencent. Le côté `subsystems/<nom>/ecrits/` est le projet de publication du sous-système (comme un jeu).
 - `campagnes/<campagne>/mj/` — **écrit par `hermes:solo-mc`** en cours de partie pour tout fait de fiction propre à la campagne en cours. Non partagé avec `obsidian:rpg` ni le writer (périmètre campagne seul).
 
 ---
@@ -155,7 +158,7 @@ Le dépôt `tnn-jdr` (`https://git.lacontrevoie.fr/fxguillois/tnn-jdr`) versionn
 
 | Pattern | Ce qu'il couvre |
 |---------|-----------------|
-| `**/sources/` | Toutes les sources brutes : `<univers-root>/sources/`, `<systeme-root>/sources/`, `<subsys-root>/sources/` |
+| `**/sources/` | Toutes les sources brutes : `<univers-root>/sources/`, `<systeme-root>/sources/`, `<subsys-root>/systeme/sources/` |
 | `**/fulltext.md` | Dumps PDF directs (`extract-pdf`) |
 
 **Exceptions (un-ignore)** — le `.gitignore` ajoute explicitement :
@@ -178,7 +181,9 @@ Le dépôt `tnn-jdr` (`https://git.lacontrevoie.fr/fxguillois/tnn-jdr`) versionn
 | `<univers-root>/mj/` | Lore maison | ✅ versionné |
 | `<univers-root>/{canon,mj}/**/sources/` | Sources brutes nichées dans canon/mj | ❌ gitignored |
 | `<univers-root>/sources/` | Sources brutes lore (extract-pdf) | ❌ gitignored |
-| `<subsys-root>/canon/` | Canon des sous-systèmes (Parallaxe…) | ✅ versionné |
+| `<subsys-root>/systeme/canon/` | Canon des sous-systèmes (Parallaxe…) — couvert par l'exception `!**/systeme/canon/**` | ✅ versionné |
+| `<subsys-root>/ecrits/<projet>/` | Projet de publication du sous-système (bank.yml, overview…) | ✅ versionné |
+| `<subsys-root>/systeme/sources/` | Sources brutes du sous-système (cartes, PDF) | ❌ gitignored |
 | `<campagne-root>/mj/` | Fiction de campagne décidée en partie (hermes:solo-mc) | ✅ versionné |
 
 ### Conséquence après un clone sur une nouvelle machine
