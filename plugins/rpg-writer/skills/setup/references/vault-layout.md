@@ -9,7 +9,7 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
 
 | Variable | Valeur résolue |
 |----------|----------------|
-| `<vault>` | `C:/Users/fxgui/Public/Notes/Perso/JDR/` |
+| `<vault>` | Racine du vault — résolue depuis `~/.jdr.yaml › vault` (voir note ci-dessous). Défauts : Windows `C:/Users/fxgui/Public/Notes/Perso/jdr` · Linux `~/JDR` |
 | `<jeu>` | Premier segment sous `<vault>` — déduit du CWD ou de `bank.yml` |
 | `<univers-root>` | `<jeu>/univers/<univers>/` |
 | `<systeme-root>` | `<jeu>/systeme/` |
@@ -21,6 +21,13 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
 
 > Résolution de `<jeu>` : si le CWD est `<vault>/<jeu>/ecrits/<projet>/`, alors `<jeu>` = `<vault>/<jeu>/`.
 > Toujours vérifier l'existence du chemin résolu avant toute lecture/écriture.
+
+> **Racine du vault — config par machine (non versionnée).** `<vault>` est résolu depuis le fichier local `~/.jdr.yaml` :
+> ```yaml
+> vault: C:/Users/fxgui/Public/Notes/Perso/jdr   # Windows  (Linux : ~/JDR)
+> git:   https://git.lacontrevoie.fr/fxguillois/tnn-jdr
+> ```
+> Machine vierge → cloner `git` à l'emplacement `vault` avant toute opération. Jamais de chemin absolu en dur dans un skill : toujours passer par `<vault>`.
 
 ---
 
@@ -49,8 +56,9 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
     ├── systeme/
     │   ├── canon/                  ← règles officielles restructurées (rules-keeper)
     │   │   └── ...
-    │   ├── mj/                     ← règles maison (rules-keeper --homemade)
-    │   │   └── ...
+    │   ├── mj/                     ← règles maison
+    │   │   ├── solo.md             ← house rules de jeu SOLO établies en partie (hermes:solo-mc)
+    │   │   └── ...                 ← house rules restructurées (rules-keeper --homemade)
     │   └── sources/
     │       └── <source>/           ← règles brutes extraites (extract-pdf)
     │           ├── rules.md
@@ -66,6 +74,7 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
     │   └── <pj>/
     ├── campagnes/
     │   └── <campagne>/
+    │       └── mj/                 ← fiction décidée en partie (solo-mc)
     └── ecrits/
         └── <projet>/
             ├── bank.yml
@@ -73,6 +82,19 @@ Referenced by every rpg-writer skill that reads or writes vault paths.
                 └── extraction/
                     └── <source>/   ← espace de travail temporaire (extract-pdf)
 ```
+
+---
+
+## Routage des faits de fiction (solo-mc)
+
+Quand `hermes:solo-mc` décide un fait en cours de partie, choisir la destination selon la portée :
+
+| Destination | Ce qui va ici |
+|---|---|
+| `campagnes/<campagne>/mj/` | Fait de fiction décidé en partie, propre à cette campagne |
+| `univers/<univers>/mj/` | Fait de portée mondiale, réutilisable entre campagnes |
+| `systeme/mj/solo.md` | Règle de conduite du jeu solo définie en partie pour fluidifier le système |
+| Log de session seul | Détail trivial / sans enjeu (pas de promotion nécessaire) |
 
 ---
 
@@ -109,6 +131,8 @@ Son output (`sources/`) est un document de référence brut qui attend la ventil
 | `<subsys-root>/sources/<source>/rules.md` | `<subsys-root>/canon/<fichier>.md` |
 | Règles maison (`--homemade`) | `<systeme-root>/mj/<fichier>.md` |
 
+> **`<systeme-root>/mj/solo.md` — house rules de jeu solo.** À côté des règles maison restructurées par `rules-keeper --homemade`, ce fichier recueille les **règles de conduite du jeu solo établies au fil de la partie** par l'agent `hermes:solo-mc` (adjudication des moves / réactions MC, conventions de table). C'est `hermes:solo-mc` qui l'écrit **en jeu**, pas `rules-keeper`. **N'y consigner que des règles** ; un fait de fiction durable va dans `<univers-root>/mj/`, jamais ici. Versionné (sous `mj/`), relu à chaque session.
+
 ---
 
 ## Interopérabilité obsidian
@@ -117,14 +141,15 @@ Les sous-arbres `canon/` + `mj/` sont **partagés avec `obsidian:rpg`**.
 Ne jamais renommer ni déplacer ces dossiers sans coordination avec le plugin obsidian.
 
 **Consommation des règles** :
-- `systeme/{canon,mj}/` (système de jeu) — partagé entre `obsidian:solo-mc`, `pc`, `rpg`, et le writer (`rules-files` du bank.yml).
-- `subsystems/<nom>/{canon,mj}/` (sous-systèmes génériques : Parallaxe, Cinério, Muses et Oracles) — **produits par `rules-keeper`, consommés par `obsidian:solo-mc` uniquement** (outils de jeu en direct). Ni `pc`/`rpg` ni le writer ne les référencent.
+- `systeme/{canon,mj}/` (système de jeu) — partagé entre `hermes:solo-mc`, `obsidian:pc`, `obsidian:rpg`, et le writer (`rules-files` du bank.yml). Le fichier `mj/solo.md` y est **écrit par `hermes:solo-mc`** en cours de partie (house rules de jeu solo).
+- `subsystems/<nom>/{canon,mj}/` (sous-systèmes génériques : Parallaxe, Cinério, Muses et Oracles) — **produits par `rules-keeper`, consommés par `hermes:solo-mc` uniquement** (outils de jeu en direct). Ni `pc`/`rpg` ni le writer ne les référencent.
+- `campagnes/<campagne>/mj/` — **écrit par `hermes:solo-mc`** en cours de partie pour tout fait de fiction propre à la campagne en cours. Non partagé avec `obsidian:rpg` ni le writer (périmètre campagne seul).
 
 ---
 
 ## Versioning & gitignore (dépôt `tnn-jdr`)
 
-Le dépôt `tnn-jdr` versionne tout le contenu personnel et les sorties des outils (lore-extract, rules-keeper). Seules les sources brutes (extractions PDF, dumps) sont exclues — elles sont volumineuses, dérivées de matériel commercial, et régénérables.
+Le dépôt `tnn-jdr` (`https://git.lacontrevoie.fr/fxguillois/tnn-jdr`) versionne tout le contenu personnel et les sorties des outils (lore-extract, rules-keeper). Seules les sources brutes (extractions PDF, dumps) sont exclues — elles sont volumineuses, dérivées de matériel commercial, et régénérables.
 
 **Patterns gitignored** :
 
@@ -147,13 +172,14 @@ Le dépôt `tnn-jdr` versionne tout le contenu personnel et les sorties des outi
 | Chemin | Rôle | Statut |
 |--------|------|--------|
 | `<systeme-root>/canon/` | Règles officielles du système (rules-keeper) | ✅ versionné |
-| `<systeme-root>/mj/` | Règles maison du système | ✅ versionné |
+| `<systeme-root>/mj/` | Règles maison du système (dont `solo.md` — house rules de jeu solo, écrit par `hermes:solo-mc`) | ✅ versionné |
 | `<systeme-root>/sources/` | Sources brutes règles (extract-pdf) | ❌ gitignored |
 | `<univers-root>/canon/` | Lore officiel (lore-extract) | ✅ versionné |
 | `<univers-root>/mj/` | Lore maison | ✅ versionné |
 | `<univers-root>/{canon,mj}/**/sources/` | Sources brutes nichées dans canon/mj | ❌ gitignored |
 | `<univers-root>/sources/` | Sources brutes lore (extract-pdf) | ❌ gitignored |
 | `<subsys-root>/canon/` | Canon des sous-systèmes (Parallaxe…) | ✅ versionné |
+| `<campagne-root>/mj/` | Fiction de campagne décidée en partie (hermes:solo-mc) | ✅ versionné |
 
 ### Conséquence après un clone sur une nouvelle machine
 
