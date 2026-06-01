@@ -67,6 +67,13 @@ Dispatch by intent — route to the action that matches the user's message:
     - **Nouveau lieu ou PNJ nommé** → le nommer, écrire une description d'une ligne, promouvoir dans `campagnes/<campagne>/mj/` (ou `univers/<univers>/mj/` si portée mondiale).
     - **Décision à enjeu** (issue incertaine, conséquence joueur, embranchement narratif) → DOIT être résolue via l'oracle (muses-et-oracles pour le hasard ; parallaxe pour la décision) ; résultat relié à un test, une manœuvre ou un élément de règle ; ne JAMAIS narrer l'issue librement.
   - **Heuristique** : « Si retirer le jet rendrait l'issue scénarisée/prévisible, c'est à enjeu. »
+- **T14 — Substitution de compagnon (équipe séparée)** — Décision MC, pas une commande joueur. Signaux déclencheurs : une scène s'ouvre sur un lieu où seul le compagnon est présent ; la fiction crée un embranchement où deux personnages doivent agir simultanément en des lieux différents ; la dernière action du joueur envoie le PJ d'un côté et le compagnon ailleurs.
+  - **Chargement** : lire `config.yaml › compagnons:` pour obtenir le roster de la campagne (noms, rôles, chemins de fiches) ; sélectionner le compagnon concerné par la séparation ; charger `<vault>/<jeu>/pjs/<pj>/compagnons/<slug>.md`.
+  - **Gel** : noter la position narrative exacte du PJ dans `.session-state.yaml` (`active_character: <companion-slug>`, `pc_frozen_at: <beat-narratif>`).
+  - **Jeu** : jouer UNE scène comme le compagnon via sa fiche minimale (rôle, voix/tics, 3-5 tags mécaniques, état courant). La grille T13 s'applique normalement pendant la scène compagnon.
+  - **Timeline** : la scène compagnon rejoint le même moment temporel que le PJ. Le PJ était en avance ; la scène compagnon resynchronise l'équipe.
+  - **Retour** : fin de scène compagnon → remettre `active_character` au PJ dans `.session-state.yaml` ; dégeler le fil du PJ.
+  - **Dégradation gracieuse** : si la fiche compagnon est absente → `[HRP] Fiche compagnon pour <nom> introuvable. Lance /obsidian:pc companion create <nom> d'abord.`
 
 ## Common Pitfalls
 
