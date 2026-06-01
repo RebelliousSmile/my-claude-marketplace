@@ -2,10 +2,11 @@
 name: pc
 description: >-
   Manages JDR solo player-character files stored in JDR/<jeu>/pjs/<pj>/ — create a new PJ,
-  fill or reorganize its files, log a game session (système de jeu), or display the
-  character sheet. Use when the user invokes /obsidian:pc with a player-character intent.
+  fill or reorganize its files, log a game session (système de jeu), display the character
+  sheet, or manage the PJ's companions (the recurring team). Use when the user invokes
+  /obsidian:pc with a player-character intent.
   Do NOT use for campaign prep (scénarios, PNJ, factions) — use `rpg`; nor for live play
-  (scene, oracle, roll) — use `solo-mc`.
+  (scene, oracle, roll) — use `hermes:solo-mc`.
 disable-model-invocation: true
 ---
 
@@ -25,6 +26,7 @@ Routes to the appropriate action based on user intent.
 | 03  | `reorganize`  | Redistribute content to the 6 standard files                      | PJ name or loose .md file |
 | 04  | `log-session` | Update PJ files after a game session (système de jeu)      | PJ name, session info     |
 | 05  | `show`        | Display the current character sheet (tags, statuses, relations)   | PJ name or active session |
+| 06  | `companion`   | Create / fill / show a companion sheet (autonome ou par référence) ; register it in the PJ-level team roster | companion name |
 
 ## Default flow
 
@@ -35,6 +37,7 @@ Router — dispatches based on user intent:
 - "réorganiser PJ", "reorganize", "restructurer <nom>" → `reorganize`
 - "log session", "mettre à jour après session", "fin de session" → `log-session`
 - "afficher PJ", "fiche personnage", "show PJ", "/pj" → `show`
+- "compagnon", "companion", "team", "équipe", "allié", "ajouter un compagnon" → `companion`
 
 ## Transversal rules
 
@@ -42,11 +45,15 @@ Router — dispatches based on user intent:
 - Template (shared): `C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-template/`
 - Manager script (shared): `C:/Users/fxgui/Public/Notes/Perso/JDR/_shared/pj-manager.py`
 - Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `<jeu>/pjs/`.
-- Rules reference (terminology and mechanics): the active **game system**'s rules-keeper-optimized rules at `JDR/<jeu>/systeme/{canon,mj}/` (official `canon/` + GM house rules `mj/`), produced by `writing:rules-keeper`. Effective rules = canon + declared house rules. **Generic subsystems** (Parallaxe, Cinério, Muses et Oracles) are live-play tools consumed by `solo-mc` only — `pc` does not reference them.
+- Rules reference (terminology and mechanics): the active **game system**'s rules-keeper-optimized rules at `JDR/<jeu>/systeme/{canon,mj}/` (official `canon/` + GM house rules `mj/`), produced by `writing:rules-keeper`. Effective rules = canon + declared house rules. **Generic subsystems** (Parallaxe, Cinério, Muses et Oracles) are live-play tools consumed by `hermes:solo-mc` only — `pc` does not reference them.
 - Never invent mechanics — always consult the references above.
 - **Setup après clone (`tnn-jdr`)** — `systeme/canon/` (sortie de `rules-keeper`) et tous les `sources/` (entrées brutes des PDF) sont **gitignored** par convention : absents après un clone sur une nouvelle machine. Tant que `systeme/canon/` n'a pas été régénéré — relancer `extract-pdf` (PDF commercial requis) puis `rules-keeper` —, les références de règles ci-dessus sont indisponibles : n'inventer aucune mécanique, demander à l'utilisateur de lancer le setup. Les règles maison `systeme/mj/` et le lore `<univers>/canon/` sont versionnés et survivent au clone.
-- Le `_template/` et `pj-manager.py` (hors dépôt) reflètent le **système de jeu** actif ; pour tout terme mécanique, ce skill défère aux références rules-keeper du système de jeu ci-dessus. (Les sous-systèmes — Parallaxe, Cinério, Muses et Oracles — restent du ressort de `solo-mc`.)
+- Le `_template/` et `pj-manager.py` (hors dépôt) reflètent le **système de jeu** actif ; pour tout terme mécanique, ce skill défère aux références rules-keeper du système de jeu ci-dessus. (Les sous-systèmes — Parallaxe, Cinério, Muses et Oracles — restent du ressort de `hermes:solo-mc`.)
 - Date format: `YYYY-MM-DD` throughout all files.
+- **Compagnons (team du PJ)** — Le PJ peut avoir une **team** de compagnons jouée **par substitution** (recréer le feeling d'une partie sur table, pas piloter 4-5 PJ complets). Fiches **wrapper** légères dans `JDR/<jeu>/pjs/<pj>/compagnons/<slug>.md`.
+  - **Roster.** Le roster de référence vit **au niveau du PJ** : `JDR/<jeu>/pjs/<pj>/compagnons/_roster.yaml`. Il est ainsi définissable **sans campagne active** (on peut constituer une team dès la création du PJ). Quand une campagne démarre, son `config.yaml` (clé `compagnons:`) **référence** ce roster PJ-level (par `roster: pjs/<pj>/compagnons/_roster.yaml`, ou recopie des entrées `actif: true`) plutôt que de le redéfinir.
+  - **Fiche par référence.** Une fiche compagnon peut soit être autonome (structure *Minimal jouable* ci-dessous), soit **référencer une fiche de personnage canonique existante** (un prétiré de setting, une mue, un PNJ d'univers) via le champ `ref:`. Dans ce cas, la fiche wrapper ne **duplique pas** les mécaniques : elle pointe vers la source canonique et n'ajoute que rôle dans la team, lien au PJ et état courant. C'est le mode recommandé quand le compagnon a déjà une fiche complète ailleurs (ex. `univers/<univers>/pretires/<x>.md`).
+  - Lues par `hermes:solo-mc` au jeu (substitution) — `pc` détient la donnée, le jeu est l'affaire de solo-mc.
 
 ## Action: new
 
@@ -89,7 +96,7 @@ Reports modified files and lists sections still marked `[À compléter]`.
 2. Presents a redistribution plan before writing anything:
    - Which source content goes to which target file
    - Which missing files will be created from template
-   - Which content belongs outside `pjs/` (campaign prep → `rpg` ; univers durable → arborescence `lore-extract`/`rpg` ; jeu en direct → `solo-mc`)
+   - Which content belongs outside `pjs/` (campaign prep → `rpg` ; univers durable → arborescence `lore-extract`/`rpg` ; jeu en direct → `hermes:solo-mc`)
    - Which content is ambiguous and needs user arbitration
 3. Waits for user validation.
 4. If source is a single `.md`: creates `pjs/<slug>/` first, then copies missing files from template.
@@ -136,3 +143,77 @@ Loads character state from (priority order):
 Displays a structured sheet with: progress statuses, themes, power/weakness tags, recent tag changes, active statuses, NPC relations, objectives.
 
 For campaign-level mechanics and narrative context, refer the user to `/status` and `/previously`.
+
+## Action: companion
+
+Manages the PJ's **companions** — the recurring team played **by substitution** to recreate a tabletop feel (not to run 4–5 full PCs). Infer the mode from intent: **create**, **fill/update**, or **show**.
+
+Resolution (always first):
+1. Determine the active PJ (argument or `JDR/.current-session`) and the active campaign.
+2. List existing `JDR/<jeu>/pjs/<pj>/compagnons/` before creating — never overwrite a sheet without explicit confirmation.
+
+### create
+1. Ask the companion name if not supplied; slugify it for the filename.
+2. Choose the sheet mode:
+   - **par référence** (recommandé si le compagnon a déjà une fiche complète ailleurs — prétiré, mue, PNJ d'univers) — la fiche wrapper pointe vers la source canonique via `ref:` et ne duplique aucune mécanique (structure *Référence* ci-dessous).
+   - **autonome** — fiche *Minimal jouable* rédigée sur place (structure ci-dessous).
+3. Create `JDR/<jeu>/pjs/<pj>/compagnons/<slug>.md` with the chosen structure.
+4. Register the companion in the **PJ-level roster** `JDR/<jeu>/pjs/<pj>/compagnons/_roster.yaml` — append the entry, never duplicate one (créer le fichier s'il n'existe pas) :
+
+```yaml
+pj: <pj-slug>
+compagnons:
+  - nom: <Nom>
+    role: <rôle dans la team>
+    fiche: pjs/<pj>/compagnons/<slug>.md
+    ref: univers/<univers>/pretires/<x>.md   # mode par référence ; omettre si autonome
+    actif: true
+```
+
+5. **Si une campagne est active**, faire pointer son `config.yaml` vers ce roster (`compagnons: { roster: pjs/<pj>/compagnons/_roster.yaml }`) ou y recopier les entrées `actif: true`. **Sans campagne**, le roster PJ-level suffit (la team est définissable dès la création du PJ).
+
+### fill / update
+Distribute pasted text into the companion sheet. Preserve existing content — complete, never overwrite. Mark gaps `[À compléter]`. Do not invent content absent from the source.
+
+### show
+Display a companion sheet; with no name, list the active team from the campaign roster (`config.yaml › compagnons:`).
+
+### Fiche compagnon — structure (Minimal jouable, ~1 page)
+
+```markdown
+# <Nom du compagnon>
+
+- **Rôle dans la team** : <éclaireur, soutien, mentor…>
+- **Lien au PJ** : <relation + historique en une ligne>
+- **Voix / personnalité** : <2–3 tics de langage ou de comportement>
+
+## Mécanique (substitution)
+- Système : hérité de la campagne (`config.yaml › system`)
+- 3 à 5 prises clés : stats / tags / moves saillants, suffisants pour résoudre ses actions selon les règles actives (système de jeu) — jamais de mécanique inventée
+
+## État courant
+- Statuts, ressources, blessures, position — tenu à jour au fil du jeu
+```
+
+### Fiche compagnon — structure (Référence, ~½ page)
+
+Quand le compagnon a déjà une fiche complète ailleurs (prétiré, mue, PNJ d'univers), ne pas dupliquer ses mécaniques : pointer vers la source.
+
+```markdown
+# <Nom du compagnon>
+
+- **Mue / fiche source** : [[<chemin relatif vers la fiche canonique>]]  ← mécaniques complètes ici
+- **Rôle dans la team** : <éclaireur, soutien, mentor, muscle…>
+- **Lien au PJ** : <relation + ascendants de départ en une ligne>
+- **Voix / personnalité** : <2–3 tics>
+
+## Prises clés (rappel)
+- 3 à 5 stats / tags / moves saillants recopiés pour le jeu rapide — la référence fait foi.
+
+## État courant
+- Statuts, ressources, blessures, position — tenu à jour au fil du jeu.
+```
+
+Le `ref:` du roster (`_roster.yaml`) pointe vers la même fiche canonique.
+
+Les fiches wrapper vivent sous `pjs/<pj>/compagnons/` ; le **roster PJ-level** (`_roster.yaml`) les liste, et le `config.yaml` d'une campagne (si elle existe) ne fait que **référencer** ce roster (comme l'instance de campagne référence le PJ canonique). Lus par `hermes:solo-mc` en jeu pour la substitution.

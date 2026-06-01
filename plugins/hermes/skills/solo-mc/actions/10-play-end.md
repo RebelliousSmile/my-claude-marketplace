@@ -25,8 +25,9 @@ Session close summary with metrics (scenes played, oracle queries, rolls, thread
 3. Read `<campaign>/sessions/.session-state.yaml` for the existing state baseline.
 4. Compute the updated state: merge session events, update statuses, burn/acquire tags, advance countdowns, update NPC relations.
 5. Write the updated `.session-state.yaml`.
-6. Update `<campaign>/config.yaml` with session count and `last_played` date.
-7. Display a session close summary with key metrics.
+6. Append the session close summary (scenes played, oracle queries, rolls, threads opened/closed) to the session log file, then add a `--- FIN DE SESSION ---` marker.
+7. Update `<campaign>/config.yaml`: session count, `last_played` = session date, and `session_courante` = the session log *filename* (not a full path).
+8. Display a session close summary with key metrics.
 
 ## Test
 

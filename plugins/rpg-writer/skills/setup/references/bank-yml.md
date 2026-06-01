@@ -84,7 +84,7 @@ rules-files:
   # MJ/house rules may also be listed:
   # mj-rules: "systeme/mj/<file>.md"
 # NOTE: only the game system (systeme/) belongs here. Generic subsystems (subsystems/) are
-# live-play tools consumed by obsidian:solo-mc only — never referenced in a writing bank.yml.
+# live-play tools consumed by hermes:solo-mc only — never referenced in a writing bank.yml.
 
 # ICML export configuration (InDesign pipeline).
 icml:

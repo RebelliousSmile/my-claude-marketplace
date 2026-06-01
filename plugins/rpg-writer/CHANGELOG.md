@@ -2,6 +2,16 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant. Détail : `git log -- plugins/rpg-writer` (avant 0.4.0 : `git log -- plugins/writing`).
 
+## [0.7.0] — 2026-06-01
+
+### Added
+- **`vault-layout.md` : branche `campagnes/<campagne>/mj/`** (fiction propre à la campagne) + table de routage des faits de fiction (campagne / univers / `systeme/mj/solo.md` / log de session seul).
+- **Convention `systeme/mj/solo.md`** : house rules de jeu solo établies **en partie** par `hermes:solo-mc` (distinctes des house rules `rules-keeper --homemade`).
+- **Sous-systèmes « structurés comme un jeu »** : `subsystems/<nom>/systeme/{canon,mj}/` (+ `ecrits/` pour la publication), au lieu de `subsystems/<nom>/{canon,mj}/`. `vault-layout.md`, `rules-keeper`, `bank-yml.md` alignés.
+
+### Changed
+- Références `obsidian:solo-mc` → **`hermes:solo-mc`** (solo-mc déplacé dans le plugin `hermes`) dans `vault-layout.md`, `rules-keeper/SKILL.md`, `setup/references/bank-yml.md`.
+
 ## [0.6.0] — 2026-05-31
 
 ### Changed

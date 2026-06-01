@@ -17,7 +17,7 @@ PDF file at the `output` path.
 
 1. Verify `source` file exists; error if not.
 2. Detect `universe` from `<campaign>/config.yaml` via `.current-session` if not provided.
-3. Invoke `narrateur-latex-agent` to convert the Markdown source to LaTeX with universe theming applied.
+3. Convert the Markdown source to LaTeX with universe theming applied.
 4. Run the build script (`build-pdf.ps1` on Windows, `build-pdf.sh` on Unix) to compile LaTeX → PDF.
 5. If `open` is true, open the PDF with the system default viewer.
 6. Confirm success with the output path and file size.

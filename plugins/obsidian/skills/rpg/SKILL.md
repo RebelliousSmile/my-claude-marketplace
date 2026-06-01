@@ -20,7 +20,7 @@ Découpage des trois skills : `pc` = la fiche du personnage-joueur · `rpg` = la
 
 | #   | Action         | Role                                                                  | Input                        |
 | --- | -------------- | --------------------------------------------------------------------- | ---------------------------- |
-| 01  | `campaign`     | Amorce la couche de prep d'une campagne (synopsis, thèmes, index)     | nom de campagne              |
+| 01  | `campaign`     | Crée la campagne (config.yaml + structure) si absente, puis amorce sa prep (synopsis, fronts, index) | nom de campagne              |
 | 02  | `scenario`     | Écrit un scénario / une situation jouable                             | campagne, pitch/idée         |
 | 03  | `prep-session` | Prépare la prochaine session (scènes probables, accroches, tables)    | campagne, n° de session      |
 | 04  | `npc`          | Crée / développe un PNJ d'univers (durable, partagé)                  | univers/campagne, nom du PNJ |
@@ -54,7 +54,7 @@ Routeur — dispatch selon l'intention :
 - **PJ canonique vs instance de campagne** : le personnage durable vit dans `JDR/<jeu>/pjs/<pj>/` (skill `pc`, source de l'`intention.md`) ; l'instance jouée d'une campagne vit dans `JDR/<jeu>/campagnes/<campagne>/pj/` (`solo-mc`) et **référence** le PJ canonique. `rpg` s'ancre toujours sur l'`intention.md` canonique de `pc` ; si seul un PJ de campagne existe, le signaler et proposer de le rattacher à un PJ `pc`.
 - La campagne déclare son univers (`config.yaml › univers: <slug>` → `JDR/<jeu>/univers/<univers>/` ; un jeu peut en avoir plusieurs) ; à défaut, demander quel univers et le lister sous `JDR/<jeu>/univers/`.
 - Demander le nom de la campagne s'il n'est pas dans `$ARGUMENTS` ; lister les campagnes existantes sous `JDR/<jeu>/campagnes/` (dossiers contenant un `config.yaml`).
-- Si `config.yaml` est absent, **ne pas dupliquer** le questionnaire : orienter vers `/solo-mc setup` pour le créer, puis revenir préparer.
+- Si `config.yaml` est absent, l'action **`campaign` l'amorce** — mais **uniquement l'identité/wiring** (`jeu`, `univers`, `type`, `pjs`, `pj_canonique`, refs lore/système, roster compagnons). Le **réglage de jeu** (`ton`, `approche`, `difficulte`, `rythme`, chaos, jauges) **n'est PAS écrit par `rpg`** : il relève de `solo-mc` (son setup), au moment de jouer. **Ne pas dérouler de questionnaire** — ne demander que l'univers et le PJ à rattacher.
 - **Système de jeu** : pour toute mécanique (récompenses, tags PNJ, défis), `rpg` consulte les règles du système de jeu au format rules-keeper (`writing:rules-keeper`), scindées canon/mj, sous `JDR/<jeu>/systeme/{canon,mj}/`. Règles effectives = canon + house rules déclarées. **Ne jamais inventer de mécanique.** Les **sous-systèmes génériques** (Parallaxe, Cinério, Muses et Oracles) sont des **outils de jeu en direct** consommés par `solo-mc` uniquement — hors du ressort de `rpg`.
 - Servir le PJ : ancrer scénarios et sessions sur l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale) géré par `pc`. La prep sert les enjeux du joueur, pas l'inverse.
 - Lire `config.yaml` (ton, rythme, difficulté, chaos, profondeur PNJ/lieux) et s'y conformer.

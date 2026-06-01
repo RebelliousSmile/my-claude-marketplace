@@ -1,0 +1,7 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "hermes",
+  "version": "0.1.0",
+  "description": "Agents conformes à l'architecture Hermes Agent (Nous Research) : boucle de conversation + dispatch d'outils, mémoire persistante, assemblage de prompt à trois tiers. Skill : solo-mc (maître de jeu JDR solo en direct).",
+  "author": { "name": "fxgui" }
+}

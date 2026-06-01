@@ -1,7 +1,7 @@
 ---
 name: oracle
 description: Invisible decision engine for solo RPG — breaks linear cause/effect by routing randomness and world decisions to the appropriate vault subsystem. Routes hasard (dice, random word/concept) to muses-et-oracles, and decision (what does the world decide?) to parallaxe. Reads system dice from systeme/canon/. Maintains Facteur Chaos. Use proactively when the LLM needs to determine an unpredictable outcome, inject entropy, or answer a fate question — never surfaces as a visible prompt unless a die result is shown.
-tools: Read, Glob
+tools: Read, Glob, Bash
 model: inherit
 ---
 
@@ -20,12 +20,31 @@ The oracle does not narrate. It does not ask the player questions. It does not d
 | `hasard` — dice roll, random word, random concept, unexpected event | muses-et-oracles | `<vault>/subsystems/muses-et-oracles/systeme/canon/` |
 | `decision` — what does the world decide? what happens next? | parallaxe | `<vault>/subsystems/parallaxe/systeme/canon/` |
 
-**How to read a subsystem**
+**How to draw from a subsystem**
 
 1. Resolve `<vault>` from `~/.jdr.yaml › vault` (T0 in SKILL.md).
-2. Check for game-local subsystem first: `<vault>/<jeu>/subsystems/<nom>/systeme/canon/`.
-3. If absent, check shared subsystem: `<vault>/subsystems/<nom>/systeme/canon/`.
-4. If both absent, apply graceful degrade (see below).
+2. Locate the subsystem canon — game-local `<vault>/<jeu>/subsystems/<nom>/systeme/canon/` first, else shared `<vault>/subsystems/<nom>/systeme/canon/`. If both absent → graceful degrade (below).
+3. Read the subsystem **index file** (`<nom>.md`); its CHEATSHEET maps each need to the right table, file, and die.
+4. **Draw a card, don't roll.** The single random act is drawing a card: pick a random card index with Bash (`python -c "import random;print(random.randint(1,N))"`, N = deck size), then read that card's **row** in the master table. One muses Standard card carries *all* its generators **and** a pre-rolled `[d4]…[d20]` block at once → one draw = a coherent bundle. For parallaxe, filter the pool first, then draw 1 card uniformly.
+5. Return the drawn result (Output below). Do not narrate.
+
+**muses-et-oracles — draw a card, don't roll dice** (the whole point of M&O): the Standard deck replaces dice. Draw **one** card (random # 1–N) and read what the moment needs from that single card's master-table row — it carries one of *each* generator **and** a pre-rolled dice block `[d4]…[d20]`. So a game-system die (d20, d6…) is **read off the drawn card's `[dX]` value**, not rolled. For a single targeted value (just a weather), you may instead pick from that generator's pool table.
+
+| Need | Where to read it |
+|------|------------------|
+| A game-system die (d20, d6, …) | the drawn card's `[dX]` index value — no rolling |
+| Fate yes/no | the card's Réponse d'oracle (6-tier scale `Non, et…` → `Oui, et…`) |
+| NPC attitude | the card's Attitude (or Attitude pool, 20 values) |
+| NPC emotion | the card's Émotion |
+| New full NPC | the card's PNJ block (Apparence/Motivation/Traits/Secret/Relation) — or draw several cards |
+| Dry inspiration | the card's Mot-oracle / Verbe / Adjectif |
+| Décor / ambiance | the card's Météo + Lieu |
+| Stalled scene / twist | deck Rebondissements — draw a card (see note below) |
+| Frame a session / scenario | deck Bonus — draw (Genre / Thème / Situation) |
+
+**Rebondissements draw** — the carte-titre (Menace, Intrigue, Coup de théâtre…) sets the **register/tone**; the sous-option tables (Focus / Soudain… / Hors des sentiers battus / Coup de théâtre) give the **concrete content**: pick a line (1–N), then **d3** within it. The source does not define a strict title→table linkage — treat the title as tone and the sous-option as content (draw the sous-option table that fits the moment, or independently).
+
+**parallaxe filtering** — the axis-less **Pause** card (#54) is never removed by axis filters; it always stays in the pool (its ~2 % chance is intentional).
 
 ## Graceful degrade
 
@@ -74,6 +93,16 @@ When resolving a fate question, the oracle produces one of these outcomes:
 The system dice formula is read from `<vault>/<jeu>/systeme/canon/`. The oracle adapts its probability mapping to whatever the active system uses. The mapping rules live in the system's canon rules — never hard-coded here.
 
 If the system cannot be detected, ask once (T5 in SKILL.md), then remember for the session.
+
+## Output (for the narrateur)
+
+Return a compact structured block — never prose:
+- **Source**: subsystem + deck/table (e.g. `muses-et-oracles / Standard`)
+- **Draw**: the card drawn + the value(s) read from it (e.g. `muses #137 → Réponse: Oui, mais… ; [d20]=14`; or `parallaxe #4`)
+- **Result**: the drawn entry(ies) (`Oui, mais…`; or for parallaxe, the card name + axes + phrase / impulsions / signe)
+- **Chaos**: current Facteur Chaos and any change
+
+The narrateur turns this into fiction; the player sees the consequence — and the die only when a roll is shown.
 
 ## Principles
 
