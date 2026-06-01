@@ -27,9 +27,9 @@ Restored session with:
 6. Read `<campaign>/pj/<character>.md` for the character sheet.
 7. Read `<campaign>/sessions/.session-state.yaml` for the mechanical state.
 8. Load the session file content; apply `checkpoint` offset if provided.
-9. Invoke `mj-solo-agent` with the fully restored context.
+9. Invoke `narrateur-agent` with the fully restored context.
 10. Display a combined recap: narrative context (like `previously`) followed by mechanical state (like `status`).
 
 ## Test
 
-After action, `.current-session` contains the campaign name and `mj-solo-agent` is active with the loaded context.
+After action, `.current-session` contains the campaign name and `narrateur-agent` is active with the loaded context.

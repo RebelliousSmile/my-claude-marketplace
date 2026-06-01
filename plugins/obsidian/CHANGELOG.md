@@ -2,6 +2,19 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obsidian`.
 
+## [0.8.0] — 2026-06-01
+
+### Added
+- **`solo-mc` réintroduit comme variante Claude Code** (`obsidian:solo-mc`) — copie de la version `hermes` (SKILL + actions + references + evals) avec ses agents `oracle` et `narrateur`. **Re-split par runtime** : `obsidian:solo-mc` (Claude Code) et `hermes:solo-mc` (Hermes Agent, en cours d'adaptation native) sont deux portages du même jeu en direct, partageant le coffre. Préserve la version Claude Code fonctionnelle (sous-agents) avant la conversion Hermes du plugin `hermes`.
+
+## [0.7.0] — 2026-06-01
+
+### Added
+- **`pc` : compagnons (team du PJ)** — nouvelle action `companion` (create / fill / show). Fiches canoniques légères « Minimale jouable » dans `pjs/<pj>/compagnons/<slug>.md` (jouées par substitution pour le feeling table) ; roster actif dans le `config.yaml` de la campagne (clé `compagnons:`) qui référence les fiches. Lues par `hermes:solo-mc` au jeu.
+
+### Removed
+- **`solo-mc` déplacé vers le plugin `hermes`** (`hermes:solo-mc`). Le jeu en direct quitte `obsidian` pour rejoindre un plugin sous contrat d'architecture Hermes Agent. Les agents `mj-solo` et `oracle` suivent. Le trio JDR solo est désormais réparti : `obsidian` (`pc`, `rpg`) + `hermes` (`solo-mc`). Renvois et invocations (`/hermes:solo-mc setup`) mis à jour dans `rpg` et `pc`.
+
 ## [0.6.0] — 2026-05-31
 
 ### Changed
