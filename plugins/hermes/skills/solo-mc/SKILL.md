@@ -201,8 +201,8 @@ are defined in `references/oracle.md`.
 
 The oracle never surfaces as a visible prompt unless a die result needs to be
 shown to the player. The agent returns the drawn result as a compact structured
-block (source, draw, result, chaos); the narration layer then converts it into
-fiction.
+block (source, draw, result, chaos); the agent then re-applies
+`references/narrateur.md` to convert it into fiction.
 
 ### Narrating (GM voice, scene rendering, dialogue)
 
