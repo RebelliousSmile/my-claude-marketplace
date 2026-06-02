@@ -28,6 +28,7 @@ Routes to the appropriate action based on user intent.
 | 04  | `log-session` | Update PJ files after a game session (système de jeu)      | PJ name, session info     |
 | 05  | `show`        | Display the current character sheet (tags, statuses, relations)   | PJ name or active session |
 | 06  | `companion`   | Create / fill / show a companion sheet (autonome ou par référence) ; register it in the PJ-level team roster | companion name |
+| 07  | `background`  | Construire le background du PJ par un questionnaire adapté au **genre** du jeu | PJ name, genre |
 
 ## Default flow
 
@@ -39,6 +40,7 @@ Router — dispatches based on user intent:
 - "log session", "mettre à jour après session", "fin de session" → `log-session`
 - "afficher PJ", "fiche personnage", "show PJ", "/pj" → `show`
 - "compagnon", "companion", "team", "équipe", "allié", "ajouter un compagnon" → `companion`
+- "construire le background", "background", "questionnaire", "aide-moi à créer le perso", "construire le perso" → `background`
 
 ## Transversal rules
 
@@ -68,13 +70,13 @@ The script copies the template, slugifies the name for the folder, and replaces 
 Files created: `pj.md`, `fiche_technique.md`, `intention.md`, `etat-jeu.md`, `journal.md`, `backlog.md`.
 
 After creation, remind the user to:
-1. Fill `pj.md` (background) — use `fill` action if starting from a text
+1. Fill `pj.md` (background) — use `background` for a genre-driven questionnaire (recommended for a fresh PJ), or `fill` if starting from an existing text
 2. Choose the system in `fiche_technique.md`
 3. Fill `intention.md` before the first session
 
 ## Action: fill
 
-Asks the user to paste the source text, then:
+Asks the user to paste the source text. **Si l'utilisateur n'a pas de texte de départ**, basculer sur `background` (questionnaire guidé par genre) plutôt que de remplir à vide. Sinon :
 
 1. Analyzes the text and identifies which sections it feeds:
    - Identity, facade, background, personality, world relationship → `pj.md`
@@ -111,6 +113,18 @@ Redistribution rules:
 - `etat-jeu.md` ← état mécanique de jeu selon les règles actives (système de jeu) : jauges, ressources, statuts, compteurs et éléments en suspens
 - `journal.md` ← dated session reports, played scenes, mechanical events and session outcomes per the active rules (game system) (newest first)
 - `backlog.md` ← scene ideas, threads to revive, open questions, narrative todo
+
+## Action: background
+
+Construit le background du PJ par un **questionnaire adapté au genre du jeu**. Questions, familles de genre et table de correspondance GROG : `references/genres-et-background.md`. Inspiré de la création d'Ecryme 2e (construction par questions concrètes, pas par cases).
+
+1. **Déterminer le PJ** (argument ou `JDR/.current-session`) et le **genre** du jeu — déduit du `<jeu>` actif ; à défaut, demander à l'utilisateur le thème GROG ou le pitch du jeu.
+2. **Mapper** le genre vers une **famille** (+ modulateurs) via la table de `references/genres-et-background.md`.
+3. Poser le **tronc commun** puis les **questions signature** de la famille, par **lots de 2–4 questions** — proposer 2–3 pistes par question, laisser l'utilisateur choisir/amender (allers-retours, jamais d'un bloc).
+4. **Distribuer** les réponses dans `pj.md` (identité, façade, background, personnalité, relations) et `intention.md` (question viscérale, ligne rouge, thèmes, vérités), selon la table « Où atterrissent les réponses » de la fiche. Compléter, ne jamais écraser ; marquer `[À compléter]` les sections laissées ouvertes.
+5. **Ne rien inventer de mécanique** : stats/tags/jets restent déférés à `systeme/{canon,mj}`.
+
+Reports modified files and lists sections still marked `[À compléter]`.
 
 ## Action: log-session
 
