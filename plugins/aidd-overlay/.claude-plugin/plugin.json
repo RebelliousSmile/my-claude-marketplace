@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "aidd-overlay",
-  "version": "2.0.2",
-  "description": "Extends the AIDD framework with project-agnostic workflows: interactive codebase quiz (dig), memory maintenance (harvest, reconcile-normative), obsolescence detection (taste), prospective analysis (foresee), performance audits (data-optimize, web-optimize, ap-optimize), project health reporting (status), and planning utilities (decompose, journey, changelog, end-plan). Alias chains: rechallenge, build, endtask, endplan, bump-plugin, previously, smarten, skillconf, aiddlegacy.",
+  "version": "2.1.0",
+  "description": "Extends the AIDD framework with project-agnostic workflows: interactive codebase quiz (dig), memory maintenance (harvest, reconcile-normative), obsolescence detection (taste), prospective analysis (foresee), performance audits (data-optimize, web-optimize, ap-optimize), SEO/GEO audits (seo-optimize), project health reporting (status), and planning utilities (decompose, journey, changelog, end-plan). Alias chains: rechallenge, build, endtask, endplan, bump-plugin, previously, smarten, skillconf, aiddlegacy.",
   "author": {
     "name": "François-Xavier Guillois"
   }

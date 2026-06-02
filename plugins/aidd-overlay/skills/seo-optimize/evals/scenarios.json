@@ -1,0 +1,26 @@
+[
+  { "prompt": "run an SEO audit", "expect_action": "run" },
+  { "prompt": "audit my site's SEO and GEO", "expect_action": "run" },
+  { "prompt": "why am I not ranking on Google?", "expect_action": "run" },
+  { "prompt": "improve my meta titles and descriptions", "expect_action": "run" },
+  { "prompt": "my Google Business Profile is not visible", "expect_action": "run" },
+  { "prompt": "add structured data / JSON-LD to my pages", "expect_action": "run" },
+  { "prompt": "I want to be cited by ChatGPT and Perplexity", "expect_action": "run" },
+  { "prompt": "optimize for AI Overviews", "expect_action": "run" },
+  { "prompt": "check my Search Console positions", "expect_action": "run" },
+  { "prompt": "/seo-optimize", "expect_action": "run" },
+  { "prompt": "/seo-optimize location pages", "expect_action": "run" },
+
+  { "prompt": "audit le référencement de mon site", "expect_action": "run" },
+  { "prompt": "je veux remonter sur 'location cabinet thérapeute Chambéry'", "expect_action": "run" },
+  { "prompt": "ma fiche Google Business n'apparaît pas", "expect_action": "run" },
+  { "prompt": "rédige mes balises title et meta", "expect_action": "run" },
+  { "prompt": "comment être cité par les IA conversationnelles ?", "expect_action": "run" },
+  { "prompt": "ajoute le schema FAQ sur mes pages", "expect_action": "run" },
+
+  { "prompt": "mon site est lent, fais un audit perf", "expect_action": null, "note": "web-optimize" },
+  { "prompt": "réduis le bundle JS / améliore le LCP", "expect_action": null, "note": "web-optimize" },
+  { "prompt": "trop de requêtes SQL, API lente", "expect_action": null, "note": "data-optimize" },
+  { "prompt": "écris un article de blog de 2000 mots", "expect_action": null, "note": "writing plugin" },
+  { "prompt": "review my Vue component for best practices", "expect_action": null, "note": "taste" }
+]

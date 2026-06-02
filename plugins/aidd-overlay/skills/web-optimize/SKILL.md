@@ -45,8 +45,11 @@ Run a structured performance audit on a web project, picking the right checklist
 | §0–§8 : render, images, bundle, CSS, cache, SSR | `data-optimize` : N+1 queries, quota, payload bytes, index DB |
 | §9 TTFB latence serveur (symptôme) | `data-optimize` : causes DB/API du TTFB |
 | Scripts tiers chargement lazy | `sc-tiers verify` : compliance consent GTM/Clarity/Klaviyo |
+| CWV **mesuré** (LCP/CLS/INP déterministe) | `seo-optimize` §8 : CWV **comme signal de ranking** + on-page, schema, GEO/IA, GBP |
 
 Quand §9 dépasse 200ms sans cause render-blocking évidente → recommander `data-optimize` sur la route hot path.
+
+**Handoff SEO/GEO** — surface SEO technique croisée (title/meta, `alt`, JSON-LD, canonical, noindex, hreflang) : si l'audit révèle des lacunes hors périmètre perf, **ne pas les traiter ici** → recommander `seo-optimize` (il consomme la sortie CWV de cet audit comme signal de ranking dans son §8). Frontière : `web-optimize` produit la métrique CWV, `seo-optimize` l'interprète pour le ranking.
 
 ## Pre-implementation quick check
 
