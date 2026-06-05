@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "aidd-overlay",
-      "version": "2.1.0",
+      "version": "2.1.5",
       "source": "./plugins/aidd-overlay",
       "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, seo-optimize, status. Alias: rechallenge, afterdev, endtask, endplan, bump-plugin, previously, smarten, skillconf, aiddlegacy.",
       "recommended": true
