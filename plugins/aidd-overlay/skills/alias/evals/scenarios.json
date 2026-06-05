@@ -28,5 +28,10 @@
   { "prompt": "bumper le plugin aidd-overlay", "expect_action": "bump-plugin" },
   { "prompt": "just run the plan", "expect_action": null },
   { "prompt": "just run the review", "expect_action": null },
-  { "prompt": "challenge this doc", "expect_action": null }
+  { "prompt": "challenge this doc", "expect_action": null },
+  { "prompt": "weeklyemail github", "expect_action": "weeklyemail" },
+  { "prompt": "alias weeklyemail", "expect_action": "weeklyemail" },
+  { "prompt": "rapport hebdomadaire gitlab", "expect_action": "weeklyemail" },
+  { "prompt": "email client semaine github", "expect_action": "weeklyemail" },
+  { "prompt": "résumé commits de la semaine sur gitlab", "expect_action": "weeklyemail" }
 ]
