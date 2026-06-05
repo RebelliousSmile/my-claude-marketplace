@@ -6,7 +6,7 @@ Fires the pre-crafted prompt for the full **commit → archive plan → learn �
 
 - All changes must be implemented and reviewed.
 - The work may be on a dedicated plan branch or directly on the target branch (e.g. `develop`).
-- Issue number: if not visible in context, ask before firing: *"Which issue number should I close? (leave blank if none)"*
+- Issue number: resolved automatically in Step 2b — only ask if all detection sources fail.
 
 ## Prompt
 
@@ -25,6 +25,17 @@ Run `git branch --show-current`. Record as `current_branch`.
   - If a branch name was passed as argument, use it.
   - Otherwise, inspect `git log --oneline --decorate HEAD` to detect the parent branch.
   - If still ambiguous, ask: *"Which branch should I merge `<current_branch>` into?"*
+
+### Step 2b — Detect issue number
+
+Attempt to resolve `issue_number` from the following sources in priority order. Stop at the first match.
+
+1. **Argument** — a number passed directly by the user (e.g. `endtask 42`).
+2. **Branch name** — extract from `current_branch`: patterns `issue-42`, `#42`, `-42-`, or a leading numeric segment (e.g. `42-my-feature`). Ignore date-like segments (`YYYY`, `MM`, `DD`).
+3. **Plan file frontmatter** — read the `.pending.md` found in Step 3 (read it now in advance); look for `issue_number:` or `tracker_id:`.
+4. **Plan file content** — scan for `Fixes #42`, `Closes #42`, `**Issue:** #42`, `Ref: #42`.
+5. **Recent commits** — run `git log --oneline -10`; scan messages for `#42`, `fix #42`, `close #42`.
+6. **No match** — set `issue_number = none`. Do not ask.
 
 ### Step 3 — Archive plan file
 
