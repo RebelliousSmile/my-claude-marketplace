@@ -4,7 +4,7 @@ Diagnostiquer les anomalies du pipeline d'extraction : chunks manquants, texte g
 
 ## Inputs
 
-- `project_path` (required) — string, format `<jeu>/ecrits/<projet>` (résolu depuis `<vault>/`)
+- `project_path` (required) — string, format `<jeu>/_ecrits/<projet>` (résolu depuis `<vault>/`)
 - `source_name` (required) — nom du PDF source sans extension (ex. `engrenages-regles`). Si plusieurs extractions existent dans `docs/extraction/`, lister les dossiers disponibles et demander à l'utilisateur.
 - `chunk_id` (optional) — chunk spécifique à débugger (ex. `03`) ; si omis, audit complet
 
@@ -48,7 +48,7 @@ Diagnostiquer les anomalies du pipeline d'extraction : chunks manquants, texte g
 ## Process
 
 1. Vérifier les outils disponibles (pdftotext, tesseract, pdfplumber, pypdf).
-2. Lire `bank.yml` → extraire `document.univers` → construire `<univers-root>` = `<jeu>/univers/<document.univers>/` (où `<jeu>` est le premier segment sous `<vault>`, déduit du CWD). Tester si même dépôt : `git -C "<univers-root>" rev-parse --show-toplevel` vs `git rev-parse --show-toplevel`.
+2. Lire `bank.yml` → extraire `document.univers` → construire `<univers-root>` = `<jeu>/_univers/<document.univers>/` (où `<jeu>` est le premier segment sous `<vault>`, déduit du CWD). Tester si même dépôt : `git -C "<univers-root>" rev-parse --show-toplevel` vs `git rev-parse --show-toplevel`.
 3. Lire `docs/extraction/<source-name>/progress.md`. Parser le tableau : statuts `pending/done/failed`, dates.
 4. Vérifier les stashes git suspects :
    ```bash

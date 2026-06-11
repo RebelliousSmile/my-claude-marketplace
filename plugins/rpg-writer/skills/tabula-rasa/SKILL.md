@@ -12,7 +12,7 @@ Destructive project reset. Removes generated files (chapters, TOC entries, WIP a
 
 | #   | Action  | Role                                                 | Input                             |
 | --- | ------- | ---------------------------------------------------- | --------------------------------- |
-| 01  | `reset` | Archive + delete generated project content           | project path `<jeu>/ecrits/<projet>` |
+| 01  | `reset` | Archive + delete generated project content           | project path `<jeu>/_ecrits/<projet>` |
 
 ## Default flow
 

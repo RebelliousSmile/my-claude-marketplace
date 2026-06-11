@@ -4,7 +4,7 @@ Configure a new campaign interactively through a guided questionnaire.
 
 ## Inputs
 
-- `name` (required) — string, campaign folder name (will be created under the JdR root directory)
+- `name` (required) — string, campaign folder name (will be created under `<jeu>/_campagnes/`)
 
 ## Outputs
 
@@ -35,9 +35,9 @@ Configure a new campaign interactively through a guided questionnaire.
    - Chaos level
    - NPC depth
    - Location depth
-3. Create the campaign folder structure: `<campaign>/`, `<campaign>/sessions/`, `<campaign>/pj/`.
-4. Write `<campaign>/config.yaml` with all gathered values.
-5. Write `.current-session` with the new campaign name.
+3. Create the campaign folder structure: `_campagnes/<campaign>/`, `_campagnes/<campaign>/pj/`.
+4. Write `_campagnes/<campaign>/config.yaml` with all gathered values.
+5. Write `.current-session` with the new campaign relative path (`<jeu>/_campagnes/<campaign>`).
 6. Confirm creation with a structured summary of all configured options.
 
 ## Test

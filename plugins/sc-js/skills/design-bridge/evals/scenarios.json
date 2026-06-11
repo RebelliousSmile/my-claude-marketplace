@@ -1,0 +1,12 @@
+[
+  { "prompt": "réalise le linter ESLint depuis le spec d'enforcement design", "expect_action": "realize-lint" },
+  { "prompt": "installe la règle de lint design pour ce projet Vue", "expect_action": "realize-lint" },
+  { "prompt": "câble le gate design en pre-commit pour les fichiers JSX", "expect_action": "realize-lint" },
+  { "prompt": "rends le composant card en Vue 3 depuis le spec de rendu", "expect_action": "render" },
+  { "prompt": "produis le composant hero en React depuis l'élément neutre", "expect_action": "render" },
+  { "prompt": "génère toutes les variantes du btn en composant Vue idiomatique", "expect_action": "render" },
+  { "prompt": "le projet utilise Biome, installe le gate design quand même", "expect_action": "realize-lint" },
+  { "prompt": "fige le contrat design et écris le manifeste", "expect_action": null },
+  { "prompt": "challenge la direction visuelle de ce composant", "expect_action": null },
+  { "prompt": "audite le code JS de ce projet", "expect_action": null }
+]

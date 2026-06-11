@@ -62,8 +62,8 @@ python scripts/extract-pdf.py --status docs/extraction/<source>/progress.md
 
 ## Transversal rules
 
-- **Appeler le skill depuis le répertoire du projet** (`<jeu>/ecrits/<projet>/`). Tous les chemins relatifs (`docs/`, `scripts/`, `bank.yml`) sont résolus depuis ce répertoire.
-- `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`) ; déduit du CWD ou de `bank.yml`.
+- **Appeler le skill depuis le répertoire du projet** (`<jeu>/_ecrits/<projet>/`). Tous les chemins relatifs (`docs/`, `scripts/`, `bank.yml`) sont résolus depuis ce répertoire.
+- `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/RPG/`) ; déduit du CWD ou de `bank.yml`.
 - Les sources de référence extraites atterrissent dans `<univers-root>/sources/<source>/` (lore) et `<systeme-root>/sources/<source>/` (règles) — jamais dans `canon/`.
 - **Conserver le texte brut.** Chaque `sources/<source>/` peuplé contient AUSSI `fulltext.md` — le texte intégral normalisé du document, assemblé depuis les chunks. C'est « le contenu de l'extraction » : il ne doit jamais être détruit au nettoyage. Les fichiers classifiés (`lore.md`, `terminology.md`, `rules.md`…) sont des **bundles de référence** posés à côté, qui servent d'entrée à `lore-extract`/`rules-keeper` (qui, eux, produisent `canon/`). Ainsi `sources/` = brut + bundles d'entrée ; `canon/` = synthèse finale produite en aval.
 - **Documents compagnons.** Une gamme livre souvent du matériel lié dans des fichiers SÉPARÉS (livrets de personnages, écran du MC, accessoires, suppléments). Le détail (ex. listes de noms/apparences des livrets joueurs) n'est PAS dans le livre de base. Traiter chaque fichier comme une **source distincte** (un `setup` par fichier, ou par lot cohérent), avec son propre `<source>`.

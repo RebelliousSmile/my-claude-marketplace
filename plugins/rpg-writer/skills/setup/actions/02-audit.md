@@ -3,17 +3,17 @@
 Audit an existing writing project's integrity against its `bank.yml` declarations. Report-only mode — zero writes.
 
 > Path variables: see `setup/references/vault-layout.md`.
-> `<projet-root>` = `<jeu>/ecrits/<projet>/` — `bank.yml` lives at `<projet-root>/bank.yml`.
+> `<projet-root>` = `<jeu>/_ecrits/<projet>/` — `bank.yml` lives at `<projet-root>/bank.yml`.
 
 ## Inputs
 
-- `project_path` (required) — string, format `<jeu>/ecrits/<projet>`
+- `project_path` (required) — string, format `<jeu>/_ecrits/<projet>`
 - `--integrity-check` (required flag) — activates audit mode
 
 ## Outputs
 
 ```markdown
-# Integrity Report — <jeu>/ecrits/<projet>
+# Integrity Report — <jeu>/_ecrits/<projet>
 
 **Date:** <date>
 
@@ -26,16 +26,16 @@ Audit an existing writing project's integrity against its `bank.yml` declaration
 |---------------------|-----------------------------------------------|---------------------|
 | overview            | <projet-root>/overview.md                     | [OK] / [MISSING] / [EMPTY] |
 | toc.fichier         | <projet-root>/.toc/INDEX.md                   | [OK] / [MISSING] |
-| output-style.<type> | univers/<univers>/.output-styles/...          | [OK] / [MISSING] |
-| docs.univers        | univers/<univers>/canon/UNIVERS.md      | [OK] / [MISSING] |
-| docs.terminologie   | univers/<univers>/canon/terminologie.md | [OK] / [MISSING] |
+| output-style.<type> | _univers/<univers>/.output-styles/...          | [OK] / [MISSING] |
+| docs.univers        | _univers/<univers>/canon/UNIVERS.md      | [OK] / [MISSING] |
+| docs.terminologie   | _univers/<univers>/canon/terminologie.md | [OK] / [MISSING] |
 | docs.projet[*]      | <projet-root>/.docs/<file>.md                 | [OK] / [MISSING] |
 | rules-files.*       | systeme/canon/<file>.md                       | [OK] / [MISSING] |
 | personas.*          | .templates/personas/<id>.yml                  | [OK] / [MISSING] |
 
 ## Canon Path Check
-- docs.univers → inside `canon/`: [OK] / [WARN: expected canon/ path]
-- docs.terminologie → inside `canon/`: [OK] / [WARN: expected canon/ path]
+- docs.univers → inside `_univers/<univers>/canon/`: [OK] / [WARN: expected _univers/.../canon/ path]
+- docs.terminologie → inside `_univers/<univers>/canon/`: [OK] / [WARN: expected _univers/.../canon/ path]
 
 ## Chapters
 - Total: N
@@ -57,11 +57,11 @@ Audit an existing writing project's integrity against its `bank.yml` declaration
 
 ## Process
 
-1. Parse `$ARGUMENTS`. Extract project path (format `<jeu>/ecrits/<projet>`). Confirm `--integrity-check` flag is present.
-2. Look for `bank.yml` at `<projet-root>/bank.yml`. If absent → ABORT with `[ERROR] bank.yml not found — cannot check integrity. Run \`setup init <jeu>/ecrits/<projet>\` first.`
+1. Parse `$ARGUMENTS`. Extract project path (format `<jeu>/_ecrits/<projet>`). Confirm `--integrity-check` flag is present.
+2. Look for `bank.yml` at `<projet-root>/bank.yml`. If absent → ABORT with `[ERROR] bank.yml not found — cannot check integrity. Run \`setup init <jeu>/_ecrits/<projet>\` first.`
 3. Load and parse `bank.yml`. Extract all declared file references.
 4. For each declared file path in `bank.yml`, check: does it exist on disk? Is it non-empty? Build the status table.
-5. **Canon path check**: verify that `docs.univers` and `docs.terminologie` point inside `univers/<univers>/canon/`. If either points to a non-canon path (e.g. `univers/<univers>/UNIVERS.md` without `canon/`), flag as `[WARN: expected canon/ path]` and recommend updating to `univers/<univers>/canon/<file>.md`.
+5. **Canon path check**: verify that `docs.univers` and `docs.terminologie` point inside `_univers/<univers>/canon/`. If either points to a non-canon path (e.g. `_univers/<univers>/UNIVERS.md` without `canon/`), flag as `[WARN: expected _univers/.../canon/ path]` and recommend updating to `_univers/<univers>/canon/<file>.md`.
 6. Scan `<projet-root>/chapitres/` directory: count `.md` files; check each for a first-line `# ` (H1 header); flag empty or header-less files.
 7. Scan `<projet-root>/.wip/comments/`, `.wip/changelog/`, `.wip/coherence/` subdirectories: count files, note last-modified dates.
 8. Produce the integrity report. Diagnose: list all `[MISSING]`, `[EMPTY]`, and `[WARN]` items.
@@ -70,4 +70,4 @@ Audit an existing writing project's integrity against its `bank.yml` declaration
 
 ## Test
 
-Run `audit <jeu>/ecrits/<projet> --integrity-check` on a project with a known missing file (e.g., delete `terminologie.md`); confirm the report flags it as `[MISSING]` and no new files appear in the project directory. Also confirm that a bank.yml with `docs.univers` pointing to `univers/<univers>/UNIVERS.md` (non-canon path) is flagged as `[WARN]`.
+Run `audit <jeu>/_ecrits/<projet> --integrity-check` on a project with a known missing file (e.g., delete `terminologie.md`); confirm the report flags it as `[MISSING]` and no new files appear in the project directory. Also confirm that a bank.yml with `docs.univers` pointing to `_univers/<univers>/UNIVERS.md` (non-canon path) is flagged as `[WARN]`.

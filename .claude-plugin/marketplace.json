@@ -16,9 +16,9 @@
     },
     {
       "name": "design",
-      "version": "0.2.1",
+      "version": "1.0.0",
       "source": "./plugins/design",
-      "description": "Mobile-first responsive design system: from-reference / from-brief intakes (core trio first, never emoji), agnostic W3C tokens + CSS/Tailwind adapters, living HTML wireframes, reusable components with options, compliance audit, plus diagnose + refactor for production codebases and export-wordpress.",
+      "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Breaking: replaces 9 legacy skills (setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress).",
       "recommended": false
     },
     {
@@ -37,23 +37,23 @@
     },
     {
       "name": "rpg-writer",
-      "version": "0.8.0",
+      "version": "0.10.0",
       "source": "./plugins/rpg-writer",
       "description": "Narrative writing skills and workflows (novels, TTRPG scenarios, guides): concept, TOC, chapters, tone, lore, review.",
       "recommended": false
     },
     {
       "name": "sc-php",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "source": "./plugins/sc-php",
-      "description": "PHP ecosystem skills: Laravel/Symfony/WordPress perf pivots, HTMX hybrid, Eloquent + Doctrine data pivots.",
+      "description": "PHP ecosystem skills: sniff, audit, improve, legacy, teach. WordPress/Laravel/Symfony perf pivots, HTMX hybrid, Eloquent + Doctrine data pivots. design-bridge: réceptacle pivot design (linter PHP/WP natif + block pattern WP).",
       "recommended": false
     },
     {
       "name": "sc-js",
-      "version": "0.6.7",
+      "version": "0.7.0",
       "source": "./plugins/sc-js",
-      "description": "JavaScript ecosystem: sniff (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), audit, improve (8 capability pivots in Step 1.5), legacy (Vue 2→3/ESM/TS), teach + SvelteKit perf pivot + Svelte stores pivot + Biome pivot + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots.",
+      "description": "JavaScript ecosystem: sniff (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), audit, improve (8 capability pivots), legacy (Vue 2→3/ESM/TS), teach + SvelteKit/Svelte stores/Biome pivots + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots. design-bridge: réceptacle pivot design (règle ESLint + composant Vue 3/React).",
       "recommended": false
     },
     {
@@ -79,16 +79,9 @@
     },
     {
       "name": "obsidian",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "source": "./plugins/obsidian",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc) and scenario writing / campaign preparation (rpg). Live play also lives here as solo-mc (Claude Code variant; hermes plugin hosts the Hermes Agent variant).",
-      "recommended": false
-    },
-    {
-      "name": "hermes",
-      "version": "0.2.0",
-      "source": "./plugins/hermes",
-      "description": "Plugin sous contrat d'architecture Hermes Agent (Nous Research) : boucle de conversation + dispatch d'outils, mémoire persistante, prompt à trois tiers (stable/context/volatile). Skill : solo-mc (maître de jeu JDR solo en direct).",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc), scenario writing / campaign preparation (rpg), and live play (solo-mc).",
       "recommended": false
     }
   ]

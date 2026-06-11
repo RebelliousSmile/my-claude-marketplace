@@ -2,6 +2,17 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obsidian`.
 
+## [0.10.0] — 2026-06-06
+
+### Changed
+- **Migration arborescence vault** : dossiers de travail préfixés `_` (`_pjs/`, `_campagnes/`, `_univers/`, `_systeme/`, `_subsystems/`) ; journaux de session déplacés vers `<jeu>/<YYYY>/<MM>/<campagne>-session-<YYYY-MM-DD>-<N>.md` (classement daté). **Breaking** : mise à jour de `~/.jdr.yaml › vault` requise (renommage `JdR` → `RPG`).
+- **`.session-state.yaml`** : déplacé de `campagnes/<campagne>/sessions/` vers `_campagnes/<campagne>/` (non daté).
+- **Résolution « dernière session »** : balayage `<jeu>/<YYYY>/<MM>/` filtré sur `<campagne>-session-*.md` (remplace scan `sessions/`).
+- **Setup de campagne** : plus de sous-dossier `sessions/` créé (les journaux vont dans les dossiers datés).
+- **Suppression du plugin `hermes`** : `obsidian:solo-mc` devient l'unique portage de jeu en direct. Références `hermes:solo-mc` → `obsidian:solo-mc` dans tout le plugin.
+- Chemin absolu défaut vault : `Perso/JDR` → `Perso/RPG` (renommage répertoire).
+- Repli sous-systèmes partagés : `<vault>/subsystems/` → `<vault>/_subsystems/`.
+
 ## [0.8.0] — 2026-06-01
 
 ### Added

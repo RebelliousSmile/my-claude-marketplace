@@ -1,0 +1,12 @@
+[
+  { "prompt": "diffuse le composant card en HTML baseline", "expect_action": "define+render" },
+  { "prompt": "produis l'élément répétable pour le hero", "expect_action": "define+render" },
+  { "prompt": "génère toutes les variantes du composant btn", "expect_action": "define+render" },
+  { "prompt": "exporte le card en block pattern WordPress", "expect_action": "define+render+pivot" },
+  { "prompt": "rends le hero en composant Vue", "expect_action": "define+render+pivot" },
+  { "prompt": "crée le wireframe du hero pour une page d'accueil", "expect_action": "define+render" },
+  { "prompt": "le projet n'a pas de sc-php, diffuse quand même le card pour WP", "expect_action": "define+render" },
+  { "prompt": "fige le contrat et écris le manifeste", "expect_action": null },
+  { "prompt": "installe le linter et câble les gates", "expect_action": null },
+  { "prompt": "challenge la direction visuelle", "expect_action": null }
+]

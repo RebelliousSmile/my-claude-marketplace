@@ -32,7 +32,7 @@ for camp in carnets/*/; do
 done
 
 # Vérifier documentation partagée
-wc -w documentation/univers/**/README.md
+wc -w _univers/**/README.md
 wc -w documentation/workflows/**/*.md
 ```
 
@@ -76,9 +76,11 @@ carnets/<campagne>/
 ├── <personnage>-fiche.md          # 8-10k tokens MAX
 ├── mj-guide-regles-<système>.md   # 10-15k tokens (ou quick 5k)
 ├── README.md                      # 2-3k tokens
-├── sessions/                      # Pas dans memory bank
-│   ├── session-01.md
-│   ├── session-02.md
+├── mj/                            # Pas dans memory bank
+│   ├── <YYYY>/
+│   │   └── <MM>/
+│   │       ├── <campagne>-session-01.md
+│   │       └── <campagne>-session-02.md
 │   └── ...
 ├── pnjs/                          # Pas dans memory bank (Read si besoin)
 │   ├── pnj-1.md
@@ -94,11 +96,11 @@ carnets/<campagne>/
 - personnage-fiche.md (toujours)
 - mj-guide-regles.md ou -quick.md (toujours)
 - README.md campagne (toujours)
-- documentation/univers/<univers>/README.md (toujours)
+- _univers/<univers>/README.md (toujours)
 - documentation/workflows/<univers>/workflow-jeu-solo.md (en début session)
 
 **Fichiers Accessibles (Read au besoin)** :
-- sessions/ (relecture si besoin)
+- mj/<YYYY>/<MM>/ (relecture si besoin)
 - pnjs/ (si PNJ apparaît)
 - lieux/ (si lieu visité)
 - chronologie/ (si vérification timeline)
@@ -170,9 +172,9 @@ documentation/
 ## Références Détaillées
 
 Pour informations approfondies :
-- Respirations : `documentation/univers/demonslayer/respirations.md`
-- Démons : `documentation/univers/demonslayer/demons-catalogue.md`
-- Carte : `documentation/univers/demonslayer/carte-japon.md`
+- Respirations : `_univers/demonslayer/respirations.md`
+- Démons : `_univers/demonslayer/demons-catalogue.md`
+- Carte : `_univers/demonslayer/carte-japon.md`
 
 ## Pour le MJ
 
@@ -195,11 +197,11 @@ Pour informations approfondies :
 **Sessions jouées ≠ Memory Bank** :
 
 ```bash
-# Sessions restent dans sessions/ mais ne sont PAS chargées
+# Sessions restent dans mj/<YYYY>/<MM>/ mais ne sont PAS chargées
 # Sauf relecture explicite via Read
 
 # Détection sessions volumineuses
-find carnets/*/sessions/ -name "*.md" -exec wc -w {} \; | awk '$1 > 3000 {print}'
+find */_campagnes/*/mj/ -name "*.md" -exec wc -w {} \; | awk '$1 > 3000 {print}'
 
 # Si session > 3000 mots, proposer synthèse
 ```
@@ -209,11 +211,11 @@ find carnets/*/sessions/ -name "*.md" -exec wc -w {} \; | awk '$1 > 3000 {print}
 ```markdown
 # Après Session X
 
-1. Sauvegarder `sessions/session-X.md` (narratif complet)
+1. Sauvegarder `mj/<YYYY>/<MM>/<campagne>-session-X.md` (narratif complet)
 2. Mettre à jour `chronologie/timeline.md` (événements clés)
 3. Mettre à jour `pnjs/*.md` si changements relations
 4. Mettre à jour stats dans `<personnage>-fiche.md`
-5. **NE PAS charger sessions/ dans memory bank**
+5. **NE PAS charger mj/ dans memory bank**
 
 Memory bank reste légère (config + fiche + règles + univers).
 ```
@@ -222,12 +224,12 @@ Memory bank reste légère (config + fiche + règles + univers).
 
 ```bash
 # Après 10+ sessions, archiver anciennes
-mkdir -p carnets/<campagne>/sessions/.archive/acte-1/
-mv carnets/<campagne>/sessions/session-{01..05}.md \
-   carnets/<campagne>/sessions/.archive/acte-1/
+mkdir -p _campagnes/<campagne>/mj/.archive/acte-1/
+mv _campagnes/<campagne>/mj/<YYYY>/<MM>/<campagne>-session-{01..05}.md \
+   _campagnes/<campagne>/mj/.archive/acte-1/
 
 # Créer synthèse acte
-cat > carnets/<campagne>/sessions/synthese-acte-1.md <<EOF
+cat > _campagnes/<campagne>/mj/synthese-acte-1.md <<EOF
 # Synthèse Acte I (Sessions 1-5)
 
 ## Événements Clés
@@ -268,7 +270,7 @@ grep -r "lesfleursdumal" .claude/agents/
 # Si résultats → PROBLÈME ISOLATION
 
 # Vérifier documentation qui mélange campagnes
-grep -r "campagne=" documentation/univers/
+grep -r "campagne=" _univers/
 # Univers NE doit PAS mentionner campagnes spécifiques
 ```
 
@@ -350,7 +352,7 @@ Exemple : "Confrontation (choix C). Margot valorise transparence post-Julien."
 
 ## Références
 
-- Session : `sessions/session-04-confrontation-leo.md`
+- Session : `mj/<YYYY>/<MM>/<campagne>-session-04-confrontation-leo.md`
 - Config : `config.yaml:fils_narratifs`
 - Fiche : `margot-sinclair-fiche.md:relations`
 ```
@@ -457,7 +459,7 @@ fi
 | margot-sinclair-fiche.md | 8.1k | 4% | Core |
 | mj-guide-regles-otherscape.md | 13.5k | 6.8% | Core |
 | README.md | 2.8k | 1.4% | Core |
-| documentation/univers/8-mine/README.md | 9.6k | 4.8% | Partagé |
+| _univers/8-mine/README.md | 9.6k | 4.8% | Partagé |
 | documentation/workflows/8-mine/workflow.md | 7.8k | 3.9% | Partagé |
 | **Total** | **45k** | **22.5%** | |
 

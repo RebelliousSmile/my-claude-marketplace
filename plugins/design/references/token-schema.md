@@ -107,8 +107,50 @@ Tailwind v4 `@theme` block mapping tokens to Tailwind's expected namespaces (`--
 }
 ```
 
+## Liaison tokens canoniques ↔ manifeste composants
+
+Après `adjust`, `tokens.json` (couche 1) et `components.json` (couche 2) forment un système cohérent. Les points de liaison :
+
+### Backgrounds autorisés
+
+Le champ `.backgrounds` d'un composant dans `components.json` référence des **chemins de tokens** de `tokens.json` :
+
+```json
+"hero": {
+  "backgrounds": ["color.semantic.background", "color.brand.primary"]
+}
+```
+
+Le chemin `color.semantic.background` doit exister dans `tokens.json` sous `color.semantic.background.$value`. `enforce` valide ce lien ; un chemin mort est une violation `error`.
+
+### Tokens sémantiques = le pont
+
+Les tokens sémantiques (`color.semantic.*`) sont le pont entre couche 1 et couche 2. Ils doivent être résolus (alias vers un token de ramp) dans `tokens.json` pour que le lint de fond soit vérifiable statiquement :
+
+```json
+"color": {
+  "semantic": {
+    "background": { "$type": "color", "$value": "{color.neutral.50}" },
+    "surface":    { "$type": "color", "$value": "{color.neutral.100}" }
+  }
+}
+```
+
+### Tokens de fond autorisés pour les composants sombres
+
+Pour les variantes sombres (ex. `hero--dark`) dont `.backgrounds` liste un token foncé (ex. `color.neutral.900`), `enforce` vérifie que le contraste texte/fond satisfait WCAG AA. Le token de couleur de texte candidat est `color.semantic.text` (ou sa valeur calculée).
+
+### Ce que `adjust` fait lors du figeage
+
+1. Audite les groupes requis de `tokens.json` (tous les groupes de la table ci-dessus doivent exister).
+2. Déduplique les tokens redondants (valeurs identiques sur des chemins différents → alias l'un vers l'autre).
+3. Pour chaque composant de `components.json`, vérifie que tous les chemins de `.backgrounds` existent dans `tokens.json`.
+4. Bumpe `$version` dans les deux fichiers en cohérence.
+
 ## Invariants
 
 - Both adapters are regenerated together, atomically, from `tokens.json`.
 - Generated files always carry the "do not edit" banner.
 - A value that differs between adapters and `tokens.json` is a bug — `audit` flags it.
+- Toute référence `{token.path}` dans `tokens.json` doit pointer vers un chemin existant dans le même fichier. Les alias circulaires sont interdits.
+- Les chemins de `.backgrounds` dans `components.json` pointent obligatoirement vers `color.*` tokens (les tokens de type `color` uniquement).

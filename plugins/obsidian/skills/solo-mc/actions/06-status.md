@@ -20,7 +20,7 @@ Mechanical state dashboard with labeled sections:
 ## Process
 
 1. Detect campaign from `.current-session` if not provided; error if absent.
-2. Read `<campaign>/sessions/.session-state.yaml` for the full mechanical state.
+2. Read `<vault>/<jeu>/_campagnes/<campagne>/.session-state.yaml` for the full mechanical state.
 3. Read `<campaign>/config.yaml` for campaign objectives and difficulty settings.
 4. Read `<campaign>/pj/<character>.md` for character-level mechanical data.
 5. Render a structured dashboard with each category labeled and sorted by urgency.

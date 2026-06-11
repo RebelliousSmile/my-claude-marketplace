@@ -9,7 +9,7 @@
 
 ## Process
 
-1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté, univers), les données d'univers **canon ET MJ** (`JDR/<jeu>/univers/<univers>/canon/` et `mj/` : `personnages.md`, `factions.md`, `geographie.md`), les fronts actifs `JDR/<jeu>/campagnes/<campagne>/fronts.md`, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale). Le canon prime ; le MJ étend.
+1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté, univers), les données d'univers **canon ET MJ** (`RPG/<jeu>/_univers/<univers>/canon/` et `mj/` : `personnages.md`, `factions.md`, `geographie.md`), les fronts actifs `RPG/<jeu>/_campagnes/<campagne>/fronts.md`, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale). Le canon prime ; le MJ étend.
 2. **Construire en situation, pas en intrigue linéaire** (adapté au solo) :
    - **Prémisse & enjeu** : ce qui est vrai au départ, ce qui va déraper si le PJ n'agit pas.
    - **Lieux** : 3–6 lieux clés ; `[[lier]]` les lieux existants (`canon/` ou `mj/geographie.md`), créer les nouveaux (invention MJ) dans `mj/geographie.md` ; n'inscrire ici que leur mise en jeu (ambiance, ce qu'on y trouve maintenant).
@@ -19,11 +19,11 @@
    - **Issues possibles** : succès / échec / coût, et conséquences sur les fronts.
    - **Récompenses** : matérielles, narratives, et toute récompense mécanique propre au système de jeu (consulter les références — ne pas inventer).
 3. **Ancrer sur le PJ** : au moins une scène-germe touche la ligne rouge ou la question viscérale du PJ.
-4. **Écrire** `JDR/<jeu>/campagnes/<campagne>/scenarios/<slug>.md` (le scénario est de la prep de campagne ; lieux/PNJ/factions durables restent dans l'univers, liés) ; mettre à jour `index.md`.
+4. **Écrire** `RPG/<jeu>/_campagnes/<campagne>/scenarios/<slug>.md` (le scénario est de la prep de campagne ; lieux/PNJ/factions durables restent dans l'univers, liés) ; mettre à jour `index.md`.
 
 ## Outputs
 
-`JDR/<jeu>/campagnes/<campagne>/scenarios/<slug>.md` (prémisse, lieux liés, PNJ liés, fronts, amorces, issues, récompenses) + `index.md` à jour. Lister les PNJ/factions/lieux d'univers à créer (via `npc`/`faction`/`lore-extract`) et les `[À compléter]`.
+`RPG/<jeu>/_campagnes/<campagne>/scenarios/<slug>.md` (prémisse, lieux liés, PNJ liés, fronts, amorces, issues, récompenses) + `index.md` à jour. Lister les PNJ/factions/lieux d'univers à créer (via `npc`/`faction`/`lore-extract`) et les `[À compléter]`.
 
 ## Test
 

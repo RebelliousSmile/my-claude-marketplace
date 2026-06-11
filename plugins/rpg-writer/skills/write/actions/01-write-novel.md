@@ -37,7 +37,7 @@ Elements: Locations [list], Characters [list], Terminology [list]
 
 ## Process
 
-> Path variables: `<univers-root>` = `<jeu>/univers/<univers>/`, `<systeme-root>` = `<jeu>/systeme/`, `<projet-root>` = `<jeu>/ecrits/<projet>/`. See `setup/references/vault-layout.md`.
+> Path variables: `<univers-root>` = `<jeu>/_univers/<univers>/`, `<systeme-root>` = `<jeu>/_systeme/`, `<projet-root>` = `<jeu>/_ecrits/<projet>/`. See `setup/references/vault-layout.md`.
 
 1. Load `bank.yml`. Extract: universe path, output-style path(s), TOC path, `document.type`.
 2. Load the output-style file(s) declared in `bank.yml > output-style` (resolves under `<univers-root>/.output-styles/`). Apply project override if `.claude/output-style.md` exists.

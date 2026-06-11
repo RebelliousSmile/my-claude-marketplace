@@ -20,14 +20,14 @@ def vault_root():
             m = re.match(r"\s*vault\s*:\s*(.+?)\s*$", line)
             if m:
                 return pathlib.Path(m.group(1).strip().strip('"').strip("'")).expanduser()
-    for cand in ("C:/Users/fxgui/Public/Notes/Perso/jdr", "~/JDR"):
+    for cand in ("C:/Users/fxgui/Public/Notes/Perso/RPG", "~/RPG"):
         p = pathlib.Path(cand).expanduser()
         if p.exists():
             return p
     sys.exit("vault introuvable (ni ~/.jdr.yaml, ni défauts plateforme)")
 
 VAULT = vault_root()
-SUB = VAULT / "subsystems"
+SUB = VAULT / "_subsystems"
 results = []
 def check(name, ok, detail=""):
     results.append(ok)

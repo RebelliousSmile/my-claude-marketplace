@@ -1,0 +1,12 @@
+[
+  { "prompt": "extrais le design system de ce screenshot que mon collègue m'a envoyé", "expect_action": "intake" },
+  { "prompt": "matche les tokens de https://example.com pour notre projet", "expect_action": "intake" },
+  { "prompt": "intègre cet export Figma dans un design system", "expect_action": "intake" },
+  { "prompt": "construis tokens.json depuis ce styles.css existant", "expect_action": "intake" },
+  { "prompt": "design un système depuis cette user story, sans référence visuelle", "expect_action": "intake" },
+  { "prompt": "on a un brief client, pas de maquette, crée le design system", "expect_action": "intake" },
+  { "prompt": "écris la matière de design depuis ces tokens qu'on a validés", "expect_action": "write-material" },
+  { "prompt": "challenge la direction de ce design system", "expect_action": null },
+  { "prompt": "fige le contrat et écris le manifeste", "expect_action": null },
+  { "prompt": "audite cette page contre le système", "expect_action": null }
+]

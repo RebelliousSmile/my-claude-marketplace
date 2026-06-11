@@ -1,7 +1,0 @@
-{
-  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "hermes",
-  "version": "0.2.0",
-  "description": "Source des skills natives Hermes Agent (Nous Research, agentskills.io). solo-mc (MJ JDR solo en direct, agent unique, modules oracle/narrateur) est déployée vers ~/.hermes/skills/ — pas exécutée par Claude Code (variante Claude Code : obsidian:solo-mc).",
-  "author": { "name": "fxgui" }
-}

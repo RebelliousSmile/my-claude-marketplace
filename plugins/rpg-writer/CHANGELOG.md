@@ -2,6 +2,16 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant. Détail : `git log -- plugins/rpg-writer` (avant 0.4.0 : `git log -- plugins/writing`).
 
+## [0.10.0] — 2026-06-06
+
+### Changed
+- **Migration arborescence vault** : tous les dossiers de travail préfixés `_` — `_univers/`, `_systeme/`, `_subsystems/`, `_ecrits/`, `_campagnes/`, `_pjs/`. Variables de chemin mises à jour dans `vault-layout.md` (source de vérité), propagées à tous les skills. **Breaking** : les `bank.yml` existants (champ `project_path` : `<jeu>/ecrits/…`) et les CWD doivent migrer vers `<jeu>/_ecrits/…`.
+- **`vault-layout.md`** : arbre ASCII, table des variables, patterns gitignore (`!**/_univers/*/canon/**` etc.), section interopérabilité et table de routage mis à jour.
+- **`hermes:solo-mc` → `obsidian:solo-mc`** dans `rules-keeper/SKILL.md` et `vault-layout.md` (suite suppression plugin hermes).
+- **Agents stale migrés** : `documentation-architect-jdr` et `claude-code-optimizer-jdr` alignés sur le nouveau modèle (`_univers/`, `<YYYY>/<MM>/`, `<campagne>-session-*.md`).
+- Défaut vault Windows : `Perso/JDR` → `Perso/RPG` ; Linux : `~/JDR` → `~/RPG`.
+- Repli sous-systèmes partagés : `<vault>/subsystems/` → `<vault>/_subsystems/`.
+
 ## [0.7.0] — 2026-06-01
 
 ### Added

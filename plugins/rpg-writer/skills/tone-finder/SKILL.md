@@ -26,7 +26,7 @@ Trigger-to-action mapping:
 - Analyze writing philosophy first, formatting conventions second.
 - In questionnaire mode: co-construct examples with the user; maximum 15 questions total.
 - In improve mode: extract patterns from `.wip/comments/*.md` and doctor reports before proposing changes.
-- Output file path: `<univers-root>/.output-styles/<univers>-<type>.md` (`<univers-root>` = `<jeu>/univers/<univers>/`).
+- Output file path: `<univers-root>/.output-styles/<univers>-<type>.md` (`<univers-root>` = `<jeu>/_univers/<univers>/`).
 - After writing, update `bank.yml` `output-style.<type>` field to point to the new file.
 - All generated examples must reflect the universe's real style — never generic placeholder prose.
 

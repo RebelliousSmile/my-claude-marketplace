@@ -1,8 +1,0 @@
-[
-  { "prompt": "setup the design rules for this project", "expect_action": "install" },
-  { "prompt": "install the mobile-first design system rules", "expect_action": "install" },
-  { "prompt": "/design:setup", "expect_action": "install" },
-  { "prompt": "add the responsive design rules to .claude/rules", "expect_action": "install" },
-  { "prompt": "extract the design system from this screenshot", "expect_action": null },
-  { "prompt": "audit this page against the design system", "expect_action": null }
-]

@@ -76,4 +76,4 @@ Saved to: `<target>/.templates/personas/<id>.yml`
 
 ## Test
 
-After `generate "WoT fan reader"` (no universe), verify that a `.yml` file exists in `<vault>/_shared/personas/`, contains all required fields (id, name, reading_style, expectations, criteria), and that criteria weights sum to exactly 1.0.
+After `generate "WoT fan reader"` (no universe), verify that a `.yml` file exists in `<vault>/_shared/personas/` (e.g. `C:/Users/fxgui/Public/Notes/Perso/RPG/_shared/personas/`), contains all required fields (id, name, reading_style, expectations, criteria), and that criteria weights sum to exactly 1.0.

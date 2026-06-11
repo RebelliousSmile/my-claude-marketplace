@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
   "name": "obsidian",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Personal Obsidian notes management — project lifecycle, sessions, meetings, invoices, RAG export; email triage; and solo TTRPG vault tooling: player-character management (pc), scenario writing / campaign preparation (rpg), and live play (solo-mc, Claude Code variant).",
   "author": { "name": "fxgui" }
 }

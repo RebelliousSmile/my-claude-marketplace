@@ -1,9 +1,0 @@
-[
-  { "prompt": "audit design/wireframes/checkout.html against the system", "expect_action": "audit" },
-  { "prompt": "does this page respect the design system?", "expect_action": "audit" },
-  { "prompt": "design review of src/components/Button.vue", "expect_action": "audit" },
-  { "prompt": "check my pages for hardcoded colors and breakpoint issues", "expect_action": "audit" },
-  { "prompt": "audit and fix the wireframe", "expect_action": "audit" },
-  { "prompt": "extract the design system from this screenshot", "expect_action": null },
-  { "prompt": "implement the Card component in React", "expect_action": null }
-]

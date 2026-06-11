@@ -3,12 +3,12 @@
 Destructively reset a writing project: extract narrative essence into `overview.md`, backup all generated files, then delete `.toc/`, `chapitres/`, and `.wip/` contents.
 
 > Path variables: see `setup/references/vault-layout.md`.
-> `<projet-root>` = `<jeu>/ecrits/<projet>/` — bank.yml and all project files live here.
+> `<projet-root>` = `<jeu>/_ecrits/<projet>/` — bank.yml and all project files live here.
 > Universe docs (`<univers-root>/`), output-styles, and personas are NEVER deleted.
 
 ## Inputs
 
-- `project_path` (required) — string, format `<jeu>/ecrits/<projet>`
+- `project_path` (required) — string, format `<jeu>/_ecrits/<projet>`
 - `--keep-wip` (optional flag) — preserve `.wip/` when set
 
 ## Depends on
@@ -27,7 +27,7 @@ Directories `<projet-root>/.toc/`, `<projet-root>/chapitres/`, `<projet-root>/.w
 
 ### Phase 1 — Scan
 
-1. Read `<projet-root>/bank.yml`. If missing → STOP: "No `bank.yml` found. Run `setup init <jeu>/ecrits/<projet>` first."
+1. Read `<projet-root>/bank.yml`. If missing → STOP: "No `bank.yml` found. Run `setup init <jeu>/_ecrits/<projet>` first."
 2. List all files in:
    - `<projet-root>/.toc/*.md`
    - `<projet-root>/chapitres/*.tex` and `*.md`
@@ -96,7 +96,7 @@ Directories `<projet-root>/.toc/`, `<projet-root>/chapitres/`, `<projet-root>/.w
 16. Append to `<projet-root>/.backup/reset-log.md`:
     ```markdown
     ## Reset — YYYY-MM-DD HH:MM
-    - Project: <jeu>/ecrits/<projet>
+    - Project: <jeu>/_ecrits/<projet>
     - Files deleted: N
     - Backup: git stash / .backup/<projet>-YYYY-MM-DD/
     - overview.md: N lines
@@ -111,9 +111,9 @@ Directories `<projet-root>/.toc/`, `<projet-root>/chapitres/`, `<projet-root>/.w
     Deleted: [list of deleted files]
     Restore: git stash pop   (or copy from .backup/<projet>-<date>/)
     
-    Next step: brainstorm <jeu>/ecrits/<projet>
+    Next step: brainstorm <jeu>/_ecrits/<projet>
     ```
 
 ## Test
 
-After `tabula-rasa reset <jeu>/ecrits/<projet>` on a project with at least one chapter file: confirm that (1) `<projet-root>/overview.md` is non-empty and ≤ 500 lines, (2) `<projet-root>/chapitres/` and `<projet-root>/.toc/` directories exist but contain no files, (3) `<projet-root>/.backup/reset-log.md` has been updated with the reset timestamp, and (4) a backup exists (git stash or `.backup/` folder). Confirm that `<univers-root>/` was NOT touched.
+After `tabula-rasa reset <jeu>/_ecrits/<projet>` on a project with at least one chapter file: confirm that (1) `<projet-root>/overview.md` is non-empty and ≤ 500 lines, (2) `<projet-root>/chapitres/` and `<projet-root>/.toc/` directories exist but contain no files, (3) `<projet-root>/.backup/reset-log.md` has been updated with the reset timestamp, and (4) a backup exists (git stash or `.backup/` folder). Confirm that `<univers-root>/` was NOT touched.

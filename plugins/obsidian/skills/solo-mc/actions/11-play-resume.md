@@ -19,13 +19,13 @@ Restored session with:
 
 ## Process
 
-1. Verify `<campaign>/` folder exists; error if not.
-2. Write `.current-session` with the campaign name.
-3. Locate the session file: use `session` if provided, otherwise find the latest file in `<campaign>/sessions/`.
+1. Verify `<vault>/<jeu>/_campagnes/<campaign>/` folder exists; error if not.
+2. Write `.current-session` with the campaign relative path (`<jeu>/_campagnes/<campaign>`).
+3. Locate the session file: use `session` if provided, otherwise find the latest `<campagne>-session-*.md` file by scanning `<vault>/<jeu>/*/` (year folders, then month subfolders, most recent first).
 4. Read `<campaign>/config.yaml` for system, universe, and tone.
 5. Read `<campaign>/Histoire.md` for narrative backstory.
 6. Read `<campaign>/pj/<character>.md` for the character sheet.
-7. Read `<campaign>/sessions/.session-state.yaml` for the mechanical state.
+7. Read `<vault>/<jeu>/_campagnes/<campaign>/.session-state.yaml` for the mechanical state.
 8. Load the session file content; apply `checkpoint` offset if provided.
 9. Invoke `narrateur-agent` with the fully restored context.
 10. Display a combined recap: narrative context (like `previously`) followed by mechanical state (like `status`).

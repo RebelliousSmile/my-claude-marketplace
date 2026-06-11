@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-php",
-  "version": "0.4.8",
-  "description": "PHP-specific skills and workflows.",
+  "version": "0.5.0",
+  "description": "PHP ecosystem skills: sniff, audit, improve, legacy, teach. design-bridge: réceptacle du pivot design (enforce → linter PHP/WP natif + pre-commit ; diffuse → block pattern WP + theme.json).",
   "author": {
     "name": "François-Xavier Guillois"
   }

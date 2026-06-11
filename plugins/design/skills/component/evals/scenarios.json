@@ -1,9 +1,0 @@
-[
-  { "prompt": "spec a Button component with variants and sizes", "expect_action": "spec" },
-  { "prompt": "design a Card component for the system", "expect_action": "spec" },
-  { "prompt": "add a responsive navbar to the design system", "expect_action": "spec" },
-  { "prompt": "implement the Button in Vue", "expect_action": "implement" },
-  { "prompt": "code the Card component for our React app", "expect_action": "implement" },
-  { "prompt": "wireframe the pricing page", "expect_action": null },
-  { "prompt": "audit this component against the system", "expect_action": null }
-]
