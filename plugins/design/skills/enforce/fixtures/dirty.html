@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Fixture dirty</title></head>
+<body>
+  <!-- ERROR: btn--danger n'est pas un modifier déclaré dans le manifeste -->
+  <button class="btn btn--danger" type="button">Action dangereuse</button>
+
+  <!-- ERROR: card__footer n'est pas un element déclaré dans le manifeste -->
+  <article class="card">
+    <div class="card__body">
+      <h2 class="card__title">Titre</h2>
+    </div>
+    <div class="card__footer">Pied de carte non déclaré</div>
+  </article>
+
+  <!-- ERROR: token fantôme dans le style inline — non déclaré dans tokens.json -->
+  <p style="color: var(--color-brand-unknown)">Texte avec token fantôme</p>
+</body>
+</html>

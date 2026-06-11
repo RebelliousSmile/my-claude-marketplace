@@ -20,7 +20,7 @@ Chemins résolus depuis `bank.yml` (répertoire courant), sous le **sous-arbre d
 
 Si `bank.yml` est absent : écrire dans `<provenance>/` dans le répertoire courant et avertir.
 
-> `<univers-root>` = `<jeu>/univers/<univers>/` — résolu depuis `bank.yml` (`document.univers`) et le premier segment du CWD sous `<vault>` (`<jeu>`).
+> `<univers-root>` = `<jeu>/_univers/<univers>/` — résolu depuis `bank.yml` (`document.univers`) et le premier segment du CWD sous `<vault>` (`<jeu>`).
 
 Templates for all themes: see `@references/templates-standard.md` and `@references/templates-optional.md`.
 
@@ -31,8 +31,8 @@ Templates for all themes: see `@references/templates-standard.md` and `@referenc
 1. **Determine provenance**: `--homemade` → `mj/` subtree (homemade/non-canon) ; otherwise → `canon/` subtree (default). If the provenance of a source is unclear, ask once before extracting; if a single source visibly mixes canonical and homemade material, split the extraction per provenance rather than dumping both into one subtree.
 2. Read `bank.yml` from the current directory.
    - Extract `document.univers` → universe slug
-   - Resolve `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`), déduit du CWD ou de `bank.yml`
-   - Resolve `<univers-root>` = `<jeu>/univers/<document.univers>/`
+   - Resolve `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/RPG/`), déduit du CWD ou de `bank.yml`
+   - Resolve `<univers-root>` = `<jeu>/_univers/<document.univers>/`
    - Output root = `<univers-root>/<provenance>/` (`canon/` or `mj/`)
    - Extract `docs.terminologie` → overrides output path for terminology if present
    - Extract remaining `docs.*` paths → override output paths for other themes if present

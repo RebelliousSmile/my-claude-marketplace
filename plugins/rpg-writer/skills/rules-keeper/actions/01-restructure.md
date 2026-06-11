@@ -21,7 +21,7 @@ Restructure a single rules file into the LLM-optimized 6-section format.
   - `<system>-obstacle.template.md`
   - `<system>-asset.template.md`
 
-> `<systeme-root>` = `<jeu>/systeme/` ; `<subsys-root>` = `<jeu>/subsystems/<nom>/` → repli sur `<vault>/subsystems/<nom>/`.
+> `<systeme-root>` = `<jeu>/_systeme/` ; `<subsys-root>` = `<jeu>/_subsystems/<nom>/` → repli sur `<vault>/_subsystems/<nom>/`.
 
 ## Process
 

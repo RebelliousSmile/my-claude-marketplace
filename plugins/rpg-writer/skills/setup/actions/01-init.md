@@ -3,26 +3,26 @@
 Initialize a new writing project: audit the current tree, create missing directories, prompt for configuration, and write `bank.yml` after user validation.
 
 > Path variables: see `setup/references/vault-layout.md`.
-> `<projet-root>` = `<jeu>/ecrits/<projet>/` — `bank.yml` lives at `<projet-root>/bank.yml`.
+> `<projet-root>` = `<jeu>/_ecrits/<projet>/` — `bank.yml` lives at `<projet-root>/bank.yml`.
 
 ## Inputs
 
-- `project_path` (required) — string, format `<jeu>/ecrits/<projet>` (e.g. `zombiology/ecrits/mon-scenario`)
+- `project_path` (required) — string, format `<jeu>/_ecrits/<projet>` (e.g. `zombiology/_ecrits/mon-scenario`)
   - `<jeu>` = game folder under `<vault>` (e.g. `zombiology`, `pbta-hacks`)
   - `<projet>` = project slug (e.g. `mon-scenario`, `rouedutemps-adrenaline`)
 
 ## Outputs
 
 ```
-Project initialized at <jeu>/ecrits/<projet>/
+Project initialized at <jeu>/_ecrits/<projet>/
 Created:
   bank.yml
   overview.md (template)
-  univers/<univers>/canon/         (directory)
-  univers/<univers>/mj/            (directory)
-  univers/<univers>/.output-styles/      (directory)
-  univers/<univers>/canon/UNIVERS.md  (template if missing)
-  univers/<univers>/.templates/personas/ (directory)
+  _univers/<univers>/canon/         (directory)
+  _univers/<univers>/mj/            (directory)
+  _univers/<univers>/.output-styles/      (directory)
+  _univers/<univers>/canon/UNIVERS.md  (template if missing)
+  _univers/<univers>/.templates/personas/ (directory)
   .toc/
   chapitres/
   .wip/comments/
@@ -34,13 +34,13 @@ Created:
 ## Process
 
 1. Parse `$ARGUMENTS`. If `--integrity-check` flag detected → STOP, dispatch to `audit` instead.
-2. Validate the path format: must contain `ecrits/` as separator (format `<jeu>/ecrits/<projet>`). Extract `<jeu>` and `<projet>`. If format is invalid or ambiguous → ABORT with error and show expected format: `<jeu>/ecrits/<projet>`.
-3. Resolve `<univers-root>` = `<jeu>/univers/<univers>/`. Prompt the user for `<univers>` if not inferrable from existing files.
+2. Validate the path format: must contain `_ecrits/` as separator (format `<jeu>/_ecrits/<projet>`). Extract `<jeu>` and `<projet>`. If format is invalid or ambiguous → ABORT with error and show expected format: `<jeu>/_ecrits/<projet>`.
+3. Resolve `<univers-root>` = `<jeu>/_univers/<univers>/`. Prompt the user for `<univers>` if not inferrable from existing files.
 4. Scan the existing tree. Build a presence checklist:
    - `<projet-root>/bank.yml`
    - `<projet-root>/overview.md`
-   - `<univers-root>/canon/` (directory)
-   - `<univers-root>/mj/` (directory)
+   - `<univers-root>/canon/` (directory)     ← `<jeu>/_univers/<univers>/canon/`
+   - `<univers-root>/mj/` (directory)        ← `<jeu>/_univers/<univers>/mj/`
    - `<univers-root>/.output-styles/` (directory)
    - `<univers-root>/.templates/personas/` (directory)
    - `<projet-root>/.toc/INDEX.md`
@@ -48,7 +48,7 @@ Created:
    - `<projet-root>/.wip/` subdirectories
    - `<projet-root>/.templates/personas/`
 5. Present the checklist to the user: "Found X items, missing: Y. Continue?" Wait for explicit confirmation.
-6. Create missing directories in order:
+6. Create missing directories in order (all under `<jeu>/_univers/<univers>/` for universe dirs) :
    - `<univers-root>/canon/`
    - `<univers-root>/mj/`
    - `<univers-root>/.output-styles/`
@@ -73,13 +73,13 @@ Created:
       type: "<type>"
 
     output-style:
-      <type>: "univers/<univers>/.output-styles/<univers>-<type>.md"
+      <type>: "_univers/<univers>/.output-styles/<univers>-<type>.md"
 
     docs:
-      univers:      "univers/<univers>/canon/UNIVERS.md"
-      terminologie: "univers/<univers>/canon/terminologie.md"
+      univers:      "_univers/<univers>/canon/UNIVERS.md"
+      terminologie: "_univers/<univers>/canon/terminologie.md"
       # Uncomment additional canon files as they are created by lore-extract/research:
-      # factions:   "univers/<univers>/canon/factions.md"
+      # factions:   "_univers/<univers>/canon/factions.md"
       # projet docs — add MJ files here as needed:
       projet:
         - ".docs/introduction.md"
@@ -89,7 +89,7 @@ Created:
       projet:
         - ".templates/personas/<id>.yml"
       univers:
-        - "univers/<univers>/.templates/personas/<id>.yml"
+        - "_univers/<univers>/.templates/personas/<id>.yml"
 
     overview: "overview.md"
 
@@ -103,12 +103,12 @@ Created:
       statut: "draft"
     ```
 12. Display the YAML to the user for validation before writing.
-13. Write `bank.yml` to `<projet-root>/bank.yml`. Report all created files. Suggest: `brainstorm <jeu>/ecrits/<projet>` as next step.
+13. Write `bank.yml` to `<projet-root>/bank.yml`. Report all created files. Suggest: `brainstorm <jeu>/_ecrits/<projet>` as next step.
 
 ## Test
 
-After `init <jeu>/ecrits/<projet>`, verify that:
-- `<projet-root>/bank.yml` exists and references `univers/<univers>/canon/UNIVERS.md`
+After `init <jeu>/_ecrits/<projet>`, verify that:
+- `<projet-root>/bank.yml` exists and references `_univers/<univers>/canon/UNIVERS.md`
 - `<univers-root>/canon/` and `<univers-root>/mj/` directories exist
 - `<projet-root>/chapitres/` and `<projet-root>/.toc/` directories exist
 - No pre-existing files were overwritten

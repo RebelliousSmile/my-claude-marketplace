@@ -46,7 +46,7 @@ Analyze a source document and generate `.toc/INDEX.md` — a complete table of c
 
 ## Process
 
-> Path variables: `<univers-root>` = `<jeu>/univers/<univers>/`, `<projet-root>` = `<jeu>/ecrits/<projet>/`, `<systeme-root>` = `<jeu>/systeme/`. See `setup/references/vault-layout.md`.
+> Path variables: `<univers-root>` = `<jeu>/_univers/<univers>/`, `<projet-root>` = `<jeu>/_ecrits/<projet>/`, `<systeme-root>` = `<jeu>/_systeme/`. See `setup/references/vault-layout.md`.
 
 1. Load the source document from `$ARGUMENTS` (typically inside `<projet-root>`).
 2. Load `bank.yml`: extract `document.type`, `univers`, `output-style`, `docs`, `rules-files`, `personas`.

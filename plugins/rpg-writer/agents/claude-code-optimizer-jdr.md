@@ -44,7 +44,7 @@ Mes PJs/
 
 # Auditer
 ls -la carnets/*/config.yaml
-ls -la documentation/univers/*/
+ls -la _univers/*/
 ```
 
 **Checklist isolation :**
@@ -143,26 +143,22 @@ Active la campagne 8-mine et démarre la prochaine scène.
 **Documentation par campagne :**
 
 ```
-documentation/
-├── univers/
+<jeu>/
+├── _univers/
 │   ├── demonslayer/
 │   │   └── README.md           # Lore, terminologie
 │   ├── 8-mine-otherscape/
 │   │   └── README.md
 │   └── ...
-├── oracles/
-│   ├── demonslayer/
-│   │   ├── questions-combat.md
-│   │   └── tables-demons.md
-│   └── ...
-└── workflows/
+├── _systeme/                   # Tables oracle, règles
+└── _campagnes/
     ├── demonslayer/
-    │   └── workflow-jeu-solo.md
+    │   └── mj/                 # Sessions, comptes-rendus
     └── ...
 ```
 
 **Checklist documentation univers :**
-- [ ] Chaque univers a son dossier dans `documentation/univers/`
+- [ ] Chaque univers a son dossier dans `_univers/`
 - [ ] README.md explique lore, terminologie, ton
 - [ ] Tables oracle dans `documentation/oracles/univers/`
 - [ ] Workflow de jeu dans `documentation/workflows/univers/`
@@ -194,7 +190,7 @@ Chaque campagne a sa propre memory bank dans `carnets/<campagne>/`.
 @carnets/<campagne>/config.yaml
 @carnets/<campagne>/mj-guide-regles-*.md
 @carnets/<campagne>/personnage-fiche.md
-@documentation/univers/<univers>/README.md
+@_univers/<univers>/README.md
 @documentation/workflows/<univers>/workflow-jeu-solo.md
 -->
 
@@ -204,7 +200,7 @@ Chaque campagne a sa propre memory bank dans `carnets/<campagne>/`.
 - **Skills** : Partagés entre campagnes
 - **Commands** : `/setup-game`, `/play`, `/oracle`, `/roll`
 - **Documentation** : Organisée par univers dans `documentation/`
-- **Sessions** : Markdown dans `carnets/<campagne>/sessions/`
+- **Sessions** : Markdown dans `<jeu>/_campagnes/<campagne>/mj/<YYYY>/<MM>/`
 
 ## Workflow de Jeu
 
@@ -394,7 +390,7 @@ Aucun problème détecté.
 
 ### ✅ Structure Valide
 
-- `documentation/univers/` : 3 univers documentés
+- `_univers/` : 3 univers documentés
 - `documentation/workflows/` : 2 workflows créés
 - Isolation campagnes : Respectée ✅
 
@@ -453,17 +449,16 @@ Quand invoqué :
 ### Pattern 2 : Documentation Stratifiée
 
 ```
-documentation/
-├── README.md              # Guide général JdR Solo
-├── univers/
+<jeu>/
+├── _univers/
 │   └── <univers>/
 │       └── README.md      # Lore, terminologie (TOUJOURS chargé)
-├── oracles/
-│   └── <univers>/
-│       └── *.md           # Tables (chargé si besoin)
-└── workflows/
-    └── <univers>/
-        └── *.md           # Workflow (chargé en début session)
+├── _systeme/
+│   └── canon/
+│       └── *.md           # Règles (chargé si besoin)
+└── _campagnes/
+    └── <campagne>/
+        └── mj/            # Sessions, comptes-rendus (chargé en début session)
 ```
 
 **Stratégie chargement** :
@@ -475,7 +470,7 @@ documentation/
 **Métadonnées session** :
 
 ```yaml
-# carnets/<campagne>/sessions/session-01.md
+# <jeu>/_campagnes/<campagne>/mj/<YYYY>/<MM>/<campagne>-session-01.md
 
 ---
 campagne: 8-mine

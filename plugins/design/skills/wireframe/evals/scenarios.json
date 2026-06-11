@@ -1,9 +1,0 @@
-[
-  { "prompt": "wireframe the checkout flow for our store", "expect_action": "layout" },
-  { "prompt": "mock up a responsive product detail page from this user story", "expect_action": "layout" },
-  { "prompt": "draft a mobile-first dashboard layout", "expect_action": "layout" },
-  { "prompt": "just plan the breakpoint behavior for the settings page", "expect_action": "layout" },
-  { "prompt": "render the wireframe from this layout plan", "expect_action": "render" },
-  { "prompt": "build the design system from this brief", "expect_action": null },
-  { "prompt": "audit this wireframe against the system", "expect_action": null }
-]

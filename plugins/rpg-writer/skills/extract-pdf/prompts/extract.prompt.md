@@ -116,7 +116,7 @@ List created chunks and note page ranges and estimated character counts (~2500 c
 Create `docs/extraction/<source-name>/progress.md` with exact format below.
 
 > ⚠️ Format strict — respecter les noms de colonnes et les valeurs de statut exactement.
-> `<project_path>` doit être au format `<jeu>/ecrits/<projet>`.
+> `<project_path>` doit être au format `<jeu>/_ecrits/<projet>`.
 
 ```markdown
 # Extraction Progress: <source-name>

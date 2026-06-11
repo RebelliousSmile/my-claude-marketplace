@@ -7,7 +7,7 @@ Generate a `document-rules.md` for rules that are specific to one document (scen
 
 ## Inputs
 
-- `project-path` (required) — chemin vers le répertoire du projet contenant `bank.yml` ; format attendu `<jeu>/ecrits/<projet>` (résolu depuis `<vault>/`). Correspond à `<projet-root>`.
+- `project-path` (required) — chemin vers le répertoire du projet contenant `bank.yml` ; format attendu `<jeu>/_ecrits/<projet>` (résolu depuis `<vault>/`). Correspond à `<projet-root>`.
 - `source` (optional) — fichier source depuis lequel extraire les règles locales (par défaut `overview.md`)
 
 ## Outputs
@@ -24,9 +24,9 @@ Read `bank.yml` from `<project-path>`. Extract:
 - `rules-files` → chemins vers les fichiers de règles système déjà disponibles
 
 Résoudre les chemins par jeu :
-- `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`), déduit du `project-path` ou du CWD
-- `<systeme-root>` = `<jeu>/systeme/` (canon/ + mj/)
-- `<subsys-root>` = `<jeu>/subsystems/<nom>/` (repli : `<vault>/subsystems/<nom>/`)
+- `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/RPG/`), déduit du `project-path` ou du CWD
+- `<systeme-root>` = `<jeu>/_systeme/` (canon/ + mj/)
+- `<subsys-root>` = `<jeu>/_subsystems/<nom>/` (repli : `<vault>/_subsystems/<nom>/`)
 - Les `rules-files` déclarés dans `bank.yml` pointent typiquement vers `<systeme-root>/canon/<fichier>.md` ou `<subsys-root>/canon/<fichier>.md`
 
 If no `rules-files` declared: warn that local rules won't be able to reference the system rules.

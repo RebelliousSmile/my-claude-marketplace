@@ -4,9 +4,9 @@ Challenge and iterate on a writing project's overview until all required narrati
 
 ## Inputs
 
-- `project_path` (required) — string, format `<jeu>/ecrits/<projet>` (resolved to `<projet-root>` = `<jeu>/ecrits/<projet>/`)
+- `project_path` (required) — string, format `<jeu>/_ecrits/<projet>` (resolved to `<projet-root>` = `<jeu>/_ecrits/<projet>/`)
 
-> Path variables: `<univers-root>` = `<jeu>/univers/<univers>/`, `<projet-root>` = `<jeu>/ecrits/<projet>/`. See `setup/references/vault-layout.md`.
+> Path variables: `<univers-root>` = `<jeu>/_univers/<univers>/`, `<projet-root>` = `<jeu>/_ecrits/<projet>/`. See `setup/references/vault-layout.md`.
 
 ## Outputs
 

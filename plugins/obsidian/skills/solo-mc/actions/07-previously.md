@@ -18,8 +18,8 @@ No mechanical labels (no tags, statuses, countdowns, challenge names).
 ## Process
 
 1. Detect campaign from `.current-session` if not provided; error if absent.
-2. Read `<campaign>/sessions/.session-state.yaml` for the narrative position (current location, active story threads).
-3. Read the current session file for recent scene entries.
+2. Read `<vault>/<jeu>/_campagnes/<campagne>/.session-state.yaml` for the narrative position (current location, active story threads).
+3. Read the current session file (in `<vault>/<jeu>/<YYYY>/<MM>/`) for recent scene entries.
 4. Read `<campaign>/Histoire.md` for larger narrative arcs if recent scenes don't provide enough context.
 5. Render a prose narrative summary, cinematically framed, with no mechanical labels.
 

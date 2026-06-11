@@ -8,7 +8,7 @@ Session finale : verser le contenu classifié dans les **sources de référence*
 
 ## Inputs
 
-- `project_path` (required) — string, format `<jeu>/ecrits/<projet>` (résolu depuis `<vault>/`)
+- `project_path` (required) — string, format `<jeu>/_ecrits/<projet>` (résolu depuis `<vault>/`)
 - `source_name` (required) — nom du PDF source sans extension (ex. `engrenages-regles`). Si plusieurs dossiers dans `docs/extraction/`, lister les dossiers disponibles et demander à l'utilisateur.
 
 ## Depends on
@@ -32,9 +32,9 @@ Sources de référence créées ou enrichies :
    - Si des chunks sont `pending` ou `failed` → STOP : "Chunks [liste] non traités."
 2. **Résoudre les chemins** depuis `bank.yml` :
    - `document.univers` → slug (ex. `spire`)
-   - `<jeu>` = premier segment sous `<vault>`, déduit du CWD (ex. si CWD = `<vault>/nadir/ecrits/mon-roman/`, alors `<jeu>` = `<vault>/nadir/`)
-   - `<univers-root>` = `<jeu>/univers/<document.univers>/`
-   - `<systeme-root>` = `<jeu>/systeme/`
+   - `<jeu>` = premier segment sous `<vault>`, déduit du CWD (ex. si CWD = `<vault>/nadir/_ecrits/mon-roman/`, alors `<jeu>` = `<vault>/nadir/`)
+   - `<univers-root>` = `<jeu>/_univers/<document.univers>/`
+   - `<systeme-root>` = `<jeu>/_systeme/`
    - Vérifier que `<univers-root>` et `<systeme-root>` existent. Sinon → STOP avec le chemin manquant.
    - Tester si univers et projet partagent le même dépôt git :
      ```bash
@@ -80,7 +80,7 @@ Sources de référence créées ou enrichies :
      "sources/<source-name>/" \
      ".output-styles/" \
      ".templates/" \
-     "<jeu>/systeme/sources/<source-name>/" \
+     "<jeu>/_systeme/sources/<source-name>/" \
      "<projet>/.toc/"
    git -C "<univers-root>" commit -m "Extract sources: <source-name>"
    git -C "<univers-root>" stash list | grep -q "pre-extraction-<source-name>" && \

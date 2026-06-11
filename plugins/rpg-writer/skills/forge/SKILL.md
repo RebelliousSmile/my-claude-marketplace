@@ -12,7 +12,7 @@ Conversational partner for narrative concept development. Reads the project's `b
 
 | #   | Action  | Role                                                      | Input                             |
 | --- | ------- | --------------------------------------------------------- | --------------------------------- |
-| 01  | `forge` | Challenge and iterate on a writing project's overview    | project path `<jeu>/ecrits/<projet>` |
+| 01  | `forge` | Challenge and iterate on a writing project's overview    | project path `<jeu>/_ecrits/<projet>` |
 
 ## Default flow
 

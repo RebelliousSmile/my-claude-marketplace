@@ -365,22 +365,22 @@ def resolve_by_game_paths(progress: dict) -> dict:
     """
     Resolve by-game vault paths from progress metadata.
 
-    progress['project'] is expected to be '<jeu>/ecrits/<projet>'.
+    progress['project'] is expected to be '<jeu>/_ecrits/<projet>'.
     Returns dict with 'jeu', 'univers_root', 'systeme_root', 'project_root'.
     Falls back to best-effort if the format is non-standard (logs a warning).
     """
-    vault = Path('C:/Users/fxgui/Public/Notes/Perso/JDR')
+    vault = Path('C:/Users/fxgui/Public/Notes/Perso/RPG')
     project_str = progress.get('project', '') or ''
     univers = progress.get('univers', '') or ''
 
-    # Expect format: <jeu>/ecrits/<projet>
+    # Expect format: <jeu>/_ecrits/<projet>
     parts = Path(project_str).parts
     jeu = None
     if len(parts) >= 1:
         jeu = vault / parts[0]
 
-    univers_root = jeu / 'univers' / univers if jeu and univers else None
-    systeme_root = jeu / 'systeme' if jeu else None
+    univers_root = jeu / '_univers' / univers if jeu and univers else None
+    systeme_root = jeu / '_systeme' if jeu else None
     project_root = vault / project_str if project_str else None
 
     if not (univers_root and univers_root.exists()):

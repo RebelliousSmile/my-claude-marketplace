@@ -4,7 +4,7 @@ Sessions 2-N : extraire le texte d'un chunk PDF, classifier le contenu dans `cla
 
 ## Inputs
 
-- `project_path` (required) — string, format `<jeu>/ecrits/<projet>` (résolu depuis `<vault>/`)
+- `project_path` (required) — string, format `<jeu>/_ecrits/<projet>` (résolu depuis `<vault>/`)
 - `source_name` (required) — nom du PDF source sans extension (ex. `engrenages-regles`). Visible dans `docs/extraction/` ou dans `progress.md#Source`.
 - `chunk_id` (required) — numéro du chunk (ex. `01`, `02`)
 

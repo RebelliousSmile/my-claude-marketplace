@@ -1,0 +1,12 @@
+[
+  { "prompt": "arbitre les directions et fige le contrat", "expect_action": "arbitrate+freeze" },
+  { "prompt": "on a deux maquettes qui se contredisent sur la couleur primaire, tranche", "expect_action": "arbitrate+freeze" },
+  { "prompt": "les pistes de destructure sont prêtes, fige maintenant", "expect_action": "arbitrate+freeze" },
+  { "prompt": "écris le manifeste des composants", "expect_action": "arbitrate+freeze" },
+  { "prompt": "canonise les tokens et cristallise le design system", "expect_action": "arbitrate+freeze" },
+  { "prompt": "on a décidé de changer la palette suite au destructure, re-fige", "expect_action": "arbitrate+freeze" },
+  { "prompt": "on veut ajouter une variante dark au hero sans tout re-jouer", "expect_action": "arbitrate+freeze" },
+  { "prompt": "challenge la direction visuelle, c'est trop générique", "expect_action": null },
+  { "prompt": "installe le linter et câble les gates", "expect_action": null },
+  { "prompt": "génère les block patterns WordPress", "expect_action": null }
+]

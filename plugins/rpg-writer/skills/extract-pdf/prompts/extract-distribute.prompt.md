@@ -27,13 +27,13 @@ Merge all classified content, distribute to `sources/` reference destinations, w
 
 1. Parse progress file:
    - `Source` → original PDF path
-   - `Project` → project path (`<jeu>/ecrits/<projet>`)
+   - `Project` → project path (`<jeu>/_ecrits/<projet>`)
    - `Univers` → universe slug
 
 2. Resolve paths:
-   - `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/JDR/`), déduit du champ `Project`
-   - `<univers-root>` = `<jeu>/univers/<univers>/`
-   - `<systeme-root>` = `<jeu>/systeme/`
+   - `<jeu>` = premier segment sous `<vault>` (`C:/Users/fxgui/Public/Notes/Perso/RPG/`), déduit du champ `Project`
+   - `<univers-root>` = `<jeu>/_univers/<univers>/`
+   - `<systeme-root>` = `<jeu>/_systeme/`
 
 3. Verify ALL chunks have status `done`
    - IF any `pending` → STOP, list missing chunks

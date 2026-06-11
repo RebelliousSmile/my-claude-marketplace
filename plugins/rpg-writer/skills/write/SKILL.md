@@ -32,15 +32,15 @@ Both actions follow the same internal steps: Load → Analyze → Draft → Brai
 - `--feedback` mode: FULL rewrite from TOC, not a patch. Never read the existing chapter. Persona feedback becomes writing constraints, not a diff to apply.
 - Mark key point coverage with hidden HTML comments: `<!-- KEY_POINT: [desc] - COVERED -->`.
 - French typography: guillemets « », tirets cadratins —, points de suspension …, espaces insécables.
-- **Setup après clone (`tnn-jdr`)** — Les `rules-files` du système (`<systeme-root>/canon/`) et tous les `sources/` ne sont **pas versionnés** (gitignored). Après un clone sur une nouvelle machine, `<systeme-root>/canon/` est absent : relancer `extract-pdf` puis `rules-keeper` pour le régénérer avant d'écrire règles/scénarios qui en dépendent. Le lore `<univers-root>/canon/` et `mj/` sont versionnés et survivent au clone.
+- **Setup après clone (`tnn-jdr`)** — Les `rules-files` du système (`<systeme-root>/canon/`) et tous les `sources/` ne sont **pas versionnés** (gitignored). Après un clone sur une nouvelle machine, `<systeme-root>/canon/` est absent : relancer `extract-pdf` puis `rules-keeper` pour le régénérer avant d'écrire règles/scénarios qui en dépendent. Le lore `<univers-root>/canon/` et `mj/` sont versionnés et survivent au clone. (`<systeme-root>` = `<jeu>/_systeme/`, `<univers-root>` = `<jeu>/_univers/<univers>/`)
 
 ## Path variables
 
 | Variable | Resolved value |
 |----------|----------------|
-| `<univers-root>` | `<jeu>/univers/<univers>/` |
-| `<systeme-root>` | `<jeu>/systeme/` |
-| `<projet-root>` | `<jeu>/ecrits/<projet>/` |
+| `<univers-root>` | `<jeu>/_univers/<univers>/` |
+| `<systeme-root>` | `<jeu>/_systeme/` |
+| `<projet-root>` | `<jeu>/_ecrits/<projet>/` |
 
 Full convention: `setup/references/vault-layout.md`.
 

@@ -66,7 +66,7 @@ Create a new output-style file for a universe from source documents (source mode
 
 Saved to: `<univers-root>/.output-styles/<univers>-<type>.md`
 
-> Path variable: `<univers-root>` = `<jeu>/univers/<univers>/`. See `setup/references/vault-layout.md`.
+> Path variable: `<univers-root>` = `<jeu>/_univers/<univers>/`. See `setup/references/vault-layout.md`.
 
 ## Process
 

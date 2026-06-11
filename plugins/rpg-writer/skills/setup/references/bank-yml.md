@@ -2,8 +2,8 @@
 
 `bank.yml` is the canonical configuration file for a writing project. It declares all resources consumed by the workshop pipeline (forge, toc, write, review, tone-finder, persona, research, extract-pdf).
 
-Location: `<projet-root>/bank.yml` — i.e. `<jeu>/ecrits/<projet>/bank.yml`. Les chemins ci-dessous sont relatifs à la **racine du jeu** `<jeu>/`.
-Les ressources d'univers vivent sous `<univers-root>` = `<jeu>/univers/<univers>/`, le système du jeu sous `<systeme-root>` = `<jeu>/systeme/{canon,mj}/`, les sous-systèmes sous `<subsys-root>` = `<jeu>/subsystems/<nom>/{canon,mj}/`.
+Location: `<projet-root>/bank.yml` — i.e. `<jeu>/_ecrits/<projet>/bank.yml`. Les chemins ci-dessous sont relatifs à la **racine du jeu** `<jeu>/`.
+Les ressources d'univers vivent sous `<univers-root>` = `<jeu>/_univers/<univers>/`, le système du jeu sous `<systeme-root>` = `<jeu>/_systeme/{canon,mj}/`, les sous-systèmes sous `<subsys-root>` = `<jeu>/_subsystems/<nom>/{canon,mj}/`.
 
 > See also: `setup/references/vault-layout.md` — single source of truth for all path variables.
 
@@ -24,26 +24,26 @@ document:
 # Convention: <univers>-<type>.md
 # At least one key is required.
 output-style:
-  scenario: "univers/<univers>/.output-styles/<univers>-scenario.md"
-  novel:    "univers/<univers>/.output-styles/<univers>-novel.md"
-  roleplaying: "univers/<univers>/.output-styles/<univers>-roleplaying.md"
-  guide:    "univers/<univers>/.output-styles/<univers>-guide.md"
+  scenario: "_univers/<univers>/.output-styles/<univers>-scenario.md"
+  novel:    "_univers/<univers>/.output-styles/<univers>-novel.md"
+  roleplaying: "_univers/<univers>/.output-styles/<univers>-roleplaying.md"
+  guide:    "_univers/<univers>/.output-styles/<univers>-guide.md"
   projet:   ".output-styles/<projet>.md"    # Optional project-level override.
 
 # Universe and project documentation files.
 # Paths relative to <jeu>/
 docs:
   # --- Universe docs (canon tier — official lore from lore-extract/research) ---
-  univers:      "univers/<univers>/canon/UNIVERS.md"       # Required. Universe overview.
-  terminologie: "univers/<univers>/canon/terminologie.md"  # Required. Canonical vocabulary.
+  univers:      "_univers/<univers>/canon/UNIVERS.md"       # Required. Universe overview.
+  terminologie: "_univers/<univers>/canon/terminologie.md"  # Required. Canonical vocabulary.
   # Additional named canon keys are allowed:
-  # factions:   "univers/<univers>/canon/factions.md"
-  # personnages: "univers/<univers>/canon/personnages.md"
-  # histoire:   "univers/<univers>/canon/histoire.md"
+  # factions:   "_univers/<univers>/canon/factions.md"
+  # personnages: "_univers/<univers>/canon/personnages.md"
+  # histoire:   "_univers/<univers>/canon/histoire.md"
 
   # --- Universe docs (mj tier — homemade/house content) ---
-  # mj-notes:  "univers/<univers>/mj/<file>.md"
-  # mj-npc:    "univers/<univers>/mj/pnj.md"
+  # mj-notes:  "_univers/<univers>/mj/<file>.md"
+  # mj-npc:    "_univers/<univers>/mj/pnj.md"
 
   # --- Project-specific docs ---
   projet:                                           # Optional. Project-specific docs.
@@ -62,7 +62,7 @@ personas:
   projet:           # Project-specific personas.
     - ".templates/personas/<id>.yml"
   univers:          # Universe-level personas (shared across projects in this universe).
-    - "univers/<univers>/.templates/personas/<id>.yml"
+    - "_univers/<univers>/.templates/personas/<id>.yml"
   shared:           # Agnostic personas shared across all games.
     - "_shared/personas/<id>.yml"   # resolved as <vault>/_shared/personas/<id>.yml
 
@@ -78,13 +78,13 @@ toc:
 # Optional. Only relevant for scenario / roleplaying types.
 # Paths relative to <jeu>/
 rules-files:
-  systeme: "systeme/canon/<system>.md"         # Core game-system rules (canonical tier — rules-keeper output).
+  systeme: "_systeme/canon/<system>.md"         # Core game-system rules (canonical tier — rules-keeper output).
   regles-specifiques:                           # Additional game-system rules references.
-    - "systeme/canon/<supplement>.md"           # More canonical rules.
+    - "_systeme/canon/<supplement>.md"           # More canonical rules.
   # MJ/house rules may also be listed:
-  # mj-rules: "systeme/mj/<file>.md"
-# NOTE: only the game system (systeme/) belongs here. Generic subsystems (subsystems/) are
-# live-play tools consumed by hermes:solo-mc only — never referenced in a writing bank.yml.
+  # mj-rules: "_systeme/mj/<file>.md"
+# NOTE: only the game system (_systeme/) belongs here. Generic subsystems (_subsystems/) are
+# live-play tools consumed by obsidian:solo-mc only — never referenced in a writing bank.yml.
 
 # ICML export configuration (InDesign pipeline).
 icml:
@@ -132,7 +132,7 @@ For persona files: additionally check that `criteria` weights sum to 1.0.
 
 For `output-style` files: additionally check that each has at least a `## Philosophie d'écriture` section.
 
-For `docs.univers` and `docs.terminologie`: confirm path is inside `canon/` (warn if pointing elsewhere).
+For `docs.univers` and `docs.terminologie`: confirm path is inside `_univers/<univers>/canon/` (warn if pointing elsewhere).
 
 ---
 

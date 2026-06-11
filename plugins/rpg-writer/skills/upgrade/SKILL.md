@@ -28,7 +28,7 @@ Trigger-to-action mapping:
 - Present the improved version and ask for validation before saving.
 - Preserve the original's voice, intent, and structure unless the user explicitly asks to change them.
 - Log the version history if the artifact has a `version:` frontmatter field.
-- When saving back to the project, use `<projet-root>` = `<jeu>/ecrits/<projet>/` as the base path.
+- When saving back to the project, use `<projet-root>` = `<jeu>/_ecrits/<projet>/` as the base path.
 - When loading universe context, read from `<univers-root>/canon/`.
 
 > Path variables: see `setup/references/vault-layout.md`.

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "design",
-  "version": "0.2.1",
-  "description": "Mobile-first responsive design system: from-reference / from-brief intakes (core trio first, never emoji), agnostic W3C tokens + CSS/Tailwind adapters, living HTML wireframes, reusable components with options, compliance audit, plus diagnose + refactor for production codebases and export-wordpress (theme.json + block patterns).",
+  "version": "1.0.0",
+  "description": "Design system funnel — 5-verb pipeline: define (extract tokens + component inventory from references or brief), destructure (challenge direction, propose alternatives), adjust (arbitrate + freeze 3-layer contract: tokens · components.json · charter), enforce (portable linter derived from contract + pivot to sc-php/sc-js + 3 gates), diffuse (repeatable elements under lint gate, baseline HTML/CSS + pivot to sc-*). Replaces: setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress.",
   "author": {
     "name": "François-Xavier Guillois"
   }

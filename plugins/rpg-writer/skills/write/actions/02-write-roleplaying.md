@@ -32,7 +32,7 @@ Plus a completion report (same format as `write-novel`).
 
 ## Process
 
-> Path variables: `<univers-root>` = `<jeu>/univers/<univers>/`, `<systeme-root>` = `<jeu>/systeme/`, `<projet-root>` = `<jeu>/ecrits/<projet>/`. See `setup/references/vault-layout.md`.
+> Path variables: `<univers-root>` = `<jeu>/_univers/<univers>/`, `<systeme-root>` = `<jeu>/_systeme/`, `<projet-root>` = `<jeu>/_ecrits/<projet>/`. See `setup/references/vault-layout.md`.
 
 1. Load `bank.yml`. Extract: universe path, output-style, TOC, `rules-files`, `document.type`.
 2. Load the output-style file (roleplaying type) declared in `bank.yml > output-style.roleplaying` (resolves under `<univers-root>/.output-styles/`).

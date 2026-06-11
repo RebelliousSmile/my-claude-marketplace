@@ -3,7 +3,7 @@
 Analyze a written artifact, identify weaknesses, propose targeted improvements, and rewrite the improved version after user validation.
 
 > Path variables: see `setup/references/vault-layout.md`.
-> When the artifact is a project file, resolve its location via `<projet-root>` = `<jeu>/ecrits/<projet>/`.
+> When the artifact is a project file, resolve its location via `<projet-root>` = `<jeu>/_ecrits/<projet>/`.
 > When loading universe context (docs, terminologie), read from `<univers-root>/canon/`.
 
 ## Inputs

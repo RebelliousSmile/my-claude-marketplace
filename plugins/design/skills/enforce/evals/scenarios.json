@@ -1,0 +1,12 @@
+[
+  { "prompt": "installe le linter et câble les gates", "expect_action": "build+wire" },
+  { "prompt": "arme le pre-commit design system", "expect_action": "build+wire" },
+  { "prompt": "vérifie la conformité des pages publiées", "expect_action": "lint-instances" },
+  { "prompt": "lint les instances WordPress contre le manifeste", "expect_action": "lint-instances" },
+  { "prompt": "il y a des classes non déclarées sur les pages, corriger et propager", "expect_action": "lint-instances" },
+  { "prompt": "le projet est PHP, utilise ESLint si possible", "expect_action": "pivot" },
+  { "prompt": "enforce sur un projet sans sc-php ni sc-js", "expect_action": "build+wire" },
+  { "prompt": "fige le contrat et écris le manifeste", "expect_action": null },
+  { "prompt": "génère les block patterns WordPress", "expect_action": null },
+  { "prompt": "challenge la direction visuelle", "expect_action": null }
+]

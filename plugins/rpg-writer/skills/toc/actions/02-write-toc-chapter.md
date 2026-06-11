@@ -50,7 +50,7 @@ Saved to: `.toc/toc-chapter<NN>.md`
 
 ## Process
 
-> Path variables: `<univers-root>` = `<jeu>/univers/<univers>/`, `<projet-root>` = `<jeu>/ecrits/<projet>/`, `<systeme-root>` = `<jeu>/systeme/`. See `setup/references/vault-layout.md`.
+> Path variables: `<univers-root>` = `<jeu>/_univers/<univers>/`, `<projet-root>` = `<jeu>/_ecrits/<projet>/`, `<systeme-root>` = `<jeu>/_systeme/`. See `setup/references/vault-layout.md`.
 
 1. Load `.toc/INDEX.md` (inside `<projet-root>/.toc/`). Locate the entry for chapter `<NN>`. If not found → ABORT and ask user to run `generate-toc` first.
 2. Load `bank.yml`: extract `output-style`, `docs`, `rules-files`, `personas`.

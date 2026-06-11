@@ -1,0 +1,11 @@
+[
+  { "prompt": "challenge la direction de ce design system, c'est trop générique", "expect_action": "challenge" },
+  { "prompt": "critique la matière que define vient de produire", "expect_action": "challenge" },
+  { "prompt": "propose d'autres pistes et inspirations pour cette direction visuelle", "expect_action": "challenge" },
+  { "prompt": "comment ce composant card pourrait évoluer", "expect_action": "challenge" },
+  { "prompt": "destructure design/components/hero.md", "expect_action": "challenge" },
+  { "prompt": "on a hérité de ce codebase, quel est l'état du design", "expect_action": "challenge" },
+  { "prompt": "écris la matière de design depuis ce brief", "expect_action": null },
+  { "prompt": "fige le contrat et écris le manifeste", "expect_action": null },
+  { "prompt": "installe le linter et câble les gates", "expect_action": null }
+]

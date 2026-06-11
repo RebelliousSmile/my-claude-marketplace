@@ -1,6 +1,6 @@
 # Narrateur — Functional Test Scenarios
 
-Functional tests for the `narrateur` agent (`plugins/hermes/agents/narrateur.md`) — the GM voice. Unlike the oracle (data-deterministic), the narrateur is **qualitative**: tests observe the rendered output against behavioural criteria. Run via an agent that loads `narrateur.md` + `references/response-templates.md`, against the real vault, with a minimal synthetic context.
+Functional tests for the `narrateur` agent (`plugins/obsidian/agents/narrateur.md`) — the GM voice. Unlike the oracle (data-deterministic), the narrateur is **qualitative**: tests observe the rendered output against behavioural criteria. Run via an agent that loads `narrateur.md` + `references/response-templates.md`, against the real vault, with a minimal synthetic context.
 
 Vault subsystems for the narrateur: **conversation-cards** (dialogue — present, `validated: true`) and **cinerio** (description — NOT installed yet → must graceful-degrade).
 
@@ -14,7 +14,7 @@ Vault subsystems for the narrateur: **conversation-cards** (dialogue — present
 
 ## How to run
 
-Agent-as-narrateur: load `plugins/hermes/agents/narrateur.md` + `plugins/hermes/skills/solo-mc/references/response-templates.md` as instructions; provide a minimal context (a system + a scene); for each scenario render the output and capture it. conversation-cards drawn from `<vault>/subsystems/conversation-cards/systeme/canon/conversation-cards.md`.
+Agent-as-narrateur: load `plugins/obsidian/agents/narrateur.md` + `plugins/obsidian/skills/solo-mc/references/response-templates.md` as instructions; provide a minimal context (a system + a scene); for each scenario render the output and capture it. conversation-cards drawn from `<vault>/_subsystems/conversation-cards/systeme/canon/conversation-cards.md`.
 
 Note: the narrateur has `tools: Read, Glob` (no Bash) — it **selects** a conversation card by attitude/emphasis rather than rolling; true random draws are the oracle's job.
 
