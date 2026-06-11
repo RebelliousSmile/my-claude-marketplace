@@ -30,7 +30,7 @@
     },
     {
       "name": "gamedesign",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./plugins/gamedesign",
       "description": "Game design skills and workflows.",
       "recommended": false
@@ -58,7 +58,7 @@
     },
     {
       "name": "sc-tiers",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./plugins/sc-tiers",
       "description": "Third-party SaaS consumption rules: Firebase coding + Firebase/Supabase/DynamoDB/Hasura data pivots.",
       "recommended": false
@@ -72,7 +72,7 @@
     },
     {
       "name": "sc-rust",
-      "version": "0.4.1",
+      "version": "0.4.3",
       "source": "./plugins/sc-rust",
       "description": "Rust ecosystem: two-tier sniff (pivot model), audit, Axum/Actix-web perf pivots + SQLx/Diesel data pivots.",
       "recommended": false
