@@ -64,7 +64,7 @@
       "id": "obsidian",
       "name": "obsidian",
       "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), solo TTRPG tooling on autonomous local game domains (pc, rpg, solo-mc), the Documents/ organiser (tree), and brief/lore/data assembly for writing: brief (portable _brief/), forge (concept), research (data), lore-extract, rules-keeper, extract-pdf.",
-      "version": "0.15.0"
+      "version": "0.17.0"
     }
   ]
 }

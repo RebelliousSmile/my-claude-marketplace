@@ -21,7 +21,7 @@ Session close summary with metrics (scenes played, oracle queries, rolls, thread
 ## Process
 
 1. Detect campaign from `.current-session`; error if absent.
-2. Read the current session file (in `R/_campagnes/<campaign>/<YYYY>/<MM>/`) for all events logged this session.
+2. Read the current session file (in `R/<YYYY>/<MM>/<campaign>/`) for all events logged this session.
 3. Read `R/_campagnes/<campaign>/.session-state.yaml` for the existing state baseline.
 4. Compute the updated state: merge session events, update statuses, burn/acquire tags, advance countdowns, update NPC relations.
 5. Write the updated `_campagnes/<campaign>/.session-state.yaml`.

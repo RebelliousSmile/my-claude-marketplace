@@ -67,7 +67,7 @@ python "<R>/_shared/pj-manager.py" new "<nom>" --into "<R>/_pjs"
 
 The script copies the template, slugifies the name for the folder, and replaces `[Nom du PJ]` in all `.md` files.
 
-Files created: `pj.md`, `fiche_technique.md`, `intention.md`, `etat-jeu.md`, `journal.md`, `backlog.md`.
+Files created: `pj.md`, `fiche_technique.md`, `intention.md`, `etat-jeu.md`, `backlog.md` (état durable du PJ dans `R/_pjs/<pj>/`). **Pas de `journal.md`** : les comptes-rendus de session sont des **fichiers datés** créés par `log-session` sous `R/<AAAA>/<MM>/<pj>/` (même axe daté que `solo-mc`).
 
 After creation, remind the user to:
 1. Fill `pj.md` (background) — use `background` for a genre-driven questionnaire (recommended for a fresh PJ), or `fill` if starting from an existing text
@@ -111,7 +111,7 @@ Redistribution rules:
 - `fiche_technique.md` ← stats, attributes, skills, power/weakness tags, spells, equipment, persistent statuses
 - `intention.md` ← themes, tone, truths, what I want to experience/avoid, visceral question, story threads
 - `etat-jeu.md` ← état mécanique de jeu selon les règles actives (système de jeu) : jauges, ressources, statuts, compteurs et éléments en suspens
-- `journal.md` ← dated session reports, played scenes, mechanical events and session outcomes per the active rules (game system) (newest first)
+- **comptes-rendus de session** ← **fichiers datés** `R/<AAAA>/<MM>/<pj>/<pj>-session-<AAAA-MM-JJ>-<N>.md` (un par session — **pas** un `journal.md` agrégé). Un ancien `journal.md` rencontré en réorganisation est éclaté en fichiers datés (un par entrée), puis archivé.
 - `backlog.md` ← scene ideas, threads to revive, open questions, narrative todo
 
 ## Action: background
@@ -136,12 +136,12 @@ Asks the user for:
 5. Final mechanical state of the sheet per the active rules (game system) (jauges, ressources, statuts, compteurs, éléments en suspens)
 
 Then updates:
-1. **`journal.md`** — new entry at the top (newest first) with scenes, mechanical events, outcomes, free notes
-2. **`etat-jeu.md`** — snapshot of the current mechanical state per the active rules (game system) (jauges, ressources, statuts, compteurs, éléments en suspens)
-3. **`intention.md`** — proposes an update if a new story thread emerged, the visceral question evolved, or a theme shifted
-4. **`backlog.md`** — proposes adding new scene ideas and open questions that emerged
+1. **Dated session file** — determine `<N>` by scanning the PJ's dated session home **across all year/month folders** (`R/<AAAA>/<MM>/<pj>/` for every `<AAAA>/<MM>`, files `<pj>-session-*.md`; `<N>` is global, not per-month), then create `R/<AAAA>/<MM>/<pj>/<pj>-session-<AAAA-MM-JJ>-<N>.md` (today's folders, create if absent) with scenes, mechanical events, outcomes, free notes. This is the session journal — one file per session, mirroring `solo-mc`.
+2. **`etat-jeu.md`** (durable, `R/_pjs/<pj>/`) — snapshot of the current mechanical state per the active rules (game system) (jauges, ressources, statuts, compteurs, éléments en suspens)
+3. **`intention.md`** (durable) — proposes an update if a new story thread emerged, the visceral question evolved, or a theme shifted
+4. **`backlog.md`** (durable) — proposes adding new scene ideas and open questions that emerged
 
-Reports modified files at the end.
+Reports modified files at the end (dated session file + the durable PJ sheets touched).
 
 ## Action: show
 
@@ -154,6 +154,7 @@ Loads character state from (priority order):
 1. `R/_campagnes/<campagne>/.session-state.yaml` (if active session)
 2. `R/_campagnes/<campagne>/config.yaml`
 3. `R/_pjs/<pj>/fiche_technique.md` and `R/_pjs/<pj>/pj.md`
+4. Latest dated session file `R/<AAAA>/<MM>/<pj>/<pj>-session-*.md` (most recent year/month) for recent scenes, tag changes and events
 
 Displays a structured sheet with: progress statuses, themes, power/weakness tags, recent tag changes, active statuses, NPC relations, objectives.
 

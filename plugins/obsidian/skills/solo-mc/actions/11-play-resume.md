@@ -21,7 +21,7 @@ Restored session with:
 
 1. Verify `R/_campagnes/<campaign>/` folder exists; error if not.
 2. Write `.current-session` with the campaign relative path (`_campagnes/<campaign>`, relative to `R`).
-3. Locate the session file: use `session` if provided, otherwise find the latest `<campagne>-session-*.md` file by scanning `R/_campagnes/<campagne>/<YYYY>/<MM>/` (year folders, then month subfolders, most recent first).
+3. Locate the session file: use `session` if provided, otherwise find the latest `<campagne>-session-*.md` file by scanning `R/<YYYY>/<MM>/<campagne>/` across all year/month folders (most recent year, then month, first).
 4. Read `<campaign>/config.yaml` for system, universe, and tone.
 5. Read `<campaign>/Histoire.md` for narrative backstory.
 6. Read `<campaign>/pj/<character>.md` for the character sheet.

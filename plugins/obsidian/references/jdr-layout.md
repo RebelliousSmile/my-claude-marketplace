@@ -28,8 +28,9 @@ Ce mécanisme est le pendant JDR de la résolution d'ancre de `obsidian:tree` (q
 | `<systeme-root>` | `R/_savoir/systeme/` |
 | `<subsys-root>` | `R/_savoir/subsystems/<nom>/` |
 | `<univers-root>` | `R/_savoir/univers/<univers>/` |
-| `<pj-root>` | `R/_pjs/<pj>/` |
-| `<campagne-root>` | `R/_campagnes/<campagne>/` |
+| `<pj-root>` | `R/_pjs/<pj>/` — état durable du PJ (pc) |
+| `<campagne-root>` | `R/_campagnes/<campagne>/` — **prep + état durable** : `config.yaml`, `.session-state.yaml`, `mj/`, `research/` (rpg, solo-mc) |
+| `<session-root>` | `R/<AAAA>/<MM>/<campagne\|pj>/` — **journaux de session datés** (solo-mc, pc) ; même axe daté que `<projet-root>`, feuille = campagne ou PJ |
 | `<projet-root>` | `R/<AAAA>/<MM>/<projet>/` — projet d'écriture daté (modèle `brief`→`writing`) |
 | `<sources>` | `<univers-root>/sources/<source>/` (lore) ou `<systeme-root>/sources/<source>/` (règles) |
 
@@ -67,13 +68,17 @@ Perso/RPG/<jeu>/                       ← R = domaine autonome (un jeu)
 ├── _pjs/
 │   └── <pj>/                          ← personnages (pc)
 ├── _campagnes/
-│   └── <campagne>/                    ← prep (rpg) + jeu en direct (solo-mc)
+│   └── <campagne>/                    ← prep (rpg) + état durable de la campagne
+│       ├── config.yaml                ← système, PJ, sous-systèmes actifs
+│       ├── .session-state.yaml        ← état mécanique courant (solo-mc)
 │       ├── mj/                        ← fiction décidée en partie (solo-mc)
-│       ├── research/                  ← rapports de recherche, portée campagne (research)
-│       └── <AAAA>/<MM>/               ← journaux de session datés (solo-mc)
-└── <AAAA>/<MM>/<projet>/              ← projet d'écriture (forge → _brief → writing → _output)
-    ├── _brief/
-    └── _output/
+│       └── research/                  ← rapports de recherche, portée campagne (research)
+└── <AAAA>/<MM>/                       ← axe daté du domaine (unités de travail datées)
+    ├── <campagne>/                    ← journaux de session datés (solo-mc) — `<campagne>-session-<AAAA-MM-JJ>-<N>.md`
+    ├── <pj>/                          ← journaux de session perso datés (pc)
+    └── <projet>/                      ← projet d'écriture (forge → _brief → writing → _output)
+        ├── _brief/
+        └── _output/
 ```
 
 > **Publier un sous-système** (le décrire pour diffusion) = un projet d'écriture ordinaire sous `R/<AAAA>/<MM>/<projet>/` ; son canon de jeu reste dans `_savoir/subsystems/<nom>/`.

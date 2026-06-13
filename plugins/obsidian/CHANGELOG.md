@@ -2,6 +2,14 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obsidian`.
 
+## [0.17.0] — 2026-06-13
+
+### Changed (`solo-mc`, `pc`) — journaux de session sur l'axe daté du domaine
+- Les **journaux de session** passent de `R/_campagnes/<campagne>/<AAAA>/<MM>/` à **`R/<AAAA>/<MM>/<campagne>/`** (axe daté au sommet de `R`, feuille = entité), aligné sur la convention des projets d'écriture `R/<AAAA>/<MM>/<projet>/`. L'état **durable** de la campagne (`config.yaml`, `.session-state.yaml`, `mj/`, `research/`, prep) reste dans `R/_campagnes/<campagne>/`. Actions solo-mc touchées : `play`, `previously`, `play-end`, `play-resume` (+ règle T10 et numérotation). Numérotation `<N>` désormais **globale** (balayage de tous les dossiers année/mois).
+- **`pc` aligné** : `log-session` écrit désormais un **fichier daté par session** `R/<AAAA>/<MM>/<pj>/<pj>-session-<AAAA-MM-JJ>-<N>.md` (miroir de solo-mc) au lieu d'un `journal.md` agrégé ; les fiches durables du PJ (`pj.md`, `fiche_technique`, `intention`, `etat-jeu`, `backlog`) restent dans `R/_pjs/<pj>/`. Référence : `references/jdr-layout.md` (nouvelle variable `<session-root>`).
+
+> ⚠ Données existantes : d'anciens journaux sous `_campagnes/<c>/<AAAA>/<MM>/` ou un `_pjs/<pj>/journal.md` ne sont pas migrés automatiquement (à déplacer/éclater à la main ou via `tree`). Le `pj-template` dans `R/_shared/` peut encore créer un `journal.md` — à retirer côté domaine.
+
 ## [0.15.0] — 2026-06-13
 
 ### Changed (`tree`)
