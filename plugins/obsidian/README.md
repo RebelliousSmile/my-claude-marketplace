@@ -28,11 +28,11 @@ Plugin personnel orienté coffre Obsidian (chemins et conventions propres à l'a
 | `rules-keeper` | `/obsidian:rules-keeper` | Restructure les règles de jeu en format optimisé LLM (canon/ + house rules mj/) |
 | `extract-pdf` | `/obsidian:extract-pdf` | Pipeline multi-sessions d'extraction de gros PDF vers les sources |
 
-> **Deux runtimes pour le jeu en direct** : `obsidian:solo-mc` (ici, **Claude Code**) et `hermes:solo-mc` (plugin `hermes`, **Hermes Agent**) sont deux portages du même MJ solo, partageant les mêmes données de jeu (le domaine `R`). Les outils Claude Code (`pc`, `rpg`) jouent avec `obsidian:solo-mc`.
+> **Jeu en direct sous Claude Code** : `obsidian:solo-mc` est le MJ solo. Les outils Claude Code (`pc`, `rpg`) jouent avec lui sur les mêmes données de jeu (le domaine `R`).
 
 ### Trio JDR solo
 
-`pc` (la fiche du personnage-joueur) · `rpg` (la prep MJ : scénarios, prep de session, fronts) · **`solo-mc`** (le jeu en direct : scene, oracle, roll). On prépare avec `rpg`, on joue avec `solo-mc` (variante Claude Code ici ; `hermes:solo-mc` pour le runtime Hermes Agent). Le système de jeu est défini par la campagne (`config.yaml › system`) ; **Parallaxe, Cinério et Muses et Oracles** sont des **sous-systèmes génériques** qui s'y greffent (ce ne sont pas des jeux).
+`pc` (la fiche du personnage-joueur) · `rpg` (la prep MJ : scénarios, prep de session, fronts) · **`solo-mc`** (le jeu en direct : scene, oracle, roll). On prépare avec `rpg`, on joue avec `solo-mc`. Le système de jeu est défini par la campagne (`config.yaml › system`) ; **Parallaxe, Cinério et Muses et Oracles** sont des **sous-systèmes génériques** qui s'y greffent (ce ne sont pas des jeux).
 
 Arborescence (domaine autonome `R = <jeu>`, résolu localement — voir `references/jdr-layout.md`) : la **campagne** vit dans `R/_campagnes/<campagne>/` (`config.yaml`, `pj/` + prep `scenarios/`, `prep/`, `fronts.md`) ; les **journaux de session** vont dans `R/_campagnes/<campagne>/<AAAA>/<MM>/` ; les **données d'univers durables** (terminologie, factions, personnages, lieux, histoire) vivent dans `R/_savoir/univers/<univers>/`, **scindées par provenance** : `canon/` (lore officiel, écrit par `lore-extract`) et `mj/` (contenu créé par le maître de jeu, écrit par `rpg`) — même structure thématique, **partagée avec `lore-extract`**. `rpg` n'écrit jamais dans `canon/`.
 

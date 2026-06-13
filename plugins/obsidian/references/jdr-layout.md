@@ -11,7 +11,7 @@ Référence unique de l'arborescence d'un **domaine JDR** (`R = <jeu>`) et de la
 Chaque skill opère relativement à un **répertoire de référence** : l'argument passé, sinon le **CWD**. Quand il a besoin du niveau domaine `R`, il le **découvre** :
 
 1. Partir du répertoire de référence (argument ou CWD).
-2. Remonter les parents jusqu'au premier dossier contenant le **marqueur de domaine** : `_savoir/` (ou, à défaut, `bank.yml`). Ce dossier est `R`.
+2. Remonter les parents jusqu'au premier dossier contenant le **marqueur de domaine** `_savoir/`. Ce dossier est `R`. (`bank.yml` est un cache régénérable, pas un marqueur : un domaine initialisé a toujours `_savoir/`.)
 3. Aucun marqueur trouvé → la cible n'est pas dans un domaine JDR initialisé : le signaler et proposer d'initialiser `R` au répertoire de référence (création de `_savoir/`).
 4. Toujours vérifier l'existence d'un chemin résolu avant lecture/écriture.
 
