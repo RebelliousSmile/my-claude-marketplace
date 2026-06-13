@@ -41,5 +41,10 @@
   { "prompt": "les descriptions de skills prennent trop de place", "expect_action": "skillconf" },
   { "prompt": "aiddlegacy", "expect_action": "aiddlegacy" },
   { "prompt": "clean aidd legacy", "expect_action": "aiddlegacy" },
-  { "prompt": "nettoyer l'ancienne installation aidd", "expect_action": "aiddlegacy" }
+  { "prompt": "nettoyer l'ancienne installation aidd", "expect_action": "aiddlegacy" },
+  { "prompt": "gitit", "expect_action": "gitit" },
+  { "prompt": "alias gitit", "expect_action": "gitit" },
+  { "prompt": "init le dépôt git et pousse sur github", "expect_action": "gitit" },
+  { "prompt": "versionne ce dossier dans un dépôt git", "expect_action": "gitit" },
+  { "prompt": "crée le dépôt git pour R", "expect_action": "gitit" }
 ]

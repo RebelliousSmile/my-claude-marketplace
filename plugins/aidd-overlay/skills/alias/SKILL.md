@@ -20,6 +20,7 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 06  | `skillconf`   | Classify enabled skills as auto-trigger vs user-invocable-only → update skillOverrides | settings.json accessible |
 | 07  | `aiddlegacy`  | Scan `.claude/` legacy AIDD (<v4) → dry-run report → confirm → delete transferred agents/commands/skills → arbitrate rules | `.claude/` du projet courant |
 | 08  | `weeklyemail` | Collecte les commits de la semaine sur tous les dépôts GitHub ou GitLab accessibles et génère un e-mail client synthétique | plateforme (`github` / `gitlab`) + optionnel `since` |
+| 09  | `gitit`       | Init git dans `R` + dépôt distant **privé** via gh (si absent) + commit + pull + push + tag SemVer si un push a eu lieu | dossier cible `R` (défaut CWD) `[--public]` |
 
 ## Default flow
 
@@ -33,6 +34,7 @@ Trigger-to-action mapping:
 - "skillconf", "configure skills", "auto-configure skills", "reduce skill context", "skill overrides", "alias skillconf", "skills prennent trop de place", "descriptions écretées" → `skillconf`
 - "aiddlegacy", "aidd legacy", "clean aidd legacy", "migrate aidd v4", "nettoyer l'ancienne installation aidd", "nettoyer aidd", "legacy cleanup" → `aiddlegacy`
 - "weeklyemail", "weekly email", "rapport hebdomadaire", "email client semaine", "résumé commits semaine", "weekly report", "rapport de la semaine" → `weeklyemail`
+- "gitit", "alias gitit", "git it", "init le dépôt git", "crée le dépôt git", "versionne ce dossier", "crée et pousse le dépôt", "git init + remote + push" → `gitit`
 
 ## Transversal rules
 

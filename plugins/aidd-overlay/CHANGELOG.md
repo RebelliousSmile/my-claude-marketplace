@@ -2,6 +2,11 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/aidd-overlay`.
 
+## [2.2.0] — 2026-06-13
+
+### Added
+- **`alias:gitit`** — nouvelle action : transforme un dossier `R` (argument, défaut CWD) en dépôt git synchronisé et versionné en une commande : init local → dépôt distant **privé** via `gh` (créé seulement s'il n'existe pas) → commit → pull (gardé) → push → tag SemVer **si** un push a eu lieu. Idempotent. Dégradation propre si la création distante est bloquée (commit local préservé, étapes distantes sautées, rapport `⚠ blocked`). Privé par défaut, public uniquement sur `--public` explicite.
+
 ## [2.0.1] — 2026-05-29
 
 - Bump de synchronisation — aucun changement fonctionnel ; version montée en miroir de `sc-python` 0.4.9 dans le marketplace.

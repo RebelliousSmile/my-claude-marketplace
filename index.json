@@ -3,8 +3,8 @@
     {
       "id": "aidd-overlay",
       "name": "aidd-overlay",
-      "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, seo-optimize, status. Alias: rechallenge, afterdev, endtask, endplan, bump-plugin, previously, smarten, skillconf, aiddlegacy.",
-      "version": "2.1.5"
+      "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, seo-optimize, status. Alias: rechallenge, endtask, bump-plugin, previously, smarten, skillconf, aiddlegacy, weeklyemail, gitit.",
+      "version": "2.2.0"
     },
     {
       "id": "design",

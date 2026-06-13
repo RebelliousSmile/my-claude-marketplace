@@ -6,14 +6,18 @@ Arbitrate the content of `R` node by node in an **interactive session**. For eac
 
 ## Inputs
 
-- `<target>` (optional, positional) — the `R` directory to judge. Default: `R` resolved from the current working directory (walk up to the domain root, then into `R/`).
+- `<target>` (optional, positional) — the `R` directory to judge. Default: `R` discovered by walking up from CWD to the first directory containing a `_savoir/` marker — identical to how `research`, `extract-pdf`, and the rest of the ecosystem resolve `R`. No anchor found → STOP: "Aucun domaine R trouvé (marqueur `_savoir/` introuvable en remontant). Se placer dans un répertoire sous un domaine initialisé."
 
 ## Scope
 
-**In scope:** every file and directory inside `R` that is **not** prefixed `_`.
-This includes loose files at `R/` root, dated units (`R/AAAA/MM/…`), and their non-`_` contents.
+**In scope:** every non-`_`-prefixed file and non-`_`-prefixed directory (project unit) inside `R`.
+- **Project units** (`R/<AAAA>/<MM>/<projet>/`): treated as single nodes — judged and advanced as a whole.
+- **Loose files** (at `R/` root or `R/<AAAA>/<MM>/`): each file is an individual node.
 
-**Out of scope (never touched):** `_savoir/`, `_brief/`, `_output/`, `_trash/`, and any other `_*` directory at any depth. These are working dirs — `judge` does not read or modify them.
+**Out of scope — never read, never moved:**
+- Any directory or file prefixed `_` (`_savoir/`, `_brief/`, `_output/`, `_trash/`, `_code/`, etc.)
+- `.git` directories and dotfiles (files/dirs whose name starts with `.`) — see Rules.
+- **Media files**: images (`.jpg` `.jpeg` `.png` `.gif` `.bmp` `.webp` `.heic` `.raw` `.psd` `.svg`), audio (`.mp3` `.wav` `.flac` `.m4a` `.ogg` `.aac`), video (`.mp4` `.mov` `.avi` `.mkv` `.wmv` `.webm`). These are silently skipped; their presence in a folder is noted in the session summary if they prevent a directory from being moved.
 
 ## Process
 
@@ -34,13 +38,16 @@ Before reading any file content, check its **name** against the credential patte
 
 ### Phase 1 — Pre-scan (silent)
 
-1. Resolve the anchor; load/refresh the cache (run `index` if missing/stale).
-2. Enumerate all in-scope nodes (files first, deepest path first). Apply the credential guard (Phase 0) to build the final queue — credential files are never enqueued.
+1. Resolve `R` via the `_savoir/` marker (walk up from target/CWD). Load/refresh the `tree` cache if available (run `index` if missing/stale — not mandatory, `judge` works without cache but is slower).
+2. Enumerate all in-scope nodes. A node is either:
+   - A **project unit** directory (`R/<AAAA>/<MM>/<projet>/`) — the whole directory is one node.
+   - A **loose file** at `R/` root or `R/<AAAA>/<MM>/` (not inside a project unit).
+   Apply the credential guard (Phase 0) and the media/dotfile exclusions — excluded items are never enqueued.
 3. **Detect candidate groups** before the session starts:
-   - Files with identical or near-identical headings/content → merge candidates.
-   - Files clearly referencing the same subject → merge candidates.
+   - Files/units with identical or near-identical headings/content → merge candidates.
+   - Files/units clearly referencing the same subject → merge candidates.
    Record groups; present them first in Phase 2.
-4. Build the ordered session queue: groups → then remaining individual files.
+4. Build the ordered session queue: groups → then remaining individual nodes.
 
 ### Phase 2 — Interactive session
 
@@ -98,10 +105,19 @@ Applies only to a **group of ≥ 2 files**.
 5. Move remaining source files to `R/_trash/` (collision → append timestamp suffix).
 
 #### Garder + Avancer
-1. Determine target: `R/<AAAA-courant>/<MM-courant>/<filename>`.
+The node being advanced can be a **project unit** (directory) or a **loose file** — handled differently:
+
+**Node is a project unit (`<projet>/` directory):**
+1. Target: `R/<AAAA-courant>/<MM-courant>/<projet>/`.
+2. Safety check: if the unit contains a `.git/` directory or any dotfile at root, it cannot be moved as individual items — the whole directory move carries them. Note this in the verdict card.
+3. Check for collision: if target exists → **skip and flag** (never overwrite).
+4. Move the whole directory. Prefer `git mv` if inside a git repo.
+
+**Node is a loose file:**
+1. Target: `R/<AAAA-courant>/<MM-courant>/<filename>`.
 2. Create the month directory if absent.
 3. Check for collision: if target exists → **skip and flag** (never overwrite).
-4. Move the file to the target. Prefer `git mv` if inside a git repo.
+4. Move the file. Prefer `git mv` if inside a git repo.
 5. If the original parent directory is now empty (and non-`_`), note it as a candidate for cleanup (do not auto-delete it).
 
 ## Output — Session summary (at end or on `q`)
@@ -134,6 +150,8 @@ Applies only to a **group of ≥ 2 files**.
 - **Show before write.** For `résumer` and `fusionner`, always display the generated content for user review before replacing the file.
 - **One node at a time.** Never batch-execute without per-node confirmation.
 - **Out-of-scope nodes are invisible.** Never read, propose, or modify `_*` directories.
+- **Never move `.git` or dotfiles directly.** A `.git/` directory or any file/dir whose name starts with `.` must never be moved as a standalone operation. They can only travel with their parent directory (when the whole project unit is moved). If a loose file adjacent to a `.git/` or dotfile needs to move, move only that file — never touch the dot items.
+- **Media files are skipped silently.** Images, audio, and video are excluded from the session queue. If a directory contains only media (no text nodes to judge), it is listed in the summary as "répertoire médias — ignoré".
 - Refresh prompt: after the session, remind the user to run `tree index`.
 
 ## Test
