@@ -3,68 +3,68 @@
     {
       "id": "aidd-overlay",
       "name": "aidd-overlay",
-      "description": "Extends the AIDD framework with project-agnostic workflows: interactive codebase quiz (dig), memory maintenance (harvest, reconcile-normative), obsolescence detection (taste), prospective analysis (foresee), performance audits (data-optimize, web-optimize, ap-optimize), SEO/GEO audits (seo-optimize), project health reporting (status), and planning utilities (decompose, journey, changelog, end-plan). Alias chains: rechallenge, build, endtask, endplan, bump-plugin, previously, smarten, skillconf, aiddlegacy, weeklyemail.",
+      "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, seo-optimize, status. Alias: rechallenge, afterdev, endtask, endplan, bump-plugin, previously, smarten, skillconf, aiddlegacy.",
       "version": "2.1.5"
     },
     {
       "id": "design",
       "name": "design",
-      "description": "Mobile-first responsive design system: from-reference / from-brief intakes (core trio first, never emoji), W3C tokens + CSS/Tailwind adapters, living HTML wireframes, reusable components with options, compliance audit, doctor + refactor for production codebases, and export-wordpress (theme.json + block patterns).",
-      "version": "0.2.0"
+      "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Breaking: replaces 9 legacy skills (setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress).",
+      "version": "1.0.0"
     },
     {
-      "id": "doc-writer",
-      "name": "doc-writer",
-      "description": "Professional documentation authoring: user-guide (end-user manuals), technical-document (developer/architecture/API docs), and specification (cahier des charges — requirements documents).",
+      "id": "writing",
+      "name": "writing",
+      "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, lore, données) est délégué à obsidian. Fusion de doc-writer + rpg-writer.",
+      "version": "1.0.0"
+    },
+    {
+      "id": "game-writer",
+      "name": "game-writer",
+      "description": "Écriture de contenu narratif pour le jeu vidéo (8-MINE) : bank d'assets, timelines Dialogic (dialogic-draft, dialogic-review). Pendant technique : sc-godot. (ex-gamedesign)",
+      "version": "1.0.0"
+    },
+    {
+      "id": "sc-godot",
+      "name": "sc-godot",
+      "description": "Godot/GDScript ecosystem (squelette) : sniff, audit, improve, legacy, teach — partie technique du jeu vidéo, pendant de game-writer. Skills à porter (template sc-*).",
       "version": "0.1.0"
     },
     {
-      "id": "gamedesign",
-      "name": "gamedesign",
-      "description": "Game design skills and workflows.",
-      "version": "0.2.0"
-    },
-    {
-      "id": "rpg-writer",
-      "name": "rpg-writer",
-      "description": "Narrative writing skills and workflows (novels, TTRPG scenarios, guides): concept, TOC, chapters, tone, lore, review.",
-      "version": "0.4.0"
+      "id": "sc-php",
+      "name": "sc-php",
+      "description": "PHP ecosystem skills: sniff, audit, improve, legacy, teach. WordPress/Laravel/Symfony perf pivots, HTMX hybrid, Eloquent + Doctrine data pivots. design-bridge: réceptacle pivot design (linter PHP/WP natif + block pattern WP).",
+      "version": "0.5.0"
     },
     {
       "id": "sc-js",
       "name": "sc-js",
-      "description": "JS knowledge provider: sniff, audit, improve, legacy (Vue 2→3/ESM/TS), teach (Nuxt/Vue/Alpine/Vite/Astro). Perf/data pivots for web-optimize and data-optimize.",
-      "version": "0.6.7"
+      "description": "JavaScript ecosystem: sniff (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), audit, improve (8 capability pivots), legacy (Vue 2→3/ESM/TS), teach + SvelteKit/Svelte stores/Biome pivots + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots. design-bridge: réceptacle pivot design (règle ESLint + composant Vue 3/React).",
+      "version": "0.7.0"
+    },
+    {
+      "id": "sc-tiers",
+      "name": "sc-tiers",
+      "description": "Third-party SaaS consumption rules: Firebase coding + Firebase/Supabase/DynamoDB/Hasura data pivots.",
+      "version": "0.2.0"
     },
     {
       "id": "sc-python",
       "name": "sc-python",
-      "description": "Python-specific skills and workflows: two-tier sniff (pivot model), audit (aidd-dev:reviewer), improve, legacy, log-analysis, teach (Django/FastAPI).",
-      "version": "0.4.2"
+      "description": "Python ecosystem: two-tier sniff (pivot model), audit, improve, legacy, teach. Perf pivots: Django, DRF, Celery, FastAPI, httpx, Flask (gap). Data pivots: Django ORM, SQLAlchemy, HuggingFace datasets. Capability pivots: Python idioms, spaCy NLP.",
+      "version": "0.5.2"
     },
     {
       "id": "sc-rust",
       "name": "sc-rust",
-      "description": "Rust-specific skills and workflows: two-tier sniff (pivot model), audit (aidd-dev:reviewer), improve, legacy, log-analysis, teach (Axum/Actix + SQLx/Diesel).",
+      "description": "Rust ecosystem: two-tier sniff (pivot model), audit, Axum/Actix-web perf pivots + SQLx/Diesel data pivots.",
       "version": "0.4.3"
     },
     {
       "id": "obsidian",
       "name": "obsidian",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc), scenario writing and campaign preparation (rpg), and live play (solo-mc).",
-      "version": "0.4.0"
-    },
-    {
-      "id": "sc-php",
-      "name": "sc-php",
-      "description": "PHP-specific skills and workflows.",
-      "version": "0.4.1"
-    },
-    {
-      "id": "sc-tiers",
-      "name": "sc-tiers",
-      "description": "Third-party SaaS consumption rules: Firebase Firestore query limits, security rules, quota awareness, Auth listener cleanup, Hosting trailing slash and cache headers. Klaviyo API patterns: 2-step subscribe, 409→PATCH, lists, lazy loading. GTM Consent Mode v2: gtag() vs Array format, ensureGtag(), Meta Pixel consent, event taxonomy. Microsoft Clarity: best-effort model, consent-gated loading, queue init, dual push. PageSpeed Insights / Lighthouse: PSI variance, deterministic metrics, Nuxt 3 perf checklist (LCP/CLS/INP/TBT/bundle/cache).",
-      "version": "0.2.0"
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), solo TTRPG vault tooling (pc, rpg, solo-mc), and brief/lore/data assembly for writing: forge (concept/brief), research (data), setup (project init), lore-extract, rules-keeper, extract-pdf + agents claude-code-optimizer-jdr, documentation-architect-jdr.",
+      "version": "0.11.0"
     }
   ]
 }

@@ -1,33 +1,34 @@
 #!/usr/bin/env python3
 """Functional / data-integrity checks for the `oracle` agent's subsystems.
 
-Validates the vault subsystem data the oracle draws from (muses-et-oracles, parallaxe).
-Run: `python oracle-data-checks.py`  (resolves the vault from ~/.jdr.yaml).
+Validates the subsystem data the oracle draws from (muses-et-oracles, parallaxe).
+Run: `python oracle-data-checks.py [chemin-vers-domaine-R]`.
+
+The game domain `R` is resolved **locally** (no global config, no ~/.jdr.yaml): from the
+reference directory (optional CLI arg, else CWD), walk up to the first parent holding the
+`_savoir/` marker. Subsystems live at `R/_savoir/subsystems/<nom>/canon/`. See
+`../../../references/jdr-layout.md`.
 
 These are reproducible versions of the inline checks run during the oracle test pass
 (2026-06-01). They assert the invariants the oracle relies on; they do NOT need network
-or the plugin runtime — only the vault on disk.
+or the plugin runtime — only the domain on disk.
 """
 import re, sys, pathlib, collections
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-# --- resolve <vault> from ~/.jdr.yaml, with platform fallbacks (mirrors SKILL.md T0) ---
-def vault_root():
-    cfg = pathlib.Path.home() / ".jdr.yaml"
-    if cfg.exists():
-        for line in cfg.read_text(encoding="utf-8").splitlines():
-            m = re.match(r"\s*vault\s*:\s*(.+?)\s*$", line)
-            if m:
-                return pathlib.Path(m.group(1).strip().strip('"').strip("'")).expanduser()
-    for cand in ("C:/Users/fxgui/Public/Notes/Perso/RPG", "~/RPG"):
-        p = pathlib.Path(cand).expanduser()
-        if p.exists():
-            return p
-    sys.exit("vault introuvable (ni ~/.jdr.yaml, ni défauts plateforme)")
+# --- resolve the game domain R locally via the _savoir/ marker (mirrors SKILL.md T0) ---
+def domain_root():
+    start = pathlib.Path(sys.argv[1]).expanduser() if len(sys.argv) > 1 else pathlib.Path.cwd()
+    start = start.resolve()
+    for d in (start, *start.parents):
+        if (d / "_savoir").is_dir():
+            return d
+    sys.exit("domaine R introuvable : aucun marqueur _savoir/ en remontant "
+             f"depuis {start} (passer le chemin du domaine en argument)")
 
-VAULT = vault_root()
-SUB = VAULT / "_subsystems"
+R = domain_root()
+SUB = R / "_savoir" / "subsystems"
 results = []
 def check(name, ok, detail=""):
     results.append(ok)
@@ -46,10 +47,10 @@ def master_table(lines, key1, key2):
         rows.append([c.strip() for c in l.strip("|").split("|")])
     return cols, rows
 
-print(f"VAULT = {VAULT}\n")
+print(f"R = {R}\n")
 
 # === muses-et-oracles / cartes-standard ===
-cs = read(SUB / "muses-et-oracles/systeme/canon/cartes-standard.md")
+cs = read(SUB / "muses-et-oracles/canon/cartes-standard.md")
 cols, rows = master_table(cs, "Mots-oracles", "Relation")
 check("muses: table maître = 200 cartes", len(rows) == 200, f"{len(rows)}")
 check("muses: 17 colonnes (générateurs + Index dés)", len(cols) == 17, f"{len(cols)}")
@@ -75,7 +76,7 @@ check("muses: bloc [d4..d20] sur les 200 cartes",
       all("[d20]" in r[di] for r in rows))
 
 # === parallaxe ===
-pa = read(SUB / "parallaxe/systeme/canon/parallaxe.md")
+pa = read(SUB / "parallaxe/canon/parallaxe.md")
 pcols, pcards = master_table(pa, "Archétype", "Focale")
 check("parallaxe: 54 cartes", len(pcards) == 54, f"{len(pcards)}")
 iF = next(i for i, c in enumerate(pcols) if c.startswith("Focale"))
@@ -116,7 +117,7 @@ for die, N in [(4, 4), (6, 6), (8, 8), (10, 10), (12, 12), (20, 20)]:
           f"distinctes={len(seen)} hors-plage(X)={xcount}")
 
 # === conversation-cards : 9 combos Famille × Emphase (3 cartes chacune) ===
-cc = read(SUB / "conversation-cards/systeme/canon/conversation-cards.md")
+cc = read(SUB / "conversation-cards/canon/conversation-cards.md")
 ccols, ccards = master_table(cc, "Famille", "Emphase")
 fi = ccols.index("Famille"); ei = ccols.index("Emphase")
 check("conversation-cards: 27 cartes", len(ccards) == 27, str(len(ccards)))
@@ -127,7 +128,7 @@ check("conversation-cards: 9 combos Famille×Emphase = 3 chacune",
       all(combos.get((f, e), 0) == 3 for f in fams for e in emps), str(grid))
 
 # === rebondissements : comptages des sous-tables ===
-rb = read(SUB / "muses-et-oracles/systeme/canon/cartes-rebondissements.md")
+rb = read(SUB / "muses-et-oracles/canon/cartes-rebondissements.md")
 def section_rows(lines, substr):
     inside, out = False, 0
     for l in lines:

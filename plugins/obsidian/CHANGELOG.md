@@ -2,6 +2,36 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obsidian`.
 
+## [0.13.0] — 2026-06-13
+
+> **Migration JDR complète vers `Documents/` — BREAKING.** Abandon du coffre séparé (`tnn-jdr`, `~/.jdr.yaml`, variable globale `<vault>`). Tous les skills JDR (producteurs `lore-extract`/`rules-keeper`/`extract-pdf`/`research`/`forge` + trio `solo-mc`/`rpg`/`pc` + agents `narrateur`/`oracle`) passent au modèle **local autonome** : domaine `R = <jeu>` découvert via le marqueur `_savoir/`, savoir durable en `R/_savoir/` (canon/mj préservés), `bank.yml` n'est plus un input de résolution. Nouvelle réf `references/jdr-layout.md` (remplace `vault-layout.md`). Agents helper `*-jdr` supprimés. Détail : `git log -- plugins/obsidian`.
+
+## [0.12.0] — 2026-06-13
+
+### Added
+- **`tree`** — organiseur de l'arborescence `Documents/`, **piloté par un cache** (pas de layout figé, car l'arbo bouge). 4 actions : `index` (scanne le réel → `<ancre>/_tree/cache.json` + régénère le manifeste `R/bank.yml` de chaque domaine en scannant `R/_savoir/`, fusion non destructive), `check` (vérifie les invariants de portabilité + la dérive vs la convention apprise, report-only), `fix` (corrige sûrement : rename/move uniquement, dry-run + confirmation, jamais de suppression/écrasement), `sort` (tri par arbitrage des éléments en vrac). Ancre découverte (`Perso`/`Pro`), jamais de chemin global en dur. Convention : `references/tree-convention.md`.
+- Petit **noyau d'invariants** stables (préfixe `_` des répertoires de travail, contenu interne non préfixé, slugs `kebab-case` portables, dates bien formées) ; le schéma `(Perso|Pro)/cat/subcat/AAAA/MM/unité` n'est qu'un **défaut observé**, appris par domaine, non imposé.
+
+### Changed (`brief`)
+- **Distinction `R` (domaine) vs `<projet>` (unité de travail).** `R` = niveau `subcategory`, héberge les **ressources globales / savoir durable** (`R/_savoir/`) ; `<projet>` = le projet d'écriture (typiquement `R/<Year>/<Month>/mon-projet/`) qui porte `_brief/`/`_output/` et que `brief` cible. `brief` lit les globales de `R` et les **consolide inline** dans `<projet>/_brief/summary.md` ; `writing` ne remonte jamais vers `R` (projet portable).
+- **`R/bank.yml` ré-introduit avec un rôle neuf** : manifeste (cache) des ressources globales **au niveau domaine seulement** (jamais dans le projet), **maintenu par `tree`** (régénéré depuis `R/_savoir/`), **lu uniquement par `brief`** à l'assemblage (sélection de pertinence via `summary`), **jamais par `writing`**. Distinct de l'ancien `bank.yml` par-projet lu au runtime (supprimé en 0.11.0). Réf : `skills/brief/references/bank-yml.md`.
+
+> Note : `tree` est une vue d'ensemble **pour l'humain** — pas une dépendance d'exécution des skills de production (`writing`, `brief`), qui restent en chemins **locaux** relatifs. _(Superseded par 0.13.0 : `vault-layout.md` a depuis été remplacé par `jdr-layout.md` et tous les skills JDR sont migrés.)_
+
+## [0.11.0] — 2026-06-13
+
+> **Séparation des responsabilités** : `obsidian` devient le lieu d'**assemblage des intrants** (brief, lore, données, init projet) ; `writing` produit à partir de ces intrants.
+
+### Added (absorption depuis rpg-writer / writing, dissous)
+- **Assemblage des intrants** : `forge` (concept/brief), `research` (recherche documentaire / données).
+- **`setup` → `brief`** (renommé + refondu) : construit le répertoire de travail **portable** `_brief/` (summary.md autosuffisant + personas/ + output-styles/) consommé par `writing`. Abandon de `bank.yml` et des chemins globaux (`~/.jdr.yaml`, `<vault>`) — chemins **locaux** relatifs à un répertoire de référence `R`. `references/bank-yml.md` supprimé.
+- **Skills JDR** : `lore-extract` (lore univers → canon/mj), `rules-keeper` (règles de jeu → format LLM), `extract-pdf` (pipeline d'extraction PDF multi-sessions).
+- **Agents JDR** : `claude-code-optimizer-jdr`, `documentation-architect-jdr`.
+
+### Changed
+- Refs internes vers les skills absorbés : `/rpg-writer:lore-extract` → `/obsidian:lore-extract`, `/rpg-writer:extract-pdf` → `/obsidian:extract-pdf` ; refs README `writing:rules-keeper` → `rules-keeper`, suppression de l'annotation « (plugin writing) » sur `lore-extract`.
+- Refs cross-plugin vers le craft narratif (resté dans `writing`) namespacées : `write`/`review`/`toc` → `writing:write`/`writing:review`/`writing:toc` dans les descriptions de `rules-keeper`, `lore-extract`, `extract-pdf`, `forge`, `research`.
+
 ## [0.10.0] — 2026-06-06
 
 ### Changed

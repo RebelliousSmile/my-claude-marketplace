@@ -4,7 +4,7 @@
 
 ## Contraintes de notre méthode (cadre fixe)
 
-- **System-agnostic.** Le craft (relations, structure, PNJ, scènes) doit marcher quel que soit le système. **Ne jamais y mêler de mécanique propre à un jeu** : un framework comme l'agenda/principes/manœuvres MC est **PbtA-spécifique** (Monsterhearts) — il reste dans `systeme/canon` de ce jeu et ne s'applique pas à un sim comme Zombiology. Pour toute mécanique, déférer à `systeme/{canon,mj}`.
+- **System-agnostic.** Le craft (relations, structure, PNJ, scènes) doit marcher quel que soit le système. **Ne jamais y mêler de mécanique propre à un jeu** : un framework comme l'agenda/principes/manœuvres MC est **PbtA-spécifique** (Monsterhearts) — il reste dans `R/_savoir/systeme/canon/` de ce jeu et ne s'applique pas à un sim comme Zombiology. Pour toute mécanique, déférer à `R/_savoir/systeme/{canon,mj}/`.
 - **Prep seulement** (domaine `rpg`). Le jeu en direct (Animer, Varier) → `solo-mc`.
 - **Partir du canon** (lore-extract) et **imaginer avec l'utilisateur** (allers-retours), cf. l'esprit du skill.
 

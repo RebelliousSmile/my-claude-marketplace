@@ -4,7 +4,7 @@ Configure a new campaign interactively through a guided questionnaire.
 
 ## Inputs
 
-- `name` (required) — string, campaign folder name (will be created under `<jeu>/_campagnes/`)
+- `name` (required) — string, campaign folder name (will be created under `R/_campagnes/`)
 
 ## Outputs
 
@@ -37,7 +37,7 @@ Configure a new campaign interactively through a guided questionnaire.
    - Location depth
 3. Create the campaign folder structure: `_campagnes/<campaign>/`, `_campagnes/<campaign>/pj/`.
 4. Write `_campagnes/<campaign>/config.yaml` with all gathered values.
-5. Write `.current-session` with the new campaign relative path (`<jeu>/_campagnes/<campaign>`).
+5. Write `.current-session` with the new campaign relative path (`_campagnes/<campaign>`, relative to `R`).
 6. Confirm creation with a structured summary of all configured options.
 
 ## Test

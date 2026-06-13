@@ -1,0 +1,62 @@
+[
+  {
+    "prompt": "storyboard ce chapitre",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "identifie les moments à illustrer dans le chapitre 3",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "quels passages de ce chapitre méritent une illustration ?",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "visual moments from ./brief --out ./output --chapter 05",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "./brief --out ./output --chapter 01 --type intro",
+    "expect_action": "extract"
+  },
+  {
+    "prompt": "décris le moment ch03-02 --brief ./brief --out ./output",
+    "expect_action": "describe"
+  },
+  {
+    "prompt": "brief visuel pour la scène d'ouverture --brief ./brief --out ./output",
+    "expect_action": "describe"
+  },
+  {
+    "prompt": "génère le prompt image pour l'illustration de la confrontation finale --brief ./brief --out ./output",
+    "expect_action": "describe"
+  },
+  {
+    "prompt": "brief artiste pour le moment où Elena entre dans la salle du trône --brief ./brief --out ./output",
+    "expect_action": "describe"
+  },
+  {
+    "prompt": "describe ch05-03 --format ai --brief ./brief --out ./output",
+    "expect_action": "describe"
+  },
+  {
+    "prompt": "illustration brief for the moment when the sword is revealed --brief ./brief --out ./output",
+    "expect_action": "describe"
+  },
+  {
+    "prompt": "écris le chapitre suivant",
+    "expect_action": null
+  },
+  {
+    "prompt": "corrige ce chapitre",
+    "expect_action": null
+  },
+  {
+    "prompt": "définis le style d'écriture de cet univers",
+    "expect_action": null
+  },
+  {
+    "prompt": "génère la table des matières",
+    "expect_action": null
+  }
+]

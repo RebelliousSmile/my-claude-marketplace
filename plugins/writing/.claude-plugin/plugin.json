@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "writing",
+  "version": "1.0.0",
+  "description": "Production éditoriale à partir d'un brief — documentation pro (specification, technical-document, user-guide) et craft narratif (toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, lore, données) est délégué à obsidian (forge, research, setup, lore-extract…). Fusion de doc-writer + rpg-writer.",
+  "author": {
+    "name": "François-Xavier Guillois"
+  }
+}

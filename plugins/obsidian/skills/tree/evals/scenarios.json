@@ -1,0 +1,15 @@
+[
+  { "prompt": "index l'arborescence de Documents", "expect_action": "index" },
+  { "prompt": "refresh the tree cache", "expect_action": "index" },
+  { "prompt": "rebuild the map of my files", "expect_action": "index" },
+  { "prompt": "vérifie que mon arbo est bien rangée", "expect_action": "check" },
+  { "prompt": "is this directory tidy and conformant", "expect_action": "check" },
+  { "prompt": "what's out of place in Perso/RPG", "expect_action": "check" },
+  { "prompt": "range l'arborescence et corrige les noms", "expect_action": "fix" },
+  { "prompt": "tidy the tree, fix the slugs and prefixes", "expect_action": "fix" },
+  { "prompt": "où est-ce que je classe ce fichier", "expect_action": "sort" },
+  { "prompt": "sort these loose files into the right domains", "expect_action": "sort" },
+  { "prompt": "classe ces scénarios par arbitrage", "expect_action": "sort" },
+  { "prompt": "build the _brief/ for my novel", "expect_action": null },
+  { "prompt": "write chapter 3", "expect_action": null }
+]
