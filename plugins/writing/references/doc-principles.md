@@ -1,6 +1,6 @@
 # Documentation principles (shared)
 
-The ethos every `doc-writer` skill follows, whatever the document type. Referenced via `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md`.
+The ethos every `writing` documentation skill follows, whatever the document type. Referenced via `${CLAUDE_PLUGIN_ROOT}/references/doc-principles.md`.
 
 ## Before writing
 

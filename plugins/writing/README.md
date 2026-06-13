@@ -4,7 +4,7 @@
 
 Fusion de `doc-writer` (documentation pro) et des parties génériques de `rpg-writer` (craft narratif).
 
-**Séparation des responsabilités** : `writing` **produit à partir d'un brief**. L'**assemblage des intrants** est délégué au plugin `obsidian` — `brief` (construit le répertoire `_brief/`), `forge` (concept), `research` (données), `lore-extract`, `rules-keeper`, `extract-pdf`, plus les agents `*-jdr`.
+**Séparation des responsabilités** : `writing` **produit à partir d'un brief**. L'**assemblage des intrants** est délégué au plugin `obsidian` — `brief` (construit le répertoire `_brief/`), `forge` (concept), `research` (données), `lore-extract`, `rules-keeper`, `extract-pdf`.
 
 > **Rédaction en français par défaut.** Les noms de skills et certains termes (`specification`, `runbook`…) sont en anglais, mais les documents produits sont rédigés en français, sauf demande explicite d'une autre langue.
 

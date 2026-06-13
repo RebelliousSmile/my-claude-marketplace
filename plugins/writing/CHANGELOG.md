@@ -20,7 +20,7 @@
 ### Moved out (vers `obsidian`)
 - Assemblage des intrants : `forge` (concept), `research` (données), `brief` (construit `_brief/`).
 - Skills spécifiquement JDR : `lore-extract`, `rules-keeper`, `extract-pdf`.
-- Agents JDR : `claude-code-optimizer-jdr`, `documentation-architect-jdr`.
+- Agents JDR : `claude-code-optimizer-jdr`, `documentation-architect-jdr` (depuis supprimés en obsidian v0.13.0).
 
 ### Removed (de writing)
 - `tabula-rasa` (obsolète — système de reset projet abandonné).

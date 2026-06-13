@@ -2,7 +2,7 @@
 
 Source de vérité partagée par **tous** les skills `writing`. `writing` **produit à partir d'un brief** et écrit dans un répertoire de **sortie séparé**. Les deux répertoires sont des **chemins indépendants** passés à chaque invocation.
 
-> `writing` est **totalement découplé** : aucune notion de `bank.yml`, de vault, de chemin global (`~/.jdr.yaml`, racine absolue). Les chemins sont **locaux et portables** — déplacer `<brief>`/`<output>` ailleurs ne casse rien, car tout le contexte vit dans `<brief>/`. `writing` ne lit **jamais** hors de `<brief>/`.
+> `writing` est **totalement découplé** : aucune notion de `bank.yml`, de vault, de chemin global (`~/.jdr.yaml`, racine absolue). Les chemins sont **locaux et portables** — déplacer `<brief>`/`<output>` ailleurs ne casse rien, car tout le contexte vit dans `<projet>/` (`<brief>` + `<output>`). `writing` ne lit **jamais** hors de `<projet>/`.
 >
 > **Convention de nommage** : par défaut `<brief>` = `_brief/` et `<output>` = `_output/` (répertoires de **travail**, donc préfixés `_` ; leur contenu interne n'est pas préfixé). Ils vivent côte à côte dans le **projet** (unité de travail) `<projet>/`, typiquement `R/<Year>/<Month>/mon-projet/` — où `R` est le **domaine** (qui héberge les ressources globales, hors périmètre de `writing`). `_brief/` est produit en amont par **`obsidian:brief`**, qui consolide *inline* les globales de `R` ; `writing` ne lit donc jamais hors de `<projet>/`. La convention d'organisation `R`/`<projet>` dans `Documents/` est portée par **`obsidian:tree`**.
 
@@ -59,5 +59,5 @@ Chaque skill prend `<brief>` en **argument positionnel** et `<output>` via **`--
 | `review` | `<output>/chapters/` + `<brief>/personas/` + `<brief>/output-styles/` | `<output>/review/chapter-<NN>-<persona>.md` |
 | `persona` | (description) | `<brief>/personas/<nom>.yaml` |
 | `tone-finder` | sources de style | `<brief>/output-styles/<nom>.md` |
-| `storyboard` | `<output>/chapters/chapter-<NN>.md` | briefs d'illustration |
+| `storyboard` | `<output>/chapters/chapter-<NN>.md` | `<output>/storyboard/chapter-<NN>.md` |
 | `upgrade` | un texte (`<output>/chapters/…` ou prompt) | version améliorée |

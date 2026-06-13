@@ -1,6 +1,6 @@
 # Export ICML
 
-Procédure d'export d'un document `doc-writer` vers **ICML** (Adobe InCopy Markup Language) — le format qui permet de faire couler le contenu dans InDesign/InCopy pour la mise en page. Référencée via `${CLAUDE_PLUGIN_ROOT}/references/export-icml.md`.
+Procédure d'export d'un document `writing` vers **ICML** (Adobe InCopy Markup Language) — le format qui permet de faire couler le contenu dans InDesign/InCopy pour la mise en page. Référencée via `${CLAUDE_PLUGIN_ROOT}/references/export-icml.md`.
 
 ## Principe
 
