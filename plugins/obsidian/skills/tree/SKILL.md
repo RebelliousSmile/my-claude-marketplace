@@ -44,6 +44,7 @@ Trigger-to-action mapping:
 - **Cache is regenerable**: it accelerates navigation; the disk is the source of truth. Never trust the cache over the actual files — re-scan on doubt.
 - **Invariants vs drift**: enforce I1–I4 (see reference); treat everything else as soft drift judged against the domain's learned convention.
 - **Never destructive** (`fix`/`sort`): only rename/move, always after a dry-run preview and explicit confirmation. Never delete user content; never overwrite an existing destination — flag the collision instead. (See `delete-safety`.)
+- **Credentials — never read, always signal:** if a file's name matches a credential pattern (`.env`, `*.env`, `credentials.*`, `secrets.*`, `token.*`, `*.key`, `*.pem`, `*.p12`, `*.pfx`, `*.secret`, `*password*`, `*passwd*`, `*apikey*`), do **not** read its content under any circumstances. Signal its path to the user instead. **Exception:** files inside a `_code/` directory at any depth are silently skipped (developer tooling — expected).
 - **Learn, don't impose**: when a domain diverges from the default pattern, record its effective convention in the cache rather than forcing it back.
 - `index` and `check` never modify user content; `index` only writes derived caches (`_tree/cache.json` and per-domain `R/bank.yml`).
 - `judge` manages `R/_trash/` (a working dir, `_` prefix — I1 compliant) as the destination for content marked for deletion. The user empties `_trash/` manually. `judge` never performs a real `rm`.

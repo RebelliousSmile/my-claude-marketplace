@@ -17,10 +17,25 @@ This includes loose files at `R/` root, dated units (`R/AAAA/MM/…`), and their
 
 ## Process
 
+### Phase 0 — Credential guard (before any read)
+
+Before reading any file content, check its **name** against the credential pattern list:
+`.env`, `*.env`, `credentials.*`, `secrets.*`, `token.*`, `*.key`, `*.pem`, `*.p12`, `*.pfx`, `*.secret`, `*password*`, `*passwd*`, `*apikey*`.
+
+- **Match + inside `_code/` at any depth** → silently exclude from the session queue (not a judge concern).
+- **Match + outside `_code/`** → add to a `credentials[]` list; **do not read the file**. At the start of the session, display:
+
+  ```
+  ⚠ Credentials detected — not read, not judged:
+  - <relative path>
+  ```
+
+  The user decides what to do with them manually.
+
 ### Phase 1 — Pre-scan (silent)
 
 1. Resolve the anchor; load/refresh the cache (run `index` if missing/stale).
-2. Enumerate all in-scope nodes (files first, deepest path first).
+2. Enumerate all in-scope nodes (files first, deepest path first). Apply the credential guard (Phase 0) to build the final queue — credential files are never enqueued.
 3. **Detect candidate groups** before the session starts:
    - Files with identical or near-identical headings/content → merge candidates.
    - Files clearly referencing the same subject → merge candidates.
