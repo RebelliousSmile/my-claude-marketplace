@@ -8,7 +8,7 @@
     "expect_action": "analyze-doc"
   },
   {
-    "prompt": "/foresee plugins/aidd-overlay/skills/harvest/SKILL.md",
+    "prompt": "/foresee plugins/overcode/skills/harvest/SKILL.md",
     "expect_action": "analyze-doc"
   },
   {

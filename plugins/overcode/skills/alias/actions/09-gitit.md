@@ -62,7 +62,7 @@ Skip if `remote_ok = false` (report "push skipped: no remote"). Otherwise `git p
 
 **Skip entirely if `remote_ok = false` or `pushed = false`.** If `pushed = true`, apply SemVer via an **annotated tag**:
 
-- If the repo tracks a `CHANGELOG.md` (or is an aidd plugin/marketplace) → invoke `/aidd-overlay:changelog` (it writes the changelog, commits it, creates the annotated tag) then `git push --follow-tags`.
+- If the repo tracks a `CHANGELOG.md` (or is an aidd plugin/marketplace) → invoke `/overcode:changelog` (it writes the changelog, commits it, creates the annotated tag) then `git push --follow-tags`.
 - Otherwise, tag directly:
   - Find the latest semver tag: `git tag --list 'v*' --sort=-v:refname | head -1`.
   - **No prior tag** → new tag `v0.1.0`.

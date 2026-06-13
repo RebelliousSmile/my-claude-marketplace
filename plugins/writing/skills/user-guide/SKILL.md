@@ -6,7 +6,7 @@ description: >-
   *use* a product, not the ones who build it. Task-oriented and plain-language, organized by what the user wants
   to do. Use for onboarding guides, feature walkthroughs, troubleshooting and FAQ. Do NOT use for developer/API/
   architecture docs (use technical-document); for a project's requirements (use specification); for a repository
-  README (use aidd-overlay:readme); or for narrative/creative writing (use the writing plugin).
+  README (use overcode:readme); or for narrative/creative writing (use the writing plugin).
 ---
 
 # user-guide

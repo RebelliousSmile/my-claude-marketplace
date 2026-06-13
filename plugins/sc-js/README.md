@@ -23,7 +23,7 @@ Pertinent si tu travailles sur des projets Vue / Nuxt / Vite / Alpine avec le fr
 
 - Claude Code avec le framework aidd
 - Plugin `aidd-dev` (requis par `/sc-js:audit`)
-- Plugin `aidd-overlay` (requis par `/web-optimize` et `/data-optimize`)
+- Plugin `overcode` (requis par `/web-optimize` et `/data-optimize`)
 
 ## Démarrage rapide
 

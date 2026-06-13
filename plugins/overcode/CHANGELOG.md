@@ -1,6 +1,12 @@
-# Changelog — aidd-overlay
+# Changelog — overcode
 
-> Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/aidd-overlay`.
+> Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/overcode plugins/aidd-overlay` (le plugin s'appelait `aidd-overlay` avant la 3.0.0).
+
+## [3.0.0] — 2026-06-13
+
+### Changed (BREAKING)
+- **Renommage du plugin `aidd-overlay` → `overcode`.** Le préfixe d'invocation passe de `/aidd-overlay:<skill>` à `/overcode:<skill>` (motif : nom plus court à taper). La clé d'installation devient `overcode@my-marketplace`. Le dossier source est désormais `plugins/overcode/`. Aucun changement fonctionnel sur les skills.
+- **Action requise après mise à jour** : réinstaller via `/plugin install overcode@my-marketplace` et mettre à jour toute référence locale (`settings.json` skillOverrides, `~/.claude/CLAUDE.md`, `~/.claude/rules/plugins-marketplace.md`).
 
 ## [2.2.0] — 2026-06-13
 
@@ -48,4 +54,4 @@ Socle commun, projet-agnostique. Skills : `alias`, `harvest`, `reconcile-normati
 - `status` ajouté + `alias:previously`.
 
 ## Antérieur
-- Voir `git log -- plugins/aidd-overlay` pour l'historique complet.
+- Voir `git log -- plugins/overcode plugins/aidd-overlay` pour l'historique complet (ancien nom : `aidd-overlay`).

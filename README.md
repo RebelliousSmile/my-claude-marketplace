@@ -19,7 +19,7 @@ Ajouter dans `~/.claude/settings.json` :
     }
   },
   "enabledPlugins": {
-    "aidd-overlay@my-marketplace": true
+    "overcode@my-marketplace": true
   }
 }
 ```
@@ -69,7 +69,7 @@ Le **détail des skills de chaque plugin vit dans son propre README** (colonne D
 
 | Plugin | Doc | `recommended` | Description |
 |---|---|---|---|
-| [`aidd-overlay`](plugins/aidd-overlay/README.md) | [README](plugins/aidd-overlay/README.md) · [CHANGELOG](plugins/aidd-overlay/CHANGELOG.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
+| [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
 | [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit, doctor/refactor (prod), export WordPress |
 | [`doc-writer`](plugins/doc-writer/README.md) | [README](plugins/doc-writer/README.md) · [CHANGELOG](plugins/doc-writer/CHANGELOG.md) | — | Documentation : guides utilisateur, documents techniques, cahiers des charges (specification) |
 | [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
@@ -80,4 +80,4 @@ Le **détail des skills de chaque plugin vit dans son propre README** (colonne D
 | [`gamedesign`](plugins/gamedesign/README.md) | [README](plugins/gamedesign/README.md) · [CHANGELOG](plugins/gamedesign/CHANGELOG.md) | — | Game design (8-MINE) : timelines dialogiques, bank d'assets |
 | [`rpg-writer`](plugins/rpg-writer/README.md) | [README](plugins/rpg-writer/README.md) · [CHANGELOG](plugins/rpg-writer/CHANGELOG.md) | — | Rédaction narrative : concept, TOC, chapitres, ton, lore, relecture |
 | [`obsidian`](plugins/obsidian/README.md) | [README](plugins/obsidian/README.md) · [CHANGELOG](plugins/obsidian/CHANGELOG.md) | — | Notes Obsidian — projets Pro, JDR solo (PJ, scénarios, prep de campagne, jeu en direct), tri d'emails |
-supprimer le répertoire `~/.claude/plugins/cache/aidd-overlay/<plugin>/` et réinstaller via `/plugin install <plugin>@my-marketplace`.
+supprimer le répertoire `~/.claude/plugins/cache/my-marketplace/<plugin>/` et réinstaller via `/plugin install <plugin>@my-marketplace`.

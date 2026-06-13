@@ -2,7 +2,7 @@
 
 *Knowledge provider pour les stacks Python (Django, FastAPI, Flask, Celery, DRF) : détection de stack, audit, modernisation et enseignement par pivots.*
 
-Détecte la stack du projet depuis ses manifestes Python et charge à la demande les pivots applicables. Les pivots perf/data alimentent `web-optimize` / `data-optimize` (plugin `aidd-overlay`).
+Détecte la stack du projet depuis ses manifestes Python et charge à la demande les pivots applicables. Les pivots perf/data alimentent `web-optimize` / `data-optimize` (plugin `overcode`).
 
 ## Skills
 

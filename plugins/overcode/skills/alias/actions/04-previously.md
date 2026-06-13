@@ -1,6 +1,6 @@
 # Action 06 — previously
 
-Project snapshot (tests, git activity, working tree, lint) prefixed with a status summary. If a status report from the last 7 days exists, use it; otherwise run `/aidd-overlay:status` first.
+Project snapshot (tests, git activity, working tree, lint) prefixed with a status summary. If a status report from the last 7 days exists, use it; otherwise run `/overcode:status` first.
 
 ## Context required
 
@@ -31,7 +31,7 @@ Read the returned file. Extract the **Project Summary** table and **Quick Wins**
 
 ### Step 2b — No recent status
 
-Invoke `/aidd-overlay:status` (report action). Once complete:
+Invoke `/overcode:status` (report action). Once complete:
 
 ```bash
 ls -t aidd_docs/tasks/status/*.md 2>/dev/null | head -1

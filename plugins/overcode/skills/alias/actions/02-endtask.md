@@ -63,7 +63,7 @@ Invoke `/aidd-context:05-learn` on the archived plan file.
 
 ### Step 6 — Changelog
 
-Invoke `/aidd-overlay:changelog`: updates `CHANGELOG.md` from git history, commits the file, and creates an annotated tag for the new version.
+Invoke `/overcode:changelog`: updates `CHANGELOG.md` from git history, commits the file, and creates an annotated tag for the new version.
 
 ### Step 7 — Push tags
 

@@ -2,7 +2,7 @@
 
 *Règles de consommation de services SaaS tiers : Firebase, Klaviyo, GTM/Meta Pixel, Microsoft Clarity, PageSpeed Insights.*
 
-Installe dans le projet les règles d'usage des SaaS tiers (quotas, sécurité, consentement, performance) et les data pivots associés, consommés par `data-optimize` (plugin `aidd-overlay`).
+Installe dans le projet les règles d'usage des SaaS tiers (quotas, sécurité, consentement, performance) et les data pivots associés, consommés par `data-optimize` (plugin `overcode`).
 
 ## Skills
 

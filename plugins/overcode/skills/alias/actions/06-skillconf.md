@@ -47,8 +47,8 @@ Apply the following rule:
 | Skill                      | Desc chars | Baseline  | Proposed            | Rationale                                      |
 |----------------------------|------------|-----------|---------------------|------------------------------------------------|
 | sc-js:sniff                | 312        | auto      | auto                | TRIGGER when: — passive detection needed       |
-| aidd-overlay:alias         | 198        | auto      | user-invocable-only | always user-invoked via slash command          |
-| aidd-overlay:harvest       | 145        | auto      | user-invocable-only | explicit workflow, never auto-triggered        |
+| overcode:alias             | 198        | auto      | user-invocable-only | always user-invoked via slash command          |
+| overcode:harvest           | 145        | auto      | user-invocable-only | explicit workflow, never auto-triggered        |
 | ...                        |            |           |                     |                                                |
 
 Chars removed from context: ~N  (M skills reclassified)

@@ -6,7 +6,7 @@ description: >-
   how-it-works guides, runbooks, and design notes/RFCs. Picks the right structure per document type and verifies
   examples, links and claims against the codebase. Use for developer- and operator-facing docs. Do NOT use for
   end-user manuals (use user-guide); for a project's requirements (use specification); or for a repository
-  README (use aidd-overlay:readme).
+  README (use overcode:readme).
 ---
 
 # technical-document

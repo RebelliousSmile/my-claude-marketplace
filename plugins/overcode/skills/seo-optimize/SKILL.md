@@ -78,7 +78,7 @@ ls public/llm.txt public/llms.txt 2>/dev/null                          # GEO / A
 #   If absent   : fall back to manual GSC export + manual AI citation grid (references/geo-extractability.md)
 ```
 
-> **Cross-project use:** this skill lives in the `aidd-overlay` plugin. Install the plugin to use it across projects. For the GEO-complete path, connect the Ahrefs MCP (GSC + Brand Radar) so the baseline is data-driven, not manual.
+> **Cross-project use:** this skill lives in the `overcode` plugin. Install the plugin to use it across projects. For the GEO-complete path, connect the Ahrefs MCP (GSC + Brand Radar) so the baseline is data-driven, not manual.
 
 ## Workflow
 

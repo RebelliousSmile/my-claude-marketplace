@@ -4,7 +4,7 @@ Bumps a plugin version in `plugin.json` + `index.json`, commits, and pushes to t
 
 ## Context required
 
-- Plugin name (e.g. `sc-js`, `aidd-overlay`, `writing`).
+- Plugin name (e.g. `sc-js`, `overcode`, `writing`).
 - Version or bump type (`major`, `minor`, `patch`). If absent, ask: *"Which plugin and what version bump?"*
 
 ## Prompt

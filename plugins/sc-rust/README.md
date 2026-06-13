@@ -2,7 +2,7 @@
 
 *Knowledge provider pour les stacks Rust (Axum, Actix-web) : détection de stack, audit, modernisation et enseignement par pivots.*
 
-Détecte les crates du projet (`Cargo.toml`) et charge à la demande les pivots de capacité applicables. Les pivots perf/data alimentent `web-optimize` / `data-optimize` (plugin `aidd-overlay`).
+Détecte les crates du projet (`Cargo.toml`) et charge à la demande les pivots de capacité applicables. Les pivots perf/data alimentent `web-optimize` / `data-optimize` (plugin `overcode`).
 
 ## Skills
 

@@ -62,7 +62,7 @@ Principes partagés (documentation) : `references/doc-principles.md`.
 | Doc pour les gens qui *utilisent* le produit | `user-guide` |
 | Doc pour les gens qui *construisent/opèrent* | `technical-document` |
 | Document de besoins/exigences (cahier des charges) | `specification` |
-| README de dépôt | `aidd-overlay:readme` |
+| README de dépôt | `overcode:readme` |
 | Forger le concept / brief narratif | `obsidian:forge` |
 | Rédaction narrative à partir d'un brief | `toc` → `write` → `review` |
 | Assembler le brief / lore / données / règles de jeu | plugin `obsidian` (`brief`, `research`, `lore-extract`, `rules-keeper`) |
