@@ -1,8 +1,22 @@
-# Forcer le traitement TEXTE : un .mjs riche en UTF-8 peut être détecté binaire
-# par git (diffs/reviews cassés).
+# Normalisation eol déterministe, indépendante de core.autocrlf :
+# tout fichier texte est stocké en LF dans le dépôt, quelle que soit la machine.
+* text=auto
+
+# Types texte explicites (diffs/reviews fiables même si l'autodétection hésite —
+# un .mjs riche en UTF-8 peut être détecté binaire).
 *.mjs  text
 *.js   text
 *.md   text
 *.json text
 *.yaml text
 *.yml  text
+*.py   text
+*.sh   text eol=lf
+
+# Binaires explicites : jamais de conversion de fins de ligne.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.pdf  binary
