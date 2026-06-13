@@ -1,0 +1,13 @@
+[
+  { "prompt": "extract this PDF rulebook", "expect_action": "setup" },
+  { "prompt": "start extraction of the corebook", "expect_action": "setup" },
+  { "prompt": "import PDF into the sources", "expect_action": "setup" },
+  { "prompt": "process the next chunk", "expect_action": "process-chunk" },
+  { "prompt": "extract chunk 3", "expect_action": "process-chunk" },
+  { "prompt": "distribute the extraction into the reference sources", "expect_action": "distribute" },
+  { "prompt": "merge extraction, final session", "expect_action": "distribute" },
+  { "prompt": "debug extraction anomaly", "expect_action": "debug" },
+  { "prompt": "fix extraction", "expect_action": "debug" },
+  { "prompt": "ventile le lore dans canon/", "expect_action": null },
+  { "prompt": "restructure les règles au format optimisé", "expect_action": null }
+]

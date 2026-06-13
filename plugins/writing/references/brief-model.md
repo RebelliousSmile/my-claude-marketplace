@@ -15,7 +15,14 @@ Source de vérité partagée par **tous** les skills `writing`. `writing` **prod
   output-styles/    ← 1+ styles d'écriture
 ```
 
-- **`summary.md`** — la **seule** source de contexte. Contient : concept/synopsis, consignes, **langue** (défaut : français), **type** (roman / JDR / guide / texte court), **et le lore/données pertinents déjà consolidés** par `obsidian`. Si une information manque, le brief est incomplet : ne pas aller la chercher ailleurs — le signaler.
+- **`summary.md`** — la **seule** source de contexte. **S'ouvre sur un front-matter YAML** déclarant `type:` (ex. `technical-doc` / `cheat-sheet` / `rpg-scenario` / `novel` / `guide`) et `language:` (défaut : `fr`) ; ces deux clés sont **obligatoires et machine-vérifiables** (cf. `tools/eval/harness.mjs`). Le corps contient : concept/synopsis, consignes, **et le lore/données pertinents déjà consolidés** par `obsidian`. Si une information manque, le brief est incomplet : ne pas aller la chercher ailleurs — le signaler.
+
+  ```
+  ---
+  type: novel
+  language: fr
+  ---
+  ```
 - **`personas/`** — fichiers YAML de persona lecteur, consommés par `review`. Peut être vide.
 - **`output-styles/`** — fichiers de convention d'écriture (voix, ton, temps, densité…), consommés par `write` et `review`. Au moins un.
 

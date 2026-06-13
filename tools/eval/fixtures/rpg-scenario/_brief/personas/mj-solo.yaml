@@ -1,0 +1,9 @@
+name: MJ solo
+role: Joueur menant ce scénario en solo avec un moteur d'oracle
+goals:
+  - Lancer le scénario sans préparation supplémentaire
+  - Disposer de tables de complications prêtes à l'emploi
+pains:
+  - Scénarios qui supposent un groupe et un MJ humain
+  - Lore éparpillé hors du document
+reads_for: déroulé jouable seul, oracles intégrés

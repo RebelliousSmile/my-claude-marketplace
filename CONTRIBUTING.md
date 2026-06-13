@@ -19,6 +19,7 @@ plugins/<nom>/
     evals/scenarios.json          # cas de routage (prompt → expect_action)
 memory/                           # guidelines d'authoring (README, CLAUDE.md)
 aidd_docs/internal/decisions/     # ADR (décisions d'architecture, ex. DEC-001)
+tools/eval/                       # harness e2e brief→output + fixtures golden (node, zéro dép.)
 ```
 
 ## Anatomie d'un skill
@@ -96,5 +97,6 @@ Après modification d'un skill déjà installé, recharger le cache (voir la sec
 
 - JSON valides (`marketplace.json`, `index.json`, `plugin.json`, chaque `evals/scenarios.json`).
 - Chaque action a un `Test` vérifiable.
+- Harness e2e vert : `node tools/eval/harness.mjs` (contrat brief→output + invariants).
 - Les `references` croisées (`${CLAUDE_PLUGIN_ROOT}/...`) pointent vers des fichiers existants.
 - README racine + README plugin + CHANGELOG cohérents avec la version.

@@ -1,0 +1,9 @@
+[
+  { "prompt": "trie mes emails exportés", "expect_action": "scan" },
+  { "prompt": "classe les mails dans le coffre", "expect_action": "scan" },
+  { "prompt": "traite ma boîte mail en Markdown", "expect_action": "scan" },
+  { "prompt": "résume, fusionne et range mes emails", "expect_action": "scan" },
+  { "prompt": "nettoie la branche ATrier de mes mails", "expect_action": "scan" },
+  { "prompt": "rédige un email à un client", "expect_action": null },
+  { "prompt": "écris le chapitre 1 de mon roman", "expect_action": null }
+]

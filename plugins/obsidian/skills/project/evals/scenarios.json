@@ -1,0 +1,14 @@
+[
+  { "prompt": "create project Acme", "expect_action": "create" },
+  { "prompt": "nouveau projet client", "expect_action": "create" },
+  { "prompt": "fill the project files from these sources", "expect_action": "fill" },
+  { "prompt": "reorganize the project structure", "expect_action": "reorganize" },
+  { "prompt": "log session for the project", "expect_action": "log-session" },
+  { "prompt": "CR réunion à ajouter au projet", "expect_action": "log-meeting" },
+  { "prompt": "add meeting report", "expect_action": "log-meeting" },
+  { "prompt": "ajouter une facture au projet", "expect_action": "add-invoice" },
+  { "prompt": "add invoice entry", "expect_action": "add-invoice" },
+  { "prompt": "export RAG context for the project", "expect_action": "export-rag" },
+  { "prompt": "trie mes emails", "expect_action": null },
+  { "prompt": "créer un nouveau PJ", "expect_action": null }
+]
