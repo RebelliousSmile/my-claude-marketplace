@@ -98,5 +98,6 @@ Après modification d'un skill déjà installé, recharger le cache (voir la sec
 - JSON valides (`marketplace.json`, `index.json`, `plugin.json`, chaque `evals/scenarios.json`).
 - Chaque action a un `Test` vérifiable.
 - Harness e2e vert : `node tools/eval/harness.mjs` (contrat brief→output + invariants).
+- Couverture de routage verte : `node tools/eval/coverage.mjs` (chaque action routable a ≥1 scénario).
 - Les `references` croisées (`${CLAUDE_PLUGIN_ROOT}/...`) pointent vers des fichiers existants.
 - README racine + README plugin + CHANGELOG cohérents avec la version.

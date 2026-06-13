@@ -26,13 +26,20 @@ Evaluate a chapter through reader personas from `<brief>/personas/`. Produces a 
 | [persona-name]  | X/20       | ✅ / ⚠️ / ❌  |
 | **CONSENSUS**   | **X.X/20** | [routing decision] |
 
-Routing:
+Routing (full table — `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`):
 - score ≥ 14/20 → `doctor` (optional improvements only)
 - 11-13/20 → `doctor` (important fixes needed)
 - ≤ 10/20 or ≥2 personas capped by must-haves → `write --feedback`
+- systemic pattern (Section 2) recurring over ≥3 chapters → `tone-finder:improve` (output-style `v+1`), then `write --feedback`
+- the SAME persona capped (≤11/20 on must-haves) over ≥3 chapters → `persona:train`
+
+Convergence verdict (vs the previous iteration of THIS chapter):
+- no prior score → `INITIAL` · `Δ ≥ 1.0` → `CONTINUE` (loop) · `Δ < 1.0` → **`PLATEAU`** (stop; chapter frozen)
+- never declare `PLATEAU` while `Δ ≥ 1.0`; hard stop at 5 iterations → `CAP-ITERATIONS`
 ```
 
-Saved to: `<output>/review/chapter-<NN>-<persona>.md` (one file per persona).
+Saved to: `<output>/review/chapter-<NN>-<persona>.md` (one file per persona) + the
+cumulative score-history `<output>/review/chapter-<NN>-scores.md` (one row per iteration).
 
 ## Process
 
@@ -52,7 +59,13 @@ Saved to: `<output>/review/chapter-<NN>-<persona>.md` (one file per persona).
 9. **Consensus**: weighted average (project personas × 1.0, universe × 0.8, global × 0.5). Verify arithmetic before publishing.
 10. Write routing recommendation based on consensus score.
 11. Create `<output>/review/` if absent. Save one file per evaluated persona: `<output>/review/chapter-<NN>-<persona>.md`. These files are consumed by `write --feedback` and `upgrade`.
+12. **Convergence (cf. `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`)**: read `<output>/review/chapter-<NN>-scores.md` if present. Let `prev` = last recorded consensus.
+    - No prior row → verdict `INITIAL`. Else `Δ = |consensus − prev|` ; `Δ ≥ 1.0` → `CONTINUE`, `Δ < 1.0` → `PLATEAU`. If this is the 5th row → `CAP-ITERATIONS` regardless. **Never** emit `PLATEAU` when `Δ ≥ 1.0`.
+    - Append a row `| <iter> | <date> | <consensus> | <Δ or —> | <verdict> | <route or —> |` to `chapter-<NN>-scores.md` (create with the header table if absent).
+13. **Cross-chapter triggers**: when a Section-2 systemic pattern recurs over ≥3 chapters → recommend `tone-finder:improve`; when the same persona caps over ≥3 chapters → recommend `persona:train`. These act on `<brief>/` inputs, not on a single chapter.
 
 ## Test
 
-After `comment <output>/chapters/chapter-01.md --brief <brief>`, verify that `<output>/review/chapter-01-<persona>.md` exists for each evaluated persona, contains a consensus score in Section 3, and that the scoring arithmetic is verifiable (sum of weighted scores / sum of weights = stated consensus ± 0.01).
+After `comment <output>/chapters/chapter-01.md --brief <brief>`, verify that:
+- `<output>/review/chapter-01-<persona>.md` exists for each evaluated persona, contains a consensus score in Section 3, and the scoring arithmetic is verifiable (sum of weighted scores / sum of weights = stated consensus ± 0.01);
+- `<output>/review/chapter-01-scores.md` has a new row whose verdict is consistent with `Δ` (`PLATEAU` ⟺ `Δ < 1.0`, and absent on the first row).

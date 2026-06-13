@@ -1,0 +1,12 @@
+[
+  { "prompt": "precheck this dtl", "expect_action": "precheck" },
+  { "prompt": "light review", "expect_action": "precheck" },
+  { "prompt": "quick review of the scene", "expect_action": "precheck" },
+  { "prompt": "persona review of this dtl", "expect_action": "persona" },
+  { "prompt": "full review", "expect_action": "persona" },
+  { "prompt": "graph audit", "expect_action": "graph-audit" },
+  { "prompt": "validate the narrative graph transitions", "expect_action": "graph-audit" },
+  { "prompt": "node list", "expect_action": "node-manage" },
+  { "prompt": "retire node 12", "expect_action": "node-manage" },
+  { "prompt": "write the scene dtl", "expect_action": null }
+]

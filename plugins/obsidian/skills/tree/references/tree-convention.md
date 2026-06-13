@@ -78,6 +78,55 @@ Forme (indicative) :
 
 ---
 
+## Domaines à convention connue
+
+Certains domaines ont une convention **établie et documentée** que `tree` reconnaît directement, sans devoir l'inférer à partir du contenu existant. `tree` les identifie au scan, enregistre leur convention dans le cache sous `kind`, et ne la remet pas en question lors du `check`.
+
+### `Pro/Projets` — projets avec code
+
+```
+Pro/Projets/<projet>/
+  ├── _code/              ← code source (répertoire de travail — I1 ✓)
+  └── <AAAA>/<MM>/        ← travaux et suivi mensuel (dates — I4 ✓)
+```
+
+**Règles propres à ce domaine :**
+
+| Règle | Détail |
+|-------|--------|
+| Pas d'`INDEX.md` | Aucun fichier index central n'est attendu ni requis — ni à la racine du projet, ni dans les mois. |
+| Point d'entrée vivant | Le mois `<AAAA>/<MM>/` le plus récent fait office d'entrée courante ; `index` l'enregistre comme `entry`. |
+| `_code/` est un répertoire de travail | I1 ✓ — son contenu suit les conventions du projet code (git, etc.) et n'est pas jugé contre I2–I3. |
+| `<AAAA>/<MM>/` = travaux et suivi | Chaque mois contient notes, tâches, rétrospectives — pas nécessairement des unités `_brief/`/`_output/`. |
+| Structure interne libre | En dessous de `_code/` et de chaque mois, la structure est libre (ni imposée, ni vérifiée par `tree`). |
+
+**Ce que `check` ne signale PAS comme anomalie dans ce domaine :**
+- Absence d'`INDEX.md` à tout niveau.
+- Présence de `_code/` (n'est pas de la dérive).
+- Mois sans `_brief/` ni `_output/`.
+- Structure interne de `_code/` non conforme aux invariants I2–I3.
+
+**Ce que `sort` propose pour ce domaine :**
+- Fichier de code / source → `<projet>/_code/`
+- Note / tâche / document de suivi → `<projet>/<AAAA-courant>/<MM-courant>/`
+
+**Forme dans le cache** pour un projet de ce domaine :
+
+```json
+{
+  "path": "Projets/mon-projet",
+  "kind": "pro-projet",
+  "dated": true,
+  "convention": "_code + AAAA/MM (travaux)",
+  "code_dir": "_code",
+  "travaux": ["2026/06", "2026/05"],
+  "entry": "2026/06",
+  "notes": "Pro/Projets — entrée courante : mois le plus récent"
+}
+```
+
+---
+
 ## Résolution de l'ancre (découverte, jamais hardcodée)
 
 `tree` ne hardcode jamais `C:\Users\…\Documents`. Il **découvre** l'ancre :

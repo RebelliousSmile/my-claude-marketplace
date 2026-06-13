@@ -1,0 +1,9 @@
+[
+  { "prompt": "init bank", "expect_action": "init" },
+  { "prompt": "refresh bank", "expect_action": "init" },
+  { "prompt": "update bank.yml", "expect_action": "init" },
+  { "prompt": "challenge bank", "expect_action": "challenge" },
+  { "prompt": "audit bank integrity", "expect_action": "challenge" },
+  { "prompt": "check bank integrity", "expect_action": "challenge" },
+  { "prompt": "write the dialogue scene", "expect_action": null }
+]

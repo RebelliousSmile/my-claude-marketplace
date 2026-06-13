@@ -1,0 +1,9 @@
+name: Développeur junior
+role: Débute avec git, se perd dès qu'un rebase tourne mal
+goals:
+  - Savoir quelle commande taper quand un rebase coince
+  - Ne pas casser sa branche
+pains:
+  - Jargon non expliqué
+  - Pas de filet de sécurité (comment annuler ?)
+reads_for: commande exacte + sortie de secours visible

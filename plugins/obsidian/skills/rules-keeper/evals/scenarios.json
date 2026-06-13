@@ -1,34 +1,13 @@
 [
-  {
-    "prompt": "rules-keeper nadir/.docs/sources/nadir-regles-v5.md",
-    "expect_action": "01-restructure"
-  },
-  {
-    "prompt": "rules-keeper sur un fichier qui a déjà un backup .original.md",
-    "expect_action": "01-restructure"
-  },
-  {
-    "prompt": "rules-keeper --all",
-    "expect_action": "02-restructure-all"
-  },
-  {
-    "prompt": "optimiser tous les fichiers rules-files du projet",
-    "expect_action": "02-restructure-all"
-  },
-  {
-    "prompt": "rules-keeper --update spire.md strata-supplement.md",
-    "expect_action": "03-update"
-  },
-  {
-    "prompt": "intégrer le supplément Strata dans les règles Spire",
-    "expect_action": "03-update"
-  },
-  {
-    "prompt": "rules-keeper --local nadir",
-    "expect_action": "04-local"
-  },
-  {
-    "prompt": "générer les règles locales du document nadir",
-    "expect_action": "04-local"
-  }
+  { "prompt": "restructure les règles pour l'écriture", "expect_action": "restructure" },
+  { "prompt": "optimiser ce rules-file pour le LLM", "expect_action": "restructure" },
+  { "prompt": "rules-keeper sur le PDF de règles extrait", "expect_action": "restructure" },
+  { "prompt": "restructure all rules of the game domain", "expect_action": "restructure-all" },
+  { "prompt": "tous les rules-files du système", "expect_action": "restructure-all" },
+  { "prompt": "merge ce supplément dans les règles optimisées", "expect_action": "update" },
+  { "prompt": "intégrer l'errata aux règles", "expect_action": "update" },
+  { "prompt": "génère les règles locales du document", "expect_action": "local" },
+  { "prompt": "document-rules pour ce projet d'écriture", "expect_action": "local" },
+  { "prompt": "ventile le lore d'univers dans canon/", "expect_action": null },
+  { "prompt": "extrais ce PDF vers les sources", "expect_action": null }
 ]

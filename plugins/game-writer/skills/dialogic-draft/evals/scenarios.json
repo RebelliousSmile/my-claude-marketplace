@@ -1,0 +1,17 @@
+[
+  { "prompt": "scene spec for the dinner SCENE_ID", "expect_action": "scene-spec" },
+  { "prompt": "write scene spec", "expect_action": "scene-spec" },
+  { "prompt": "pnj behavior for Kael", "expect_action": "pnj-behavior" },
+  { "prompt": "fiche pnj", "expect_action": "pnj-behavior" },
+  { "prompt": "write scene", "expect_action": "write-scene" },
+  { "prompt": "générer la scène", "expect_action": "write-scene" },
+  { "prompt": "arc spec for the prologue ARC_ID", "expect_action": "arc-spec" },
+  { "prompt": "write arc spec", "expect_action": "arc-spec" },
+  { "prompt": "decompose arc into nodes", "expect_action": "decompose" },
+  { "prompt": "node decomposition", "expect_action": "decompose" },
+  { "prompt": "write dtl", "expect_action": "write-dtl" },
+  { "prompt": "generate the node timeline", "expect_action": "write-dtl" },
+  { "prompt": "fix dtl from this feedback", "expect_action": "fix" },
+  { "prompt": "apply feedback to the branch", "expect_action": "fix" },
+  { "prompt": "review this dtl with a persona", "expect_action": null }
+]

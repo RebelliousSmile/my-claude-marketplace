@@ -29,11 +29,13 @@ Trigger-to-action mapping:
 - Personas are always written to `<brief>/personas/<id>.yaml`.
 - Scoring criterion weights MUST sum to 1.0.
 - `train` reads only `<output>/review/chapter-<NN>-<persona>.md` files; never invent patterns.
+- **When `train` fires**: `train` recalibrates a persona once it caps (≤11/20 on its must-haves) over **≥3 chapters** — the signal that the persona itself drifted, not that one chapter is weak. Trigger defined in `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`.
 - After training, increment the persona version comment in the YAML header.
 - The `<brief>/` is read-only for all other writing skills; `persona` is the only skill that writes into `<brief>/personas/`.
 
 ## External data
 
 - `${CLAUDE_PLUGIN_ROOT}/references/brief-model.md` — the brief → output working-dir contract.
+- `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md` — convergence loop; defines when `train` is triggered.
 - `<brief>/summary.md` — brief autosuffisant (for context if needed).
 - `<output>/review/chapter-<NN>-<persona>.md` — feedback files consumed by `train`.

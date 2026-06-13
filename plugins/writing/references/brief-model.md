@@ -11,8 +11,8 @@ Source de vérité partagée par **tous** les skills `writing`. `writing` **prod
 ```
 <brief>/
   summary.md        ← brief AUTOSUFFISANT
-  personas/         ← 0+ personas lecteurs (YAML)
-  output-styles/    ← 1+ styles d'écriture
+  personas/         ← ≥3 personas lecteurs DISTINCTS (YAML)
+  output-styles/    ← ≥3 styles d'écriture DISTINCTS
 ```
 
 - **`summary.md`** — la **seule** source de contexte. **S'ouvre sur un front-matter YAML** déclarant `type:` (ex. `technical-doc` / `cheat-sheet` / `rpg-scenario` / `novel` / `guide`) et `language:` (défaut : `fr`) ; ces deux clés sont **obligatoires et machine-vérifiables** (cf. `tools/eval/harness.mjs`). Le corps contient : concept/synopsis, consignes, **et le lore/données pertinents déjà consolidés** par `obsidian`. Si une information manque, le brief est incomplet : ne pas aller la chercher ailleurs — le signaler.
@@ -23,8 +23,8 @@ Source de vérité partagée par **tous** les skills `writing`. `writing` **prod
   language: fr
   ---
   ```
-- **`personas/`** — fichiers YAML de persona lecteur, consommés par `review`. Peut être vide.
-- **`output-styles/`** — fichiers de convention d'écriture (voix, ton, temps, densité…), consommés par `write` et `review`. Au moins un.
+- **`personas/`** — fichiers YAML de persona lecteur, consommés par `review`. **Au moins 3, distincts** (angles de lecture différents) : la triangulation entre lecteurs est ce qui rend le scoring de `comment` robuste (consensus + divergence). Produits par `persona:generate`, recalibrés par `persona:train`.
+- **`output-styles/`** — fichiers de convention d'écriture (voix, ton, temps, densité…), consommés par `write` et `review`. **Au moins 3, distincts**. Produits par `tone-finder:analyze`, mis à jour (`v+1`) par `tone-finder:improve`.
 
 ## Sortie — répertoire `<output>/` (écriture)
 

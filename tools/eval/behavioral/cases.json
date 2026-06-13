@@ -1,0 +1,98 @@
+[
+  {
+    "id": "comment-scoring-routing",
+    "skill": "writing:review",
+    "action": "comment",
+    "given": "fixture technical-doc ; comment <output>/chapters/chapter-02.md --brief <brief> --all",
+    "expect": "Un fichier review par persona évaluée, chacun avec un consensus /20 en Section 3, et une route de triage cohérente avec la bande de score.",
+    "judge": [
+      "un <output>/review/chapter-02-<persona>.md par persona évaluée",
+      "consensus /20 présent et arithmétique vérifiable (±0.01)",
+      "route ∈ {doctor, write --feedback} cohérente avec la bande de score"
+    ]
+  },
+  {
+    "id": "doctor-corrections-changelog",
+    "skill": "writing:review",
+    "action": "doctor",
+    "given": "fixture fantasy-novella ; doctor <output>/chapters/chapter-01.md --brief <brief>",
+    "expect": "Corrections appliquées (ou listées en --dry-run) et journalisées ; voix narrative préservée.",
+    "judge": [
+      "<output>/review/chapter-01-changelog.md reçoit une entrée datée",
+      "≥1 correction concrète (grammaire/typo/terminologie)",
+      "sens et voix du chapitre préservés (pas de réécriture)"
+    ]
+  },
+  {
+    "id": "persona-train-from-feedback",
+    "skill": "writing:persona",
+    "action": "train",
+    "given": "fixture fantasy-novella enrichie de retours sur ≥3 chapitres où la persona 'lecteur-pragmatique' plafonne ; train lecteur-pragmatique",
+    "expect": "La persona est recalibrée à partir des seuls fichiers review, version incrémentée.",
+    "judge": [
+      "<brief>/personas/lecteur-pragmatique.yaml modifié",
+      "changements traçables aux fichiers <output>/review/ (aucun motif inventé)",
+      "version de la persona incrémentée"
+    ]
+  },
+  {
+    "id": "tone-finder-improve-systemic",
+    "skill": "writing:tone-finder",
+    "action": "improve",
+    "given": "retours review signalant un même pattern systémique sur ≥3 chapitres ; improve --out <output>",
+    "expect": "L'output-style visé est mis à jour (v+1) pour corriger le pattern transverse.",
+    "judge": [
+      "fichier <brief>/output-styles/<name>.md modifié",
+      "frontmatter version: bumpé (v+1)",
+      "le changement adresse le pattern systémique relevé, pas un détail d'un chapitre"
+    ]
+  },
+  {
+    "id": "plateau-reached",
+    "skill": "writing:review",
+    "action": "comment",
+    "given": "score history existant [11.8, 13.6] puis re-comment donnant ~14.2 (Δ=0.6)",
+    "expect": "Verdict PLATEAU ; la boucle s'arrête, le chapitre est figé.",
+    "judge": [
+      "nouvelle ligne scores.md avec verdict PLATEAU",
+      "Δ < 1.0 sur cette ligne",
+      "aucune route de correction proposée après PLATEAU"
+    ]
+  },
+  {
+    "id": "plateau-not-reached-whatever",
+    "skill": "writing:review",
+    "action": "comment",
+    "given": "suite adverse où chaque re-scoring gagne ≥1.0 (ex. 9.0 → 11.5 → 13.0 → 14.5)",
+    "expect": "PLATEAU JAMAIS déclaré tant que Δ≥1.0 ; arrêt au plus à 5 itérations avec CAP-ITERATIONS.",
+    "judge": [
+      "aucune ligne PLATEAU tant que Δ≥1.0",
+      "verdicts = CONTINUE (ou CAP-ITERATIONS à la 5e), jamais un faux PLATEAU",
+      "le critère reste purement Δ-basé (pas d'arrêt opportuniste)"
+    ]
+  },
+  {
+    "id": "triage-rewrite-on-capped",
+    "skill": "writing:review",
+    "action": "comment",
+    "given": "chapitre où ≥2 personas plafonnent à ≤11/20 sur un must-have structurel",
+    "expect": "Route = write --feedback (réécriture), pas doctor.",
+    "judge": [
+      "route recommandée = write --feedback",
+      "justification cite les ≥2 personas plafonnées",
+      "doctor n'est PAS proposé comme route principale"
+    ]
+  },
+  {
+    "id": "triage-persona-train-3chapters",
+    "skill": "writing:review",
+    "action": "comment",
+    "given": "la même persona plafonne sur 3 chapitres consécutifs",
+    "expect": "Recommandation persona:train (la persona est mal calibrée), pas un acharnement chapitre par chapitre.",
+    "judge": [
+      "persona:train recommandé pour la persona concernée",
+      "déclenchement conditionné au seuil ≥3 chapitres",
+      "distinction explicite entre 'chapitre faible' et 'persona à recalibrer'"
+    ]
+  }
+]

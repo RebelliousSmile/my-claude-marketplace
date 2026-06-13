@@ -23,8 +23,8 @@ Assembles the **`_brief/` working directory** that the `writing` plugin consumes
 <projet>/_brief/
   summary.md        ← AUTONOMOUS brief: concept/synopsis + type + language
                        + consolidated lore/rules/data INLINE (incl. relevant R globals)
-  personas/         ← reader personas (filled by writing:persona)
-  output-styles/    ← writing styles (filled by writing:tone-finder)
+  personas/         ← ≥3 distinct reader personas (filled by writing:persona)
+  output-styles/    ← ≥3 distinct writing styles (filled by writing:tone-finder)
 ```
 
 `summary.md` is the **single source of context** for `writing` — everything needed to produce must be inline here. If an input is missing, `brief` flags it rather than pointing at an external path (including paths back into `R`).
@@ -49,7 +49,7 @@ Trigger-to-action mapping:
 - **Consolidate, don't reference.** R's globals are folded **inline** into `summary.md`. The produced `<projet>/_brief/` must be readable on its own — `writing` never reads outside it, not even back into `R`.
 - `summary.md` **opens with a YAML front-matter** declaring `type:` (technical-doc / cheat-sheet / rpg-scenario / novel / guide…) and `language:` (default: `fr`) — both keys are **mandatory and machine-checked** (`tools/eval/harness.mjs`). `writing` selects its mode from these.
 - Never overwrite existing brief files without explicit confirmation — create what is missing, propose updates for what exists.
-- `personas/` and `output-styles/` are created (empty or seeded); they are filled by `writing:persona` and `writing:tone-finder`.
+- `personas/` and `output-styles/` are seeded with **at least 3 distinct entries each** (filled by `writing:persona` / `writing:tone-finder`); a brief with fewer is flagged incomplete by `check` (contract: `writing:references/brief-model.md`, enforced by `tools/eval/harness.mjs`).
 - `assemble` validates the assembled `summary.md` with the user before writing.
 
 ## External data

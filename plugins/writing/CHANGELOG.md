@@ -2,6 +2,17 @@
 
 > Fusion de `doc-writer` (v0.1.0) et `rpg-writer` (v0.10.0). Historique détaillé : `git log -- plugins/writing plugins/doc-writer plugins/rpg-writer`.
 
+## [1.1.0] — 2026-06-13
+
+### Added
+- **Boucle de review convergente + PLATEAU** (`references/review-loop.md`, source unique partagée par `review`/`write`/`persona`/`tone-finder`) : `comment` → triage → correction (`doctor` / `write --feedback` / révision d'intrant) → re-scoring → comparaison. Arrêt au **PLATEAU** (`Δ < 1.0` entre itérations) ; garde anti-boucle à 5 itérations (`CAP-ITERATIONS`) ; `PLATEAU` jamais déclaré tant que `Δ ≥ 1.0`. Terminal = chapitre figé (export ICML = étape séparée).
+- **Artefact d'historique** `<output>/review/chapter-NN-scores.md` écrit par `comment` (une ligne/itération : consensus, `Δ`, verdict, route).
+- **Routes de triage formalisées** : pattern systémique récurrent sur ≥3 chapitres → `tone-finder:improve` (output-style `v+1`) ; même persona plafonnée sur ≥3 chapitres → `persona:train`.
+
+### Changed
+- **Contrat brief resserré** (`references/brief-model.md`) : `<brief>/personas/` et `<brief>/output-styles/` exigent désormais **≥3 entrées distinctes** chacun (triangulation du scoring de `comment`).
+- `persona:train` et `tone-finder:improve` documentent leur **déclencheur** (seuil ≥3 chapitres) via `review-loop.md`.
+
 ## [1.0.0] — 2026-06-13
 
 ### Added (fusion doc-writer + rpg-writer)

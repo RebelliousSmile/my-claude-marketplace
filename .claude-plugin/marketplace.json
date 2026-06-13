@@ -23,7 +23,7 @@
     },
     {
       "name": "writing",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./plugins/writing",
       "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, lore, données) est délégué à obsidian. Fusion de doc-writer + rpg-writer.",
       "recommended": false
@@ -79,7 +79,7 @@
     },
     {
       "name": "obsidian",
-      "version": "0.13.0",
+      "version": "0.14.0",
       "source": "./plugins/obsidian",
       "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), solo TTRPG domain tooling (pc, rpg, solo-mc) on autonomous local game domains, the Documents/ organiser tree (cache-based: index, check, fix, sort), and brief/lore/data assembly for writing: brief (builds the portable _brief/ working dir), forge (concept), research (data), lore-extract, rules-keeper, extract-pdf.",
       "recommended": false

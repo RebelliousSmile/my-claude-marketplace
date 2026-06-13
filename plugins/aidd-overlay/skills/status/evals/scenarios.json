@@ -1,0 +1,9 @@
+[
+  { "prompt": "synthesize project memory", "expect_action": "memory" },
+  { "prompt": "memory export", "expect_action": "memory" },
+  { "prompt": "project status report", "expect_action": "report" },
+  { "prompt": "project health", "expect_action": "report" },
+  { "prompt": "audit memory files", "expect_action": "audit" },
+  { "prompt": "check memory files for contradictions", "expect_action": "audit" },
+  { "prompt": "écris le chapitre 1", "expect_action": null }
+]

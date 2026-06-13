@@ -28,11 +28,13 @@ Trigger-to-action mapping:
 - Analyze writing philosophy first, formatting conventions second.
 - In questionnaire mode: co-construct examples with the user; maximum 15 questions total.
 - In improve mode: extract patterns from `<output>/review/` feedback files before proposing changes.
+- **When `improve` fires**: `improve` updates the output-style (bump `version:`, `v+1`) once `comment` flags a systemic pattern recurring over **≥3 chapters** — a style-convention gap, not a one-chapter slip. Trigger defined in `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`.
 - Output file path: `<brief>/output-styles/<name>.md`.
 - All generated examples must reflect the project's real style — never generic placeholder prose.
 
 ## External data
 
 - `${CLAUDE_PLUGIN_ROOT}/references/brief-model.md` — the brief → output working-dir contract.
+- `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md` — convergence loop; defines when `improve` is triggered.
 - `references/output-style.md` — output-style file schema and field descriptions.
 - `references/typographie.md` — French typography rules referenced from output-style examples.

@@ -4,6 +4,21 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [3.1.0] - 2026-06-13
+
+### Added
+
+- **Infra de test `tools/eval/`** (Node, zéro dépendance) — trois couches : `harness.mjs` (conformité structurelle d'un projet brief→output + invariants de portabilité + invariant plateau), `coverage.mjs` (chaque action *routable* a ≥1 scénario, tous plugins) et `behavioral/` (spec + rubrique LLM-juge à la demande). 4 fixtures golden + spec comportementale.
+- **`writing` (1.1.0)** — boucle de review convergente + **PLATEAU** (`Δ < 1.0`), artefact `chapter-NN-scores.md`, routes de triage vers `tone-finder:improve` / `persona:train` (`references/review-loop.md`).
+
+### Changed
+
+- **Contrat brief resserré** : `_brief/personas/` et `_brief/output-styles/` exigent ≥3 entrées distinctes (`writing` 1.1.0 + `obsidian` 0.14.0).
+
+### Fixed
+
+- **`obsidian` (0.14.0)** — `rules-keeper/evals/scenarios.json` réparé (ids d'action périmés) ; dérive de version + description corrigée dans `index.json` (obsidian 0.11.0 → 0.14.0).
+
 ## [3.0.0] - 2026-06-13
 
 ### Added

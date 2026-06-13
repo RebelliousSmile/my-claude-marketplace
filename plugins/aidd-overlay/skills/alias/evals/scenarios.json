@@ -28,5 +28,18 @@
   { "prompt": "alias weeklyemail", "expect_action": "weeklyemail" },
   { "prompt": "rapport hebdomadaire gitlab", "expect_action": "weeklyemail" },
   { "prompt": "email client semaine github", "expect_action": "weeklyemail" },
-  { "prompt": "résumé commits de la semaine sur gitlab", "expect_action": "weeklyemail" }
+  { "prompt": "résumé commits de la semaine sur gitlab", "expect_action": "weeklyemail" },
+  { "prompt": "where are we in the project", "expect_action": "previously" },
+  { "prompt": "catch me up", "expect_action": "previously" },
+  { "prompt": "project snapshot", "expect_action": "previously" },
+  { "prompt": "alias previously", "expect_action": "previously" },
+  { "prompt": "smarten this prompt", "expect_action": "smarten" },
+  { "prompt": "slim this file", "expect_action": "smarten" },
+  { "prompt": "compress this prompt file", "expect_action": "smarten" },
+  { "prompt": "skillconf", "expect_action": "skillconf" },
+  { "prompt": "auto-configure skills", "expect_action": "skillconf" },
+  { "prompt": "les descriptions de skills prennent trop de place", "expect_action": "skillconf" },
+  { "prompt": "aiddlegacy", "expect_action": "aiddlegacy" },
+  { "prompt": "clean aidd legacy", "expect_action": "aiddlegacy" },
+  { "prompt": "nettoyer l'ancienne installation aidd", "expect_action": "aiddlegacy" }
 ]

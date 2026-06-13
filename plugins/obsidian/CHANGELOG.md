@@ -2,6 +2,22 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obsidian`.
 
+## [0.15.0] — 2026-06-13
+
+### Changed (`tree`)
+- **Convention `Pro/Projets` formalisée** dans `references/tree-convention.md` : structure à trois niveaux (`<projet>/` + `_code/` pour le code + `<AAAA>/<MM>/` pour les travaux et suivi mensuel). Aucun `INDEX.md` n'est attendu ; le mois le plus récent est enregistré comme `entry` dans le cache.
+- `index` reconnaît `Pro/Projets/` comme **domaine à convention fixe** (`kind: "pro-projet"`) — pas besoin d'inférer depuis le contenu ; I2–I3 exclus du contenu de `_code/`.
+- `check` n'émet plus d'anomalie pour l'absence d'`INDEX.md`, la présence de `_code/`, ni pour des mois sans `_brief/`/`_output/` dans ce domaine.
+- `sort` route par type : code/source → `_code/` ; note/suivi → mois courant (propose la création si le dossier n'existe pas encore).
+
+## [0.14.0] — 2026-06-13
+
+### Changed (`brief`)
+- **Contrat resserré** : `_brief/personas/` et `_brief/output-styles/` exigent désormais **≥3 entrées distinctes** chacun ; `check` signale un brief en-deçà comme incomplet (aligné sur `writing:references/brief-model.md`, vérifié par `tools/eval/harness.mjs`).
+
+### Fixed
+- **`rules-keeper`** — `evals/scenarios.json` réparé : les `expect_action` utilisaient des ids de fichier périmés (`01-restructure`…) et des chemins `.docs/sources/` obsolètes ; remplacés par les vrais noms d'actions (`restructure`, `restructure-all`, `update`, `local`) et des prompts conformes au modèle `R` local.
+
 ## [0.13.0] — 2026-06-13
 
 > **Migration JDR complète vers `Documents/` — BREAKING.** Abandon du coffre séparé (`tnn-jdr`, `~/.jdr.yaml`, variable globale `<vault>`). Tous les skills JDR (producteurs `lore-extract`/`rules-keeper`/`extract-pdf`/`research`/`forge` + trio `solo-mc`/`rpg`/`pc` + agents `narrateur`/`oracle`) passent au modèle **local autonome** : domaine `R = <jeu>` découvert via le marqueur `_savoir/`, savoir durable en `R/_savoir/` (canon/mj préservés), `bank.yml` n'est plus un input de résolution. Nouvelle réf `references/jdr-layout.md` (remplace `vault-layout.md`). Agents helper `*-jdr` supprimés. Détail : `git log -- plugins/obsidian`.

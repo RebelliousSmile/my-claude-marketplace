@@ -1,0 +1,8 @@
+name: Développeur confirmé
+role: Connaît git, veut un rappel dense des options moins fréquentes
+goals:
+  - Retrouver vite la syntaxe d'un rebase interactif
+  - Aucun blabla pédagogique
+pains:
+  - Aide-mémoire dilué par des explications de base
+reads_for: tableau dense, options avancées présentes

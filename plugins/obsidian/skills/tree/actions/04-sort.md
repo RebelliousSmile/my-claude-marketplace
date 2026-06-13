@@ -16,6 +16,7 @@ Decide where loose items belong and place them — **by arbitration**. `tree` pr
    - Match against existing domains (`domains[].path`) and their learned conventions — where do comparable items already live?
    - If the item is a dated work unit, target `<domain>/<AAAA>/<MM>/<unit>/` (date from the item's own metadata/content, else ask).
    - If it is durable knowledge, target `<domain>/_savoir/`.
+   - **`pro-projet` domains:** route by content type — source code / project file → `<projet>/_code/` ; note / task / tracking document → `<projet>/<AAAA-courant>/<MM-courant>/`. If the current month dir does not exist yet, propose creating it.
    - Apply invariants to the proposed name (kebab-case, `_` prefix for working dirs).
 3. **Arbitrate:**
    - **Confident, single match** → propose it directly.
