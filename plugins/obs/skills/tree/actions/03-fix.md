@@ -8,22 +8,7 @@ Apply **safe** corrections for the anomalies and drift surfaced by `check`. Rena
 
 - `<target>` (optional, positional) — subtree to fix. Default: current working directory.
 
-## Process
-
-1. Resolve the anchor; load/refresh the cache (run `index` if missing/stale).
-2. Run the `check` logic to collect anomalies (hard) and drift (soft) with their suggested corrections.
-3. **Build a dry-run plan** — an ordered list of `mv`/rename operations, each as `from → to`, grouped:
-   - **Invariant fixes** (default ON): add `_` prefix to working dirs, kebab-case free slugs, zero-pad/repair dates, un-prefix wrongly-prefixed content.
-   - **Drift fixes** (default OFF — propose, the user opts in): relocate a unit onto its domain's dated axis, move durable knowledge out of a dated unit into `_univers/`, `_systeme/`, etc.
-4. **Present the plan and require explicit confirmation.** Show the full `from → to` list. Do nothing until the user approves (they may approve a subset).
-5. **Safety gate before each operation:**
-   - Destination already exists → **skip and flag the collision** (never overwrite/merge silently).
-   - Operation is a rename/move only — **never `rm`/delete** user content.
-   - Prefer `git mv` when the subtree is a git repo; else plain move.
-6. Execute the approved operations. Re-run `index` to refresh the cache.
-7. Report what was done, what was skipped (with reasons), and what drift was left untouched.
-
-## Output
+## Outputs
 
 ```markdown
 # Tree Fix — <anchor>
@@ -39,6 +24,21 @@ Apply **safe** corrections for the anomalies and drift surfaced by `check`. Rena
 ## Untouched drift
 - <domain> — <left as-is>
 ```
+
+## Process
+
+1. Resolve the anchor; load/refresh the cache (run `index` if missing/stale).
+2. Run the `check` logic to collect anomalies (hard) and drift (soft) with their suggested corrections.
+3. **Build a dry-run plan** — an ordered list of `mv`/rename operations, each as `from → to`, grouped:
+   - **Invariant fixes** (default ON): add `_` prefix to working dirs, kebab-case free slugs, zero-pad/repair dates, un-prefix wrongly-prefixed content.
+   - **Drift fixes** (default OFF — propose, the user opts in): relocate a unit onto its domain's dated axis, move durable knowledge out of a dated unit into `_univers/`, `_systeme/`, etc.
+4. **Present the plan and require explicit confirmation.** Show the full `from → to` list. Do nothing until the user approves (they may approve a subset).
+5. **Safety gate before each operation:**
+   - Destination already exists → **skip and flag the collision** (never overwrite/merge silently).
+   - Operation is a rename/move only — **never `rm`/delete** user content.
+   - Prefer `git mv` when the subtree is a git repo; else plain move.
+6. Execute the approved operations. Re-run `index` to refresh the cache.
+7. Report what was done, what was skipped (with reasons), and what drift was left untouched.
 
 ## Rules
 

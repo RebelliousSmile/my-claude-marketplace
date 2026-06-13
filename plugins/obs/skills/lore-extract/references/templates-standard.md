@@ -1,12 +1,12 @@
-# Templates — Thèmes Standard
+# Templates — Standard Themes
 
-Limites : 250 lignes par fichier. Inclure le bloc métadonnées en fin de fichier.
+Limit: 250 lines per file. Include the metadata block at the end of the file. The template content below is reproduced verbatim into the generated French artifacts — keep it in French.
 
 ---
 
 ## terminologie.md
 
-**IMPORTANT :** Ce fichier contient uniquement le vocabulaire propre à l'univers fictif. Les règles de jeu (attributs, dés, mécaniques) vont dans `rules-files/`.
+**IMPORTANT:** This file contains only the vocabulary specific to the fictional universe. Game rules (attributes, dice, mechanics) go in `rules-files/`.
 
 ```markdown
 # Terminologie : [Nom Univers]

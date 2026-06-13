@@ -1,12 +1,12 @@
 # 02 - Process Chunk
 
-Sessions 2-N : extraire le texte d'un chunk PDF, classifier le contenu dans `classified/*.md`.
+Sessions 2-N: extract the text of a PDF chunk, classify the content into `classified/*.md`.
 
 ## Inputs
 
-- `project_dir` (required) — répertoire du projet d'écriture (`R/<AAAA>/<MM>/<projet>/`), ou tout répertoire sous le domaine `R`. `R` découvert par remontée jusqu'à l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`.
-- `source_name` (required) — nom du PDF source sans extension (ex. `engrenages-regles`). Visible dans `docs/extraction/` ou dans `progress.md#Source`.
-- `chunk_id` (required) — numéro du chunk (ex. `01`, `02`)
+- `project_dir` (required) — the writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under the `R` domain. `R` discovered by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`.
+- `source_name` (required) — name of the source PDF without extension (e.g. `engrenages-regles`). Visible in `docs/extraction/` or in `progress.md#Source`.
+- `chunk_id` (required) — chunk number (e.g. `01`, `02`)
 
 ## Depends on
 
@@ -14,18 +14,18 @@ Sessions 2-N : extraire le texte d'un chunk PDF, classifier le contenu dans `cla
 
 ## Outputs
 
-Un ou plusieurs fichiers classifiés dans `docs/extraction/<source-name>/classified/` :
+One or more classified files in `docs/extraction/<source-name>/classified/`:
 ```
 classified/
-  lore.md             — contenu narratif, historique, monde
-  terminology.md      — termes, définitions, glossaire
-  style.md            — ton, directives d'écriture, exemples
-  rules.md            — règles, mécaniques, stats, modificateurs
-  structure.md        — chapitres, parties, sommaire, TOC
-  templates.md        — macros LaTeX, patterns, commandes
+  lore.md             — narrative content, history, world
+  terminology.md      — terms, definitions, glossary
+  style.md            — tone, writing guidelines, examples
+  rules.md            — rules, mechanics, stats, modifiers
+  structure.md        — chapters, parts, summary, TOC
+  templates.md        — LaTeX macros, patterns, commands
 ```
 
-Chaque fichier classifié utilise des marqueurs YAML :
+Each classified file uses YAML markers:
 ```markdown
 ---
 chunk: XX
@@ -33,29 +33,29 @@ pages: N-M
 extracted: YYYY-MM-DD
 ---
 
-[contenu extrait]
+[extracted content]
 
 ---
 ```
 
-`progress.md` mis à jour : statut `pending` → `done`, date dans la colonne Session.
-`raw/chunk_XX.txt` : texte brut extrait du PDF avant classification. **Conservé** : il sera assemblé en `<…>/sources/<source>/fulltext.md` lors de `distribute` (le « contenu de l'extraction »). Ne jamais le jeter avant que `fulltext.md` n'existe.
+`progress.md` updated: status `pending` → `done`, date in the Session column.
+`raw/chunk_XX.txt`: raw text extracted from the PDF before classification. **Preserved**: it will be assembled into `<…>/sources/<source>/fulltext.md` during `distribute` (the "content of the extraction"). Never discard it before `fulltext.md` exists.
 
 ## Process
 
-1. Lire `docs/extraction/<source-name>/progress.md`. Localiser le chunk dont l'id est `<chunk_id>` : c'est le PDF `chunks/*_part<chunk_id>_*.pdf` (nom réel `<source-name>_part<chunk_id>_p<début>-<fin>.pdf`). Résoudre le chemin exact :
+1. Read `docs/extraction/<source-name>/progress.md`. Locate the chunk whose id is `<chunk_id>`: it is the PDF `chunks/*_part<chunk_id>_*.pdf` (actual name `<source-name>_part<chunk_id>_p<début>-<fin>.pdf`). Resolve the exact path:
    ```bash
    CHUNK_PDF=$(python -c "import glob; print(glob.glob('docs/extraction/<source-name>/chunks/*_part<chunk_id>_*.pdf')[0])")
    ```
-   Si le chunk est déjà `done` dans `progress.md` → avertir et demander confirmation avant de retraiter.
-2. **Extraire le texte brut** du chunk PDF (`$CHUNK_PDF`) vers `raw/chunk_<chunk_id>.txt` — essayer dans l'ordre :
+   If the chunk is already `done` in `progress.md` → warn and ask for confirmation before reprocessing.
+2. **Extract the raw text** of the chunk PDF (`$CHUNK_PDF`) into `raw/chunk_<chunk_id>.txt` — try in order:
 
-   **a) pdftotext** (préféré) :
+   **a) pdftotext** (preferred):
    ```bash
    pdftotext -layout "$CHUNK_PDF" - > "docs/extraction/<source-name>/raw/chunk_<chunk_id>.txt"
    ```
 
-   **b) Python fallback** si pdftotext absent :
+   **b) Python fallback** if pdftotext is absent:
    ```python
    import pdfplumber, pathlib, glob
    chunk_pdf = glob.glob("docs/extraction/<source-name>/chunks/*_part<chunk_id>_*.pdf")[0]
@@ -64,7 +64,7 @@ extracted: YYYY-MM-DD
    pathlib.Path("docs/extraction/<source-name>/raw/chunk_<chunk_id>.txt").write_text(text, encoding="utf-8")
    ```
 
-   **c) OCR** uniquement si le texte est garbled (>30% non-printable après extraction — pour mesurer, utiliser `extract-pdf debug` ou le snippet Python de l'action 04). Tesseract n'accepte pas de PDF, convertir d'abord en images. Utiliser `>` (overwrite) pour remplacer tout fichier brut garbled issu des étapes a) ou b) :
+   **c) OCR** only if the text is garbled (>30% non-printable after extraction — to measure, use `extract-pdf debug` or the Python snippet from action 04). Tesseract does not accept PDFs, convert to images first. Use `>` (overwrite) to replace any garbled raw file from steps a) or b):
    ```bash
    TMPDIR=$(python -c "import tempfile; print(tempfile.gettempdir())")
    pdftoppm -r 300 "$CHUNK_PDF" "$TMPDIR/chunk_<chunk_id>_page"
@@ -72,25 +72,25 @@ extracted: YYYY-MM-DD
      > "docs/extraction/<source-name>/raw/chunk_<chunk_id>.txt"
    ```
 
-3. Vérifier que `docs/extraction/<source-name>/raw/chunk_<chunk_id>.txt` existe et est non-vide. Si vide → relancer l'extraction avec la méthode suivante dans la hiérarchie.
-4. Lancer `python scripts/normalize-text.py "docs/extraction/<source-name>/raw/chunk_<chunk_id>.txt" --in-place` pour corriger les artefacts d'encodage.
-5. Montrer les 500 premiers caractères. Demander : "Continuer la classification ? [Y/n]"
-6. **Passe 1 — Lecture** : lire le chunk en entier sans écrire. Identifier les catégories présentes.
-7. **Passe 2 — Classification** :
-   - Lore : récits, histoire, dates, événements, lieux
-   - Terminology : termes = définitions, glossaire
-   - Style : ton, consignes d'écriture, exemples à suivre/éviter
-   - Rules : mécaniques, jets de dés, stats, modificateurs (valeurs exactes — ne jamais inventer)
-   - Structure : chapitres, sommaire, plan, TOC
-   - Templates : macros LaTeX, `\newcommand`, patterns réutilisables
-8. **Vérifier** chaque élément extrait contre le texte source. Ne jamais inventer ni extrapoler.
-9. Après confirmation : écrire dans `docs/extraction/<source-name>/classified/*.md` avec les marqueurs YAML. Créer les fichiers si inexistants. Si un fichier dépasse 30 000 chars → splitter en `lore-1.md`, `lore-2.md`, etc.
-10. Mettre à jour `docs/extraction/<source-name>/progress.md` : `pending` → `done`, date du jour dans la colonne Session.
-11. Indiquer les chunks restants et suggérer : `extract-pdf process-chunk <project_dir> <source_name> <next_chunk_id>`.
+3. Verify that `docs/extraction/<source-name>/raw/chunk_<chunk_id>.txt` exists and is non-empty. If empty → re-run the extraction with the next method in the hierarchy.
+4. Run `python scripts/normalize-text.py "docs/extraction/<source-name>/raw/chunk_<chunk_id>.txt" --in-place` to fix encoding artifacts.
+5. Show the first 500 characters. Ask: "Continuer la classification ? [Y/n]"
+6. **Pass 1 — Reading**: read the entire chunk without writing. Identify the categories present.
+7. **Pass 2 — Classification**:
+   - Lore: narratives, history, dates, events, places
+   - Terminology: terms = definitions, glossary
+   - Style: tone, writing instructions, examples to follow/avoid
+   - Rules: mechanics, dice rolls, stats, modifiers (exact values — never invent)
+   - Structure: chapters, summary, outline, TOC
+   - Templates: LaTeX macros, `\newcommand`, reusable patterns
+8. **Verify** each extracted item against the source text. Never invent or extrapolate.
+9. After confirmation: write into `docs/extraction/<source-name>/classified/*.md` with the YAML markers. Create the files if they do not exist. If a file exceeds 30,000 chars → split into `lore-1.md`, `lore-2.md`, etc.
+10. Update `docs/extraction/<source-name>/progress.md`: `pending` → `done`, today's date in the Session column.
+11. Indicate the remaining chunks and suggest: `extract-pdf process-chunk <project_dir> <source_name> <next_chunk_id>`.
 
 ## Test
 
-Après `process-chunk <project_dir> <source_name> 01`, vérifier que :
-- `docs/extraction/<source-name>/progress.md` montre chunk 01 en statut `done`
-- `docs/extraction/<source-name>/raw/chunk_01.txt` existe et est non-vide
-- Au moins un `docs/extraction/<source-name>/classified/*.md` a été créé avec des marqueurs YAML
+After `process-chunk <project_dir> <source_name> 01`, verify that:
+- `docs/extraction/<source-name>/progress.md` shows chunk 01 in `done` status
+- `docs/extraction/<source-name>/raw/chunk_01.txt` exists and is non-empty
+- At least one `docs/extraction/<source-name>/classified/*.md` has been created with YAML markers

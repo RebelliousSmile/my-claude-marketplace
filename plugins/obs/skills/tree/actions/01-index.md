@@ -8,6 +8,10 @@ Scan the real arborescence and build/refresh the navigation cache `<anchor>/_tre
 
 - `<target>` (optional, positional) — where to start. Default: current working directory.
 
+## Outputs (cache shape)
+
+See `${CLAUDE_PLUGIN_ROOT}/references/tree-convention.md` › "Le cache". Key fields: `root`, `scanned_at`, `default_pattern`, `domains[]` (`path`, `dated`, `convention`, `units`, `durable`, `notes`), `anomalies[]`, `unsorted[]`.
+
 ## Process
 
 1. **Resolve the anchor.** From `<target>`, walk up parents until a `Perso` or `Pro` segment. That directory is the anchor.
@@ -21,12 +25,8 @@ Scan the real arborescence and build/refresh the navigation cache `<anchor>/_tre
    - Exception: inside `_code/` dirs of `pro-projet` entries, I2–I3 are not checked (code repos have their own conventions).
 5. **Collect `unsorted`**: paths that sit outside any recognised domain pattern (loose files/dirs that `sort` could place).
 6. **Write `<anchor>/_tree/cache.json`** per the reference's shape. Use the current date (from the session context) for `scanned_at`. Create `_tree/` if absent.
-7. **Refresh each domain's `R/bank.yml`** (resource manifest, consumed by `obs:brief`): for every domain that has l'un des marqueurs `_univers/`, `_systeme/` ou `_subsystems/`, scan them and write/update `R/bank.yml` — derive `id`/`kind`/`path` from the files, and a best-effort `summary` from each file's title/first lines. **Merge, do not clobber**: preserve any existing curated `summary`, add new resources, flag vanished ones. Format: see `obs:brief`'s `references/bank-yml.md`. (No durable dirs → no `bank.yml` for that domain.)
+7. **Refresh each domain's `R/bank.yml`** (resource manifest, consumed by `obs:brief`): for every domain that has one of the markers `_univers/`, `_systeme/` or `_subsystems/`, scan them and write/update `R/bank.yml` — derive `id`/`kind`/`path` from the files, and a best-effort `summary` from each file's title/first lines. **Merge, do not clobber**: preserve any existing curated `summary`, add new resources, flag vanished ones. Format: see `obs:brief`'s `references/bank-yml.md`. (No durable dirs → no `bank.yml` for that domain.)
 8. Print a short summary: anchor, # domains, # units, # anomalies, # unsorted, # bank.yml refreshed.
-
-## Output (cache shape)
-
-See `${CLAUDE_PLUGIN_ROOT}/references/tree-convention.md` › "Le cache". Key fields: `root`, `scanned_at`, `default_pattern`, `domains[]` (`path`, `dated`, `convention`, `units`, `durable`, `notes`), `anomalies[]`, `unsorted[]`.
 
 ## Rules
 
@@ -36,6 +36,6 @@ See `${CLAUDE_PLUGIN_ROOT}/references/tree-convention.md` › "Le cache". Key fi
 
 ## Test
 
-Run `index` on a tree with one dated domain (`Perso/RPG/zombiology/2026/06/test-scenario/_brief/`) carrying l'un des marqueurs `_univers/`, `_systeme/` ou `_subsystems/` with two files, and one flat domain. Confirm: `cache.json` is written at the `Perso` anchor; both domains appear with their respective `dated` flag and learned `convention`; `zombiology/bank.yml` is created with one entry per durable-dir file (each with a `summary`); a pre-existing curated `summary` in `bank.yml` is preserved on re-run; and no user file was moved, renamed, or deleted.
+Run `index` on a tree with one dated domain (`Perso/RPG/zombiology/2026/06/test-scenario/_brief/`) carrying one of the markers `_univers/`, `_systeme/` or `_subsystems/` with two files, and one flat domain. Confirm: `cache.json` is written at the `Perso` anchor; both domains appear with their respective `dated` flag and learned `convention`; `zombiology/bank.yml` is created with one entry per durable-dir file (each with a `summary`); a pre-existing curated `summary` in `bank.yml` is preserved on re-run; and no user file was moved, renamed, or deleted.
 
 Run `index` on a `Pro/` anchor containing `Projets/aidd-overlay/` with `_code/` and `2026/05/` + `2026/06/`. Confirm: the entry is recorded with `kind: "pro-projet"`, `entry: "2026/06"`, `travaux: ["2026/05", "2026/06"]`; no INDEX.md is expected or flagged as missing; and I2–I3 violations inside `_code/` are not reported.

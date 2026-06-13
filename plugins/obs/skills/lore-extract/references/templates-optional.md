@@ -1,7 +1,7 @@
-# Templates — Thèmes Optionnels
+# Templates — Optional Themes
 
-Créer ces fichiers si le contenu dépasse 50 lignes ET présente une cohérence thématique claire.
-Limites : 250 lignes par fichier.
+Create these files if the content exceeds 50 lines AND shows clear thematic coherence.
+Limit: 250 lines per file. The template content below is reproduced verbatim into the generated French artifacts — keep it in French.
 
 ---
 

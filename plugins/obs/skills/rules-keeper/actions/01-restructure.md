@@ -2,26 +2,26 @@
 
 Restructure a single rules file into the LLM-optimized 6-section format.
 
-> **Position dans le pipeline** : `rules-keeper` consomme les sources de référence brutes produites par `extract-pdf` (`<systeme-root>/sources/<source>/rules.md` ou `<subsys-root>/sources/<source>/rules.md`) et les restructure vers `<systeme-root>/canon/` (ou `<subsys-root>/canon/`). Il peut aussi restructurer n'importe quel fichier de règles existant.
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention complète.
+> **Position in the pipeline**: `rules-keeper` consumes the raw reference sources produced by `extract-pdf` (`<systeme-root>/sources/<source>/rules.md` or `<subsys-root>/sources/<source>/rules.md`) and restructures them into `<systeme-root>/canon/` (or `<subsys-root>/canon/`). It can also restructure any existing rules file.
+> See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` for the full convention.
 
 ## Inputs
 
-- `rules-file` (required) — chemin vers le fichier de règles à restructurer (tout format, tout système). Format privilégié issu du pipeline : `<systeme-root>/sources/<source>/rules.md` ou `<subsys-root>/sources/<source>/rules.md`.
-- `--homemade` (optional) — provenance : le fichier d'entrée contient des règles maison, pas le ruleset officiel. Le résultat est un **overlay maison** qui vit dans le sous-arbre `mj/` et déclare quelles règles canon il remplace/étend. Par défaut (sans flag) : ruleset canonique → sous-arbre `canon/`.
+- `rules-file` (required) — path to the rules file to restructure (any format, any system). Preferred format from the pipeline: `<systeme-root>/sources/<source>/rules.md` or `<subsys-root>/sources/<source>/rules.md`.
+- `--homemade` (optional) — provenance: the input file contains house rules, not the official ruleset. The result is a **house-rules overlay** that lives in the `mj/` sub-tree and declares which canon rules it replaces/extends. By default (no flag): canonical ruleset → `canon/` sub-tree.
 
 ## Outputs
 
-- Règles restructurées au format optimisé, écrites dans le **sous-arbre de provenance** — `<systeme-root>/canon/` (défaut) ou `<systeme-root>/mj/` (`--homemade`) ; pour un sous-système, `<subsys-root>/canon/` ou `<subsys-root>/mj/`.
-- Backup à `<rules-file>.original.md` (créé avant écrasement ; ignoré si déjà existant)
-- Pour `--homemade` : chaque règle restructurée **référence la règle canon qu'elle modifie** (section/heading) et déclare l'override — jamais de divergence silencieuse ; canon et maison ne sont jamais mélangés dans un même fichier.
-- Artefacts annexes dans `.templates/` (au même niveau que le fichier de règles) :
+- Restructured rules in the optimized format, written into the **provenance sub-tree** — `<systeme-root>/canon/` (default) or `<systeme-root>/mj/` (`--homemade`); for a subsystem, `<subsys-root>/canon/` or `<subsys-root>/mj/`.
+- Backup at `<rules-file>.original.md` (created before overwriting; skipped if already present)
+- For `--homemade`: each restructured rule **references the canon rule it modifies** (section/heading) and declares the override — never a silent divergence; canon and house rules are never mixed in the same file.
+- Side artifacts in `.templates/` (at the same level as the rules file):
   - `<system>-pc.template.md`
   - `<system>-npc.template.md`
   - `<system>-obstacle.template.md`
   - `<system>-asset.template.md`
 
-> `<systeme-root>` = `R/_systeme/` ; `<subsys-root>` = `R/_subsystems/<nom>/`. `R` est le domaine de jeu, découvert localement en remontant jusqu'à l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` (voir `jdr-layout.md`).
+> `<systeme-root>` = `R/_systeme/`; `<subsys-root>` = `R/_subsystems/<nom>/`. `R` is the game domain, discovered locally by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/` (see `jdr-layout.md`).
 
 ## Process
 

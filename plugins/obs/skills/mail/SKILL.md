@@ -1,12 +1,12 @@
 ---
 name: mail
 description: >-
-  Trie, résume, fusionne et classe les emails exportés en Markdown dans
-  C:/Users/fxgui/Public/Notes/Thunderbird/. Scanne un périmètre (tout
-  Thunderbird/ ou une sous-branche), applique les règles de mail-config.yaml,
-  propose des lots d'actions validables, puis exécute classify / delete /
-  merge / summarize / flag-phishing. Détecte les doublons, applique les règles
-  prune, identifie le phishing, et journalise chaque session.
+  Sorts, summarizes, merges, and files emails exported as Markdown in
+  C:/Users/fxgui/Public/Notes/Thunderbird/. Scans a scope (all of
+  Thunderbird/ or a sub-branch), applies the rules in mail-config.yaml,
+  proposes validatable action batches, then executes classify / delete /
+  merge / summarize / flag-phishing. Detects duplicates, applies prune
+  rules, identifies phishing, and logs each session.
   Use when the user invokes /obs:mail. Do NOT use for project management —
   use obs:project instead.
 disable-model-invocation: true
@@ -15,43 +15,43 @@ model: sonnet
 
 # Mail
 
-Traite les emails exportés en Markdown dans `C:/Users/fxgui/Public/Notes/Thunderbird/`.
-Scanne le périmètre, analyse chaque fichier, propose des lots d'actions validables
-lot par lot, exécute, et produit un rapport final.
+Processes emails exported as Markdown in `C:/Users/fxgui/Public/Notes/Thunderbird/`.
+Scans the scope, analyzes each file, proposes validatable action batches
+batch by batch, executes them, and produces a final report.
 
 ## Available actions
 
 | #   | Action      | Role                                                              | Input                       |
 | --- | ----------- | ----------------------------------------------------------------- | --------------------------- |
-| 01  | `scan`      | Lister tous les `.md` du périmètre et charger mail-config.yaml   | périmètre (optionnel)       |
-| 02  | `analyze`   | Classifier chaque email selon les deux passes de décision        | liste de fichiers + config  |
-| 03  | `propose`   | Regrouper les décisions en lots et attendre validation           | liste de décisions          |
-| 04  | `execute`   | Appliquer un lot validé (classify/delete/merge/summarize/intact/flag-phishing) | lot validé |
-| 05  | `report`    | Produire le rapport final de traitement                          | résultats cumulés           |
+| 01  | `scan`      | List all `.md` files in the scope and load mail-config.yaml      | scope (optional)            |
+| 02  | `analyze`   | Classify each email according to the two decision passes         | file list + config          |
+| 03  | `propose`   | Group decisions into batches and wait for validation             | list of decisions           |
+| 04  | `execute`   | Apply a validated batch (classify/delete/merge/summarize/intact/flag-phishing) | validated batch |
+| 05  | `report`    | Produce the final processing report                              | accumulated results         |
 
 ## Default flow
 
-Pipeline interne — l'utilisateur ne choisit jamais une action directement.
-Le flux est toujours :
+Internal pipeline — the user never picks an action directly.
+The flow is always:
 
 ```
 01-scan → 02-analyze → 03-propose → [04-execute → 03-propose]* → 05-report
 ```
 
-L'invocation `/obs:mail [branche]` déclenche toujours le pipeline complet.
+The invocation `/obs:mail [branche]` always triggers the full pipeline.
 
 ## Transversal rules
 
-### Chemins
+### Paths
 
-- Racine : `C:/Users/fxgui/Public/Notes/Thunderbird/`
-- Config : `<racine>/mail-config.yaml`
-- Archive : `<racine>/.archive/YYYY-MM-DD/`
-- Log : `<racine>/mail-sessions.log.md`
+- Root: `C:/Users/fxgui/Public/Notes/Thunderbird/`
+- Config: `<root>/mail-config.yaml`
+- Archive: `<root>/.archive/YYYY-MM-DD/`
+- Log: `<root>/mail-sessions.log.md`
 
-### Format des fichiers email
+### Email file format
 
-Frontmatter YAML obligatoire :
+Mandatory YAML frontmatter:
 ```yaml
 from: "expediteur@domaine.com"
 to: "destinataire"
@@ -61,38 +61,38 @@ subject_hash: a00eae
 tags: [INBOX]
 attachments: []
 ```
-Corps en Markdown (artefacts HTML possibles).
-Nommage : `email_YYYY-MM-DD_<exp>_<sujet>_to_<dest>[_N].md`
+Body in Markdown (HTML artifacts possible).
+Naming: `email_YYYY-MM-DD_<exp>_<sujet>_to_<dest>[_N].md`
 
-### Règle de décision en deux passes
+### Two-pass decision rule
 
-Appliquer les deux passes **indépendamment** pour chaque fichier.
-Les fichiers avec `processed: true` dans leur frontmatter sont exclus du scan (sauf flag `--reprocess`).
+Apply both passes **independently** for each file.
+Files with `processed: true` in their frontmatter are excluded from the scan (except with the `--reprocess` flag).
 
-**Passe A — décision de contenu** (priorité décroissante) :
-1. `suppress` match (expéditeur ou branche) → action = `delete`
-2. Doublon exact : même `subject_hash` + même `from` + même `date` qu'un autre fichier → action = `delete` (conserver le plus ancien ; à égalité de date → premier alphabétiquement)
-3. `prune` match ET `date < (aujourd'hui - days)` → action = `delete` ; `days: 0` = toujours supprimer
-4. `preserve` match (expéditeur ou branche) ET aucune exception contraire → action = `intact`
-5. Thread détecté (même `from`+`to`+`subject` normalisé, non preserve) → action = `merge`
-6. Tout le reste → action = `summarize`
+**Pass A — content decision** (decreasing priority):
+1. `suppress` match (sender or branch) → action = `delete`
+2. Exact duplicate: same `subject_hash` + same `from` + same `date` as another file → action = `delete` (keep the oldest; on a date tie → first alphabetically)
+3. `prune` match AND `date < (today - days)` → action = `delete`; `days: 0` = always delete
+4. `preserve` match (sender or branch) AND no contrary exception → action = `intact`
+5. Detected thread (same normalized `from`+`to`+`subject`, not preserve) → action = `merge`
+6. Everything else → action = `summarize`
 
-**Passe B — décision de placement** (indépendante de A) :
-- Le fichier n'est pas dans une branche de niveau 3 (racine ou sous `ATrier/`) → ajouter `classify` vers branche proposée
-- Déjà classé au bon niveau → aucune action de placement
+**Pass B — placement decision** (independent of A):
+- The file is not in a level-3 branch (root or under `ATrier/`) → add `classify` toward the proposed branch
+- Already classified at the right level → no placement action
 
-Un fichier peut avoir une action de contenu (A) **et** une action de placement (B).
-Exemple : un email preserve en racine → `intact` + `classify`.
+A file can have a content action (A) **and** a placement action (B).
+Example: a preserve email at root → `intact` + `classify`.
 
-### Détection de thread
+### Thread detection
 
-Même `from` + même `to` + même `subject` normalisé (sans `Re:`, `Fwd:`, `RE:`, `FW:`, casse ignorée) → même thread.
+Same `from` + same `to` + same normalized `subject` (without `Re:`, `Fwd:`, `RE:`, `FW:`, case ignored) → same thread.
 
-Si `merge_by_domain: true` dans `mail-config.yaml` : normaliser `from` en domaine racine avant comparaison.
-Règle : extraire les deux derniers segments du domaine (ex: `mail.mondialrelay.com` → `mondialrelay.com`).
-Les TLDs de pays sont conservés tels quels (`mondialrelay.fr` ≠ `mondialrelay.com`).
+If `merge_by_domain: true` in `mail-config.yaml`: normalize `from` to the root domain before comparison.
+Rule: extract the last two segments of the domain (e.g. `mail.mondialrelay.com` → `mondialrelay.com`).
+Country TLDs are kept as-is (`mondialrelay.fr` ≠ `mondialrelay.com`).
 
-### Format de fusion de thread
+### Thread merge format
 
 ```markdown
 ---
@@ -108,34 +108,34 @@ thread_count: N
 - YYYY-MM-DD — Titre ou sujet du message — (pas de lien)
 ```
 
-### Taxonomie pour `summarize`
+### Taxonomy for `summarize`
 
-| Type | Critères de détection | Données à conserver |
+| Type | Detection criteria | Data to keep |
 |------|-----------------------|---------------------|
 | Transactionnel | livraison, commande, facture, paiement, ticket | montant · référence · date · statut |
 | Newsletter/update | Kickstarter, Patreon, blog, newsletter | date · titre · liens d'update |
 | Notification/alerte | login, sécurité, espace disque, alerte | service · date · action requise si présente |
 | Promotionnel | offre, promo, réduction (hors suppress) | offre · date d'expiration si présente |
 
-Conserver le frontmatter complet (from/to/date/subject) dans tous les cas.
-Remplacer le corps par les données clés selon le type, au format liste Markdown.
+Keep the full frontmatter (from/to/date/subject) in all cases.
+Replace the body with the key data according to the type, in Markdown list format.
 
-### Détection de phishing
+### Phishing detection
 
-Si le nom affiché dans `from` (ex: `"Google" <suspicious@domain.com>`) contient un nom de marque connue mais que le domaine de l'adresse ne correspond pas → action = `flag-phishing`.
+If the display name in `from` (e.g. `"Google" <suspicious@domain.com>`) contains a known brand name but the address domain does not match → action = `flag-phishing`.
 
-Liste de marques par défaut : google, paypal, amazon, apple, microsoft, netflix, impots, ameli, caf, pole-emploi.
-Extensible via `mail-config.yaml` (clé `phishing_brands`).
+Default brand list: google, paypal, amazon, apple, microsoft, netflix, impots, ameli, caf, pole-emploi.
+Extensible via `mail-config.yaml` (key `phishing_brands`).
 
-### Tag `processed`
+### `processed` tag
 
-Après toute action **sauf `intact`** (classify, delete, merge, summarize, flag-phishing), ajouter `processed: true` dans le frontmatter du fichier résultant.
-Les fichiers `intact` ne sont pas marqués — ils restent dans le périmètre des sessions suivantes.
-Fichiers avec `processed: true` exclus du scan par défaut. Inclus si flag `--reprocess`.
+After any action **except `intact`** (classify, delete, merge, summarize, flag-phishing), add `processed: true` in the frontmatter of the resulting file.
+`intact` files are not marked — they remain in the scope of subsequent sessions.
+Files with `processed: true` are excluded from the scan by default. Included with the `--reprocess` flag.
 
-### Format du journal de session
+### Session log format
 
-`05-report` ajoute une entrée en tête de `mail-sessions.log.md` à chaque session :
+`05-report` prepends an entry at the top of `mail-sessions.log.md` for each session:
 
 ```markdown
 ## Session YYYY-MM-DD HH:MM — <périmètre>
@@ -146,9 +146,9 @@ Fichiers avec `processed: true` exclus du scan par défaut. Inclus si flag `--re
 - Branches créées : <liste ou "aucune">
 ```
 
-### Template mail-config.yaml
+### mail-config.yaml template
 
-Générer ce template si `mail-config.yaml` est absent :
+Generate this template if `mail-config.yaml` is absent:
 
 ```yaml
 # Emails et branches à conserver intacts (ne pas résumer, ne pas fusionner)
@@ -182,15 +182,15 @@ phishing_brands: []
 #     - credit-agricole
 ```
 
-### Principe sous-agent (confidentialité)
+### Sub-agent principle (confidentiality)
 
-Les actions `scan` et `analyze` délèguent via `Agent()`.
-Le contenu des emails n'apparaît jamais dans le chat principal.
-Seuls les noms de fichiers et les décisions proposées remontent.
+The `scan` and `analyze` actions delegate via `Agent()`.
+Email content never appears in the main chat.
+Only file names and proposed decisions bubble up.
 
-### Sécurité et archivage
+### Safety and archiving
 
-- Jamais supprimer, fusionner, réécrire ou déplacer sans validation explicite du lot.
-- Toute action irréversible (delete, merge, summarize) archive d'abord l'original dans `.archive/YYYY-MM-DD/`.
-- Les branches manquantes sont créées lors de l'exécution `classify`, jamais avant.
-- Langue de tous les messages : français.
+- Never delete, merge, rewrite, or move without explicit batch validation.
+- Any irreversible action (delete, merge, summarize) first archives the original in `.archive/YYYY-MM-DD/`.
+- Missing branches are created during `classify` execution, never before.
+- Language of all messages: French.

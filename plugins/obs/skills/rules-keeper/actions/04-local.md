@@ -2,13 +2,13 @@
 
 Generate a `document-rules.md` for rules that are specific to one document (scenario, campaign, supplement) — as opposed to the base game system.
 
-> Les règles locales vivent dans `<projet-root>/.docs/document-rules.md`. Les références au système de jeu pointent vers `<systeme-root>/canon/` (ou `<subsys-root>/canon/`). Tous les chemins sont relatifs à `R`, découvert localement.
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention complète.
+> Local rules live in `<projet-root>/.docs/document-rules.md`. References to the game system point to `<systeme-root>/canon/` (or `<subsys-root>/canon/`). All paths are relative to `R`, discovered locally.
+> See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` for the full convention.
 
 ## Inputs
 
-- `project-path` (required) — chemin vers le répertoire du projet d'écriture ; format attendu `R/<AAAA>/<MM>/<projet>/`. Correspond à `<projet-root>`. `R` est découvert en remontant jusqu'à l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`.
-- `source` (optional) — fichier source depuis lequel extraire les règles locales (par défaut `overview.md`)
+- `project-path` (required) — path to the writing project directory; expected format `R/<AAAA>/<MM>/<projet>/`. Maps to `<projet-root>`. `R` is discovered by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`.
+- `source` (optional) — source file to extract the local rules from (default `overview.md`)
 
 ## Outputs
 
@@ -18,19 +18,19 @@ Generate a `document-rules.md` for rules that are specific to one document (scen
 
 ### Step 1 — Load context
 
-Découvrir `R` localement : partir de `<project-path>` (ou du CWD), remonter les parents jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` ; ce dossier est `R`. Si aucun marqueur n'est trouvé : la cible n'est pas dans un domaine JDR initialisé — le signaler et s'arrêter.
+Discover `R` locally: start from `<project-path>` (or the CWD), walk up the parents to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`; that folder is `R`. If no marker is found: the target is not inside an initialized RPG domain — report it and stop.
 
-Résoudre les chemins relativement à `R` :
+Resolve paths relative to `R`:
 - `<systeme-root>` = `R/_systeme/` (canon/ + mj/)
 - `<subsys-root>` = `R/_subsystems/<nom>/`
 
-Localiser les fichiers de règles système par **scan local** de `<systeme-root>/canon/` (= `R/_systeme/canon/`) (et `<subsys-root>/canon/` pour les sous-systèmes pertinents). Ce sont les fichiers à charger pour le cross-referencing en Step 3 ("Interactions avec les Règles Système").
+Locate the system rules files by a **local scan** of `<systeme-root>/canon/` (= `R/_systeme/canon/`) (and `<subsys-root>/canon/` for the relevant subsystems). These are the files to load for cross-referencing in Step 3 ("Interactions avec les Règles Système").
 
-> Le manifeste `R/bank.yml` peut donner des indices (slug univers, liste de fichiers) mais n'est **pas** la source de vérité pour la résolution : toujours scanner le système de fichiers relativement à `R`.
+> The `R/bank.yml` manifest may give hints (universe slug, file list) but is **not** the source of truth for resolution: always scan the filesystem relative to `R`.
 
-If `R/_systeme/canon/` is empty: warn that local rules won't be able to reference the system rules (lancer `restructure-all` d'abord pour générer le canon).
+If `R/_systeme/canon/` is empty: warn that local rules won't be able to reference the system rules (run `restructure-all` first to generate the canon).
 
-Si des fichiers de canon système sont trouvés : charger leur contenu maintenant — requis pour le cross-referencing en Step 3.
+If system canon files are found: load their content now — required for cross-referencing in Step 3.
 
 Read source file (argument or `overview.md`).
 
@@ -109,7 +109,7 @@ document-rules.md généré : <projet-root>/.docs/document-rules.md
 [N] mécaniques locales documentées
 ```
 
-> Le manifeste `R/bank.yml` (cache d'arborescence) est maintenu par `obs:tree`, pas par `rules-keeper` : aucune écriture dans `bank.yml` ici.
+> The `R/bank.yml` manifest (tree cache) is maintained by `obs:tree`, not by `rules-keeper`: no write to `bank.yml` here.
 
 ## Test
 

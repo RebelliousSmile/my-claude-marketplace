@@ -1,12 +1,12 @@
 # 04 - Debug
 
-Diagnostiquer les anomalies du pipeline d'extraction : chunks manquants, texte garbled, erreurs de classification, incohérences de `progress.md`.
+Diagnose the extraction pipeline anomalies: missing chunks, garbled text, classification errors, `progress.md` inconsistencies.
 
 ## Inputs
 
-- `project_dir` (required) — répertoire du projet d'écriture (`R/<AAAA>/<MM>/<projet>/`), ou tout répertoire sous le domaine `R`. `R` découvert par remontée jusqu'à l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`.
-- `source_name` (required) — nom du PDF source sans extension (ex. `engrenages-regles`). Si plusieurs extractions existent dans `docs/extraction/`, lister les dossiers disponibles et demander à l'utilisateur.
-- `chunk_id` (optional) — chunk spécifique à débugger (ex. `03`) ; si omis, audit complet
+- `project_dir` (required) — the writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under the `R` domain. `R` discovered by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`.
+- `source_name` (required) — name of the source PDF without extension (e.g. `engrenages-regles`). If several extractions exist in `docs/extraction/`, list the available folders and ask the user.
+- `chunk_id` (optional) — specific chunk to debug (e.g. `03`); if omitted, full audit
 
 ## Outputs
 
@@ -47,19 +47,19 @@ Diagnostiquer les anomalies du pipeline d'extraction : chunks manquants, texte g
 
 ## Process
 
-1. Vérifier les outils disponibles (pdftotext, tesseract, pdfplumber, pypdf).
-2. Découvrir `R` (remonter du répertoire de référence jusqu'à l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`) ; lire `<univers>` dans `progress.md#Univers` → construire `<univers-root>` = `R/_univers/<univers>/` et `<systeme-root>` = `R/_systeme/`. Tout vit sous le même dépôt `R` (un seul `git -C "<R>"`).
-3. Lire `docs/extraction/<source-name>/progress.md`. Parser le tableau : statuts `pending/done/failed`, dates.
-4. Vérifier les stashes git suspects (un seul dépôt = `R`) :
+1. Check the available tools (pdftotext, tesseract, pdfplumber, pypdf).
+2. Discover `R` (walk up from the reference directory to one of the markers `_campagnes/`, `_univers/` or `_pjs/`); read `<univers>` in `progress.md#Univers` → build `<univers-root>` = `R/_univers/<univers>/` and `<systeme-root>` = `R/_systeme/`. Everything lives under the same `R` repository (a single `git -C "<R>"`).
+3. Read `docs/extraction/<source-name>/progress.md`. Parse the table: `pending/done/failed` statuses, dates.
+4. Check for suspect git stashes (single repository = `R`):
    ```bash
    git -C "<R>" stash list
    ```
-5. **Si `chunk_id` spécifié** → focus sur ce chunk. Sinon → audit complet.
-6. **Intégrité des fichiers** :
-   - Pour chaque chunk `done` : vérifier que le PDF `docs/extraction/<source-name>/chunks/*_part<XX>_*.pdf` ET `docs/extraction/<source-name>/raw/chunk_XX.txt` existent et sont non-vides.
-   - Pour chaque chunk `pending` : vérifier que le PDF `docs/extraction/<source-name>/chunks/*_part<XX>_*.pdf` existe.
-   - Pour chaque chunk `failed` : noter l'erreur connue.
-7. **Qualité du texte brut** :
+5. **If `chunk_id` is specified** → focus on that chunk. Otherwise → full audit.
+6. **File integrity**:
+   - For each `done` chunk: verify that the PDF `docs/extraction/<source-name>/chunks/*_part<XX>_*.pdf` AND `docs/extraction/<source-name>/raw/chunk_XX.txt` exist and are non-empty.
+   - For each `pending` chunk: verify that the PDF `docs/extraction/<source-name>/chunks/*_part<XX>_*.pdf` exists.
+   - For each `failed` chunk: note the known error.
+7. **Raw text quality**:
    ```python
    from pathlib import Path
    txt = Path('docs/extraction/<source-name>/raw/chunk_XX.txt').read_text(encoding='utf-8')
@@ -67,17 +67,17 @@ Diagnostiquer les anomalies du pipeline d'extraction : chunks manquants, texte g
    ratio = non_print / len(txt) if txt else 0
    print(f'Non-printable ratio: {ratio:.1%}')
    ```
-8. **Fichiers classifiés** :
-   - Lister les fichiers, leur taille et le nombre de marqueurs YAML (`chunk:` count).
-   - Détecter les doublons de sections.
-9. **Cohérence progress.md** : comparer les statuts avec l'état réel des fichiers. Signaler tout écart.
-10. **Actions de réparation** proposées :
-    - Réinitialiser un chunk `failed` → `pending` : modifier `progress.md` manuellement.
-    - Re-extraire un chunk : supprimer `docs/extraction/<source-name>/raw/chunk_XX.txt`, remettre `pending`, relancer.
-    - Nettoyer un stash obsolète : `git -C "<R>" stash drop`.
-    - Repartir de zéro : `python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>')"`.
-11. Produire le rapport de debug avec toutes les anomalies et actions recommandées.
+8. **Classified files**:
+   - List the files, their size and the number of YAML markers (`chunk:` count).
+   - Detect section duplicates.
+9. **progress.md consistency**: compare the statuses with the actual state of the files. Report any discrepancy.
+10. **Repair actions** proposed:
+    - Reset a `failed` chunk → `pending`: edit `progress.md` manually.
+    - Re-extract a chunk: delete `docs/extraction/<source-name>/raw/chunk_XX.txt`, set back to `pending`, re-run.
+    - Clean an obsolete stash: `git -C "<R>" stash drop`.
+    - Start over from scratch: `python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>')"`.
+11. Produce the debug report with all the anomalies and recommended actions.
 
 ## Test
 
-Après `debug <project_dir> <source_name>` sur une extraction avec une incohérence connue (chunk `done` avec `raw/` vide), vérifier que le rapport signale l'incohérence et recommande la commande de correction.
+After `debug <project_dir> <source_name>` on an extraction with a known inconsistency (chunk `done` with empty `raw/`), verify that the report flags the inconsistency and recommends the correction command.

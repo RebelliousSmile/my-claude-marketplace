@@ -2,6 +2,14 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.20.0] — 2026-06-14
+
+### Changed — revue R1-R10 des 12 skills (aidd-context `skills`)
+- **5 skills migrés en anglais** (R10) : `extract-pdf`, `lore-extract`, `mail`, `research`, `rules-keeper` (frontmatter, corps, actions, références propres). Préservé en français à dessein : déclencheurs bilingues, chaînes de sortie utilisateur, templates écrits sur disque (`mail-config.yaml`, fiches compagnon, `terminologie.md`, `document-rules.md`), labels de classification load-bearing. Contenu de jeu et citations de sections partagées (`jdr-layout.md`) inchangés.
+- **Anatomie R8** : `## Outputs` ajouté à `extract-pdf/05-run`, `rules-keeper/02-restructure-all`, `rules-keeper/03-update` (Inputs → Outputs → Process → Test) ; `tree` : `## Output` → `## Outputs` placé avant `## Process` (×5) + fragments FR traduits ; `pc/06-companion` : section `## Output shapes` renommée `## Companion sheet templates` (collision).
+- **`brief`, `forge`, `project`** déjà conformes (anglais, anatomie OK). Les 4 skills JDR (`rpg`/`pc`/`solo-mc`/`tree`) finalisent la conformité du plugin entier.
+- Migrations **doc-only et behaviour-preserving** (chaque règle préservée verbatim ; identifiants/chemins inchangés).
+
 ## [0.19.0] — 2026-06-14
 
 ### Changed — migration anglaise des skills JDR (R10) + `pc` aligné en routeur (R1)

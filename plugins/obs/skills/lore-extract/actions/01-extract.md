@@ -1,26 +1,26 @@
 # 01 - Extract
 
-Ventiler les sources de référence d'un univers vers les fichiers thématiques canoniques.
+Distribute a universe's reference sources into the canonical thematic files.
 
-> **Position dans le pipeline** : `lore-extract` consomme les sources de référence brutes produites par `extract-pdf` (`<univers-root>/sources/<source>/`) et les ventile vers `<univers-root>/canon/` (ou `mj/` avec `--homemade`). Il ne lit jamais directement les PDF et n'écrit jamais dans `sources/`.
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention complète (résolution locale de `R`, variables de chemin).
+> **Position in the pipeline** : `lore-extract` consumes the raw reference sources produced by `extract-pdf` (`<univers-root>/sources/<source>/`) and distributes them to `<univers-root>/canon/` (or `mj/` with `--homemade`). It never reads PDFs directly and never writes to `sources/`.
+> See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` for the full convention (local resolution of `R`, path variables).
 
 ## Inputs
 
-- `sources` (required) — un ou plusieurs chemins de fichiers à traiter. Format privilégié : `<univers-root>/sources/<source>/<fichier>.md` (output d'`extract-pdf`). Les fichiers raw ou notes personnelles sont aussi acceptés.
-- `--update` (optional) — mode incrémental : enrichit les fichiers existants, ignore les sources déjà traitées
-- `--force` (optional) — régénère tous les fichiers même s'ils existent déjà
-- `--homemade` (optional) — provenance : les sources sont maison/non-canoniques. La sortie va dans le sous-arbre `mj/`. Par défaut (sans flag), les sources sont traitées comme canoniques → sous-arbre `canon/`.
+- `sources` (required) — one or more file paths to process. Preferred format: `<univers-root>/sources/<source>/<fichier>.md` (output of `extract-pdf`). Raw files or personal notes are also accepted.
+- `--update` (optional) — incremental mode: enriches existing files, skips sources already processed
+- `--force` (optional) — regenerates all files even if they already exist
+- `--homemade` (optional) — provenance: the sources are homemade/non-canonical. The output goes to the `mj/` subtree. By default (no flag), sources are treated as canonical → `canon/` subtree.
 
 ## Outputs
 
-Chemins résolus localement, relatifs à `R` (domaine découvert — voir Step 0), sous le **sous-arbre de provenance** `canon/` (défaut) ou `mj/` (`--homemade`) :
-- `<univers-root>/<provenance>/terminologie.md` — toujours écrit
-- Un fichier par thème détecté dans le même sous-arbre de provenance
+Paths resolved locally, relative to `R` (discovered domain — see Step 0), under the **provenance subtree** `canon/` (default) or `mj/` (`--homemade`) :
+- `<univers-root>/<provenance>/terminologie.md` — always written
+- One file per detected theme in the same provenance subtree
 
-Si `R` ne peut pas être résolu (aucun marqueur `_campagnes/`, `_univers/` ou `_pjs/` en remontant) : le signaler et proposer d'initialiser `R`, ou écrire dans `<provenance>/` du répertoire courant en avertissant.
+If `R` cannot be resolved (no `_campagnes/`, `_univers/` or `_pjs/` marker walking up): report it and offer to initialize `R`, or write into `<provenance>/` of the current directory with a warning.
 
-> `<univers-root>` = `R/_univers/<univers>/` — `R` découvert en remontant jusqu'à l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` ; `<univers>` déduit du chemin des sources (segment sous `_univers/`) ou demandé à l'utilisateur.
+> `<univers-root>` = `R/_univers/<univers>/` — `R` discovered by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/` ; `<univers>` inferred from the source path (segment under `_univers/`) or asked from the user.
 
 Templates for all themes: see `@references/templates-standard.md` and `@references/templates-optional.md`.
 
@@ -29,13 +29,13 @@ Templates for all themes: see `@references/templates-standard.md` and `@referenc
 ### Step 0 — Load context
 
 1. **Determine provenance**: `--homemade` → `mj/` subtree (homemade/non-canon) ; otherwise → `canon/` subtree (default). If the provenance of a source is unclear, ask once before extracting; if a single source visibly mixes canonical and homemade material, split the extraction per provenance rather than dumping both into one subtree.
-2. **Résoudre le domaine `R` localement** (jamais de chemin global). Partir du répertoire de référence (chemin des sources fourni, sinon CWD), remonter les parents jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` : ce dossier est `R`.
-   - Déterminer `<univers>` : si les sources sont sous `R/_univers/<univers>/`, le segment `<univers>` en est déduit ; sinon, le demander à l'utilisateur.
+2. **Resolve the domain `R` locally** (never a global path). Start from the reference directory (the provided source path, otherwise CWD), walk up the parents to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/` : that folder is `R`.
+   - Determine `<univers>` : if the sources are under `R/_univers/<univers>/`, the `<univers>` segment is inferred from it; otherwise, ask the user.
    - Resolve `<univers-root>` = `R/_univers/<univers>/`
    - Output root = `<univers-root>/<provenance>/` (`canon/` or `mj/`)
-   - Si aucun marqueur `_campagnes/`, `_univers/` ou `_pjs/` n'est trouvé en remontant → la cible n'est pas dans un domaine JDR initialisé : le signaler et proposer d'initialiser `R` (création de `_univers/`), ou écrire dans `<provenance>/` du répertoire courant en avertissant, puis continuer.
-3. All source and output paths are resolved relative to `R` (or to the current directory as a fallback). Toujours vérifier l'existence d'un chemin résolu avant lecture/écriture.
-4. **Si les sources proviennent d'`extract-pdf`** : elles se trouvent dans `R/_univers/<univers>/sources/<source>/`. Lister les fichiers disponibles si aucune source n'est fournie explicitement et en proposer une sélection à l'utilisateur.
+   - If no `_campagnes/`, `_univers/` or `_pjs/` marker is found walking up → the target is not inside an initialized JDR domain: report it and offer to initialize `R` (creation of `_univers/`), or write into `<provenance>/` of the current directory with a warning, then continue.
+3. All source and output paths are resolved relative to `R` (or to the current directory as a fallback). Always verify the existence of a resolved path before reading/writing.
+4. **If the sources come from `extract-pdf`** : they are located in `R/_univers/<univers>/sources/<source>/`. List the available files if no source is explicitly provided and offer a selection to the user.
 
 ### Step 1 — Validate sources
 
@@ -48,7 +48,7 @@ If `--update`: list existing `canon/` and `mj/` files, identify already-processe
 
 On error, report and ask: `Continuer avec les autres sources ? (oui/non)`
 
-Print validation report:
+Print validation report (in French):
 ```
 Sources validées : [N]/[total]
 Volume total estimé : ~[X] lignes
@@ -116,7 +116,7 @@ Valides-tu cette liste ? (oui / modifier)
 
 ### Step 6 — Detect contradictions
 
-When two sources give conflicting information:
+When two sources give conflicting information (prompt the user in French):
 
 ```
 Contradiction détectée :
@@ -130,9 +130,11 @@ Fichier cible : [factions.md]
 Quelle source fait autorité ? (A / B / fusionner / ignorer)
 ```
 
-**Canon vs maison :** en extraction `--homemade`, si le contenu contredit une entrée existante de `canon/`, **le canon fait autorité** — ne pas l'écraser. Signaler la divergence et écrire la version maison dans `mj/` en la marquant comme variante (ou demander arbitrage). Une entité déjà présente en `canon/` n'est pas redupliquée en `mj/` : la fiche maison `[[lie]]` l'entrée canon et n'ajoute que ce qui diffère.
+**Canon vs homemade:** in `--homemade` extraction, if the content contradicts an existing `canon/` entry, **canon is authoritative** — do not overwrite it. Report the divergence and write the homemade version into `mj/`, marking it as a variant (or ask for arbitration). An entity already present in `canon/` is not re-duplicated in `mj/`: the homemade note `[[links]]` the canon entry and only adds what differs.
 
 ### Step 7 — Preview before synthesis
+
+Print the preview (in French):
 
 ```
 Extraction brute terminée :
@@ -164,6 +166,8 @@ Auto actions: merge redundant descriptions, reduce multiple examples to 1-2, rem
 - Auto-synthesis insufficient (reduction < 20%)
 - More than 3 named entities would be removed
 - Key relations would be lost
+
+Ask for arbitration (in French):
 
 ```
 Le fichier [thème].md dépasse 250 lignes (actuellement [N] lignes).
@@ -197,7 +201,7 @@ If `--update`, also add:
 - [date2] : Ajout depuis [nouvelles sources]
 ```
 
-### Step 10 — Final report
+### Step 10 — Final report (in French)
 
 ```
 Extraction terminée pour [univers].

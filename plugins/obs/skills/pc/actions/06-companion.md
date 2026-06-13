@@ -49,7 +49,7 @@ Distribute pasted text into the companion sheet. Preserve existing content — c
 ### show
 Display a companion sheet; with no name, list the active team from the campaign roster (`config.yaml › compagnons:`).
 
-## Output shapes (templates)
+## Companion sheet templates
 
 ### Companion sheet — shape (Minimal playable, ~1 page)
 

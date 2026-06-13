@@ -1,27 +1,27 @@
 # 01 - Setup
 
-Session 1 du pipeline d'extraction PDF : valider l'environnement, découper le PDF en chunks via `split-pdf.py`, écrire `progress.md`.
+Session 1 of the PDF extraction pipeline: validate the environment, split the PDF into chunks via `split-pdf.py`, write `progress.md`.
 
 ## Inputs
 
-- `project_dir` (required) — répertoire du projet d'écriture (`R/<AAAA>/<MM>/<projet>/`), ou tout répertoire sous un domaine `R`. C'est le répertoire de référence ; `R` en est découvert par remontée jusqu'à l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`.
-- `source_document` (required) — chemin vers le PDF source
-- `univers` (required) — slug de l'univers cible (`kebab-case`) ; détermine `<univers-root> = R/_univers/<univers>/`. Demander à l'utilisateur si non fourni.
+- `project_dir` (required) — the writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under an `R` domain. This is the reference directory; `R` is discovered from it by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`.
+- `source_document` (required) — path to the source PDF
+- `univers` (required) — slug of the target universe (`kebab-case`); determines `<univers-root> = R/_univers/<univers>/`. Ask the user if not provided.
 
 ## Outputs
 
 ```
 docs/extraction/<source-name>/
-  progress.md         — fichier de tracking avec liste des chunks et statuts
+  progress.md         — tracking file with the list of chunks and statuses
   chunks/
-    <source>_part01_p1-25.pdf   — premier chunk (PDF découpé, 25 pages max)
+    <source>_part01_p1-25.pdf   — first chunk (split PDF, 25 pages max)
     <source>_part02_p26-50.pdf
     ...
-  raw/                — dossier créé vide, rempli lors de process-chunk (raw/chunk_<NN>.txt)
-  classified/         — dossier créé vide, rempli lors de process-chunk
+  raw/                — folder created empty, filled during process-chunk (raw/chunk_<NN>.txt)
+  classified/         — folder created empty, filled during process-chunk
 ```
 
-Format `progress.md` :
+`progress.md` format:
 ```markdown
 # Extraction Progress: <source-name>
 
@@ -39,28 +39,28 @@ Format `progress.md` :
 | <source>_part02_p26-50.pdf | 26-50 | ~12500 | pending | - |
 ```
 
-> Statuts valides : **`pending`** / **`done`** / **`failed`**. Jamais `TODO` ni `DONE`.
-> Colonne `Chunk` = nom de fichier RÉEL produit par `split-pdf.py` : `<source>_part<NN>_p<début>-<fin>.pdf`. L'`<chunk_id>` (argument de `process-chunk`) est le `<NN>` zéro-padé.
+> Valid statuses: **`pending`** / **`done`** / **`failed`**. Never `TODO` or `DONE`.
+> `Chunk` column = the ACTUAL file name produced by `split-pdf.py`: `<source>_part<NN>_p<début>-<fin>.pdf`. The `<chunk_id>` (argument of `process-chunk`) is the zero-padded `<NN>`.
 
 ## Process
 
-1. **Découvrir `R`** : partir du répertoire de référence (`<project_dir>` ou CWD), remonter les parents jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`. Ce dossier est `R`. Si aucun marqueur trouvé → STOP : "Cible hors d'un domaine JDR initialisé (pas de marqueur JDR en remontant). Initialiser `R` d'abord (création de `_univers/`)." Voir `references/jdr-layout.md`.
-2. Déterminer l'univers cible : argument `<univers>` (slug `kebab-case`) ; si absent, demander à l'utilisateur. Vérifier ou prévoir `<univers-root> = R/_univers/<univers>/`.
-3. Vérifier que `<source_document>` existe et est lisible (header `%PDF-`).
-4. `<source-name>` = nom du fichier sans extension.
-5. Vérifier les outils disponibles : `pdftotext`, `tesseract`, `pdfplumber`, `pypdf`. Vérifier que les scripts existent :
-   - `scripts/split-pdf.py` — **requis** pour cette session. Si absent → STOP : "Script manquant : scripts/split-pdf.py. Copiez-le depuis le dossier `scripts/` du skill `extract-pdf` dans l'overlay."
-   - `scripts/normalize-text.py` — utilisé lors de `process-chunk`. Si absent → WARN : "scripts/normalize-text.py manquant — l'étape de normalisation sera ignorée lors des extractions." Ne pas bloquer le setup.
-6. Créer les dossiers `chunks/`, `raw/`, `classified/` sous `docs/extraction/<source-name>/`.
-7. Estimer le découpage : `python scripts/split-pdf.py <source_document> --estimate`
-8. Découper le PDF : `python scripts/split-pdf.py <source_document> --pages-per-chunk 25 --output-dir docs/extraction/<source-name>/chunks/`
-9. Pour chaque chunk créé, noter pages et caractères estimés (~2500/page).
-10. Écrire `docs/extraction/<source-name>/progress.md` avec le format exact ci-dessus.
-11. Vérifier que `docs/prompts/workshop/` contient `extract.prompt.md`, `extract-chunk.prompt.md`, `extract-distribute.prompt.md`, `extract-debug.prompt.md`. Si des fichiers manquent → signaler : "Les prompts suivants sont manquants : [liste]. Copiez-les depuis le dossier `prompts/` du skill `extract-pdf` dans l'overlay." Ne pas tenter de les copier automatiquement.
-12. Rapport : "Phase A terminée. N chunks créés. Lancer `extract-pdf process-chunk <project_dir> <source_name> 01`."
+1. **Discover `R`**: start from the reference directory (`<project_dir>` or CWD), walk up the parents to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`. That folder is `R`. If no marker is found → STOP: "Cible hors d'un domaine JDR initialisé (pas de marqueur JDR en remontant). Initialiser `R` d'abord (création de `_univers/`)." See `references/jdr-layout.md`.
+2. Determine the target universe: `<univers>` argument (`kebab-case` slug); if absent, ask the user. Verify or plan `<univers-root> = R/_univers/<univers>/`.
+3. Verify that `<source_document>` exists and is readable (`%PDF-` header).
+4. `<source-name>` = the file name without extension.
+5. Check the available tools: `pdftotext`, `tesseract`, `pdfplumber`, `pypdf`. Verify that the scripts exist:
+   - `scripts/split-pdf.py` — **required** for this session. If absent → STOP: "Script manquant : scripts/split-pdf.py. Copiez-le depuis le dossier `scripts/` du skill `extract-pdf` dans l'overlay."
+   - `scripts/normalize-text.py` — used during `process-chunk`. If absent → WARN: "scripts/normalize-text.py manquant — l'étape de normalisation sera ignorée lors des extractions." Do not block setup.
+6. Create the `chunks/`, `raw/`, `classified/` folders under `docs/extraction/<source-name>/`.
+7. Estimate the split: `python scripts/split-pdf.py <source_document> --estimate`
+8. Split the PDF: `python scripts/split-pdf.py <source_document> --pages-per-chunk 25 --output-dir docs/extraction/<source-name>/chunks/`
+9. For each chunk created, note the pages and estimated characters (~2500/page).
+10. Write `docs/extraction/<source-name>/progress.md` with the exact format above.
+11. Verify that `docs/prompts/workshop/` contains `extract.prompt.md`, `extract-chunk.prompt.md`, `extract-distribute.prompt.md`, `extract-debug.prompt.md`. If files are missing → report: "Les prompts suivants sont manquants : [liste]. Copiez-les depuis le dossier `prompts/` du skill `extract-pdf` dans l'overlay." Do not attempt to copy them automatically.
+12. Report: "Phase A terminée. N chunks créés. Lancer `extract-pdf process-chunk <project_dir> <source_name> 01`."
 
 ## Test
 
-Après `setup <project_dir> <source_document>`, vérifier que :
-- `docs/extraction/<source-name>/progress.md` existe avec au moins 1 chunk en statut `pending`
-- le premier chunk existe dans `docs/extraction/<source-name>/chunks/` (ex. `<source>_part01_p1-25.pdf`)
+After `setup <project_dir> <source_document>`, verify that:
+- `docs/extraction/<source-name>/progress.md` exists with at least 1 chunk in `pending` status
+- the first chunk exists in `docs/extraction/<source-name>/chunks/` (e.g. `<source>_part01_p1-25.pdf`)

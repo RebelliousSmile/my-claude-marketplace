@@ -1,29 +1,29 @@
 # 03 - Propose
 
-Regrouper les décisions en lots thématiques, les présenter à l'utilisateur et attendre validation lot par lot.
+Group decisions into thematic batches, present them to the user, and wait for batch-by-batch validation.
 
 ## Inputs
 
-- `decisions` — liste de décisions depuis `02-analyze`
-- `batch_index` (internal) — index du lot courant (commence à 0, incrémenté à chaque appel)
+- `decisions` — list of decisions from `02-analyze`
+- `batch_index` (internal) — index of the current batch (starts at 0, incremented at each call)
 
 ## Outputs
 
-- `validated_batch` — lot validé prêt pour `04-execute`
-- `remaining_decisions` — décisions non encore traitées
+- `validated_batch` — validated batch ready for `04-execute`
+- `remaining_decisions` — decisions not yet processed
 
 ## Process
 
-1. **Regrouper les décisions en lots thématiques** :
-   - Un lot = un groupe cohérent d'actions similaires. Exemples de regroupements naturels :
+1. **Group the decisions into thematic batches**:
+   - A batch = a coherent group of similar actions. Examples of natural groupings:
      - "Suppression — 12 emails Klaviyo/spam"
      - "Fusion — 3 threads Patreon (Miska's Cyberpunk Maps)"
      - "Classement — 5 emails en racine"
      - "Résumé — 8 newsletters BNP"
-   - Les lots peuvent contenir une **règle globale** si une même action s'applique à tous les emails d'un expéditeur ou d'une branche (ex: "supprimer tous les mails de klaviyo.com"). Formuler explicitement la règle.
-   - Taille cible d'un lot : 5 à 20 fichiers. Adapter selon la cohérence thématique.
+   - Batches can contain a **global rule** if a single action applies to all emails from a sender or a branch (e.g. "supprimer tous les mails de klaviyo.com"). State the rule explicitly.
+   - Target batch size: 5 to 20 files. Adapt according to thematic coherence.
 
-2. **Présenter le lot courant** avec ce format :
+2. **Present the current batch** with this format:
 
    ```
    ## Lot N/Total — <Titre du lot>
@@ -40,19 +40,19 @@ Regrouper les décisions en lots thématiques, les présenter à l'utilisateur e
    Valider ce lot ? (oui / non / modifier / passer)
    ```
 
-3. **Attendre la réponse de l'utilisateur** :
-   - `oui` → retourner `validated_batch` pour `04-execute`, puis revenir à `03-propose` avec le lot suivant
-   - `non` → abandonner ce lot, passer au suivant
-   - `modifier` → demander les modifications, reformuler le lot, re-présenter
-   - `passer` → sauter au lot suivant sans exécuter
+3. **Wait for the user's response**:
+   - `oui` → return `validated_batch` for `04-execute`, then come back to `03-propose` with the next batch
+   - `non` → abandon this batch, move to the next
+   - `modifier` → ask for the modifications, reformulate the batch, re-present
+   - `passer` → skip to the next batch without executing
 
-4. **Répéter** jusqu'à épuisement des lots.
+4. **Repeat** until all batches are exhausted.
 
-5. Quand tous les lots ont été traités → déclencher `05-report`.
+5. When all batches have been processed → trigger `05-report`.
 
 ## Test
 
-- Chaque lot affiche clairement : action, liste des fichiers, destination si applicable.
-- Chaque fichier affiche from, date et subject (tronqué à 60 chars).
-- L'utilisateur peut rejeter ou modifier un lot sans bloquer les suivants.
-- Aucun lot n'est exécuté sans confirmation explicite.
+- Each batch clearly displays: action, file list, destination if applicable.
+- Each file displays from, date and subject (truncated to 60 chars).
+- The user can reject or modify a batch without blocking the following ones.
+- No batch is executed without explicit confirmation.

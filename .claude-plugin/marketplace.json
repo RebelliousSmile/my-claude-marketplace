@@ -79,7 +79,7 @@
     },
     {
       "name": "obs",
-      "version": "0.19.0",
+      "version": "0.20.0",
       "source": "./plugins/obs",
       "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), solo TTRPG domain tooling (pc, rpg, solo-mc) on autonomous local game domains, the Documents/ organiser tree (cache-based: index, check, fix, sort, judge), and brief/lore/data assembly for writing: brief (builds the portable _brief/ working dir), forge (concept), research (data), lore-extract, rules-keeper, extract-pdf.",
       "recommended": false

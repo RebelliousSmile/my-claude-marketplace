@@ -1,23 +1,23 @@
 # 05 - Report
 
-Produire le rapport final de traitement et l'ajouter au journal cumulatif.
+Produce the final processing report and add it to the cumulative log.
 
 ## Inputs
 
-- `all_batch_results` — résultats cumulés de tous les lots exécutés
-- `analyze_summary` — anomalies détectées par `02-analyze` (doublons, epoch, phishing)
-- `prelim_report` — rapport préliminaire de `01-scan`
+- `all_batch_results` — accumulated results of all executed batches
+- `analyze_summary` — anomalies detected by `02-analyze` (duplicates, epoch, phishing)
+- `prelim_report` — preliminary report from `01-scan`
 
 ## Outputs
 
-- Rapport affiché dans le chat
-- Entrée ajoutée en tête de `mail-sessions.log.md`
+- Report displayed in the chat
+- Entry prepended at the top of `mail-sessions.log.md`
 
 ## Process
 
-1. Agréger tous les `batch_result` de la session.
+1. Aggregate all the `batch_result` of the session.
 
-2. Afficher le rapport final :
+2. Display the final report:
 
 ```
 ## Rapport — Session mail du YYYY-MM-DD
@@ -46,9 +46,9 @@ Produire le rapport final de traitement et l'ajouter au journal cumulatif.
 Originaux archivés dans : Thunderbird/.archive/YYYY-MM-DD/
 ```
 
-3. **Écrire l'entrée dans `mail-sessions.log.md`** (mode append — prépendre en tête) :
-   - Créer le fichier si absent
-   - Ajouter l'entrée suivante au début du fichier (avant les entrées existantes) :
+3. **Write the entry into `mail-sessions.log.md`** (append mode — prepend at the top):
+   - Create the file if absent
+   - Add the following entry at the start of the file (before existing entries):
 
 ```markdown
 ## Session YYYY-MM-DD HH:MM — <périmètre>
@@ -61,11 +61,11 @@ Originaux archivés dans : Thunderbird/.archive/YYYY-MM-DD/
 ---
 ```
 
-4. Si des suggestions mail-config.yaml sont pertinentes (patterns répétitifs identifiés), présenter les règles à ajouter et demander confirmation avant de modifier le fichier.
+4. If any mail-config.yaml suggestions are relevant (repetitive patterns identified), present the rules to add and ask for confirmation before modifying the file.
 
 ## Test
 
-- Le rapport affiche les 6 catégories d'actions avec leurs compteurs.
-- `mail-sessions.log.md` contient la nouvelle entrée en tête.
-- Les entrées précédentes dans `mail-sessions.log.md` sont conservées.
-- Les suggestions mail-config.yaml sont proposées si des patterns sont détectés.
+- The report displays the 6 action categories with their counters.
+- `mail-sessions.log.md` contains the new entry at the top.
+- The previous entries in `mail-sessions.log.md` are preserved.
+- The mail-config.yaml suggestions are proposed if patterns are detected.

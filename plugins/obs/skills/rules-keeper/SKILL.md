@@ -34,20 +34,20 @@ Trigger-to-action mapping:
 - **LEXICON is always required** — even if the source is already in French. It maps game jargon to the exact French terms used in writing output. A source in French still contains system-specific jargon that must be normalized.
 - Template files (PC, NPC, obstacle, asset) are created as side artifacts in `.templates/`.
 - On conflict between base file and supplement: always ask — never silently resolve.
-- **Canon vs maison (mj)** : distinguer le **ruleset officiel** des **règles maison du MJ**, dans deux sous-arbres :
-  - `canon/` — règles officielles, restructurées depuis le livre de règles (défaut). Font foi.
-  - `mj/` — règles maison / *house rules* (option `--homemade`). Un **overlay** qui ne reprend que les règles modifiées et **déclare explicitement** quelle règle canon il remplace/étend (jamais de divergence silencieuse). Au jeu, une house rule déclarée prime ; sinon le canon s'applique.
-  Ne jamais mélanger canon et maison dans un même fichier. Les sections optimisées (CHEATSHEET / LEXICON / PATTERNS / ENTITY TEMPLATES / FULL REFERENCE) sont conservées dans chaque sous-arbre.
-- **Sortie partagée** : ces sous-arbres sont l'artefact de référence des règles pour la suite JDR solo d'obsidian. Tout est rangé sous le domaine de jeu autonome `R` (découvert localement en remontant jusqu'au premier dossier contenant `_campagnes/`, `_univers/` ou `_pjs/`). Deux cas de provenance distincts :
-  - **Système de jeu** → `R/_systeme/{canon,mj}/`. Référence mécanique **partagée par `obs:solo-mc`, `obs:pc` et `obs:rpg`** (mécaniques, oracle de base, création de personnage). Le fichier `mj/solo.md` y est écrit par `obs:solo-mc` en jeu (house rules de jeu solo) — voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
-  - **Sous-système générique** (module réutilisable greffé sur un système — ex. **Parallaxe**, **Cinério**, **Muses et Oracles**) → `R/_subsystems/<nom>/{canon,mj}/`. `rules-keeper` les **produit**, mais ils sont **consommés par `obs:solo-mc` uniquement** (outils de jeu en direct) — ni `pc` ni `rpg` ne les référencent. Décrire/publier un sous-système éventuellement = un projet d'écriture daté `R/<AAAA>/<MM>/<projet>/` (son canon de jeu reste dans `_subsystems/<nom>/`).
+- **Canon vs house rules (mj)**: distinguish the **official ruleset** from the **GM's house rules**, in two sub-trees:
+  - `canon/` — official rules, restructured from the rulebook (default). Authoritative.
+  - `mj/` — house rules (option `--homemade`). An **overlay** that only carries the modified rules and **explicitly declares** which canon rule it replaces/extends (never a silent divergence). In play, a declared house rule takes precedence; otherwise canon applies.
+  Never mix canon and house rules in the same file. The optimized sections (CHEATSHEET / LEXICON / PATTERNS / ENTITY TEMPLATES / FULL REFERENCE) are kept in each sub-tree.
+- **Shared output**: these sub-trees are the reference rules artifact for the obsidian solo-RPG suite. Everything is filed under the standalone game domain `R` (discovered locally by walking up to the first folder containing `_campagnes/`, `_univers/` or `_pjs/`). Two distinct provenance cases:
+  - **Game system** → `R/_systeme/{canon,mj}/`. Mechanical reference **shared by `obs:solo-mc`, `obs:pc` and `obs:rpg`** (mechanics, base oracle, character creation). The file `mj/solo.md` is written there by `obs:solo-mc` during play (solo-play house rules) — see `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
+  - **Generic subsystem** (reusable module grafted onto a system — e.g. **Parallaxe**, **Cinério**, **Muses et Oracles**) → `R/_subsystems/<nom>/{canon,mj}/`. `rules-keeper` **produces** them, but they are **consumed by `obs:solo-mc` only** (live-play tools) — neither `pc` nor `rpg` reference them. Optionally describing/publishing a subsystem = a dated writing project `R/<AAAA>/<MM>/<projet>/` (its game canon stays in `_subsystems/<nom>/`).
 
-  Même logique de provenance que `lore-extract`.
-- **Régénération du canon depuis le PDF** — Le canon de système est dérivé d'un PDF commercial via `extract-pdf` → `R/_systeme/sources/<source>/`, puis ventilé par `rules-keeper` vers `R/_systeme/canon/`. Si le `canon/` (ou les `sources/`) est absent, il se reconstruit toujours depuis le PDF (voir `@02-restructure-all.md › Régénérer le canon depuis le PDF`). `rules-keeper` n'écrit **jamais** dans `canon/` sans source.
+  Same provenance logic as `lore-extract`.
+- **Regenerating canon from the PDF** — The system canon is derived from a commercial PDF via `extract-pdf` → `R/_systeme/sources/<source>/`, then dispatched by `rules-keeper` into `R/_systeme/canon/`. If `canon/` (or `sources/`) is absent, it is always rebuilt from the PDF (see `@02-restructure-all.md › Régénérer le canon depuis le PDF`). `rules-keeper` **never** writes into `canon/` without a source.
 
 ## References
 
-- `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` — convention de chemins locale d'un domaine de jeu, résolution de `R`, pipeline canon, frontière extract-pdf / lore-extract / rules-keeper.
+- `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` — local path convention for a game domain, resolution of `R`, canon pipeline, extract-pdf / lore-extract / rules-keeper boundary.
 - `references/output-format.md` — complete annotated output format with all 6 sections
 - `references/entity-templates.md` — base templates for PC, NPC, obstacle, and asset
 

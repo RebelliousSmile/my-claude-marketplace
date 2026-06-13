@@ -8,28 +8,28 @@ disable-model-invocation: true
 
 Four-phase pipeline for large PDF extraction across multiple Claude Code sessions.
 
-> **Rôle dans le pipeline canon** : `extract-pdf` produit des **sources de référence brutes** sous `sources/` (`<univers-root>/sources/<source>/` pour le lore, `<systeme-root>/sources/<source>/` pour les règles). Il ne ventile jamais vers `canon/` ni `mj/` directement — c'est le rôle de `lore-extract` et `rules-keeper`.
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention complète des chemins.
+> **Role in the canon pipeline**: `extract-pdf` produces **raw reference sources** under `sources/` (`<univers-root>/sources/<source>/` for lore, `<systeme-root>/sources/<source>/` for rules). It never ventilates into `canon/` or `mj/` directly — that is the role of `lore-extract` and `rules-keeper`.
+> See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` for the full path convention.
 
 ## Two modes
 
-| Mode | Déclencheur | Usage |
-|------|-------------|-------|
-| **Manuel** | `/extract-pdf <action>` | Session par session, contrôle total |
-| **Automatisé** | `python scripts/extract-pdf.py <project> <pdf>` | Orchestration complète, relance automatique |
+| Mode | Trigger | Usage |
+|------|---------|-------|
+| **Manual** | `/extract-pdf <action>` | Session by session, full control |
+| **Automated** | `python scripts/extract-pdf.py <project> <pdf>` | Complete orchestration, automatic restart |
 
-En mode automatisé, le script Python gère l'enchaînement des sessions, les retries et le commit final. Il appelle les prompts dans `docs/prompts/workshop/` — le skill `setup` vérifie leur présence et indique les fichiers manquants.
+In automated mode, the Python script handles session chaining, retries and the final commit. It calls the prompts in `docs/prompts/workshop/` — the `setup` skill checks for their presence and reports the missing files.
 
 ## Available actions
 
 | #   | Action          | Role                                                    | Input                                         |
 | --- | --------------- | ------------------------------------------------------- | --------------------------------------------- |
-| 01  | `setup`         | Session 1 — valider, chunker le PDF, écrire progress.md | `<project-dir>` + `<source-document>`        |
-| 02  | `process-chunk` | Sessions 2-N — extraire un chunk dans classified/*.md   | `<project-dir>` + `<source-name>` + chunk id |
-| 03  | `distribute`    | Session finale — fusionner dans les sources de référence | `<project-dir>` + `<source-name>`            |
-| 04  | `debug`         | Toute session — diagnostiquer les anomalies d'extraction | `<project-dir>` + `<source-name>` [chunk-id] |
+| 01  | `setup`         | Session 1 — validate, chunk the PDF, write progress.md  | `<project-dir>` + `<source-document>`        |
+| 02  | `process-chunk` | Sessions 2-N — extract a chunk into classified/*.md     | `<project-dir>` + `<source-name>` + chunk id |
+| 03  | `distribute`    | Final session — merge into the reference sources         | `<project-dir>` + `<source-name>`            |
+| 04  | `debug`         | Any session — diagnose extraction anomalies              | `<project-dir>` + `<source-name>` [chunk-id] |
 
-> `<project-dir>` = répertoire du projet d'écriture (`R/<AAAA>/<MM>/<projet>/`), ou tout répertoire situé sous un domaine `R`. `R` est **découvert localement** en remontant jusqu'au dossier contenant `_campagnes/`, `_univers/` ou `_pjs/` ; aucun chemin global. Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
+> `<project-dir>` = the writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory located under an `R` domain. `R` is **discovered locally** by walking up to the folder containing `_campagnes/`, `_univers/` or `_pjs/`; no global path. See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
 
 ## Default flow
 
@@ -41,50 +41,50 @@ Trigger-to-action mapping:
 - "distribute extraction", "merge extraction", "final session" → `distribute`
 - "debug extraction", "extraction anomaly", "fix extraction" → `debug`
 
-## Scripts Python
+## Python scripts
 
-Trois scripts disponibles dans le dossier `scripts/` de ce skill dans l'overlay (à déployer dans `scripts/` du projet) :
+Three scripts available in this skill's `scripts/` folder in the overlay (to deploy into the project's `scripts/`):
 
-| Script | Rôle |
+| Script | Role |
 |--------|------|
-| `extract-pdf.py` | Orchestrateur multi-session (`--resume`, `--retry`, `--status`, `--distribute`, `--normalize`) |
-| `split-pdf.py` | Découpe physique du PDF en chunks (requiert `pypdf`) |
-| `normalize-text.py` | Correction encodage/ligatures PDF sur les fichiers bruts |
+| `extract-pdf.py` | Multi-session orchestrator (`--resume`, `--retry`, `--status`, `--distribute`, `--normalize`) |
+| `split-pdf.py` | Physical splitting of the PDF into chunks (requires `pypdf`) |
+| `normalize-text.py` | PDF encoding/ligature correction on the raw files |
 
 ```bash
-# Extraction complète automatisée
+# Full automated extraction
 python scripts/extract-pdf.py <project-path> <source.pdf>
 
-# Reprendre après interruption
+# Resume after interruption
 python scripts/extract-pdf.py --resume docs/extraction/<source>/progress.md
 
-# Statut
+# Status
 python scripts/extract-pdf.py --status docs/extraction/<source>/progress.md
 ```
 
 ## Transversal rules
 
-- **Appeler le skill depuis le répertoire du projet d'écriture** (`R/<AAAA>/<MM>/<projet>/`). Tous les chemins de travail relatifs (`docs/`, `scripts/`) sont résolus depuis ce répertoire.
-- `R` (racine du domaine de jeu) est **découvert localement** : partir du répertoire de référence (argument ou CWD), remonter les parents jusqu'au premier dossier contenant `_campagnes/`, `_univers/` ou `_pjs/`. Aucun chemin global, aucune config par machine. Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
-- Les sources de référence extraites atterrissent dans `<univers-root>/sources/<source>/` (lore) et `<systeme-root>/sources/<source>/` (règles), avec `<univers-root> = R/_univers/<univers>/` et `<systeme-root> = R/_systeme/` — jamais dans `canon/` ni `mj/`.
-- **Conserver le texte brut.** Chaque `sources/<source>/` peuplé contient AUSSI `fulltext.md` — le texte intégral normalisé du document, assemblé depuis les chunks. C'est « le contenu de l'extraction » : il ne doit jamais être détruit au nettoyage. Les fichiers classifiés (`lore.md`, `terminology.md`, `rules.md`…) sont des **bundles de référence** posés à côté, qui servent d'entrée à `lore-extract`/`rules-keeper` (qui, eux, produisent `canon/`). Ainsi `sources/` = brut + bundles d'entrée ; `canon/` = synthèse finale produite en aval.
-- **Documents compagnons.** Une gamme livre souvent du matériel lié dans des fichiers SÉPARÉS (livrets de personnages, écran du MC, accessoires, suppléments). Le détail (ex. listes de noms/apparences des livrets joueurs) n'est PAS dans le livre de base. Traiter chaque fichier comme une **source distincte** (un `setup` par fichier, ou par lot cohérent), avec son propre `<source>`.
+- **Call the skill from the writing project directory** (`R/<AAAA>/<MM>/<projet>/`). All relative working paths (`docs/`, `scripts/`) are resolved from this directory.
+- `R` (the game domain root) is **discovered locally**: start from the reference directory (argument or CWD), walk up the parents to the first folder containing `_campagnes/`, `_univers/` or `_pjs/`. No global path, no per-machine config. See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
+- The extracted reference sources land in `<univers-root>/sources/<source>/` (lore) and `<systeme-root>/sources/<source>/` (rules), with `<univers-root> = R/_univers/<univers>/` and `<systeme-root> = R/_systeme/` — never in `canon/` or `mj/`.
+- **Preserve the raw text.** Every populated `sources/<source>/` ALSO contains `fulltext.md` — the document's full normalized text, assembled from the chunks. This is "the content of the extraction": it must never be destroyed during cleanup. The classified files (`lore.md`, `terminology.md`, `rules.md`…) are **reference bundles** placed alongside it, which serve as input to `lore-extract`/`rules-keeper` (which, in turn, produce `canon/`). Thus `sources/` = raw + input bundles; `canon/` = final synthesis produced downstream.
+- **Companion documents.** A game line often ships related material in SEPARATE files (character booklets, MC screen, accessories, supplements). The detail (e.g. lists of names/appearances from the player booklets) is NOT in the core book. Treat each file as a **distinct source** (one `setup` per file, or per coherent batch), with its own `<source>`.
 - One chunk per session for large PDFs (>50 pages).
-- Working artifacts (chunks PDF, dossier de travail) stored in `docs/extraction/<source-name>/` ; seuls `fulltext.md` et les bundles classifiés survivent dans `sources/` après nettoyage.
+- Working artifacts (PDF chunks, working folder) stored in `docs/extraction/<source-name>/`; only `fulltext.md` and the classified bundles survive in `sources/` after cleanup.
 - NEVER invent content not present in the source PDF.
 - Verify each extracted segment against the source before writing.
 - Ask user validation before writing classified files.
 - `progress.md` tracks which chunks are done and which remain.
-- Statuts valides dans `progress.md` : **`pending`** / **`done`** / **`failed`** (pas `TODO`/`DONE`).
+- Valid statuses in `progress.md`: **`pending`** / **`done`** / **`failed`** (not `TODO`/`DONE`).
 
 ## References
 
-- `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` — convention locale des chemins d'un domaine `R`, résolution par marqueur de domaine, pipeline canon, frontière extract-pdf / lore-extract / rules-keeper.
+- `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` — local path convention of an `R` domain, resolution by domain marker, canon pipeline, the extract-pdf / lore-extract / rules-keeper boundary.
 
 ## External data
 
-- `docs/extraction/<source-name>/progress.md` — session tracking state ; porte aussi le champ `Univers` (slug de l'univers cible) renseigné au setup.
-- `docs/prompts/workshop/extract.prompt.md` — setup Phase A (template dans `prompts/`).
-- `docs/prompts/workshop/extract-chunk.prompt.md` — extraction d'un chunk (template dans `prompts/`).
-- `docs/prompts/workshop/extract-distribute.prompt.md` — distribution Phase C (template dans `prompts/`).
-- `docs/prompts/workshop/extract-debug.prompt.md` — diagnostic (template dans `prompts/`).
+- `docs/extraction/<source-name>/progress.md` — session tracking state; also carries the `Univers` field (slug of the target universe) filled in at setup.
+- `docs/prompts/workshop/extract.prompt.md` — setup Phase A (template in `prompts/`).
+- `docs/prompts/workshop/extract-chunk.prompt.md` — extraction of a chunk (template in `prompts/`).
+- `docs/prompts/workshop/extract-distribute.prompt.md` — distribution Phase C (template in `prompts/`).
+- `docs/prompts/workshop/extract-debug.prompt.md` — diagnostic (template in `prompts/`).

@@ -1,50 +1,50 @@
 # 04 - Execute
 
-Appliquer un lot validé : classify, delete, merge, summarize, intact ou flag-phishing.
+Apply a validated batch: classify, delete, merge, summarize, intact or flag-phishing.
 
 ## Inputs
 
-- `validated_batch` — lot de décisions validé par l'utilisateur depuis `03-propose`
+- `validated_batch` — batch of decisions validated by the user from `03-propose`
 
 ## Outputs
 
-- `batch_result` — résumé des fichiers traités, erreurs éventuelles
+- `batch_result` — summary of processed files, possible errors
 
 ## Process
 
-### Modèle sous-agent
+### Sub-agent model
 
-Les opérations fichiers utilisent un sous-agent (`model: haiku`).
+File operations use a sub-agent (`model: haiku`).
 
-### Avant toute action irréversible (delete, merge, summarize, flag-phishing)
+### Before any irreversible action (delete, merge, summarize, flag-phishing)
 
-Copier l'original dans `.archive/YYYY-MM-DD/` (chemin relatif préservé) avant toute modification.
-`YYYY-MM-DD` = date du jour.
-Créer le dossier d'archive si absent.
+Copy the original into `.archive/YYYY-MM-DD/` (relative path preserved) before any modification.
+`YYYY-MM-DD` = today's date.
+Create the archive folder if absent.
 
-### Action : classify
+### Action: classify
 
-1. Déterminer la branche cible (niveau 3) définie lors de `02-analyze`.
-2. Créer le dossier destination si absent (y compris les niveaux intermédiaires).
-3. Déplacer le fichier vers la branche cible (conserver le nom de fichier).
-4. Ajouter `processed: true` dans le frontmatter du fichier à son emplacement final.
-5. Confirmer le déplacement dans `batch_result`.
+1. Determine the target branch (level 3) defined during `02-analyze`.
+2. Create the destination folder if absent (including intermediate levels).
+3. Move the file to the target branch (keep the file name).
+4. Add `processed: true` in the frontmatter of the file at its final location.
+5. Confirm the move in `batch_result`.
 
-### Action : delete
+### Action: delete
 
-1. Archiver l'original dans `.archive/YYYY-MM-DD/<chemin-relatif>`.
-2. Marquer `processed: true` dans l'archive (pas dans le fichier source qui sera supprimé).
-3. Supprimer le fichier de son emplacement courant.
-4. Confirmer dans `batch_result`.
+1. Archive the original in `.archive/YYYY-MM-DD/<chemin-relatif>`.
+2. Mark `processed: true` in the archive (not in the source file which will be deleted).
+3. Delete the file from its current location.
+4. Confirm in `batch_result`.
 
-### Action : merge
+### Action: merge
 
-Regrouper tous les fichiers du même `merge_group` en un seul fichier fusionné.
+Group all files of the same `merge_group` into a single merged file.
 
-1. Archiver tous les originaux dans `.archive/YYYY-MM-DD/`.
-2. Créer le fichier fusionné :
-   - Nom : `email_<date_start>_<exp>_<sujet-normalisé>_thread.md`
-   - Frontmatter :
+1. Archive all the originals in `.archive/YYYY-MM-DD/`.
+2. Create the merged file:
+   - Name: `email_<date_start>_<exp>_<sujet-normalisé>_thread.md`
+   - Frontmatter:
      ```yaml
      from: <from commun>
      to: <to commun>
@@ -55,36 +55,36 @@ Regrouper tous les fichiers du même `merge_group` en un seul fichier fusionné.
      attachments: <union des attachments>
      processed: true
      ```
-   - Corps : liste chronologique des messages :
+   - Body: chronological list of the messages:
      ```
      - YYYY-MM-DD — Titre ou sujet spécifique — https://lien-si-présent
      ```
-3. Placer le fichier fusionné dans la branche du premier original.
-4. Supprimer les originaux de leurs emplacements courants.
-5. Confirmer dans `batch_result`.
+3. Place the merged file in the branch of the first original.
+4. Delete the originals from their current locations.
+5. Confirm in `batch_result`.
 
-### Action : summarize
+### Action: summarize
 
-1. Archiver l'original dans `.archive/YYYY-MM-DD/<chemin-relatif>`.
-2. Identifier le type selon la taxonomie (depuis la décision `02-analyze`) :
-   - `transactionnel` → conserver : montant · référence · date · statut
-   - `newsletter` → conserver : date · titre · liens d'update
-   - `notification` → conserver : service · date · action requise si présente
-   - `promotionnel` → conserver : offre · date d'expiration si présente
-3. Réécrire le fichier :
-   - Frontmatter complet conservé (from/to/date/subject/tags) + ajouter `processed: true`
-   - Corps remplacé par les données clés au format liste Markdown
-4. Confirmer dans `batch_result`.
+1. Archive the original in `.archive/YYYY-MM-DD/<chemin-relatif>`.
+2. Identify the type according to the taxonomy (from the `02-analyze` decision):
+   - `transactionnel` → keep: montant · référence · date · statut
+   - `newsletter` → keep: date · titre · liens d'update
+   - `notification` → keep: service · date · action requise si présente
+   - `promotionnel` → keep: offre · date d'expiration si présente
+3. Rewrite the file:
+   - Full frontmatter kept (from/to/date/subject/tags) + add `processed: true`
+   - Body replaced by the key data in Markdown list format
+4. Confirm in `batch_result`.
 
-### Action : intact
+### Action: intact
 
-Ne rien modifier. Ne pas ajouter `processed: true` (le fichier reste dans le périmètre des sessions suivantes).
-Marquer le fichier comme traité dans `batch_result`.
+Modify nothing. Do not add `processed: true` (the file stays in the scope of subsequent sessions).
+Mark the file as processed in `batch_result`.
 
-### Insertion de `processed: true` — cas sans frontmatter YAML
+### Inserting `processed: true` — case without YAML frontmatter
 
-Certains fichiers n'ont pas de bloc `--- ... ---` en en-tête (format `Tagged: #email`, titre Markdown, etc.).
-Dans ce cas, **créer un frontmatter minimal** en début de fichier :
+Some files have no `--- ... ---` block at the header (format `Tagged: #email`, Markdown title, etc.).
+In that case, **create a minimal frontmatter** at the start of the file:
 
 ```markdown
 ---
@@ -94,19 +94,19 @@ processed: true
 <contenu original inchangé>
 ```
 
-S'applique à toutes les actions sauf `intact` et `delete`.
+Applies to all actions except `intact` and `delete`.
 
-### Action : flag-phishing
+### Action: flag-phishing
 
-1. Archiver l'original dans `.archive/YYYY-MM-DD/<chemin-relatif>`.
-2. Créer `Publicités/Spam/Phishing/` si absent.
-3. Déplacer le fichier vers `Publicités/Spam/Phishing/`.
-4. Ajouter dans le frontmatter du fichier déplacé : `processed: true` + `flagged: phishing`.
-5. Confirmer dans `batch_result`.
+1. Archive the original in `.archive/YYYY-MM-DD/<chemin-relatif>`.
+2. Create `Publicités/Spam/Phishing/` if absent.
+3. Move the file to `Publicités/Spam/Phishing/`.
+4. Add to the frontmatter of the moved file: `processed: true` + `flagged: phishing`.
+5. Confirm in `batch_result`.
 
-## Rapport intermédiaire
+## Intermediate report
 
-Après chaque lot, afficher :
+After each batch, display:
 ```
 Lot N exécuté :
 - ✓ N fichiers traités
@@ -115,9 +115,9 @@ Lot N exécuté :
 
 ## Test
 
-- Chaque fichier traité a son résultat dans `batch_result`.
-- Tout fichier supprimé ou modifié a son original dans `.archive/YYYY-MM-DD/`.
-- Tous les fichiers traités (sauf `intact`) ont `processed: true` dans leur frontmatter final.
-- Les fichiers `flag-phishing` sont dans `Publicités/Spam/Phishing/` avec `flagged: phishing`.
-- Les dossiers créés par `classify` n'existaient pas avant l'exécution du lot.
-- Le fichier fusionné par `merge` est au bon format (frontmatter réduit + liste).
+- Each processed file has its result in `batch_result`.
+- Every deleted or modified file has its original in `.archive/YYYY-MM-DD/`.
+- All processed files (except `intact`) have `processed: true` in their final frontmatter.
+- The `flag-phishing` files are in `Publicités/Spam/Phishing/` with `flagged: phishing`.
+- The folders created by `classify` did not exist before the batch execution.
+- The file merged by `merge` is in the right format (reduced frontmatter + list).

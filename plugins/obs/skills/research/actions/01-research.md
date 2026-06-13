@@ -3,7 +3,7 @@
 Perform structured cross-referenced web research on a topic and compare findings with existing project documentation.
 
 > Path variables & domain resolution: see `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
-> The domain `R` is **discovered locally** (walk up from the argument/CWD to the first folder containing l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`) — no global vault, no per-machine config.
+> The domain `R` is **discovered locally** (walk up from the argument/CWD to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`) — no global vault, no per-machine config.
 > `research` IS a canon producer: cross-verified findings go to `<univers-root>/canon/`.
 > The working report (in-progress) is saved under the chosen scope's `research/` folder (univers, campagne, or writing project — see Process).
 
@@ -53,7 +53,7 @@ Validated findings saved to: `<univers-root>/canon/<topic-file>.md` (after user 
 
 ## Process
 
-1. Parse the research topic from `$ARGUMENTS`. Resolve the domain `R` locally (walk up from the argument/CWD to the first folder containing l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`); if none is found, report it and propose initializing `R`. Determine the **scope** (univers / campagne / writing project) — never default to univers; list the domain's `_univers/` and `_campagnes/` to help choose.
+1. Parse the research topic from `$ARGUMENTS`. Resolve the domain `R` locally (walk up from the argument/CWD to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`); if none is found, report it and propose initializing `R`. Determine the **scope** (univers / campagne / writing project) — never default to univers; list the domain's `_univers/` and `_campagnes/` to help choose.
 2. Load existing universe docs for comparison from `<univers-root>/canon/`: `UNIVERS.md`, `terminologie.md`, and any other canon files present in that folder.
 3. Perform a minimum of 3 distinct web searches using varied query angles (primary topic, historical context, academic sources, primary sources if applicable).
 4. Cross-reference results across ≥3 different sources. Build a comparison table.

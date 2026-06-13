@@ -2,13 +2,20 @@
 
 Merge a supplement or errata into an existing optimized rules file.
 
-> `base-file` vit dans `<systeme-root>/canon/` (ou `<subsys-root>/canon/`). `supplement` vit dans `<systeme-root>/sources/<source>/` (ou `<subsys-root>/sources/<source>/`) si issu du pipeline `extract-pdf`.
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention complète.
+> `base-file` lives in `<systeme-root>/canon/` (or `<subsys-root>/canon/`). `supplement` lives in `<systeme-root>/sources/<source>/` (or `<subsys-root>/sources/<source>/`) if it comes from the `extract-pdf` pipeline.
+> See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` for the full convention.
 
 ## Inputs
 
-- `base-file` (required) — chemin vers le fichier de règles optimisé existant (doit déjà être au format rules-keeper) ; typiquement `<systeme-root>/canon/<fichier>.md` ou `<subsys-root>/canon/<fichier>.md`.
-- `supplement` (required) — chemin vers le fichier de supplément ou d'errata à fusionner ; typiquement `<systeme-root>/sources/<source>/rules.md` si issu d'`extract-pdf`.
+- `base-file` (required) — path to the existing optimized rules file (must already be in rules-keeper format); typically `<systeme-root>/canon/<fichier>.md` or `<subsys-root>/canon/<fichier>.md`.
+- `supplement` (required) — path to the supplement or errata file to merge; typically `<systeme-root>/sources/<source>/rules.md` if it comes from `extract-pdf`.
+
+## Outputs
+
+- The merged base rules file, written in place at `base-file` (`<systeme-root>/canon/<fichier>.md` or `<subsys-root>/canon/<fichier>.md`), still in the optimized 6-section format with the supplement's new/modified/extended mechanics folded into the relevant sections.
+- A new CHANGELOG entry recording the merge (date, supplement filename, what was added/modified).
+- Any updated entity template files in `.templates/` when the supplement introduces new fields.
+- No silently resolved conflict: every detected conflict is shown to the user before the merge is applied.
 
 ## Process
 

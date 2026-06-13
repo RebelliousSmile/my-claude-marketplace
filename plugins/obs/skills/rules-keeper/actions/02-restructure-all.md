@@ -2,37 +2,44 @@
 
 Restructure all rules sources of the game domain `R`.
 
-> **Position dans le pipeline** : restructure les sources de référence de règles (`<systeme-root>/sources/<source>/rules.md`, et les sous-systèmes `<subsys-root>/sources/<source>/rules.md`). Les outputs atterrissent dans `<systeme-root>/canon/` (ou `<subsys-root>/canon/`).
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention complète.
+> **Position in the pipeline**: restructures the reference rules sources (`<systeme-root>/sources/<source>/rules.md`, and the subsystems `<subsys-root>/sources/<source>/rules.md`). The outputs land in `<systeme-root>/canon/` (or `<subsys-root>/canon/`).
+> See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` for the full convention.
 
 ## Régénérer le canon depuis le PDF
 
-Le canon de système dérive d'un PDF commercial. Si `<systeme-root>/canon/` est absent/vide (jamais généré, ou volontairement non versionné), il se reconstruit depuis le PDF :
+The system canon is derived from a commercial PDF. If `<systeme-root>/canon/` is absent/empty (never generated, or deliberately unversioned), it is rebuilt from the PDF:
 
-1. **Détecter l'absence** — si `<systeme-root>/canon/` est absent/vide **et** qu'aucun bundle n'existe sous `<systeme-root>/sources/`, il n'y a rien à restructurer : il faut d'abord (ré)extraire les sources.
-2. **Ré-extraire les sources** — fournir le PDF de règles commercial et lancer `extract-pdf` pour reconstituer `<systeme-root>/sources/<source>/rules.md` (+ terminology, etc.). `rules-keeper` n'écrit **jamais** dans `canon/` sans source.
-3. **Restructurer** — relancer cette action (`restructure-all`) : Step 1 détecte les nouveaux bundles sous `<systeme-root>/sources/` et les ventile vers `<systeme-root>/canon/`.
-4. **Vérifier les consommateurs** — `solo-mc`, `pc`, `rpg` et `writing:write` redeviennent opérationnels une fois `<systeme-root>/canon/` régénéré. Les règles maison `<systeme-root>/mj/` et le lore `<univers-root>/canon/` ne sont pas concernés : rien à régénérer de ce côté.
+1. **Detect the absence** — if `<systeme-root>/canon/` is absent/empty **and** no bundle exists under `<systeme-root>/sources/`, there is nothing to restructure: the sources must be (re-)extracted first.
+2. **Re-extract the sources** — provide the commercial rules PDF and run `extract-pdf` to rebuild `<systeme-root>/sources/<source>/rules.md` (+ terminology, etc.). `rules-keeper` **never** writes into `canon/` without a source.
+3. **Restructure** — re-run this action (`restructure-all`): Step 1 detects the new bundles under `<systeme-root>/sources/` and dispatches them to `<systeme-root>/canon/`.
+4. **Check the consumers** — `solo-mc`, `pc`, `rpg` and `writing:write` become operational again once `<systeme-root>/canon/` is regenerated. The house rules `<systeme-root>/mj/` and the lore `<univers-root>/canon/` are unaffected: nothing to regenerate on that side.
 
-> Sans le PDF source, le canon **ne peut pas** être régénéré : ce contenu dérive de matériel commercial.
+> Without the source PDF, the canon **cannot** be regenerated: this content derives from commercial material.
 
 ## Inputs
 
 *(no argument — scans `<systeme-root>/sources/` and subsystems locally, relative to `R`)*
 
+## Outputs
+
+- Restructured rules in the optimized 6-section format (CHEATSHEET / LEXICON / PATTERNS / ENTITY TEMPLATES / FULL REFERENCE / CHANGELOG), written for every source found into the matching **provenance sub-tree** — `R/_systeme/canon/` for the game system, and `<subsys-root>/canon/` for each subsystem under `R/_subsystems/<nom>/`.
+- A `<rules-file>.original.md` backup for each processed source (created before overwriting; skipped if already present).
+- The 4 entity template files in each `.templates/` (PC, NPC, obstacle, asset), as produced by `@01-restructure.md`.
+- Files that already had a `.original.md` backup are skipped (left untouched), not reprocessed.
+
 ## Process
 
 ### Step 1 — Locate rules sources
 
-Découvrir `R` localement : partir du CWD (ou de l'argument), remonter les parents jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` ; ce dossier est `R`. Si aucun marqueur n'est trouvé, la cible n'est pas dans un domaine JDR initialisé — le signaler et s'arrêter.
+Discover `R` locally: start from the CWD (or the argument), walk up the parents to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`; that folder is `R`. If no marker is found, the target is not inside an initialized RPG domain — report it and stop.
 
-Scanner localement les sources de règles brutes (produites par `extract-pdf`), relativement à `R` :
-- `<systeme-root>/sources/<source>/rules.md` — sources du système de jeu
-- `<subsys-root>/sources/<source>/rules.md` — sources de chaque sous-système sous `R/_subsystems/<nom>/`
+Scan locally the raw rules sources (produced by `extract-pdf`), relative to `R`:
+- `<systeme-root>/sources/<source>/rules.md` — game system sources
+- `<subsys-root>/sources/<source>/rules.md` — sources of each subsystem under `R/_subsystems/<nom>/`
 
-> Le manifeste `R/bank.yml` (cache d'arborescence maintenu par `obs:tree`) n'est **pas** utilisé pour localiser les fichiers : la résolution est un scan de système de fichiers relatif à `R`.
+> The `R/bank.yml` manifest (tree cache maintained by `obs:tree`) is **not** used to locate files: resolution is a filesystem scan relative to `R`.
 
-List files found. If none: stop and report (voir « Régénérer le canon depuis le PDF » si `canon/` et `sources/` sont vides).
+List files found. If none: stop and report (see « Régénérer le canon depuis le PDF » if `canon/` and `sources/` are empty).
 
 ### Step 2 — Filter
 

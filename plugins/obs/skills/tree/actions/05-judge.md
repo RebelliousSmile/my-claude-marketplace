@@ -6,7 +6,30 @@ Arbitrate the content of `R` node by node in an **interactive session**. For eac
 
 ## Inputs
 
-- `<target>` (optional, positional) — the `R` directory to judge. Default: `R` discovered by walking up from CWD to the first directory containing l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — identical to how `research`, `extract-pdf`, and the rest of the ecosystem resolve `R`. No anchor found → STOP: "Aucun domaine R trouvé (aucun marqueur JDR trouvé en remontant). Se placer dans un répertoire sous un domaine initialisé."
+- `<target>` (optional, positional) — the `R` directory to judge. Default: `R` discovered by walking up from CWD to the first directory containing one of the markers `_campagnes/`, `_univers/` or `_pjs/` — identical to how `research`, `extract-pdf`, and the rest of the ecosystem resolve `R`. No anchor found → STOP: "Aucun domaine R trouvé (aucun marqueur JDR trouvé en remontant). Se placer dans un répertoire sous un domaine initialisé."
+
+## Outputs — Session summary (at end or on `q`)
+
+```markdown
+# Tree Judge — <anchor>/R
+
+**Session:** <date>   **Nodes reviewed:** N / Total
+
+## Applied
+- [supprimer] <path> → R/_trash/<filename>
+- [résumer]   <path>   (in-place, summarized_at: <date>)
+- [fusionner] <group> → <primary file> (sources → _trash/)
+- [avancer]   <path> → R/<AAAA>/<MM>/<filename>
+
+## Skipped
+- <path> — passed by user
+
+## Not reached
+- <path> — session ended early
+
+## Next steps
+⚠ Cache is now stale — run `tree index` to refresh.
+```
 
 ## Scope
 
@@ -38,7 +61,7 @@ Before reading any file content, check its **name** against the credential patte
 
 ### Phase 1 — Pre-scan (silent)
 
-1. Resolve `R` via l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` (walk up from target/CWD). Load/refresh the `tree` cache if available (run `index` if missing/stale — not mandatory, `judge` works without cache but is slower).
+1. Resolve `R` via one of the markers `_campagnes/`, `_univers/` or `_pjs/` (walk up from target/CWD). Load/refresh the `tree` cache if available (run `index` if missing/stale — not mandatory, `judge` works without cache but is slower).
 2. Enumerate all in-scope nodes. A node is either:
    - A **project unit** directory (`R/<AAAA>/<MM>/<projet>/`) — the whole directory is one node.
    - A **loose file** at `R/` root or `R/<AAAA>/<MM>/` (not inside a project unit).
@@ -119,29 +142,6 @@ The node being advanced can be a **project unit** (directory) or a **loose file*
 3. Check for collision: if target exists → **skip and flag** (never overwrite).
 4. Move the file. Prefer `git mv` if inside a git repo.
 5. If the original parent directory is now empty (and non-`_`), note it as a candidate for cleanup (do not auto-delete it).
-
-## Output — Session summary (at end or on `q`)
-
-```markdown
-# Tree Judge — <anchor>/R
-
-**Session:** <date>   **Nodes reviewed:** N / Total
-
-## Applied
-- [supprimer] <path> → R/_trash/<filename>
-- [résumer]   <path>   (in-place, summarized_at: <date>)
-- [fusionner] <group> → <primary file> (sources → _trash/)
-- [avancer]   <path> → R/<AAAA>/<MM>/<filename>
-
-## Skipped
-- <path> — passed by user
-
-## Not reached
-- <path> — session ended early
-
-## Next steps
-⚠ Cache is now stale — run `tree index` to refresh.
-```
 
 ## Rules
 

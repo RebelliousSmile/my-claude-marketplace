@@ -9,6 +9,22 @@ Decide where loose items belong and place them — **by arbitration**. `tree` pr
 - `<items…>` (positional) — files/dirs to sort. Default: the `unsorted[]` from the cache.
 - `--into <target>` (optional) — restrict placement to a subtree (its anchor is resolved as usual).
 
+## Outputs
+
+```markdown
+# Tree Sort — <anchor>
+
+## Proposed placements
+- <item> → <domain>/<…>/<dest>     [confident]
+- <item> → ? (choose)              [arbitrated → <chosen>]
+- <item> → (new domain proposed)   [confirm]
+
+## Applied
+- <item> → <dest>   ✓
+## Left unsorted
+- <item> — <reason>
+```
+
 ## Process
 
 1. Resolve the anchor; load/refresh the cache (run `index` if missing/stale).
@@ -25,22 +41,6 @@ Decide where loose items belong and place them — **by arbitration**. `tree` pr
 4. **Confirm the full plan** (`item → destination`) before any move.
 5. **Move** approved items (collision → skip + flag; never overwrite; never delete). Prefer `git mv` in a repo.
 6. Re-run `index` to refresh the cache; report placements, arbitrations made, and anything left unsorted.
-
-## Output
-
-```markdown
-# Tree Sort — <anchor>
-
-## Proposed placements
-- <item> → <domain>/<…>/<dest>     [confident]
-- <item> → ? (choose)              [arbitrated → <chosen>]
-- <item> → (new domain proposed)   [confirm]
-
-## Applied
-- <item> → <dest>   ✓
-## Left unsorted
-- <item> — <reason>
-```
 
 ## Rules
 

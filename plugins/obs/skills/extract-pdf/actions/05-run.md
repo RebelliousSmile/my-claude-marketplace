@@ -11,6 +11,12 @@ Autonomous extraction loop: find the next TODO chunk in `progress.md`, extract i
 
 - `setup` (progress.md must exist)
 
+## Outputs
+
+One chunk processed per invocation, appended to the in-progress extraction under `.docs/extraction/<source-name>/`:
+- `.docs/extraction/<source-name>/classified/*.md` — classified content appended for the processed chunk, each session's contribution prefixed with `<!-- chunk-XX : pages A–B -->`. Files are created if they do not exist.
+- `.docs/extraction/<source-name>/progress.md` — updated state: the processed chunk's status changes from `TODO` to `DONE (YYYY-MM-DD)` (or `SKIP (illustrations)` for illustration/blank pages), and the "Fichiers classifiés produits" section lists any new or updated files.
+
 ## Process
 
 1. **Locate progress.md**: search `.docs/extraction/*/progress.md` from the project root.
