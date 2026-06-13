@@ -16,13 +16,15 @@ Plugin principal, installé globalement (`recommended`). Il ne cible pas une sta
 | `dig` | `/dig` | Quiz interactif 5 questions sur le codebase ou la memory bank — noté /20 |
 | `web-optimize` | `/web-optimize` | Audit perf web (LCP, CLS, INP, bundle, N+1) selon une checklist stack-aware, roadmap priorisée |
 | `data-optimize` | `/data-optimize` | Audit perf de la couche données (N+1, index, pagination, cache), stack-aware |
+| `seo-optimize` | `/seo-optimize` | Audit SEO et GEO (référencement + moteurs génératifs) — indexabilité, title/meta/H1, données structurées, E-E-A-T, CWV → roadmap priorisée + copy prêt à coller |
+| `ap-optimize` | `/ap-optimize` | Audit d'une implémentation ActivityPub (inbox, outbox, signatures HTTP, fan-out, conformance AS2) → roadmap priorisée, stack-aware via pivots `sc-*` |
 | `readme` | `/readme` | Rédige ou met à jour un README.md (write depuis zéro, update par section) |
 | `changelog` | `/changelog` | Génère/met à jour CHANGELOG.md depuis git (format Keep a Changelog) |
 | `decompose` | `/decompose` | Décompose un objectif en graphe de dépendances (méthode Mikado) |
 | `journey` | `/journey` | Exécute un parcours utilisateur depuis une issue GitHub/GitLab (résultats Playwright) |
 | `status` | `/status` | Santé projet — synthèse/export de la mémoire, rapport de santé, snapshot |
 
-Chaînes d'alias fournies (via `alias`) : `rechallenge`, `afterplan`, `endtask`, `endplan`, `bump-plugin`, `previously`.
+Chaînes d'alias fournies (via `alias`) : `rechallenge`, `endtask`, `bump-plugin`, `previously`, `smarten`, `skillconf`, `aiddlegacy`, `weeklyemail`, `gitit`.
 
 ## Licence
 

@@ -4,7 +4,7 @@
 
 Fusion de `doc-writer` (documentation pro) et des parties génériques de `rpg-writer` (craft narratif).
 
-**Séparation des responsabilités** : `writing` **produit à partir d'un brief**. L'**assemblage des intrants** est délégué au plugin `obsidian` — `brief` (construit le répertoire `_brief/`), `forge` (concept), `research` (données), `lore-extract`, `rules-keeper`, `extract-pdf`.
+**Séparation des responsabilités** : `writing` **produit à partir d'un brief**. L'**assemblage des intrants** est délégué au plugin `obs` — `brief` (construit le répertoire `_brief/`), `forge` (concept), `research` (données), `lore-extract`, `rules-keeper`, `extract-pdf`.
 
 > **Rédaction en français par défaut.** Les noms de skills et certains termes (`specification`, `runbook`…) sont en anglais, mais les documents produits sont rédigés en français, sauf demande explicite d'une autre langue.
 
@@ -53,7 +53,7 @@ Principes partagés (documentation) : `references/doc-principles.md`.
 | `tone-finder` | Génère ou met à jour un output-style pour un univers éditorial (depuis des textes sources) |
 | `storyboard` | Identifie les moments visuels clés d'un chapitre et génère des briefs d'illustration |
 
-> Les skills d'**assemblage des intrants** — `brief` (construit `_brief/`), `forge` (concept), `research` (données) — sont dans le plugin `obsidian`.
+> Les skills d'**assemblage des intrants** — `brief` (construit `_brief/`), `forge` (concept), `research` (données) — sont dans le plugin `obs`.
 
 ## Quel skill pour quoi
 
@@ -65,7 +65,7 @@ Principes partagés (documentation) : `references/doc-principles.md`.
 | README de dépôt | `overcode:readme` |
 | Forger le concept / brief narratif | `obsidian:forge` |
 | Rédaction narrative à partir d'un brief | `toc` → `write` → `review` |
-| Assembler le brief / lore / données / règles de jeu | plugin `obsidian` (`brief`, `research`, `lore-extract`, `rules-keeper`) |
+| Assembler le brief / lore / données / règles de jeu | plugin `obs` (`brief`, `research`, `lore-extract`, `rules-keeper`) |
 
 ## Format de sortie (documentation)
 

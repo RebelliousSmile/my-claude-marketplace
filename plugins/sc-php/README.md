@@ -15,8 +15,9 @@ Détecte la stack du projet et charge à la demande les pivots de capacité appl
 | `log-analysis` | `/sc-php:log-analysis` | Analyse les logs PHP/Apache/Nginx (local, Docker, prod SSH) — tail, parse-errors, search, summarize |
 | `teach` | `/sc-php:teach` | Enseigne PHP, patterns OOP et idiomes de framework |
 | `bruno` | `/sc-php:bruno` | Tests API Bruno en CLI — itère jusqu'au vert (scripts, environnements, assertions) |
+| `design-bridge` | `/sc-php:design-bridge` | Réceptacle du pivot design pour PHP/WP — linter natif PHP/WP + export de block patterns WordPress |
 
-> `bruno` est spécifique à PHP et n'est volontairement pas propagé à `sc-python` / `sc-rust`.
+> `bruno` et `design-bridge` sont spécifiques à PHP et ne sont pas propagés aux autres plugins `sc-*`.
 
 ## Licence
 

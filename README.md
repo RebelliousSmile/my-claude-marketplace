@@ -1,12 +1,30 @@
-# my-claude-marketplace
+# my-marketplace
 
-Marketplace personnelle de plugins Claude Code, qui inclut overlay du framework [AIDD](https://github.com/ai-driven-dev/aidd-framework) que j'utilise pour tous mes développements. 
+*Marketplace personnelle de plugins Claude Code — overlay du framework [AIDD](https://github.com/ai-driven-dev/aidd-framework) pour tous mes développements.*
+
+## Plugins disponibles
+
+Le **détail des skills de chaque plugin vit dans son propre README** — ce tableau est l'index.
+
+| Plugin | Doc | `recommended` | Description |
+|---|---|---|---|
+| [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
+| [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Design system en entonnoir : define → destructure → adjust → enforce → diffuse |
+| [`writing`](plugins/writing/README.md) | [README](plugins/writing/README.md) · [CHANGELOG](plugins/writing/CHANGELOG.md) | — | Rédaction pro et narrative : documentation (guides, technique, cahier des charges) et craft narratif |
+| [`game-writer`](plugins/game-writer/README.md) | [README](plugins/game-writer/README.md) · [CHANGELOG](plugins/game-writer/CHANGELOG.md) | — | Écriture narrative de jeu vidéo (8-MINE) : timelines Dialogic, bank d'assets |
+| [`sc-godot`](plugins/sc-godot/README.md) | [README](plugins/sc-godot/README.md) · [CHANGELOG](plugins/sc-godot/CHANGELOG.md) | — | Stack Godot / GDScript : sniff, audit, improve, legacy, teach |
+| [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
+| [`sc-php`](plugins/sc-php/README.md) | [README](plugins/sc-php/README.md) · [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
+| [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) · [CHANGELOG](plugins/sc-python/CHANGELOG.md) | — | Stack Python : Django / FastAPI / Flask / Celery |
+| [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) · [CHANGELOG](plugins/sc-rust/CHANGELOG.md) | — | Stack Rust : Axum / Actix-web |
+| [`sc-tiers`](plugins/sc-tiers/README.md) | [README](plugins/sc-tiers/README.md) · [CHANGELOG](plugins/sc-tiers/CHANGELOG.md) | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
+| [`obs`](plugins/obs/README.md) | [README](plugins/obs/README.md) · [CHANGELOG](plugins/obs/CHANGELOG.md) | — | Notes Obsidian — projets Pro, JDR solo, tri d'emails, assemblage d'intrants pour `writing` |
 
 ## Installation
 
 ### 1. Enregistrer le marketplace (une seule fois, global)
 
-Ajouter dans `~/.claude/settings.json` :
+**Depuis GitHub** — ajouter dans `~/.claude/settings.json` :
 
 ```json
 {
@@ -17,67 +35,46 @@ Ajouter dans `~/.claude/settings.json` :
         "repo": "RebelliousSmile/my-claude-marketplace"
       }
     }
-  },
+  }
+}
+```
+
+**En local (développement)** — utiliser `"source": "directory"` avec le chemin absolu ; les modifications sont prises en compte sans push.
+
+### 2. Activer des plugins
+
+Global (tous les projets) — `~/.claude/settings.json` :
+
+```json
+{
   "enabledPlugins": {
     "overcode@my-marketplace": true
   }
 }
 ```
 
-> **Sur la machine de développement**, utiliser une clé distincte avec `"source": "directory"` et le chemin local — les modifications sont prises en compte sans push.
-
-> **Si Claude Code demande « Enter marketplace source »**, saisir : `RebelliousSmile/my-claude-marketplace`
-
-### 2. Activer des plugins par projet (optionnel)
-
-Ajouter dans `.claude/settings.json` à la racine du projet :
-
-```json
-{
-  "enabledPlugins": {
-    "sc-js@my-marketplace": true
-  }
-}
-```
-
-Ou via commande dans le projet :
+Par projet — `.claude/settings.json` du projet, ou via commande :
 
 ```
 /plugin install sc-js@my-marketplace
 ```
 
-**Référence rapide par type de projet :**
+### Référence rapide
 
-| Type de projet | Plugin à activer |
+| Type de projet | Plugin |
 |---|---|
-| Design system / UI mobile-first | `design@my-marketplace` |
-| Documentation (guides, technique, cahier des charges) | `doc-writer@my-marketplace` |
-| Web JavaScript / Nuxt / Vue | `sc-js@my-marketplace` |
-| Web PHP | `sc-php@my-marketplace` |
-| Web Python | `sc-python@my-marketplace` |
-| Web Rust | `sc-rust@my-marketplace` |
-| Intégrations SaaS (Firebase, Klaviyo, GTM…) | `sc-tiers@my-marketplace` |
-| Jeu vidéo | `gamedesign@my-marketplace` |
-| Projet rédactionnel | `rpg-writer@my-marketplace` |
-| Projet avec Obsidian | `obsidian@my-marketplace` |
+| Socle (tous projets) | `overcode` |
+| Design system / UI mobile-first | `design` |
+| Documentation ou rédaction narrative | `writing` |
+| Web JavaScript / Nuxt / Vue | `sc-js` |
+| Web PHP | `sc-php` |
+| Web Python | `sc-python` |
+| Web Rust | `sc-rust` |
+| SaaS tiers (Firebase, Klaviyo, GTM…) | `sc-tiers` |
+| Jeu vidéo (contenu narratif) | `game-writer` |
+| Jeu vidéo (code Godot) | `sc-godot` |
+| Notes Obsidian / JDR solo | `obs` |
 
----
+## Licence
 
-## Plugins disponibles
-
-Le **détail des skills de chaque plugin vit dans son propre README** (colonne Doc) — ce tableau est l'index.
-
-| Plugin | Doc | `recommended` | Description |
-|---|---|---|---|
-| [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
-| [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Design system mobile-first : référence/brief → tokens, wireframes HTML, composants, audit, doctor/refactor (prod), export WordPress |
-| [`doc-writer`](plugins/doc-writer/README.md) | [README](plugins/doc-writer/README.md) · [CHANGELOG](plugins/doc-writer/CHANGELOG.md) | — | Documentation : guides utilisateur, documents techniques, cahiers des charges (specification) |
-| [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
-| [`sc-php`](plugins/sc-php/README.md) | [README](plugins/sc-php/README.md) · [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
-| [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) · [CHANGELOG](plugins/sc-python/CHANGELOG.md) | — | Stack Python : Django / FastAPI / Flask |
-| [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) · [CHANGELOG](plugins/sc-rust/CHANGELOG.md) | — | Stack Rust : Axum / Actix-web |
-| [`sc-tiers`](plugins/sc-tiers/README.md) | [README](plugins/sc-tiers/README.md) · [CHANGELOG](plugins/sc-tiers/CHANGELOG.md) | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
-| [`gamedesign`](plugins/gamedesign/README.md) | [README](plugins/gamedesign/README.md) · [CHANGELOG](plugins/gamedesign/CHANGELOG.md) | — | Game design (8-MINE) : timelines dialogiques, bank d'assets |
-| [`rpg-writer`](plugins/rpg-writer/README.md) | [README](plugins/rpg-writer/README.md) · [CHANGELOG](plugins/rpg-writer/CHANGELOG.md) | — | Rédaction narrative : concept, TOC, chapitres, ton, lore, relecture |
-| [`obsidian`](plugins/obsidian/README.md) | [README](plugins/obsidian/README.md) · [CHANGELOG](plugins/obsidian/CHANGELOG.md) | — | Notes Obsidian — projets Pro, JDR solo (PJ, scénarios, prep de campagne, jeu en direct), tri d'emails |
-supprimer le répertoire `~/.claude/plugins/cache/my-marketplace/<plugin>/` et réinstaller via `/plugin install <plugin>@my-marketplace`.
+MIT — voir [LICENSE](LICENSE).

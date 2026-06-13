@@ -28,11 +28,12 @@ Pertinent si tu travailles sur des projets Vue / Nuxt / Vite / Alpine avec le fr
 ## Démarrage rapide
 
 ```
-/sc-js:sniff    → détecte le stack, installe les perf/data pivots
-/sc-js:audit    → revue de code JS avec les pivots du stack détecté
-/sc-js:improve  → analyse + plan d'amélioration ciblé
-/sc-js:legacy   → migration Vue 2 → 3, ESM, TypeScript strict
-/sc-js:teach    → explications composables, réactivité, patterns async
+/sc-js:sniff          → détecte le stack, installe les perf/data pivots
+/sc-js:audit          → revue de code JS avec les pivots du stack détecté
+/sc-js:improve        → analyse + plan d'amélioration ciblé
+/sc-js:legacy         → migration Vue 2 → 3, ESM, TypeScript strict
+/sc-js:teach          → explications composables, réactivité, patterns async
+/sc-js:design-bridge  → réceptacle du pivot design (règle ESLint + composant Vue 3/React)
 ```
 
 ## Utilisation
@@ -89,4 +90,4 @@ Les retours sur les gaps de détection (libs non couvertes dans le manifeste) et
 
 ## Licence
 
-MIT — voir [LICENSE](LICENSE).
+MIT — voir [LICENSE](../../LICENSE).
