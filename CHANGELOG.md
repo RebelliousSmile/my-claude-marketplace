@@ -17,7 +17,9 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnemen
 
 ### Fixed
 
-- **`obsidian` (0.14.0)** — `rules-keeper/evals/scenarios.json` réparé (ids d'action périmés) ; dérive de version + description corrigée dans `index.json` (obsidian 0.11.0 → 0.14.0).
+- **`obsidian` (0.15.0)** — `rules-keeper/evals/scenarios.json` réparé (ids d'action périmés) ; dérive de version + description corrigée dans `index.json` (obsidian 0.11.0 → 0.15.0).
+
+> `obsidian` 0.15.0 inclut aussi la formalisation de la convention `Pro/Projets` dans `tree` (`references/tree-convention.md`) — détail dans `plugins/obsidian/CHANGELOG.md`.
 
 ## [3.0.0] - 2026-06-13
 
