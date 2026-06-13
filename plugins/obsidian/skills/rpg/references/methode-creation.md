@@ -1,10 +1,10 @@
 # Notre méthode — Préparer une campagne de JdR solo depuis le canon
 
-Cette méthode décrit **notre** façon de fabriquer de la matière de jeu pour le skill `rpg`. Elle porte exclusivement sur le **craft de préparation** — relations, situation, PNJ, scènes, indices — et **jamais** sur les mécaniques. Toute règle (récompense, tag, défi, jet) est déférée à `systeme/{canon,mj}` du jeu : on n'invente aucune mécanique ici.
+Cette méthode décrit **notre** façon de fabriquer de la matière de jeu pour le skill `rpg`. Elle porte exclusivement sur le **craft de préparation** — relations, situation, PNJ, scènes, indices — et **jamais** sur les mécaniques. Toute règle (récompense, tag, défi, jet) est déférée à `R/_savoir/systeme/{canon,mj}/` du jeu : on n'invente aucune mécanique ici.
 
 Trois principes la gouvernent du début à la fin :
 
-1. **Partir du canon.** Tout démarre du lore établi (`univers/<univers>/canon/`) et de l'intention du PJ (`pjs/<pj>/intention.md`). On ne crée pas dans le vide : on prolonge un univers et un personnage existants.
+1. **Partir du canon.** Tout démarre du lore établi (`R/_savoir/univers/<univers>/canon/`) et de l'intention du PJ (`R/_pjs/<pj>/intention.md`). On ne crée pas dans le vide : on prolonge un univers et un personnage existants.
 2. **Préparer une situation, pas une intrigue.** On installe des forces, des désirs et des tensions instables — pas une suite d'événements scriptée. L'histoire émerge des choix en jeu.
 3. **Procéder par allers-retours.** À chaque étape, on **propose plusieurs directions**, l'utilisateur **choisit** (ou amende), puis on **consigne** dans `mj/` ou le dossier de campagne. Jamais de page écrite d'un bloc sans validation.
 
@@ -14,7 +14,7 @@ Trois principes la gouvernent du début à la fin :
 
 ### Étape 1 — Ancrer sur le canon et l'intention du PJ
 
-**Quoi faire.** Avant toute création, lire le canon de l'univers (`canon/terminologie, factions, personnages, histoire, geographie`) et l'`intention.md` du PJ. En extraire trois choses : (a) la **tension thématique** de la campagne, formulée en une question ouverte dont l'issue n'est pas décidée (« Jusqu'où trahira-t-il pour les siens ? ») ; (b) la **ligne rouge / question viscérale** du PJ ; (c) une **palette de signes** récurrents (matière, couleur, geste, son) qui signera l'univers à la table. Proposer 2–3 formulations de tension thématique, laisser choisir, consigner dans le synopsis de campagne (`campagnes/<campagne>/`).
+**Quoi faire.** Avant toute création, lire le canon de l'univers (`canon/terminologie, factions, personnages, histoire, geographie`) et l'`intention.md` du PJ. En extraire trois choses : (a) la **tension thématique** de la campagne, formulée en une question ouverte dont l'issue n'est pas décidée (« Jusqu'où trahira-t-il pour les siens ? ») ; (b) la **ligne rouge / question viscérale** du PJ ; (c) une **palette de signes** récurrents (matière, couleur, geste, son) qui signera l'univers à la table. Proposer 2–3 formulations de tension thématique, laisser choisir, consigner dans le synopsis de campagne (`R/_campagnes/<campagne>/`).
 
 **Techniques du corpus qui la nourrissent.**
 - *S'inspirer d'un thème pour générer la prep (theme-driven prep)* — fixer le thème d'abord, en faire un filtre directeur ; le tirer de ce que le joueur a signalé vouloir explorer. (Premise de Ron Edwards, d'après Egri — [Narrativism: Story Now](http://www.indie-rpgs.com/_articles/narr_essay.html))
@@ -41,9 +41,9 @@ Trois principes la gouvernent du début à la fin :
 
 ### Étape 4 — Mettre la situation en mouvement : fronts, horloges, secrets
 
-**Quoi faire.** La carte de relations est statique ; il faut lui donner une **trajectoire**. Limiter à **≈3 forces antagonistes** (factions, menaces, dynamiques d'univers). Pour chacune : un nom, sa **motivation propre** (ce qui la pousse à agir seule), une **chaîne d'étapes visibles** (du mauvais au pire) si personne n'intervient, et la **catastrophe finale** visée. Doser les vitesses : une lente de fond, une ou deux immédiates. En parallèle, **semer des secrets et indices redondants** : pour chaque vérité cachée que le PJ pourrait découvrir, prévoir **au moins trois indices** de natures différentes (témoin, trace physique, document/déduction), répartis dans des lieux et PNJ distincts. Proposer les forces + leurs étapes, faire choisir lesquelles activer, consigner l'état dans `campagnes/<campagne>/`.
+**Quoi faire.** La carte de relations est statique ; il faut lui donner une **trajectoire**. Limiter à **≈3 forces antagonistes** (factions, menaces, dynamiques d'univers). Pour chacune : un nom, sa **motivation propre** (ce qui la pousse à agir seule), une **chaîne d'étapes visibles** (du mauvais au pire) si personne n'intervient, et la **catastrophe finale** visée. Doser les vitesses : une lente de fond, une ou deux immédiates. En parallèle, **semer des secrets et indices redondants** : pour chaque vérité cachée que le PJ pourrait découvrir, prévoir **au moins trois indices** de natures différentes (témoin, trace physique, document/déduction), répartis dans des lieux et PNJ distincts. Proposer les forces + leurs étapes, faire choisir lesquelles activer, consigner l'état dans `R/_campagnes/<campagne>/`.
 
-> Le formalisme mécanique d'avancement (jets, segments cochés) n'appartient pas à `rpg` : pour faire avancer une force par une règle, déférer à `systeme/{canon,mj}`. Ici on prépare des **étapes fictionnelles** et des **échéances**.
+> Le formalisme mécanique d'avancement (jets, segments cochés) n'appartient pas à `rpg` : pour faire avancer une force par une règle, déférer à `R/_savoir/systeme/{canon,mj}/`. Ici on prépare des **étapes fictionnelles** et des **échéances**.
 
 **Techniques du corpus qui la nourrissent.**
 - *Fronts et horloges en tant qu'outil de préparation* — forces dotées d'une impulsion et d'étapes visibles, jouées « pour découvrir » ; ~3 fronts à vitesses variées. ([Fronts — Dungeon World SRD](https://www.dungeonworldsrd.com/gamemastering/fronts/), [SlyFlourish](https://slyflourish.com/looking_back_on_fronts.html)) — *Adapté system-agnostic : on garde l'idée de forces à trajectoire, on retire le vocabulaire mécanique propre au système.*
@@ -54,7 +54,7 @@ Trois principes la gouvernent du début à la fin :
 
 **Quoi faire.** Pour chaque PNJ que la situation appelle, fixer le strict nécessaire : **un trait dominant + une signature (voix, geste ou objet) + un détail mémorable**, et surtout **ce qu'il veut** + **ce qui lui barre la route**. Pas de biographie longue : des briques activables. Vérifier que chaque PNJ est **bien branché dans la carte** (étape 3) et, si pertinent, lui donner un rôle de **miroir** d'un PJ. Désigner au moins un PNJ comme **porteur d'un cadeau empoisonné** (voir étape 6). Proposer une poignée de PNJ, faire valider, écrire les fiches dans `mj/personnages.md` (jamais dans `canon/` ; `[[lier]]` le canon si on l'étend).
 
-> Pour les tags/stats d'un PNJ (capacités, niveau de menace), consulter `systeme/{canon,mj}` — ne pas inventer.
+> Pour les tags/stats d'un PNJ (capacités, niveau de menace), consulter `R/_savoir/systeme/{canon,mj}/` — ne pas inventer.
 
 **Techniques du corpus qui la nourrissent.**
 - *Singulariser et rendre des PNJ attachants* — 1–2 marqueurs saillants (trait + voix + détail) suffisent ; tenir un registre pour la récurrence et l'évolution. ([Quick & Dirty Memorable NPCs](http://ragingowlbear.blogspot.com/2018/05/gm-101-quick-dirty-memorable-npcs.html))
@@ -70,7 +70,7 @@ Trois principes la gouvernent du début à la fin :
 - **Des objectifs contradictoires.** Vérifier que les désirs des acteurs se chevauchent et frottent : triangulation (un PNJ allié de l'un, menace de l'autre), ressource rivale unique, valeurs incompatibles. Le moteur est le frottement entre agendas, pas l'obstacle externe.
 - **Des cadeaux empoisonnés.** Pour chaque chose que le PJ veut, pré-écrire un **coût ancré dans la fiction** (dette, secret compromettant, menace qui démarre, perte d'autre chose) et désigner qui en est le porteur et quand le prix refera surface.
 
-Proposer les amorces + les frictions, laisser l'utilisateur choisir lesquelles retenir, consigner le scénario dans `campagnes/<campagne>/`.
+Proposer les amorces + les frictions, laisser l'utilisateur choisir lesquelles retenir, consigner le scénario dans `R/_campagnes/<campagne>/`.
 
 > **Garde-fou de craft (principe de Czege).** Ne jamais être seul auteur **du problème et de sa résolution**. On prépare des problèmes ouverts, pas leurs dénouements. En solo, la résolution est déléguée au système hôte et aux oracles consommés par `solo-mc` — c'est cette source externe qui tranche l'issue, pas la prep.
 
@@ -94,7 +94,7 @@ Proposer les amorces + les frictions, laisser l'utilisateur choisir lesquelles r
 
 ### Étape 8 — Préparer une session
 
-**Quoi faire.** Avant chaque séance : (a) relire l'état des forces/fronts et les fils chauds ; (b) sortir 4–8 **scènes-déclencheurs probables** ancrées sur l'intention du PJ et le fil le plus pressant, chacune avec sa question et ses enjeux en une ligne ; (c) noter une **douzaine de secrets/indices courts** non localisés, prêts à être placés là où le PJ ira ; (d) faire avancer d'un cran les forces dont l'échéance est due, **descriptivement** (on a vu le changement) ou via un déclencheur fictionnel ; (e) garder tout cela **jetable**. Proposer la sélection, faire valider, écrire la prep dans `campagnes/<campagne>/prep/`. La matière est ensuite **consommée par `solo-mc`** au moment du jeu — on ne joue jamais en direct ici.
+**Quoi faire.** Avant chaque séance : (a) relire l'état des forces/fronts et les fils chauds ; (b) sortir 4–8 **scènes-déclencheurs probables** ancrées sur l'intention du PJ et le fil le plus pressant, chacune avec sa question et ses enjeux en une ligne ; (c) noter une **douzaine de secrets/indices courts** non localisés, prêts à être placés là où le PJ ira ; (d) faire avancer d'un cran les forces dont l'échéance est due, **descriptivement** (on a vu le changement) ou via un déclencheur fictionnel ; (e) garder tout cela **jetable**. Proposer la sélection, faire valider, écrire la prep dans `R/_campagnes/<campagne>/prep/`. La matière est ensuite **consommée par `solo-mc`** au moment du jeu — on ne joue jamais en direct ici.
 
 **Techniques du corpus qui la nourrissent.**
 - *Bangs / bandoulière de bangs* — stock de déclencheurs par session, modulables et jetables. ([Prepping Bangs](https://thealexandrian.net/wordpress/36768/roleplaying-games/the-art-of-pacing-prepping-bangs))
@@ -105,7 +105,7 @@ Proposer les amorces + les frictions, laisser l'utilisateur choisir lesquelles r
 
 ## Garde-fou transversal : sécurité et contrat (en amont)
 
-Avant de produire la matière sensible d'une campagne, vérifier le **contrat social** déjà établi (le vault contient un `CONTRAT_SOCIAL.md`) : thèmes exclus (**lignes**) à ne jamais faire apparaître, thèmes voilés (**voiles**) à traiter hors-champ. La prep doit être retravaillée pour qu'aucune ligne ne soit **structurellement nécessaire** au scénario. Inspiré de *Séance zéro, contrat social et garde-fous (lines & veils)* — Ron Edwards / John Stavropoulos ([Lines and veils](https://rpgmuseum.fandom.com/wiki/Lines_and_veils)). En solo, c'est l'utilisateur qui pose ses propres limites ; on les respecte dans tout ce qu'on consigne.
+Avant de produire la matière sensible d'une campagne, vérifier le **contrat social** déjà établi (si le domaine `R` contient un `CONTRAT_SOCIAL.md`) : thèmes exclus (**lignes**) à ne jamais faire apparaître, thèmes voilés (**voiles**) à traiter hors-champ. La prep doit être retravaillée pour qu'aucune ligne ne soit **structurellement nécessaire** au scénario. Inspiré de *Séance zéro, contrat social et garde-fous (lines & veils)* — Ron Edwards / John Stavropoulos ([Lines and veils](https://rpgmuseum.fandom.com/wiki/Lines_and_veils)). En solo, c'est l'utilisateur qui pose ses propres limites ; on les respecte dans tout ce qu'on consigne.
 
 ---
 
@@ -126,6 +126,6 @@ Avant de produire la matière sensible d'une campagne, vérifier le **contrat so
 - [ ] **Fils entrelacés** (3–5), points de croisement identifiés, temps de projecteur équilibré.
 - [ ] **Arc du PJ** formulé (phrase + type), issue laissée au joueur.
 - [ ] **Session** prête : 4–8 déclencheurs + ~10 secrets, forces dues avancées, matière jetable.
-- [ ] **Aucune mécanique inventée** : tout renvoi de règle pointe vers `systeme/{canon,mj}`.
+- [ ] **Aucune mécanique inventée** : tout renvoi de règle pointe vers `R/_savoir/systeme/{canon,mj}/`.
 - [ ] **Lignes & voiles** respectés ; aucune ligne structurellement nécessaire.
 - [ ] **Allers-retours** : chaque livrable a été proposé, choisi par l'utilisateur, puis consigné (`mj/` ou dossier de campagne) — jamais écrasé, complété.

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "my-marketplace",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Local marketplace — personal overlay on the AIDD framework",
   "owner": {
     "name": "François-Xavier Guillois"
@@ -22,24 +22,24 @@
       "recommended": false
     },
     {
-      "name": "doc-writer",
+      "name": "writing",
+      "version": "1.0.0",
+      "source": "./plugins/writing",
+      "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, lore, données) est délégué à obsidian. Fusion de doc-writer + rpg-writer.",
+      "recommended": false
+    },
+    {
+      "name": "game-writer",
+      "version": "1.0.0",
+      "source": "./plugins/game-writer",
+      "description": "Écriture de contenu narratif pour le jeu vidéo (8-MINE) : bank d'assets, timelines Dialogic (dialogic-draft, dialogic-review). Pendant technique : sc-godot. (ex-gamedesign)",
+      "recommended": false
+    },
+    {
+      "name": "sc-godot",
       "version": "0.1.0",
-      "source": "./plugins/doc-writer",
-      "description": "Professional documentation authoring: user-guide (end-user manuals), technical-document (developer/architecture/API docs), and specification (cahier des charges — requirements documents).",
-      "recommended": false
-    },
-    {
-      "name": "gamedesign",
-      "version": "0.2.0",
-      "source": "./plugins/gamedesign",
-      "description": "Game design skills and workflows.",
-      "recommended": false
-    },
-    {
-      "name": "rpg-writer",
-      "version": "0.10.0",
-      "source": "./plugins/rpg-writer",
-      "description": "Narrative writing skills and workflows (novels, TTRPG scenarios, guides): concept, TOC, chapters, tone, lore, review.",
+      "source": "./plugins/sc-godot",
+      "description": "Godot/GDScript ecosystem (squelette) : sniff, audit, improve, legacy, teach — partie technique du jeu vidéo, pendant de game-writer. Skills à porter (template sc-*).",
       "recommended": false
     },
     {
@@ -79,9 +79,9 @@
     },
     {
       "name": "obsidian",
-      "version": "0.10.0",
+      "version": "0.13.0",
       "source": "./plugins/obsidian",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), and solo TTRPG vault tooling: player-character management (pc), scenario writing / campaign preparation (rpg), and live play (solo-mc).",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), solo TTRPG domain tooling (pc, rpg, solo-mc) on autonomous local game domains, the Documents/ organiser tree (cache-based: index, check, fix, sort), and brief/lore/data assembly for writing: brief (builds the portable _brief/ working dir), forge (concept), research (data), lore-extract, rules-keeper, extract-pdf.",
       "recommended": false
     }
   ]

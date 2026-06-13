@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "sc-godot",
+  "version": "0.1.0",
+  "description": "Godot/GDScript ecosystem (squelette) : sniff, audit, improve, legacy, teach — partie technique du jeu vidéo, pendant de game-writer. Skills à porter (template sc-*).",
+  "author": {
+    "name": "François-Xavier Guillois"
+  }
+}

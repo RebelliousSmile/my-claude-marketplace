@@ -1,6 +1,6 @@
 # Response Templates
 
-Canonical output templates consumed by the narrateur agent. Each template defines when to use it, its format, and a generic example. No game-specific content belongs here — tone and setting details come from `<vault>/<jeu>/_systeme/canon/` and `config.yaml`.
+Canonical output templates consumed by the narrateur agent. Each template defines when to use it, its format, and a generic example. No game-specific content belongs here — tone and setting details come from `R/_savoir/systeme/canon/` and `config.yaml`.
 
 ---
 

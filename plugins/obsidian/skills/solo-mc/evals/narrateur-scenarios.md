@@ -1,8 +1,8 @@
 # Narrateur — Functional Test Scenarios
 
-Functional tests for the `narrateur` agent (`plugins/obsidian/agents/narrateur.md`) — the GM voice. Unlike the oracle (data-deterministic), the narrateur is **qualitative**: tests observe the rendered output against behavioural criteria. Run via an agent that loads `narrateur.md` + `references/response-templates.md`, against the real vault, with a minimal synthetic context.
+Functional tests for the `narrateur` agent (`plugins/obsidian/agents/narrateur.md`) — the GM voice. Unlike the oracle (data-deterministic), the narrateur is **qualitative**: tests observe the rendered output against behavioural criteria. Run via an agent that loads `narrateur.md` + `references/response-templates.md`, against a real domain `R`, with a minimal synthetic context.
 
-Vault subsystems for the narrateur: **conversation-cards** (dialogue — present, `validated: true`) and **cinerio** (description — NOT installed yet → must graceful-degrade).
+Subsystems for the narrateur (under `R/_savoir/subsystems/`): **conversation-cards** (dialogue — present, `validated: true`) and **cinerio** (description — NOT installed yet → must graceful-degrade). Game domain `R` resolved **locally** via the `_savoir/` marker — see `../../../references/jdr-layout.md`.
 
 | # | Situation (input) | Expected behaviour | Pass criteria |
 |---|-------------------|--------------------|---------------|
@@ -14,7 +14,7 @@ Vault subsystems for the narrateur: **conversation-cards** (dialogue — present
 
 ## How to run
 
-Agent-as-narrateur: load `plugins/obsidian/agents/narrateur.md` + `plugins/obsidian/skills/solo-mc/references/response-templates.md` as instructions; provide a minimal context (a system + a scene); for each scenario render the output and capture it. conversation-cards drawn from `<vault>/_subsystems/conversation-cards/systeme/canon/conversation-cards.md`.
+Agent-as-narrateur: load `plugins/obsidian/agents/narrateur.md` + `plugins/obsidian/skills/solo-mc/references/response-templates.md` as instructions; provide a minimal context (a system + a scene); for each scenario render the output and capture it. conversation-cards drawn from `R/_savoir/subsystems/conversation-cards/canon/conversation-cards.md`.
 
 Note: the narrateur has `tools: Read, Glob` (no Bash) — it **selects** a conversation card by attitude/emphasis rather than rolling; true random draws are the oracle's job.
 
@@ -22,7 +22,7 @@ Note: the narrateur has `tools: Read, Glob` (no Bash) — it **selects** a conve
 
 <!-- append: date, scenario, observed output summary, pass/fail, frictions -->
 
-### 2026-06-01 — run 1 (harness agent-as-narrateur, real vault, synthetic 2d6/PbtA context) — **5/5 PASS**
+### 2026-06-01 — run 1 (harness agent-as-narrateur, real domain, synthetic 2d6/PbtA context) — **5/5 PASS**
 
 | # | Observé | Verdict |
 |---|---------|---------|
@@ -34,7 +34,7 @@ Note: the narrateur has `tools: Read, Glob` (no Bash) — it **selects** a conve
 
 **Frictions → corrigées :**
 - « Tirer » vs « sélectionner » sans RNG → ajout note « Select, don't roll ; random draw = oracle ».
-- §51 prescrivait une écriture vault alors que narrateur est read-only → reformulé en « flag pour la grille T13 (le skill persiste) ».
+- §51 prescrivait une écriture dans le domaine alors que narrateur est read-only → reformulé en « flag pour la grille T13 (le skill persiste) ».
 - Réponses hybrides description+dialogue → note « router chaque segment ».
 - Détection subsystem absent → « Glob ne retourne rien → degrade ».
 - Mechanical Q Block vs oracle déjà résolu → note d'usage ajoutée dans `response-templates.md`.

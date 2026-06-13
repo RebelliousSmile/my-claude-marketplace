@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "game-writer",
+  "version": "1.0.0",
+  "description": "Écriture de contenu narratif pour le jeu vidéo (projet 8-MINE) : bank d'assets narrative, écriture et revue de timelines Dialogic/Godot. La partie technique GDScript/moteur vit dans sc-godot. (ex-gamedesign)",
+  "author": {
+    "name": "François-Xavier Guillois"
+  }
+}

@@ -4,13 +4,13 @@ Aide à **construire le background d'un PJ** par un jeu de questions adapté au 
 
 Inspiration de structure : le questionnaire de création d'**Ecryme 2e édition** (John Grümph) — on construit le personnage en répondant à des questions concrètes sur sa place dans le monde et ses liens, pas en remplissant des cases. La logique des **liens à double charge** rejoint la R-map de `../../rpg/references/methode-creation.md` (étape 3).
 
-> **Périmètre.** Ici on fabrique du **background fictionnel** — identité, liens, désir, blessure. **Aucune mécanique** : stats, tags, jets restent déférés à `systeme/{canon,mj}` du jeu. Procéder par **allers-retours** : proposer 2–3 pistes par question, l'utilisateur **choisit/amende**, puis on **consigne** — jamais une page écrite d'un bloc.
+> **Périmètre.** Ici on fabrique du **background fictionnel** — identité, liens, désir, blessure. **Aucune mécanique** : stats, tags, jets restent déférés à `R/_savoir/systeme/{canon,mj}/` du jeu. Procéder par **allers-retours** : proposer 2–3 pistes par question, l'utilisateur **choisit/amende**, puis on **consigne** — jamais une page écrite d'un bloc.
 
 ---
 
 ## Comment s'en servir
 
-1. **Déduire le genre** du jeu actif (le `<jeu>` du répertoire courant ; au besoin, demander à l'utilisateur le thème GROG ou le pitch du jeu).
+1. **Déduire le genre** du jeu actif (le domaine `R` du répertoire courant ; au besoin, demander à l'utilisateur le thème GROG ou le pitch du jeu).
 2. **Mapper** le thème vers une **famille** via la table ci-dessous (et noter les **modulateurs** éventuels).
 3. Poser le **tronc commun** (5–8 questions).
 4. Poser les **questions signature** de la famille (+ piocher dans ses **axes optionnels** si le PJ l'appelle).
