@@ -27,7 +27,7 @@
     "id": "persona-train-from-feedback",
     "skill": "writing:persona",
     "action": "train",
-    "given": "fixture fantasy-novella enrichie de retours sur ≥3 chapitres où la persona 'lecteur-pragmatique' plafonne ; train lecteur-pragmatique",
+    "given": "fixture review-loop-demo (3 chapitres, persona 'lecteur-exigeant' plafonnée sur chapter-01/02/03) ; train lecteur-exigeant --out <output>",
     "expect": "La persona est recalibrée à partir des seuls fichiers review, version incrémentée.",
     "judge": [
       "<brief>/personas/lecteur-pragmatique.yaml modifié",
@@ -39,7 +39,7 @@
     "id": "tone-finder-improve-systemic",
     "skill": "writing:tone-finder",
     "action": "improve",
-    "given": "retours review signalant un même pattern systémique sur ≥3 chapitres ; improve --out <output>",
+    "given": "fixture review-loop-demo : reviews chapter-01/02/03 signalant le même pattern systémique (sur-explication émotionnelle) ; improve --out <output>",
     "expect": "L'output-style visé est mis à jour (v+1) pour corriger le pattern transverse.",
     "judge": [
       "fichier <brief>/output-styles/<name>.md modifié",
@@ -87,7 +87,7 @@
     "id": "triage-persona-train-3chapters",
     "skill": "writing:review",
     "action": "comment",
-    "given": "la même persona plafonne sur 3 chapitres consécutifs",
+    "given": "fixture review-loop-demo : la persona 'lecteur-exigeant' plafonne (≤11/20) sur chapter-01/02/03",
     "expect": "Recommandation persona:train (la persona est mal calibrée), pas un acharnement chapitre par chapitre.",
     "judge": [
       "persona:train recommandé pour la persona concernée",

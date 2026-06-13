@@ -52,6 +52,20 @@ est le chapitre figé, l'export ICML est postérieur.
 
 ---
 
+## Constantes (seuils)
+
+Tous les seuils de la boucle sont **ici**, en un seul endroit (pas dispersés en prose) :
+
+| Constante | Valeur | Rôle |
+|-----------|--------|------|
+| `PLATEAU_DELTA` | **1.0** | en-deçà (`Δ < 1.0`), le gain est marginal → PLATEAU |
+| `MAX_ITERATIONS` | **5** | garde anti-boucle par chapitre → `CAP-ITERATIONS` |
+| `SYSTEMIC_CHAPTERS` | **3** | un symptôme sur ≥3 chapitres devient « transverse » → révision d'intrant (`tone-finder:improve` / `persona:train`) |
+
+> Le seuil `SYSTEMIC_CHAPTERS` gouverne **les deux** déclencheurs de révision d'intrant
+> (style ET persona). Le déclencheur `persona:train` sur ≥3 chapitres est un choix
+> de conception (le schéma d'origine ne montrait que `tone-finder`) — à rediscuter si besoin.
+
 ## Le critère PLATEAU
 
 Chaque passage de `comment` calcule un **score consensus** (cf. `01-comment.md`).

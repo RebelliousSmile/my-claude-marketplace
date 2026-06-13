@@ -58,6 +58,7 @@ walk('plugins', skills);
 skills.sort();
 
 let failed = 0;
+let unverifiable = 0;
 const report = [];
 for (const skillPath of skills) {
   const dir = dirname(skillPath);
@@ -67,20 +68,28 @@ for (const skillPath of skills) {
   const problems = [];
 
   const notes = [];
+  let nonNull = 0;
   if (scen === null) {
     if (routable.length) { problems.push(`pas de scenarios.json (mais ${routable.length} action(s) routable(s))`); failed++; }
     else { report.push(`  ·  ${id} — pas de scenarios.json (aucune action routable, OK)`); continue; }
   } else {
     const covered = new Set(scen.filter((a) => a !== null));
+    nonNull = covered.size;
     for (const a of covered) if (!actions.has(a)) notes.push(`label hors table (sémantique ?) : '${a}'`);
     for (const a of routable) if (!covered.has(a)) { problems.push(`action routable non couverte : '${a}'`); failed++; }
   }
 
+  // ⚠ non vérifiable : des scénarios ciblent des actions, mais AUCUNE action
+  // routable n'a été détectée dans SKILL.md (déclencheurs en frontmatter YAML
+  // `triggers:` ou format non reconnu) → le ✓ serait trompeur, on ne peut rien certifier.
+  const unverif = !problems.length && routable.length === 0 && nonNull > 0;
   if (problems.length) { report.push(`✗ ${id}`); for (const p of problems) report.push(`      ✗ ${p}`); }
+  else if (unverif) { report.push(`⚠ ${id} — couverture NON vérifiable (0 action routable détectée, ${nonNull} scénario(s) présents)`); unverifiable++; }
   else report.push(`✓ ${id} — ${routable.length} action(s) routable(s) couverte(s)`);
   for (const n of notes) report.push(`      · ${n}`);
 }
 
 console.log(report.join('\n'));
-console.log(`\n${failed ? '✗' : '✓'} ${skills.length} skills analysés — ${failed} problème(s)`);
+const warn = unverifiable ? ` · ${unverifiable} non vérifiable(s) ⚠` : '';
+console.log(`\n${failed ? '✗' : '✓'} ${skills.length} skills analysés — ${failed} problème(s)${warn}`);
 process.exit(failed ? 1 : 0);

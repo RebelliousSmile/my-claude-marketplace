@@ -10,9 +10,11 @@ de travail `writing` : un répertoire projet `<projet>/` doit respecter le modè
 ## Lancer
 
 ```bash
-node tools/eval/harness.mjs                 # valide les 4 fixtures bundlées
+pnpm test                                   # harness + coverage + selftest (tout)
+node tools/eval/harness.mjs                 # valide les fixtures bundlées
 node tools/eval/harness.mjs <projet-dir>... # valide des projets réels
 node tools/eval/coverage.mjs                # couverture de routage (tous les skills)
+node tools/eval/selftest.mjs                # gardes : harness rejette bien les fixtures-invalid/
 ```
 
 Exit `0` si tout est conforme, `1` sinon. Chaque violation est listée avec sa règle.
@@ -20,8 +22,11 @@ Exit `0` si tout est conforme, `1` sinon. Chaque violation est listée avec sa r
 Trois couches de test, du plus déterministe au comportemental :
 
 1. **`harness.mjs`** — structure d'un projet `<projet>/` (contrat brief→output + invariants + artefact plateau). Déterministe.
-2. **`coverage.mjs`** — chaque action *routable* (table trigger→action de `SKILL.md`) a ≥ 1 cas dans son `evals/scenarios.json`. Déterministe. Les labels `expect_action` hors table (sémantiques, ex. `build+wire`) sont signalés en info, pas en échec.
-3. **`behavioral/`** — comportement des skills (scoring, triage, PLATEAU, déclenchements `persona:train`/`tone-finder:improve`) : spec + rubrique jugées par un LLM à la demande (voir `behavioral/README.md`). Non déterministe.
+2. **`coverage.mjs`** — chaque action *routable* (table trigger→action de `SKILL.md`) a ≥ 1 cas dans son `evals/scenarios.json`. Déterministe. Un skill dont les scénarios ciblent des actions mais dont **aucune** action routable n'est détectée (déclencheurs en frontmatter `triggers:` ou format non reconnu) sort en **⚠ non vérifiable** (ni ✓ trompeur, ni échec bloquant). Les labels `expect_action` hors table (sémantiques) sont signalés en info.
+3. **`selftest.mjs`** — garde anti-régression : vérifie que `harness` **rejette** bien les `fixtures-invalid/` (exit≠0) et **accepte** les valides, et que `coverage` passe. Déterministe.
+4. **`behavioral/`** — comportement des skills (scoring, triage, PLATEAU, déclenchements `persona:train`/`tone-finder:improve`) : spec + rubrique jugées par un LLM à la demande (voir `behavioral/README.md`). Non déterministe.
+
+> `fixtures-invalid/` contient des projets **volontairement cassés** (3/3 non respecté, invariant plateau violé) ; ils ne sont pas validés par `harness` en direct (hors `fixtures/`) mais servent de cibles à `selftest.mjs`.
 
 ## Ce qui est vérifié
 

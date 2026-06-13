@@ -1,0 +1,8 @@
+# Forcer le traitement TEXTE : un .mjs riche en UTF-8 peut être détecté binaire
+# par git (diffs/reviews cassés). Cf. tools/eval/harness.mjs.
+*.mjs  text
+*.js   text
+*.md   text
+*.json text
+*.yaml text
+*.yml  text

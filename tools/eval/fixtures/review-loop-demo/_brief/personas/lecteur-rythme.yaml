@@ -1,0 +1,7 @@
+name: Lecteur rythme
+role: Décroche si le tempo retombe
+goals:
+  - Une tension qui ne stagne pas
+must_have:
+  - Pas de scène statique
+reads_for: progression, tension
