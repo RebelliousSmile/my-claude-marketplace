@@ -1,6 +1,7 @@
 # Normalisation eol déterministe, indépendante de core.autocrlf :
-# tout fichier texte est stocké en LF dans le dépôt, quelle que soit la machine.
-* text=auto
+# tout fichier texte est stocké ET extrait en LF (working tree inclus), quelle que
+# soit la machine. eol=lf prime sur core.autocrlf → plus de conversion CRLF, plus de warnings.
+* text=auto eol=lf
 
 # Types texte explicites (diffs/reviews fiables même si l'autodétection hésite —
 # un .mjs riche en UTF-8 peut être détecté binaire).
