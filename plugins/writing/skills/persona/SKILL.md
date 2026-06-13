@@ -29,7 +29,7 @@ Trigger-to-action mapping:
 - Personas are always written to `<brief>/personas/<id>.yaml`.
 - Scoring criterion weights MUST sum to 1.0.
 - `train` reads only `<output>/review/chapter-<NN>-<persona>.md` files; never invent patterns.
-- **When `train` fires**: `train` recalibrates a persona once it caps (≤11/20 on its must-haves) over **≥3 chapters** — the signal that the persona itself drifted, not that one chapter is weak. Trigger defined in `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`.
+- **When `train` fires**: only when a persona proves **unreliable** — it caps (≤11/20) repeatedly (**≥3 chapters**) on chapters the *other* personas and the craft checklist judge sound (**uncorroborated** verdict = the persona drifted). A persona capping on a *corroborated* real defect is doing its job — fix the text/style, never retrain it (that would silence a valid critic). Trigger defined in `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`.
 - After training, increment the persona version comment in the YAML header.
 - The `<brief>/` is read-only for all other writing skills; `persona` is the only skill that writes into `<brief>/personas/`.
 

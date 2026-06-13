@@ -2,6 +2,11 @@
 
 > Fusion de `doc-writer` (v0.1.0) et `rpg-writer` (v0.10.0). Historique détaillé : `git log -- plugins/writing plugins/doc-writer plugins/rpg-writer`.
 
+## [1.1.1] — 2026-06-13
+
+### Fixed
+- **Déclencheur `persona:train` corrigé** (`references/review-loop.md` + `persona/SKILL.md`) : un plafonnement répété d'une persona était routé vers `persona:train`, ce qui revenait à recalibrer (faire taire) une persona qui détectait un **vrai défaut**. Désormais `persona:train` ne se déclenche que sur un plafonnement **non corroboré** (persona *outlier* qui dérive : elle plafonne là où les autres personas + la craft checklist passent). Un plafonnement **corroboré** = défaut réel → `write --feedback` / `tone-finder:improve`. Défaut repéré par la couche de test comportementale (juge adverse).
+
 ## [1.1.0] — 2026-06-13
 
 ### Added

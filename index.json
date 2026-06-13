@@ -16,7 +16,7 @@
       "id": "writing",
       "name": "writing",
       "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, lore, données) est délégué à obsidian. Fusion de doc-writer + rpg-writer.",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "id": "game-writer",

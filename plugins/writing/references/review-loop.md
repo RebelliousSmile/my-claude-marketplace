@@ -60,11 +60,13 @@ Tous les seuils de la boucle sont **ici**, en un seul endroit (pas dispersés en
 |-----------|--------|------|
 | `PLATEAU_DELTA` | **1.0** | en-deçà (`Δ < 1.0`), le gain est marginal → PLATEAU |
 | `MAX_ITERATIONS` | **5** | garde anti-boucle par chapitre → `CAP-ITERATIONS` |
-| `SYSTEMIC_CHAPTERS` | **3** | un symptôme sur ≥3 chapitres devient « transverse » → révision d'intrant (`tone-finder:improve` / `persona:train`) |
+| `SYSTEMIC_CHAPTERS` | **3** | un symptôme sur ≥3 chapitres devient « transverse » → révision d'intrant |
 
-> Le seuil `SYSTEMIC_CHAPTERS` gouverne **les deux** déclencheurs de révision d'intrant
-> (style ET persona). Le déclencheur `persona:train` sur ≥3 chapitres est un choix
-> de conception (le schéma d'origine ne montrait que `tone-finder`) — à rediscuter si besoin.
+> Le seuil `SYSTEMIC_CHAPTERS` gouverne les deux révisions d'intrant, mais sur des
+> **signaux distincts** : `tone-finder:improve` sur un **pattern de style corroboré**
+> récurrent ; `persona:train` **uniquement** sur un plafonnement **non corroboré**
+> (persona outlier qui dérive). Ne jamais déclencher `persona:train` sur un défaut réel
+> (voir la note sous la table de triage).
 
 ## Le critère PLATEAU
 
@@ -117,7 +119,9 @@ patterns systémiques) :
 | Consensus ≤ 10/20 **ou** ≥ 2 personas plafonnées par un *must-have* structurel | réécriture | `write --feedback` |
 | 11–13/20 (corrections importantes) ou ≥ 14/20 (optionnel) | corrections | `review:doctor` |
 | Pattern systémique récurrent sur **≥ 3 chapitres** (Section 2) | révision **style** | `tone-finder:improve` → `output-style v+1` → puis `write --feedback` |
-| Une **même persona** plafonnée (≤ 11/20 sur ses *must-have*) sur **≥ 3 chapitres** | révision **persona** | `persona:train` (recalibrer depuis les retours accumulés) |
+| Une persona **outlier** : elle plafonne (≤ 11/20) sur **≥ 3 chapitres** que les *autres* personas **et** la craft checklist jugent sains (plafonnement **non corroboré**) | révision **persona** | `persona:train` (recalibrer la persona dérivée) |
+
+> **Un plafonnement n'accuse pas la persona par défaut — il accuse le texte.** Une persona qui plafonne sur un défaut **corroboré** (les autres personas / la checklist le confirment) a *raison* : on corrige le **texte** (`write --feedback`) ou, si c'est une lacune de convention, le **style** (`tone-finder:improve`) — **jamais** `persona:train`, qui reviendrait à faire taire un critique valide pour gonfler le score. `persona:train` ne se déclenche que sur un plafonnement **non corroboré et répété** (dérive de la persona). `comment` dispose déjà de la donnée nécessaire (scores de toutes les personas + divergence + checklist).
 
 > Les deux dernières routes ne s'appliquent **pas** chapitre par chapitre : elles
 > corrigent un défaut **transverse au projet** (le style ou la persona elle-même),
@@ -132,10 +136,13 @@ patterns systémiques) :
   (Section 2) qui revient sur **≥ 3 chapitres** : ce n'est pas le texte qui dévie,
   c'est la convention de style qui est incomplète/inexacte → mettre à jour
   l'output-style (bump `version:` du fichier, `v+1`).
-- **`persona:train`** — quand une **persona donnée** plafonne (≤ 11/20 sur ses
-  *must-have*) de façon répétée sur **≥ 3 chapitres** : le signal n'est plus « ce
-  chapitre est mauvais pour ce lecteur » mais « cette persona est mal calibrée /
-  ses attentes ont dérivé » → la raffiner depuis `<output>/review/` accumulé.
+- **`persona:train`** — **seulement** quand une persona se révèle **non fiable** : elle
+  plafonne (≤ 11/20) de façon répétée (**≥ 3 chapitres**) sur des chapitres que les
+  *autres* personas **et** la craft checklist jugent sains — verdict **non corroboré**.
+  C'est le signe que la persona a **dérivé** (elle pénalise ce qui n'est pas un défaut),
+  pas que le texte est mauvais → la raffiner depuis `<output>/review/` accumulé.
+  **À ne pas confondre** : une persona qui plafonne sur un défaut *réel et corroboré*
+  fait son travail — on corrige le texte/style, jamais la persona.
 
 Ces deux révisions consomment les fichiers `<output>/review/chapter-NN-*.md` (retours
 `comment`) et réécrivent les intrants dans `<brief>/` (`output-styles/`, `personas/`).
