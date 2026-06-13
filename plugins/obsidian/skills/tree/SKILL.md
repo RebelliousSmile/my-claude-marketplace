@@ -25,6 +25,7 @@ Keeps `Documents/` **navigable while it keeps changing**. Rather than enforcing 
 | 02  | `check` | Verify invariants + drift vs the cached convention; report only                | `[<target>]` (default: CWD)        |
 | 03  | `fix`   | Apply safe corrections for confirmed anomalies/drift (rename, move; never delete) | `[<target>]` (default: CWD)        |
 | 04  | `sort`  | Arbitrate placement of loose/unsorted items into the tree, using the cache     | `<items…>` `[--into <target>]`     |
+| 05  | `judge` | Interactive session: arbitrate content in `R` node by node — delete/summarise/merge/keep+advance | `[<target R>]` (default: CWD → R) |
 
 ## Default flow
 
@@ -33,6 +34,7 @@ Trigger-to-action mapping:
 - "check organisation", "is this tidy", "vérifier l'arbo", "what's out of place" → `check`
 - "fix the tree", "tidy", "ranger", "corriger l'arbo" → `fix`
 - "where does this go", "sort these files", "trier", "classe ça" → `sort`
+- "judge R", "arbitrer le contenu", "trier R", "nettoyer R", "juger les fichiers" → `judge`
 
 `check`/`fix`/`sort` auto-refresh the cache if it is missing or stale (the target changed since `scanned_at`).
 
@@ -44,6 +46,7 @@ Trigger-to-action mapping:
 - **Never destructive** (`fix`/`sort`): only rename/move, always after a dry-run preview and explicit confirmation. Never delete user content; never overwrite an existing destination — flag the collision instead. (See `delete-safety`.)
 - **Learn, don't impose**: when a domain diverges from the default pattern, record its effective convention in the cache rather than forcing it back.
 - `index` and `check` never modify user content; `index` only writes derived caches (`_tree/cache.json` and per-domain `R/bank.yml`).
+- `judge` manages `R/_trash/` (a working dir, `_` prefix — I1 compliant) as the destination for content marked for deletion. The user empties `_trash/` manually. `judge` never performs a real `rm`.
 - **`R/bank.yml` is a cache, not curation.** `index` derives `id`/`kind`/`path` from scanning `R/_savoir/`, and a best-effort `summary` from each file's heading. It is **merge, not clobber**: existing curated `summary` text is preserved; new resources are added; vanished ones are flagged. It is consumed by `obsidian:brief`, never by `writing`.
 
 ## External data
