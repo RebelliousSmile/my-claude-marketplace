@@ -19,8 +19,9 @@ plugins/<nom>/
     evals/scenarios.json          # cas de routage (prompt → expect_action)
 memory/                           # guidelines d'authoring (README, CLAUDE.md)
 aidd_docs/internal/decisions/     # ADR (décisions d'architecture, ex. DEC-001)
-tools/eval/                       # harness e2e brief→output + fixtures golden (node, zéro dép.)
 ```
+
+> Les tests (`tools/eval/`, `package.json`, workflow CI) sont **hors dépôt** (gitignorés) — outillage local, non versionné par choix.
 
 ## Anatomie d'un skill
 
@@ -45,7 +46,7 @@ Corps attendu :
 
 Chaque `actions/NN-<nom>.md` suit : `Inputs` → `Process` → `Outputs` → `Test`. Le `Test` doit être vérifiable (une condition observable, pas « ça marche »).
 
-**Convention `evals/scenarios.json`** : liste de `{ "prompt", "expect_action" }`. `expect_action` vaut **soit l'id exact d'une action** de la table (préféré — `coverage.mjs` vérifie alors la couverture), **soit `null`** (le prompt ne doit pas déclencher ce skill). Les **labels sémantiques** non-id (ex. `build+wire` pour un flux composite) sont tolérés mais signalés « non vérifiable » par `coverage.mjs` (impossible de tracer l'action) — à éviter pour les nouveaux skills. La détection des actions routables lit le mapping *trigger → action* en prose (`"phrase" → \`action\``) ; les skills dont les déclencheurs vivent en frontmatter `triggers:` ressortent « non vérifiable ».
+**Convention `evals/scenarios.json`** : liste de `{ "prompt", "expect_action" }`. `expect_action` vaut **soit l'id exact d'une action** de la table (préféré — la couverture est alors traçable), **soit `null`** (le prompt ne doit pas déclencher ce skill). Les **labels sémantiques** non-id (ex. `build+wire` pour un flux composite) sont tolérés mais non traçables automatiquement — à éviter pour les nouveaux skills. Idéalement, exposer le mapping *trigger → action* en prose (`"phrase" → \`action\``) plutôt qu'en seul frontmatter `triggers:`.
 
 Pour partager une procédure entre skills (DRY), la placer dans `plugins/<nom>/references/` et la référencer via `${CLAUDE_PLUGIN_ROOT}/references/<fichier>.md` — **référencer, ne pas redupliquer** (cf. `aidd_docs/internal/decisions/001-pivot-authoring-conventions.md`).
 
@@ -99,7 +100,6 @@ Après modification d'un skill déjà installé, recharger le cache (voir la sec
 
 - JSON valides (`marketplace.json`, `index.json`, `plugin.json`, chaque `evals/scenarios.json`).
 - Chaque action a un `Test` vérifiable.
-- Harness e2e vert : `node tools/eval/harness.mjs` (contrat brief→output + invariants).
-- Couverture de routage verte : `node tools/eval/coverage.mjs` (chaque action routable a ≥1 scénario).
+- Si présent en local, les tests (`tools/eval/`, hors dépôt) passent : `pnpm test`.
 - Les `references` croisées (`${CLAUDE_PLUGIN_ROOT}/...`) pointent vers des fichiers existants.
 - README racine + README plugin + CHANGELOG cohérents avec la version.

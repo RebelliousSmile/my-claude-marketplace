@@ -1,8 +1,0 @@
-name: Tech lead
-role: Diffuse l'aide-mémoire à son équipe, veille à la cohérence des pratiques
-goals:
-  - Un référentiel commun, sans ambiguïté
-  - Mettre en garde sur les opérations destructrices
-pains:
-  - Conseils contradictoires d'une source à l'autre
-reads_for: pratiques sûres, avertissements explicites (force-push, historique partagé)

@@ -1,9 +1,0 @@
-{
-  "name": "aidd-overlay-eval",
-  "private": true,
-  "type": "module",
-  "description": "Scripts de test du marketplace (tools/eval). Pas un paquet publiable.",
-  "scripts": {
-    "test": "node tools/eval/harness.mjs && node tools/eval/coverage.mjs && node tools/eval/selftest.mjs"
-  }
-}

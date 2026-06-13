@@ -1,9 +1,0 @@
-name: Product manager
-role: PM scoping a payments integration for the roadmap
-goals:
-  - Grasp capabilities and limits without reading code
-  - Know what is and isn't supported before committing
-pains:
-  - Reference too low-level to extract product constraints
-  - No overview of the lifecycle
-reads_for: high-level state machine, explicit limitations

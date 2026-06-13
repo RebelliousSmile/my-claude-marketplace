@@ -1,9 +1,0 @@
-name: Backend integrator
-role: Senior backend engineer wiring the payments API into a checkout flow
-goals:
-  - Understand the charge lifecycle end to end
-  - Verify webhook signatures correctly
-pains:
-  - Ambiguous error states
-  - Undocumented retry behaviour
-reads_for: precise, copy-pasteable reference

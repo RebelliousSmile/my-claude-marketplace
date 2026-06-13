@@ -1,8 +1,0 @@
-name: SRE on call
-role: Reliability engineer debugging a failed payment at 3am
-goals:
-  - Map an error code to a cause fast
-  - Know which states are retryable
-pains:
-  - Reference buried in prose
-reads_for: scannable tables, terminal states made explicit

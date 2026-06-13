@@ -1,0 +1,7 @@
+# Outillage de test local — non versionné par choix (tests hors dépôt)
+/tools/
+/package.json
+/.github/workflows/test.yml
+
+# Cache Python (extract-pdf)
+__pycache__/

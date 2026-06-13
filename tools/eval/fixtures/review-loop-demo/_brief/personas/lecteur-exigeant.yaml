@@ -1,7 +1,0 @@
-name: Lecteur exigeant
-role: Persona dont le must-have « montrer, pas dire » est systématiquement violé
-goals:
-  - Émotion portée par l'image, jamais nommée
-must_have:
-  - Aucune émotion explicitée en toutes lettres (déclencheur de plafonnement)
-reads_for: sous-texte, retenue
