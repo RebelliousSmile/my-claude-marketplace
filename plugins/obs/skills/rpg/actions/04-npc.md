@@ -1,29 +1,29 @@
 # 04 - npc
 
-Crée ou développe un PNJ **créé par le MJ** (distinct du personnage-joueur géré par `pc`, et du lore canon).
+Creates or develops an NPC **created by the GM** (distinct from the player-character managed by `pc`, and from the canon lore).
 
 ## Inputs
 
-- `campagne` (requis) — nom de la campagne.
-- `pnj` — nom ou rôle ; sinon, proposer à partir du scénario/des fronts.
-
-## Process
-
-1. **Lire le contexte** : `config.yaml` (univers visé, profondeur PNJ attendue), les personnages/factions **canon** (`R/_univers/<univers>/canon/`) ET MJ (`mj/`), le `synopsis.md` et le scénario qui l'invoque. Si le PNJ visé est canon, ne pas le réécrire : créer une fiche MJ qui l'**étend** et le `[[lie]]`.
-2. **Définir le PNJ (durable, création MJ)** :
-   - Identité : nom, rôle, première impression / façade.
-   - **Motivation & agenda** : ce qu'il veut, ce qu'il fera pour l'obtenir (relié à une faction si pertinent).
-   - **Secret / levier** : ce qu'il cache, ce qui le rend manipulable.
-   - **Voix** : 2–3 tics de langage ou de comportement pour le jouer vite.
-   - **Tags mécaniques** : forces/faiblesses, statuts éventuels (selon le système de jeu — consulter les références, ne pas inventer).
-3. **Écrire dans `mj/`** : ajouter/compléter le PNJ dans `R/_univers/<univers>/mj/personnages.md` (une info dans un seul fichier, ne pas écraser, synthétiser si > ~250 lignes). `[[lier]]` la faction (`mj/` ou `canon/factions.md`). **Ne jamais écrire dans `canon/`**. Si le PNJ contredit le canon, le signaler.
-4. **Spécifique à la campagne** : si le PNJ a un rôle/une posture propre à *cette* partie (lien à la ligne rouge du PJ, implication dans un front actif), le consigner côté campagne — dans le scénario concerné (`scenarios/`) ou `fronts.md` — en référençant la fiche `mj/`, sans la dupliquer. **Si aucune campagne n'existe encore** (pas de `config.yaml`), le write côté univers `mj/` (étape 3) **suffit** : différer les notes côté campagne jusqu'à l'amorce d'une campagne via `campaign` — ne jamais fabriquer de dossier campagne ici.
-5. Mettre à jour l'`index.md` de la campagne (PNJ en jeu → lien vers `mj/`) — **si une campagne existe** ; sinon différer.
+- `campagne` (required) — campaign name.
+- `pnj` — name or role; otherwise, propose from the scenario/the fronts.
 
 ## Outputs
 
-Entrée PNJ dans `R/_univers/<univers>/mj/personnages.md` (création MJ) + éventuelles notes de rôle côté campagne. `canon/` inchangé. Marquer les `[À compléter]`.
+NPC entry in `R/_univers/<univers>/mj/personnages.md` (GM creation) + possible role notes on the campaign side. `canon/` unchanged. Mark the `[To complete]`.
+
+## Process
+
+1. **Read the context**: `config.yaml` (target setting, expected NPC depth), the **canon** characters/factions (`R/_univers/<univers>/canon/`) AND MJ (`mj/`), the `synopsis.md` and the scenario that invokes it. If the targeted NPC is canon, do not rewrite it: create an MJ sheet that **extends** it and `[[links]]` it.
+2. **Define the NPC (durable, GM creation)**:
+   - Identity: name, role, first impression / façade.
+   - **Motivation & agenda**: what they want, what they will do to get it (tied to a faction if relevant).
+   - **Secret / leverage**: what they hide, what makes them manipulable.
+   - **Voice**: 2–3 speech or behavior tics to play them quickly.
+   - **Mechanical tags**: strengths/weaknesses, possible statuses (per the game system — consult the references, do not invent).
+3. **Write into `mj/`**: add/complete the NPC in `R/_univers/<univers>/mj/personnages.md` (one piece of info in a single file, do not overwrite, synthesize if > ~250 lines). `[[link]]` the faction (`mj/` or `canon/factions.md`). **Never write into `canon/`**. If the NPC contradicts the canon, report it.
+4. **Campaign-specific**: if the NPC has a role/stance specific to *this* game (link to the PC's red line, involvement in an active front), record it on the campaign side — in the relevant scenario (`scenarios/`) or `fronts.md` — referencing the `mj/` sheet, without duplicating it. **If no campaign exists yet** (no `config.yaml`), the write on the setting side `mj/` (step 3) **suffices**: defer the campaign-side notes until a campaign is bootstrapped via `campaign` — never fabricate a campaign folder here.
+5. Update the campaign's `index.md` (NPC in play → link to `mj/`) — **if a campaign exists**; otherwise defer.
 
 ## Test
 
-L'entrée PNJ vit dans `R/_univers/<univers>/mj/personnages.md` (jamais dans `canon/`, non dupliquée), contient au moins motivation/agenda + un secret/levier, les tags mécaniques (s'il y en a) proviennent des références des règles, et toute extension d'un PNJ canon le `[[lie]]` sans le réécrire.
+The NPC entry lives in `R/_univers/<univers>/mj/personnages.md` (never in `canon/`, not duplicated), contains at least motivation/agenda + a secret/leverage, the mechanical tags (if any) come from the rules references, and any extension of a canon NPC `[[links]]` it without rewriting it.

@@ -1,30 +1,30 @@
 # 02 - scenario
 
-Écrit un scénario / une situation jouable pour la campagne — le cœur de l'écriture de scénarios.
+Writes a scenario / a playable situation for the campaign — the core of scenario writing.
 
 ## Inputs
 
-- `campagne` (requis) — nom de la campagne.
-- `pitch` — idée de départ (paste libre) ; sinon, dériver du `synopsis.md` et des fronts en cours.
-
-## Process
-
-1. **Lire le contexte** : `synopsis.md`, `config.yaml` (ton/rythme/difficulté, univers), les données d'univers **canon ET MJ** (`R/_univers/<univers>/canon/` et `mj/` : `personnages.md`, `factions.md`, `geographie.md`), les fronts actifs `R/_campagnes/<campagne>/fronts.md`, et l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale). Le canon prime ; le MJ étend.
-2. **Construire en situation, pas en intrigue linéaire** (adapté au solo) :
-   - **Prémisse & enjeu** : ce qui est vrai au départ, ce qui va déraper si le PJ n'agit pas.
-   - **Lieux** : 3–6 lieux clés ; `[[lier]]` les lieux existants (`R/_univers/<univers>/canon/` ou `mj/geographie.md`), créer les nouveaux (invention MJ) dans `mj/geographie.md` ; n'inscrire ici que leur mise en jeu (ambiance, ce qu'on y trouve maintenant).
-   - **PNJ impliqués** : `[[lier]]` les fiches d'univers (`canon/` ou `mj/personnages.md`) ; en créer de nouveaux via `npc` (écrits dans `mj/`).
-   - **Fronts & horloges** : ce qui avance en arrière-plan (lier à `fronts.md` de la campagne et aux factions d'univers).
-   - **Amorces de scènes** : 4–8 scènes-germes (déclencheur + tension), pas un script figé.
-   - **Issues possibles** : succès / échec / coût, et conséquences sur les fronts.
-   - **Récompenses** : matérielles, narratives, et toute récompense mécanique propre au système de jeu (consulter les références — ne pas inventer).
-3. **Ancrer sur le PJ** : au moins une scène-germe touche la ligne rouge ou la question viscérale du PJ.
-4. **Écrire** `R/_campagnes/<campagne>/scenarios/<slug>.md` (le scénario est de la prep de campagne ; lieux/PNJ/factions durables restent dans l'univers, liés) ; mettre à jour `index.md`.
+- `campagne` (required) — campaign name.
+- `pitch` — starting idea (free paste); otherwise, derive from the `synopsis.md` and the current fronts.
 
 ## Outputs
 
-`R/_campagnes/<campagne>/scenarios/<slug>.md` (prémisse, lieux liés, PNJ liés, fronts, amorces, issues, récompenses) + `index.md` à jour. Lister les PNJ/factions/lieux d'univers à créer (via `npc`/`faction`/`lore-extract`) et les `[À compléter]`.
+`R/_campagnes/<campagne>/scenarios/<slug>.md` (premise, linked locations, linked NPCs, fronts, hooks, outcomes, rewards) + updated `index.md`. List the setting NPCs/factions/locations to create (via `npc`/`faction`/`lore-extract`) and the `[To complete]`.
+
+## Process
+
+1. **Read the context**: `synopsis.md`, `config.yaml` (tone/pace/difficulty, setting), the setting data **canon AND MJ** (`R/_univers/<univers>/canon/` and `mj/`: `personnages.md`, `factions.md`, `geographie.md`), the active fronts `R/_campagnes/<campagne>/fronts.md`, and the PC's `intention.md` (themes, red line, visceral question). The canon takes precedence; the GM extends.
+2. **Build as a situation, not a linear plot** (suited to solo):
+   - **Premise & stake**: what is true at the start, what will go off the rails if the PC does not act.
+   - **Locations**: 3–6 key locations; `[[link]]` the existing locations (`R/_univers/<univers>/canon/` or `mj/geographie.md`), create the new ones (GM invention) in `mj/geographie.md`; record here only their staging (atmosphere, what is found there now).
+   - **NPCs involved**: `[[link]]` the setting sheets (`canon/` or `mj/personnages.md`); create new ones via `npc` (written in `mj/`).
+   - **Fronts & clocks**: what advances in the background (link to the campaign's `fronts.md` and to the setting factions).
+   - **Scene seeds**: 4–8 scene-seeds (trigger + tension), not a fixed script.
+   - **Possible outcomes**: success / failure / cost, and consequences on the fronts.
+   - **Rewards**: material, narrative, and any mechanical reward specific to the game system (consult the references — do not invent).
+3. **Anchor on the PC**: at least one scene-seed touches the PC's red line or visceral question.
+4. **Write** `R/_campagnes/<campagne>/scenarios/<slug>.md` (the scenario is campaign prep; durable locations/NPCs/factions stay in the setting, linked); update `index.md`.
 
 ## Test
 
-Le scénario contient au moins prémisse + lieux + amorces de scènes + issues possibles, `[[lie]]` les PNJ/factions/lieux à l'univers (sans les dupliquer) et les fronts à la campagne, et au moins une amorce touche la ligne rouge ou la question viscérale du PJ.
+The scenario contains at least premise + locations + scene seeds + possible outcomes, `[[links]]` the NPCs/factions/locations to the setting (without duplicating them) and the fronts to the campaign, and at least one seed touches the PC's red line or visceral question.

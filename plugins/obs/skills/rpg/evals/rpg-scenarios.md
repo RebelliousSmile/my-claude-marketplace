@@ -4,7 +4,7 @@ Behavioural tests for the `rpg` skill (`plugins/obs/skills/rpg/SKILL.md`) — th
 
 Run via an agent that loads `SKILL.md` + the relevant `actions/*.md` + `references/methode-creation.md`, against a real domain `R` holding at least one universe and one PJ with an `intention.md`. Pass = the expected behaviour is observed AND no forbidden write occurs.
 
-Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — see `../../references/jdr-layout.md`. Universe lore at `R/_univers/<univers>/{canon,mj}/`, system rules at `R/_systeme/{canon,mj}/`, PJ at `R/_pjs/<pj>/`, campaign at `R/_campagnes/<campagne>/`.
+Game domain `R` resolved **locally** via one of the markers `_campagnes/`, `_univers/` or `_pjs/` — see `../../references/jdr-layout.md`. Universe lore at `R/_univers/<univers>/{canon,mj}/`, system rules at `R/_systeme/{canon,mj}/`, PJ at `R/_pjs/<pj>/`, campaign at `R/_campagnes/<campagne>/`.
 
 | #  | Situation (input) | Expected behaviour | Pass criteria |
 |----|-------------------|--------------------|---------------|

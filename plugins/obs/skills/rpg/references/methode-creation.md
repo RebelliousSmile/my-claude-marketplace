@@ -1,131 +1,131 @@
-# Notre méthode — Préparer une campagne de JdR solo depuis le canon
+# Our method — Preparing a solo TTRPG campaign from canon
 
-Cette méthode décrit **notre** façon de fabriquer de la matière de jeu pour le skill `rpg`. Elle porte exclusivement sur le **craft de préparation** — relations, situation, PNJ, scènes, indices — et **jamais** sur les mécaniques. Toute règle (récompense, tag, défi, jet) est déférée à `R/_systeme/{canon,mj}/` du jeu : on n'invente aucune mécanique ici.
+This method describes **our** way of producing play material for the `rpg` skill. It deals exclusively with the **craft of preparation** — relationships, situation, NPCs, scenes, clues — and **never** with mechanics. Any rule (reward, tag, challenge, roll) is deferred to the game's `R/_systeme/{canon,mj}/`: we invent no mechanics here.
 
-Trois principes la gouvernent du début à la fin :
+Three principles govern it from start to finish:
 
-1. **Partir du canon.** Tout démarre du lore établi (`R/_univers/<univers>/canon/`) et de l'intention du PJ (`R/_pjs/<pj>/intention.md`). On ne crée pas dans le vide : on prolonge un univers et un personnage existants.
-2. **Préparer une situation, pas une intrigue.** On installe des forces, des désirs et des tensions instables — pas une suite d'événements scriptée. L'histoire émerge des choix en jeu.
-3. **Procéder par allers-retours.** À chaque étape, on **propose plusieurs directions**, l'utilisateur **choisit** (ou amende), puis on **consigne** dans `mj/` ou le dossier de campagne. Jamais de page écrite d'un bloc sans validation.
-
----
-
-## Le process en 7 étapes
-
-### Étape 1 — Ancrer sur le canon et l'intention du PJ
-
-**Quoi faire.** Avant toute création, lire le canon de l'univers (`canon/terminologie, factions, personnages, histoire, geographie`) et l'`intention.md` du PJ. En extraire trois choses : (a) la **tension thématique** de la campagne, formulée en une question ouverte dont l'issue n'est pas décidée (« Jusqu'où trahira-t-il pour les siens ? ») ; (b) la **ligne rouge / question viscérale** du PJ ; (c) une **palette de signes** récurrents (matière, couleur, geste, son) qui signera l'univers à la table. Proposer 2–3 formulations de tension thématique, laisser choisir, consigner dans le synopsis de campagne (`R/_campagnes/<campagne>/`).
-
-**Techniques du corpus qui la nourrissent.**
-- *S'inspirer d'un thème pour générer la prep (theme-driven prep)* — fixer le thème d'abord, en faire un filtre directeur ; le tirer de ce que le joueur a signalé vouloir explorer. (Premise de Ron Edwards, d'après Egri — [Narrativism: Story Now](http://www.indie-rpgs.com/_articles/narr_essay.html))
-- *Décrire l'univers comme un ensemble de signes* — constituer une banque de détails-signes plutôt qu'une bible exhaustive ; chaque détail est un crochet qui pose une question. (Color dans la Forge — [De-signing the Design](https://www.gamedeveloper.com/design/de-signing-the-design-the-semiotics-of-choice))
-- *Adapter une œuvre* — quand le canon contient un récit fort, on en extrait la **situation** (qui veut quoi, qui s'oppose à qui) et non la séquence de scènes. ([Don't Prep Plots](https://thealexandrian.net/wordpress/4147/roleplaying-games/dont-prep-plots))
-
-### Étape 2 — Récolter l'amorce personnelle du PJ
-
-**Quoi faire.** Demander à l'utilisateur **un événement bouleversant** survenu juste avant le début du jeu, qui force le PJ à agir et qu'il ne peut ignorer. C'est lui qui l'écrit (ou le valide parmi nos propositions), pas nous. Cet événement n'est pas résolu d'avance : il ouvre un éventail d'actions. On cartographie ensuite ce qu'il implique (qui, où, quel enjeu) pour bâtir la situation **autour** de lui. Consigner comme accroche de campagne.
-
-**Techniques du corpus qui la nourrissent.**
-- *Kicker (événement déclencheur authoré par le joueur)* — l'amorce vient du joueur ; le préparateur l'exploite, ne la fabrique pas, et bâtit la situation après. (Sorcerer, Ron Edwards — [Here's the Kicker](https://stepintorpgs.wordpress.com/2015/04/25/heres-the-kicker-character-creation-and-plot-hooks/))
-- *Flags (signaux du joueur)* — recueillir les déclarations d'intention explicites (objectif, relation, idéal, peur) que la prep devra viser. (Chris Chinn — [Flag Framing](https://bankuei.wordpress.com/2015/01/07/flag-framing-1-setting-up-a-campaign/))
-- En solo, l'amorce est co-écrite avec l'utilisateur : on propose des directions tirées du canon, il tranche.
-
-### Étape 3 — Bâtir la situation : carte de relations
-
-**Quoi faire.** Lister 6 à 10 acteurs (PNJ canon + PNJ à créer + factions), les poser en nœuds, puis tracer entre eux des **liens à double charge** : ce qui les unit ET ce qui les ronge (« sa sœur, qu'il protège et dont il convoite l'héritage »). Règle de densité : viser **2–3 liens par nœud** ; tout nœud à un seul lien est faiblement intégré (à reconnecter ou couper). **Brancher le PJ dans la carte** par au moins un fil (dette, secret, lien de sang). Proposer la carte, faire valider les liens, la consigner dans `mj/personnages.md` / `mj/factions.md` (en `[[liant]]` les entrées canon sans les dupliquer).
-
-**Techniques du corpus qui la nourrissent.**
-- *Cartographier les relations entre personnages (R-map)* — nœuds + arêtes dirigées et asymétriques, codées par type et intensité ; la carte rend la situation instable et prête à exploser sans dicter l'action. (Ron Edwards, Sorcerer's Soul — [Relationship Maps](http://sgcodex.wikidot.com/relationship-maps))
-- *Générer des relations complexes entre PNJ (liens ambivalents)* — chaque PNJ porte un désir propre + un vecteur d'opposition ; la pression dramatique préexiste à l'arrivée du PJ. ([Relationship Mapping, Gnome Stew](https://gnomestew.com/relationship-mapping/))
-- *Imaginer un PNJ miroir* — placer dans la carte au moins un PNJ qui reflète ou inverse le PJ (« comme lui, mais qui a choisi l'inverse »), branché par un besoin qui garantit la collision. ([Foil — Wikipedia](https://en.wikipedia.org/wiki/Foil_(narrative)))
-
-### Étape 4 — Mettre la situation en mouvement : fronts, horloges, secrets
-
-**Quoi faire.** La carte de relations est statique ; il faut lui donner une **trajectoire**. Limiter à **≈3 forces antagonistes** (factions, menaces, dynamiques d'univers). Pour chacune : un nom, sa **motivation propre** (ce qui la pousse à agir seule), une **chaîne d'étapes visibles** (du mauvais au pire) si personne n'intervient, et la **catastrophe finale** visée. Doser les vitesses : une lente de fond, une ou deux immédiates. En parallèle, **semer des secrets et indices redondants** : pour chaque vérité cachée que le PJ pourrait découvrir, prévoir **au moins trois indices** de natures différentes (témoin, trace physique, document/déduction), répartis dans des lieux et PNJ distincts. Proposer les forces + leurs étapes, faire choisir lesquelles activer, consigner l'état dans `R/_campagnes/<campagne>/`.
-
-> Le formalisme mécanique d'avancement (jets, segments cochés) n'appartient pas à `rpg` : pour faire avancer une force par une règle, déférer à `R/_systeme/{canon,mj}/`. Ici on prépare des **étapes fictionnelles** et des **échéances**.
-
-**Techniques du corpus qui la nourrissent.**
-- *Fronts et horloges en tant qu'outil de préparation* — forces dotées d'une impulsion et d'étapes visibles, jouées « pour découvrir » ; ~3 fronts à vitesses variées. ([Fronts — Dungeon World SRD](https://www.dungeonworldsrd.com/gamemastering/fronts/), [SlyFlourish](https://slyflourish.com/looking_back_on_fronts.html)) — *Adapté system-agnostic : on garde l'idée de forces à trajectoire, on retire le vocabulaire mécanique propre au système.*
-- *Laisser flotter des indices et des secrets* — nappe d'indices redondants ; règle des trois indices ; menaces dormantes qui escaladent. (Justin Alexander — [Three Clue Rule](https://thealexandrian.net/wordpress/1118/roleplaying-games/three-clue-rule))
-- *Passer du scénario à la campagne* — tenir un document d'état (forces, fils en suspens, points chauds) mis à jour de session en session. ([Scenario Timelines](https://thealexandrian.net/wordpress/4154/roleplaying-games/dont-prep-plots-prepping-scenario-timelines))
-
-### Étape 5 — Créer et relier les PNJ
-
-**Quoi faire.** Pour chaque PNJ que la situation appelle, fixer le strict nécessaire : **un trait dominant + une signature (voix, geste ou objet) + un détail mémorable**, et surtout **ce qu'il veut** + **ce qui lui barre la route**. Pas de biographie longue : des briques activables. Vérifier que chaque PNJ est **bien branché dans la carte** (étape 3) et, si pertinent, lui donner un rôle de **miroir** d'un PJ. Désigner au moins un PNJ comme **porteur d'un cadeau empoisonné** (voir étape 6). Proposer une poignée de PNJ, faire valider, écrire les fiches dans `mj/personnages.md` (jamais dans `canon/` ; `[[lier]]` le canon si on l'étend).
-
-> Pour les tags/stats d'un PNJ (capacités, niveau de menace), consulter `R/_systeme/{canon,mj}/` — ne pas inventer.
-
-**Techniques du corpus qui la nourrissent.**
-- *Singulariser et rendre des PNJ attachants* — 1–2 marqueurs saillants (trait + voix + détail) suffisent ; tenir un registre pour la récurrence et l'évolution. ([Quick & Dirty Memorable NPCs](http://ragingowlbear.blogspot.com/2018/05/gm-101-quick-dirty-memorable-npcs.html))
-- *Créer un antagoniste mémorable (but / méthode / faille)* — pour l'adversaire central : motivation creusée par « Pourquoi ? » répété, méthode en étapes résilientes, faille exploitable, accrochée au passé du PJ. ([The Villain AS Plot](https://theangrygm.com/villains-and-plots-the-villain-as-plot/))
-- *Imaginer un PNJ miroir* (rappel) — un PNJ peut refléter un PJ et en inverser un autre.
-
-### Étape 6 — Concevoir un scénario jouable
-
-**Quoi faire.** Choisir d'abord la **forme** adaptée à l'intention (nodale pour l'enquête/l'exploration, plus dirigée pour un one-shot cinématique) plutôt qu'une chaîne linéaire par défaut. Puis fabriquer la matière jouable :
-
-- **Des scènes qui comptent.** Pour chaque scène anticipée, noter le cadre (où, qui), la **question dramatique** qu'elle pose et les **enjeux** (ce qui peut être gagné/perdu), prêts à être énoncés en une phrase. Cadrer au plus près du point de décision.
-- **Une réserve de situations-déclencheurs.** Préparer 4–8 amorces en une ou deux phrases chacune — un événement qui place le PJ devant un **choix** qui compte, sans en dicter l'issue (« apprendre que la princesse est prisonnière », pas « sauver la princesse »). Ce sont des munitions jetables, pas un ordre de scènes.
-- **Des objectifs contradictoires.** Vérifier que les désirs des acteurs se chevauchent et frottent : triangulation (un PNJ allié de l'un, menace de l'autre), ressource rivale unique, valeurs incompatibles. Le moteur est le frottement entre agendas, pas l'obstacle externe.
-- **Des cadeaux empoisonnés.** Pour chaque chose que le PJ veut, pré-écrire un **coût ancré dans la fiction** (dette, secret compromettant, menace qui démarre, perte d'autre chose) et désigner qui en est le porteur et quand le prix refera surface.
-
-Proposer les amorces + les frictions, laisser l'utilisateur choisir lesquelles retenir, consigner le scénario dans `R/_campagnes/<campagne>/`.
-
-> **Garde-fou de craft (principe de Czege).** Ne jamais être seul auteur **du problème et de sa résolution**. On prépare des problèmes ouverts, pas leurs dénouements. En solo, la résolution est déléguée au système hôte et aux oracles consommés par `solo-mc` — c'est cette source externe qui tranche l'issue, pas la prep.
-
-**Techniques du corpus qui la nourrissent.**
-- *Choisir une structure narrative adaptée* — diagnostiquer l'intention et choisir linéaire / embranché / nodal selon le but, pas par automatisme. ([The Shape of Adventure](https://theangrygm.com/the-shape-of-adventure/))
-- *Créer un scénario en situation plutôt qu'en intrigue / Story Now* — remplir une boîte à outils (PNJ, lieux, objectifs, situation intenable), pas un synopsis. ([Don't Prep Plots](https://thealexandrian.net/wordpress/4147/roleplaying-games/dont-prep-plots))
-- *Bangs (situations provocantes forçant un choix)* — formuler des déclencheurs de choix, pas des résultats imposés ; même l'inaction a des conséquences. (Ron Edwards — [Prepping Bangs](https://thealexandrian.net/wordpress/36768/roleplaying-games/the-art-of-pacing-prepping-bangs))
-- *Proposer des scènes qui comptent — cadrage & enjeux* — point de vue + question dramatique + enjeux ; couper tôt. ([The Art of Pacing: Scene-Framing](https://thealexandrian.net/wordpress/31520/roleplaying-games/the-art-of-pacing-part-2-scene-framing))
-- *Diversifier et opposer les objectifs* — triangulation, ressource rivale, idéologies incompatibles ; garder le conflit dans la coopération. ([lumpley games](https://lumpley.games/2021/06/30/powered-by-the-apocalypse-part-7-qa-round-4/))
-- *Faire des cadeaux empoisonnés* — offrir ce que le PJ veut avec un coût ancré et différé ; un porteur crédible avec ses propres motivations. ([A Mad Lib For Your Devil's Bargains](https://www.roleplayingtips.com/adventure-building-campaigns/a-mad-lib-for-your-devils-bargains/))
-- *Principe de Czege* — séparer l'auteur de l'adversité de l'auteur de la résolution ; en solo, déléguer la résolution au système/oracle. ([Czege Principle](https://rpgmuseum.fandom.com/wiki/Czege_Principle))
-
-### Étape 7 — Entrelacer les fils et tracer l'arc
-
-**Quoi faire.** À l'échelle de la campagne, tenir **3 à 5 fils actifs** (un majeur, des mineurs, parfois un épisodique) et organiser leur **alternance** : qui est sous le projecteur, quand, et où les fils se **croisent** (un PNJ, un objet ou un lieu partagé par deux fils). Pour le PJ, formuler une **phrase d'arc** (« état initial → tension → issue possible ») et le **type** (changement / croissance / déchéance / arc plat), sans décider l'issue : c'est le choix du joueur qui clôt l'arc. Disposer les déclencheurs comme des points d'accroche modifiables. Proposer le tressage et l'arc, valider, consigner dans le document d'état de campagne.
-
-**Techniques du corpus qui la nourrissent.**
-- *Entremêler les intrigues* — grille de tressage (colonnes = fils, lignes = beats), points de croisement, équilibre du temps de projecteur. ([The Braiding of Plot Threads](https://www.campaignmastery.com/blog/the-braiding-of-plot-threads/))
-- *Concevoir un arc de personnage* — phrase d'arc, type d'arc, prémisse en question ouverte, déclencheurs comme accroches jetables. ([Character Arcs, Gnome Stew](https://gnomestew.com/character-arcs/))
-- *Passer du scénario à la campagne* — situation évolutive + document d'état mis à jour. ([Scenario Timelines](https://thealexandrian.net/wordpress/4154/roleplaying-games/dont-prep-plots-prepping-scenario-timelines))
-
-### Étape 8 — Préparer une session
-
-**Quoi faire.** Avant chaque séance : (a) relire l'état des forces/fronts et les fils chauds ; (b) sortir 4–8 **scènes-déclencheurs probables** ancrées sur l'intention du PJ et le fil le plus pressant, chacune avec sa question et ses enjeux en une ligne ; (c) noter une **douzaine de secrets/indices courts** non localisés, prêts à être placés là où le PJ ira ; (d) faire avancer d'un cran les forces dont l'échéance est due, **descriptivement** (on a vu le changement) ou via un déclencheur fictionnel ; (e) garder tout cela **jetable**. Proposer la sélection, faire valider, écrire la prep dans `R/_campagnes/<campagne>/prep/`. La matière est ensuite **consommée par `solo-mc`** au moment du jeu — on ne joue jamais en direct ici.
-
-**Techniques du corpus qui la nourrissent.**
-- *Bangs / bandoulière de bangs* — stock de déclencheurs par session, modulables et jetables. ([Prepping Bangs](https://thealexandrian.net/wordpress/36768/roleplaying-games/the-art-of-pacing-prepping-bangs))
-- *Laisser flotter des indices (secrets pré-séance)* — liste d'environ 10 secrets non localisés, distribués au fil du jeu. ([Three Clue Rule](https://thealexandrian.net/wordpress/1118/roleplaying-games/three-clue-rule))
-- *Fronts et horloges* — avancement descriptif vs déclenché ; rythme de la menace. ([Fronts — DW SRD](https://www.dungeonworldsrd.com/gamemastering/fronts/))
+1. **Start from canon.** Everything starts from the established lore (`R/_univers/<univers>/canon/`) and the PC's intention (`R/_pjs/<pj>/intention.md`). We don't create in a vacuum: we extend an existing setting and an existing character.
+2. **Prepare a situation, not a plot.** We set up forces, desires and unstable tensions — not a scripted sequence of events. The story emerges from the choices made in play.
+3. **Proceed through back-and-forth.** At each step, we **propose several directions**, the user **chooses** (or amends), then we **record** it in `mj/` or the campaign folder. Never a page written in one block without validation.
 
 ---
 
-## Garde-fou transversal : sécurité et contrat (en amont)
+## The process in 7 steps
 
-Avant de produire la matière sensible d'une campagne, vérifier le **contrat social** déjà établi (si le domaine `R` contient un `CONTRAT_SOCIAL.md`) : thèmes exclus (**lignes**) à ne jamais faire apparaître, thèmes voilés (**voiles**) à traiter hors-champ. La prep doit être retravaillée pour qu'aucune ligne ne soit **structurellement nécessaire** au scénario. Inspiré de *Séance zéro, contrat social et garde-fous (lines & veils)* — Ron Edwards / John Stavropoulos ([Lines and veils](https://rpgmuseum.fandom.com/wiki/Lines_and_veils)). En solo, c'est l'utilisateur qui pose ses propres limites ; on les respecte dans tout ce qu'on consigne.
+### Step 1 — Anchor on canon and the PC's intention
+
+**What to do.** Before any creation, read the setting's canon (`canon/terminologie, factions, personnages, histoire, geographie`) and the PC's `intention.md`. Extract three things from it: (a) the campaign's **thematic tension**, framed as an open question whose outcome is not decided ("How far will he betray for his own?"); (b) the PC's **red line / visceral question**; (c) a **palette of signs** that recur (material, color, gesture, sound) that will signature the setting at the table. Propose 2–3 framings of the thematic tension, let the user choose, record it in the campaign synopsis (`R/_campagnes/<campagne>/`).
+
+**Techniques from the corpus that feed it.**
+- *Drawing on a theme to generate the prep (theme-driven prep)* — set the theme first, make it a guiding filter; draw it from what the player has signaled they want to explore. (Ron Edwards' Premise, after Egri — [Narrativism: Story Now](http://www.indie-rpgs.com/_articles/narr_essay.html))
+- *Describing the setting as a set of signs* — build a bank of detail-signs rather than an exhaustive bible; each detail is a hook that poses a question. (Color in the Forge — [De-signing the Design](https://www.gamedeveloper.com/design/de-signing-the-design-the-semiotics-of-choice))
+- *Adapting a work* — when the canon contains a strong narrative, we extract the **situation** from it (who wants what, who opposes whom) and not the sequence of scenes. ([Don't Prep Plots](https://thealexandrian.net/wordpress/4147/roleplaying-games/dont-prep-plots))
+
+### Step 2 — Gather the PC's personal kicker
+
+**What to do.** Ask the user for **one upheaving event** that happened just before play begins, which forces the PC to act and that they cannot ignore. It's the user who writes it (or validates it among our proposals), not us. This event is not resolved in advance: it opens up a range of actions. We then map out what it implies (who, where, what stake) to build the situation **around** it. Record it as the campaign hook.
+
+**Techniques from the corpus that feed it.**
+- *Kicker (triggering event authored by the player)* — the kicker comes from the player; the preparer exploits it, doesn't fabricate it, and builds the situation afterward. (Sorcerer, Ron Edwards — [Here's the Kicker](https://stepintorpgs.wordpress.com/2015/04/25/heres-the-kicker-character-creation-and-plot-hooks/))
+- *Flags (player signals)* — collect the explicit declarations of intent (goal, relationship, ideal, fear) that the prep will have to target. (Chris Chinn — [Flag Framing](https://bankuei.wordpress.com/2015/01/07/flag-framing-1-setting-up-a-campaign/))
+- In solo play, the kicker is co-written with the user: we propose directions drawn from canon, they decide.
+
+### Step 3 — Build the situation: relationship map
+
+**What to do.** List 6 to 10 actors (canon NPCs + NPCs to create + factions), set them as nodes, then draw between them **doubly-charged links**: what unites them AND what gnaws at them ("his sister, whom he protects and whose inheritance he covets"). Density rule: aim for **2–3 links per node**; any node with a single link is weakly integrated (to be reconnected or cut). **Plug the PC into the map** through at least one thread (debt, secret, blood tie). Propose the map, have the links validated, record it in `mj/personnages.md` / `mj/factions.md` (by `[[liant]]` the canon entries without duplicating them).
+
+**Techniques from the corpus that feed it.**
+- *Mapping relationships between characters (R-map)* — nodes + directed and asymmetric edges, coded by type and intensity; the map makes the situation unstable and ready to explode without dictating the action. (Ron Edwards, Sorcerer's Soul — [Relationship Maps](http://sgcodex.wikidot.com/relationship-maps))
+- *Generating complex relationships between NPCs (ambivalent links)* — each NPC carries a desire of their own + a vector of opposition; the dramatic pressure pre-exists the PC's arrival. ([Relationship Mapping, Gnome Stew](https://gnomestew.com/relationship-mapping/))
+- *Imagining a mirror NPC* — place in the map at least one NPC that reflects or inverts the PC ("like him, but who chose the opposite"), plugged in by a need that guarantees the collision. ([Foil — Wikipedia](https://en.wikipedia.org/wiki/Foil_(narrative)))
+
+### Step 4 — Set the situation in motion: fronts, clocks, secrets
+
+**What to do.** The relationship map is static; it needs a **trajectory**. Limit to **≈3 antagonistic forces** (factions, threats, setting dynamics). For each: a name, its **own motivation** (what pushes it to act on its own), a **chain of visible steps** (from bad to worse) if no one intervenes, and the targeted **final catastrophe**. Calibrate the speeds: one slow background one, one or two immediate ones. In parallel, **seed redundant secrets and clues**: for each hidden truth the PC could discover, provide **at least three clues** of different kinds (witness, physical trace, document/deduction), spread across distinct places and NPCs. Propose the forces + their steps, have the user choose which to activate, record the state in `R/_campagnes/<campagne>/`.
+
+> The mechanical formalism of advancement (rolls, ticked segments) does not belong to `rpg`: to advance a force via a rule, defer to `R/_systeme/{canon,mj}/`. Here we prepare **fictional steps** and **deadlines**.
+
+**Techniques from the corpus that feed it.**
+- *Fronts and clocks as a preparation tool* — forces endowed with an impulse and visible steps, played "to discover"; ~3 fronts at varied speeds. ([Fronts — Dungeon World SRD](https://www.dungeonworldsrd.com/gamemastering/fronts/), [SlyFlourish](https://slyflourish.com/looking_back_on_fronts.html)) — *Adapted system-agnostic: we keep the idea of forces with a trajectory, we remove the system-specific mechanical vocabulary.*
+- *Letting clues and secrets float* — a layer of redundant clues; the three-clue rule; dormant threats that escalate. (Justin Alexander — [Three Clue Rule](https://thealexandrian.net/wordpress/1118/roleplaying-games/three-clue-rule))
+- *Moving from scenario to campaign* — keep a state document (forces, dangling threads, hot spots) updated from session to session. ([Scenario Timelines](https://thealexandrian.net/wordpress/4154/roleplaying-games/dont-prep-plots-prepping-scenario-timelines))
+
+### Step 5 — Create and connect the NPCs
+
+**What to do.** For each NPC the situation calls for, set the strict minimum: **one dominant trait + one signature (voice, gesture or object) + one memorable detail**, and above all **what they want** + **what stands in their way**. No long biography: activable bricks. Check that each NPC is **well plugged into the map** (step 3) and, if relevant, give them the role of **mirror** to a PC. Designate at least one NPC as a **bearer of a poisoned gift** (see step 6). Propose a handful of NPCs, have them validated, write the sheets in `mj/personnages.md` (never in `canon/`; `[[lier]]` the canon if you extend it).
+
+> For an NPC's tags/stats (capabilities, threat level), consult `R/_systeme/{canon,mj}/` — do not invent.
+
+**Techniques from the corpus that feed it.**
+- *Distinguishing NPCs and making them endearing* — 1–2 salient markers (trait + voice + detail) are enough; keep a register for recurrence and evolution. ([Quick & Dirty Memorable NPCs](http://ragingowlbear.blogspot.com/2018/05/gm-101-quick-dirty-memorable-npcs.html))
+- *Creating a memorable antagonist (goal / method / flaw)* — for the central adversary: motivation deepened by repeated "Why?", method in resilient steps, exploitable flaw, hooked to the PC's past. ([The Villain AS Plot](https://theangrygm.com/villains-and-plots-the-villain-as-plot/))
+- *Imagining a mirror NPC* (reminder) — an NPC can reflect one PC and invert another.
+
+### Step 6 — Design a playable scenario
+
+**What to do.** First choose the **form** suited to the intention (nodal for investigation/exploration, more directed for a cinematic one-shot) rather than a linear chain by default. Then build the playable material:
+
+- **Scenes that matter.** For each anticipated scene, note the frame (where, who), the **dramatic question** it poses and the **stakes** (what can be won/lost), ready to be stated in one sentence. Frame as close as possible to the decision point.
+- **A reserve of trigger-situations.** Prepare 4–8 prompts of one or two sentences each — an event that places the PC before a **choice** that matters, without dictating its outcome ("learn that the princess is a prisoner", not "save the princess"). These are disposable ammunition, not an order of scenes.
+- **Contradictory objectives.** Check that the actors' desires overlap and rub against each other: triangulation (an NPC ally of one, threat to the other), single rival resource, incompatible values. The engine is the friction between agendas, not the external obstacle.
+- **Poisoned gifts.** For each thing the PC wants, pre-write a **cost anchored in the fiction** (debt, compromising secret, threat that starts, loss of something else) and designate who bears it and when the price will resurface.
+
+Propose the prompts + the frictions, let the user choose which to keep, record the scenario in `R/_campagnes/<campagne>/`.
+
+> **Craft guardrail (Czege Principle).** Never be the sole author **of both the problem and its resolution**. We prepare open problems, not their denouements. In solo play, the resolution is delegated to the host system and to the oracles consumed by `solo-mc` — it's that external source that decides the outcome, not the prep.
+
+**Techniques from the corpus that feed it.**
+- *Choosing a suitable narrative structure* — diagnose the intention and choose linear / branched / nodal according to the goal, not by reflex. ([The Shape of Adventure](https://theangrygm.com/the-shape-of-adventure/))
+- *Creating a scenario as a situation rather than a plot / Story Now* — fill a toolbox (NPCs, places, objectives, untenable situation), not a synopsis. ([Don't Prep Plots](https://thealexandrian.net/wordpress/4147/roleplaying-games/dont-prep-plots))
+- *Bangs (provocative situations forcing a choice)* — frame triggers of choice, not imposed results; even inaction has consequences. (Ron Edwards — [Prepping Bangs](https://thealexandrian.net/wordpress/36768/roleplaying-games/the-art-of-pacing-prepping-bangs))
+- *Proposing scenes that matter — framing & stakes* — point of view + dramatic question + stakes; cut early. ([The Art of Pacing: Scene-Framing](https://thealexandrian.net/wordpress/31520/roleplaying-games/the-art-of-pacing-part-2-scene-framing))
+- *Diversifying and opposing objectives* — triangulation, rival resource, incompatible ideologies; keep the conflict within the cooperation. ([lumpley games](https://lumpley.games/2021/06/30/powered-by-the-apocalypse-part-7-qa-round-4/))
+- *Making poisoned gifts* — offer what the PC wants with an anchored and deferred cost; a credible bearer with their own motivations. ([A Mad Lib For Your Devil's Bargains](https://www.roleplayingtips.com/adventure-building-campaigns/a-mad-lib-for-your-devils-bargains/))
+- *Czege Principle* — separate the author of the adversity from the author of the resolution; in solo play, delegate the resolution to the system/oracle. ([Czege Principle](https://rpgmuseum.fandom.com/wiki/Czege_Principle))
+
+### Step 7 — Interweave the threads and trace the arc
+
+**What to do.** At the campaign scale, keep **3 to 5 active threads** (one major, some minor, sometimes one episodic) and organize their **alternation**: who is under the spotlight, when, and where the threads **cross** (an NPC, an object or a place shared by two threads). For the PC, frame an **arc sentence** ("initial state → tension → possible outcome") and the **type** (change / growth / fall / flat arc), without deciding the outcome: it's the player's choice that closes the arc. Lay out the triggers as modifiable hook points. Propose the braiding and the arc, validate, record it in the campaign state document.
+
+**Techniques from the corpus that feed it.**
+- *Interweaving plots* — braiding grid (columns = threads, rows = beats), crossing points, balance of spotlight time. ([The Braiding of Plot Threads](https://www.campaignmastery.com/blog/the-braiding-of-plot-threads/))
+- *Designing a character arc* — arc sentence, arc type, premise as an open question, triggers as disposable hooks. ([Character Arcs, Gnome Stew](https://gnomestew.com/character-arcs/))
+- *Moving from scenario to campaign* — evolving situation + updated state document. ([Scenario Timelines](https://thealexandrian.net/wordpress/4154/roleplaying-games/dont-prep-plots-prepping-scenario-timelines))
+
+### Step 8 — Prepare a session
+
+**What to do.** Before each session: (a) reread the state of the forces/fronts and the hot threads; (b) pull out 4–8 **probable trigger-scenes** anchored on the PC's intention and the most pressing thread, each with its question and stakes in one line; (c) note **a dozen short secrets/clues**, unlocated, ready to be placed wherever the PC will go; (d) advance by one notch the forces whose deadline is due, **descriptively** (we saw the change) or via a fictional trigger; (e) keep all of this **disposable**. Propose the selection, have it validated, write the prep in `R/_campagnes/<campagne>/prep/`. The material is then **consumed by `solo-mc`** at play time — we never play live here.
+
+**Techniques from the corpus that feed it.**
+- *Bangs / bandolier of bangs* — stock of triggers per session, modulable and disposable. ([Prepping Bangs](https://thealexandrian.net/wordpress/36768/roleplaying-games/the-art-of-pacing-prepping-bangs))
+- *Letting clues float (pre-session secrets)* — a list of about 10 unlocated secrets, distributed over the course of play. ([Three Clue Rule](https://thealexandrian.net/wordpress/1118/roleplaying-games/three-clue-rule))
+- *Fronts and clocks* — descriptive vs triggered advancement; the threat's pacing. ([Fronts — DW SRD](https://www.dungeonworldsrd.com/gamemastering/fronts/))
 
 ---
 
-## Check-list de fin de préparation
+## Transversal guardrail: safety and contract (upstream)
 
-- [ ] **Canon d'abord** : la prep découle du `canon/` de l'univers et de l'`intention.md` du PJ — rien d'inventé qui contredise le canon en silence.
-- [ ] **Tension thématique** formulée en une question ouverte, non résolue d'avance.
-- [ ] **Amorce du PJ** recueillie/validée par l'utilisateur ; la situation est bâtie autour.
-- [ ] **Carte de relations** : 6–10 acteurs, ≥2–3 liens par nœud, aucun nœud isolé, **PJ branché** par au moins un fil.
-- [ ] **Liens ambivalents** (double charge) et au moins un **PNJ miroir** du PJ.
-- [ ] **≈3 forces** à motivation propre, chacune avec ses étapes visibles et sa catastrophe ; vitesses variées.
-- [ ] **Secrets/indices** : ≥3 indices de natures différentes par vérité cachée, répartis.
-- [ ] **PNJ** : trait + signature + détail + désir + opposition ; antagoniste central avec but/méthode/faille.
-- [ ] **Scénario en situation**, pas en intrigue ; **structure** choisie en fonction de l'intention.
-- [ ] **Objectifs contradictoires** vérifiés (triangulation / ressource rivale / valeurs).
-- [ ] **Cadeaux empoisonnés** pré-écrits : coût ancré, porteur désigné, échéance notée.
-- [ ] **Principe de Czege** respecté : problèmes ouverts, résolution déléguée au système/oracle (jamais auteur des deux).
-- [ ] **Fils entrelacés** (3–5), points de croisement identifiés, temps de projecteur équilibré.
-- [ ] **Arc du PJ** formulé (phrase + type), issue laissée au joueur.
-- [ ] **Session** prête : 4–8 déclencheurs + ~10 secrets, forces dues avancées, matière jetable.
-- [ ] **Aucune mécanique inventée** : tout renvoi de règle pointe vers `R/_systeme/{canon,mj}/`.
-- [ ] **Lignes & voiles** respectés ; aucune ligne structurellement nécessaire.
-- [ ] **Allers-retours** : chaque livrable a été proposé, choisi par l'utilisateur, puis consigné (`mj/` ou dossier de campagne) — jamais écrasé, complété.
+Before producing a campaign's sensitive material, check the **social contract** already established (if the `R` domain contains a `CONTRAT_SOCIAL.md`): excluded themes (**lines**) never to make appear, veiled themes (**veils**) to be handled off-screen. The prep must be reworked so that no line is **structurally necessary** to the scenario. Inspired by *Session zero, social contract and guardrails (lines & veils)* — Ron Edwards / John Stavropoulos ([Lines and veils](https://rpgmuseum.fandom.com/wiki/Lines_and_veils)). In solo play, it's the user who sets their own limits; we respect them in everything we record.
+
+---
+
+## End-of-preparation checklist
+
+- [ ] **Canon first**: the prep flows from the setting's `canon/` and the PC's `intention.md` — nothing invented that silently contradicts the canon.
+- [ ] **Thematic tension** framed as an open question, not resolved in advance.
+- [ ] **PC's kicker** gathered/validated by the user; the situation is built around it.
+- [ ] **Relationship map**: 6–10 actors, ≥2–3 links per node, no isolated node, **PC plugged in** through at least one thread.
+- [ ] **Ambivalent links** (double charge) and at least one **mirror NPC** of the PC.
+- [ ] **≈3 forces** with their own motivation, each with its visible steps and its catastrophe; varied speeds.
+- [ ] **Secrets/clues**: ≥3 clues of different kinds per hidden truth, spread out.
+- [ ] **NPCs**: trait + signature + detail + desire + opposition; central antagonist with goal/method/flaw.
+- [ ] **Scenario as a situation**, not a plot; **structure** chosen according to the intention.
+- [ ] **Contradictory objectives** checked (triangulation / rival resource / values).
+- [ ] **Poisoned gifts** pre-written: anchored cost, designated bearer, deadline noted.
+- [ ] **Czege Principle** respected: open problems, resolution delegated to the system/oracle (never author of both).
+- [ ] **Interwoven threads** (3–5), crossing points identified, spotlight time balanced.
+- [ ] **PC's arc** framed (sentence + type), outcome left to the player.
+- [ ] **Session** ready: 4–8 triggers + ~10 secrets, due forces advanced, disposable material.
+- [ ] **No invented mechanics**: every rule reference points to `R/_systeme/{canon,mj}/`.
+- [ ] **Lines & veils** respected; no line structurally necessary.
+- [ ] **Back-and-forth**: each deliverable was proposed, chosen by the user, then recorded (`mj/` or campaign folder) — never overwritten, but completed.

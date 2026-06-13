@@ -2,6 +2,14 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.19.0] — 2026-06-14
+
+### Changed — migration anglaise des skills JDR (R10) + `pc` aligné en routeur (R1)
+- **`rpg`, `pc`, `solo-mc` migrés en anglais** (frontmatter, corps, actions, références propres au skill) — conformité R10 (aidd-context `skills`). Le **contenu de jeu** (univers/système, lore, artefacts produits, prompts d'eval, templates wrapper compagnon) reste en français ; les tables de dispatch gardent des déclencheurs bilingues FR+EN.
+- **`pc` restructuré** : ses 7 actions, jusque-là **inline** dans `SKILL.md` (235 l.), sont extraites en `actions/01-new` … `07-background` (anatomie Inputs/Outputs/Process/Test) ; `SKILL.md` redevient un **routeur pur** (66 l.), aligné sur `rpg`/`solo-mc`.
+- **`rpg`** : anatomie des 6 actions corrigée (`## Outputs` placé avant `## Process`).
+- **Zéro régression comportementale** vérifiée par re-run des suites (`rules-triggering` 13/13, `rpg` 10/10, `pc` 9/11) — identiques aux baselines ; tous les identifiants/chemins (`_univers/`, `_systeme/`, labels T0–T14, slugs) préservés verbatim.
+
 ## [0.18.0] — 2026-06-13
 
 ### Changed — arborescence JDR recalée (`_savoir/` retiré)

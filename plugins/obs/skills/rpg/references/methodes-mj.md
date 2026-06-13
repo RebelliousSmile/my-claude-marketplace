@@ -1,38 +1,38 @@
-# Création de contenu `rpg` — corpus & méthode (EN CONSTRUCTION)
+# `rpg` content creation — corpus & method (WORK IN PROGRESS)
 
-> ⚠️ **Ce fichier n'est PAS une transposition de la collection Lapin Marteau, et les titres ci-dessous ne s'appliquent pas tels quels.** Ce sont des **graines de recherche** : une carte des techniques à investiguer (corpus) pour en **distiller notre propre méthode** de création de contenu (section finale). On part de ces titres → on recherche → on synthétise *notre* process, original et system-agnostic.
+> ⚠️ **This file is NOT a transposition of the Lapin Marteau collection, and the titles below do not apply as-is.** They are **research seeds**: a map of the techniques to investigate (corpus) in order to **distil our own method** of content creation (final section). We start from these titles → we research → we synthesize *our* process, original and system-agnostic.
 
-## Contraintes de notre méthode (cadre fixe)
+## Constraints of our method (fixed frame)
 
-- **System-agnostic.** Le craft (relations, structure, PNJ, scènes) doit marcher quel que soit le système. **Ne jamais y mêler de mécanique propre à un jeu** : un framework comme l'agenda/principes/manœuvres MC est **PbtA-spécifique** (Monsterhearts) — il reste dans `R/_systeme/canon/` de ce jeu et ne s'applique pas à un sim comme Zombiology. Pour toute mécanique, déférer à `R/_systeme/{canon,mj}/`.
-- **Prep seulement** (domaine `rpg`). Le jeu en direct (Animer, Varier) → `solo-mc`.
-- **Partir du canon** (lore-extract) et **imaginer avec l'utilisateur** (allers-retours), cf. l'esprit du skill.
+- **System-agnostic.** The craft (relationships, structure, NPCs, scenes) must work regardless of the system. **Never mix in mechanics specific to a given game**: a framework such as the MC agenda/principles/moves is **PbtA-specific** (Monsterhearts) — it stays in `R/_systeme/canon/` of that game and does not apply to a sim like Zombiology. For any mechanics, defer to `R/_systeme/{canon,mj}/`.
+- **Prep only** (domain `rpg`). Live play (Running, Varying) → `solo-mc`.
+- **Start from the canon** (lore-extract) and **imagine with the user** (back-and-forth), cf. the spirit of the skill.
 
-## Graines à rechercher — corpus (seeds, à creuser, NE PAS copier)
+## Seeds to research — corpus (seeds, to dig into, DO NOT copy)
 
-### *Mener des parties de jeu de rôle* (Lapin Marteau, t.1) — maîtrise
-- **Préparation** : organiser des parties (b.a.-ba) · créer un scénario (T. Lhomme) · adapter une œuvre en scénario (I. Périer) · construire un donjon (méthode aléatoire, É. Nieudan).
-- **Animation – bases** : enseigner un jeu · décrire (S. Delfino) · improviser (A. Jeannette) · incarner des PNJ (J.-P. Jaworski) · dompter la linéarité (J. Larré) · animer combats / scènes spéciales.
-- **Animation – avancé** : commencer · rassembler & diviser · rendre les choses personnelles (G. Pogorzelski) · créer des émotions particulières · **passer du scénario à la campagne** (O. Caïra).
-- **Varier** : aides de jeu · jouer old school · **partager la narration** (J. Larré).
+### *Mener des parties de jeu de rôle* (Lapin Marteau, t.1) — game mastering
+- **Preparation**: organizing sessions (the basics) · creating a scenario (T. Lhomme) · adapting a work into a scenario (I. Périer) · building a dungeon (random method, É. Nieudan).
+- **Running – basics**: teaching a game · describing (S. Delfino) · improvising (A. Jeannette) · embodying NPCs (J.-P. Jaworski) · taming linearity (J. Larré) · running combats / special scenes.
+- **Running – advanced**: starting · gathering & splitting · making things personal (G. Pogorzelski) · creating particular emotions · **moving from scenario to campaign** (O. Caïra).
+- **Varying**: play aids · playing old school · **sharing narration** (J. Larré).
 
-### *La Boîte à outils du meneur de jeu* (Lapin Marteau, t.3) — maîtrise
-- **Organiser** : cartographier les relations entre personnages · créer des prétirés · créer un groupe cohérent · check-list de campagne · contrat social (séance zéro) · jouer sur les genres fictionnels · se servir des archétypes · garde-fous pour sujets difficiles · tables aléatoires avec un objectif.
-- **Scénariser** : choisir une structure narrative · concevoir un arc de personnage · grands types de conflits · créer un grand méchant · univers comme ensemble de signes · diversifier les objectifs · entremêler les intrigues · cadeaux empoisonnés · générer des relations complexes · gérer la linéarité · **PNJ miroir** · suspense · laisser flotter indices/secrets · objectifs contradictoires · scènes qui comptent · rendre les PNJ attachants/singuliers · s'inspirer d'un thème · cliffhanger.
+### *La Boîte à outils du meneur de jeu* (Lapin Marteau, t.3) — game mastering
+- **Organizing**: mapping the relationships between characters · creating pregens · creating a coherent group · campaign checklist · social contract (session zero) · playing on fictional genres · using archetypes · safeguards for difficult subjects · random tables with a goal.
+- **Scenario-building**: choosing a narrative structure · designing a character arc · the major types of conflict · creating a big bad · setting as a set of signs · diversifying objectives · interweaving plots · poisoned gifts · generating complex relationships · managing linearity · **mirror NPC** · suspense · letting clues/secrets float · contradictory objectives · scenes that count · making NPCs endearing/distinctive · drawing on a theme · cliffhanger.
 
-> *Détail de chaque technique : se reporter aux ouvrages (pages relevées dans l'historique de recherche).* Recouper avec le **corpus de la Forge** (R-map d'Edwards, bangs, kicker, flags, principe de Czege, stakes, situation-pas-intrigue, fronts & horloges).
+> *Detail of each technique: refer to the books (pages noted in the research history).* Cross-check with the **Forge corpus** (Edwards's R-map, bangs, kicker, flags, Czege principle, stakes, situation-not-plot, fronts & clocks).
 
-### *Jouer des parties de jeu de rôle* (Lapin Marteau, t.2) — JOUEUR → graines pour `pc`, pas `rpg`
-Créer / développer / interpréter un personnage · coopérer et rivaliser · s'approprier un jeu · exploiter la distinction joueur/personnage · faire d'un incapable un héros. *(À verser dans une future réf. du skill `pc`.)*
+### *Jouer des parties de jeu de rôle* (Lapin Marteau, t.2) — PLAYER → seeds for `pc`, not `rpg`
+Creating / developing / playing a character · cooperating and competing · making a game your own · exploiting the player/character distinction · turning an incompetent into a hero. *(To be poured into a future reference of the `pc` skill.)*
 
-## Statut de la recherche
+## Research status
 
-- [x] **Corpus constitué** (recherche web, 24 techniques sourcées) → **[[corpus-recherche]]** (matière brute, sources réelles par fiche).
-- [x] **Notre méthode rédigée** (synthèse du corpus) → **[[methode-creation]]** : process en 8 étapes (ancrer canon+intention → amorce du PJ → carte de relations → fronts/secrets → PNJ → scénario en situation → entrelacer/arc → préparer la session) + garde-fou sécurité + check-list.
+- [x] **Corpus assembled** (web research, 24 sourced techniques) → **[[corpus-recherche]]** (raw material, real sources per entry).
+- [x] **Our method written** (synthesis of the corpus) → **[[methode-creation]]**: an 8-step process (anchor canon+intention → PC hook → relationship map → fronts/secrets → NPCs → scenario-in-situation → interweave/arc → prepare the session) + safety safeguard + checklist.
 
-## Notre méthode de création de contenu
+## Our content creation method
 
-→ Voir **[[methode-creation]]**. C'est la référence opérationnelle des actions `rpg`. Elle est **notre** formulation (pas une transposition) ; les techniques du corpus y sont citées comme inspirations, sources à l'appui. `methodes-mj.md` (ce fichier) reste la **carte des graines** et le rappel des contraintes.
+→ See **[[methode-creation]]**. It is the operational reference for the `rpg` actions. It is **our** formulation (not a transposition); the techniques from the corpus are cited there as inspirations, with sources to back them up. `methodes-mj.md` (this file) remains the **map of seeds** and the reminder of constraints.
 
 ---
-**Sources (recherche) :** *Mener des parties de jeu de rôle* (Lapin Marteau, t.1) · *Jouer des parties de jeu de rôle* (t.2) · *La Boîte à outils du meneur de jeu* (David & Larré, t.3, 2020). | **Màj :** 2026-06-01
+**Sources (research):** *Mener des parties de jeu de rôle* (Lapin Marteau, t.1) · *Jouer des parties de jeu de rôle* (t.2) · *La Boîte à outils du meneur de jeu* (David & Larré, t.3, 2020). | **Updated:** 2026-06-01

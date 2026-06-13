@@ -1,27 +1,27 @@
 # 03 - prep-session
 
-Prépare la prochaine session : la feuille de route légère que `solo-mc` consommera au jeu.
+Prepares the next session: the light roadmap that `solo-mc` will consume during play.
 
 ## Inputs
 
-- `campagne` (requis) — nom de la campagne.
-- `session` — numéro de session (défaut : dernière + 1, déduite des journaux de session).
-
-## Process
-
-1. **Lire l'état** : `R/_campagnes/<campagne>/.session-state.yaml` (lieu courant, PNJ actifs, statuts, comptes à rebours), `config.yaml` (rythme/ton), le scénario actif (`scenarios/`), les fronts actifs (`R/_campagnes/<campagne>/fronts.md`), les données d'univers liées (`R/_univers/<univers>/canon/` et `mj/`), et le `journal.md`/backlog du PJ via `pc` si pertinent.
-2. **Définir un objectif de session** : la question dramatique probable de la séance (1 phrase).
-3. **Lister 3–5 scènes probables** : déclencheur + enjeu + PNJ/lieu concernés (germes, pas script).
-4. **Pré-armer l'oracle** : 3–6 questions oui/non ou de destin susceptibles d'être posées, avec leur probabilité — pour fluidifier le jeu avec `solo-mc`.
-5. **Avancer les fronts** : quelles horloges progressent si le PJ n'intervient pas.
-6. **Tables aléatoires ciblées** (optionnel) : rencontres, complications, butin — adaptées au niveau de chaos du `config.yaml`.
-7. **Accroches PJ** : 1–2 hameçons reliés à la ligne rouge / question viscérale.
-8. **Écrire** `R/_campagnes/<campagne>/prep/session-<n>.md`.
+- `campagne` (required) — campaign name.
+- `session` — session number (default: last + 1, deduced from the session logs).
 
 ## Outputs
 
-`R/_campagnes/<campagne>/prep/session-<n>.md` (objectif, scènes probables, questions oracle pré-armées, fronts à avancer, tables, accroches PJ). Ne modifie pas `.session-state.yaml` (c'est `solo-mc` qui l'écrit au jeu).
+`R/_campagnes/<campagne>/prep/session-<n>.md` (objective, likely scenes, pre-armed oracle questions, fronts to advance, tables, PC hooks). Does not modify `.session-state.yaml` (it is `solo-mc` that writes it during play).
+
+## Process
+
+1. **Read the state**: `R/_campagnes/<campagne>/.session-state.yaml` (current location, active NPCs, statuses, countdowns), `config.yaml` (pace/tone), the active scenario (`scenarios/`), the active fronts (`R/_campagnes/<campagne>/fronts.md`), the linked setting data (`R/_univers/<univers>/canon/` and `mj/`), and the PC's `journal.md`/backlog via `pc` if relevant.
+2. **Define a session objective**: the likely dramatic question of the session (1 sentence).
+3. **List 3–5 likely scenes**: trigger + stake + NPCs/location involved (seeds, not script).
+4. **Pre-arm the oracle**: 3–6 yes/no or fate questions likely to be asked, with their probability — to smooth play with `solo-mc`.
+5. **Advance the fronts**: which clocks progress if the PC does not intervene.
+6. **Targeted random tables** (optional): encounters, complications, loot — adapted to the chaos level of the `config.yaml`.
+7. **PC hooks**: 1–2 hooks tied to the red line / visceral question.
+8. **Write** `R/_campagnes/<campagne>/prep/session-<n>.md`.
 
 ## Test
 
-Le fichier de prep liste un objectif de session, ≥ 3 scènes probables et ≥ 3 questions oracle pré-armées, référence le scénario/les fronts actifs, et n'écrit pas dans `R/_campagnes/<campagne>/.session-state.yaml`.
+The prep file lists a session objective, ≥ 3 likely scenes and ≥ 3 pre-armed oracle questions, references the active scenario/fronts, and does not write into `R/_campagnes/<campagne>/.session-state.yaml`.

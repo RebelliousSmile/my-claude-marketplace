@@ -1,29 +1,29 @@
 # 05 - faction
 
-Crée ou développe une faction (lore d'univers durable) **et** ses **fronts** (horloges actives, état de campagne).
+Creates or develops a faction (durable setting lore) **and** its **fronts** (active clocks, campaign state).
 
-Distinction clé : la **faction** est une donnée d'univers durable → sous-arbre `mj/` (création MJ) ou existante en `canon/` ; ses **fronts/horloges** sont l'**état d'une partie** → côté campagne.
+Key distinction: the **faction** is durable setting data → `mj/` sub-tree (GM creation) or existing in `canon/`; its **fronts/clocks** are the **state of a game** → campaign side.
 
 ## Inputs
 
-- `campagne` (requis) — nom de la campagne (pour les fronts) ; son `config.yaml › univers` désigne l'univers.
-- `faction` — nom ; sinon, proposer à partir du `synopsis.md` ou des `factions.md` (`canon/` et `mj/`).
-
-## Process
-
-1. **Lire le contexte** : `R/_univers/<univers>/canon/{factions,personnages}.md` ET `mj/{factions,personnages}.md`, `synopsis.md`, `config.yaml` (chaos, difficulté).
-2. **Définir la faction (création MJ)** : nature, ressources, territoire / sphère d'influence, **agenda** (but à long terme), PNJ clés (`[[lier]]`).
-   → Écrire/compléter dans `R/_univers/<univers>/mj/factions.md` (une info dans un seul fichier, ne pas écraser). **Ne jamais écrire dans `canon/`** ; si la faction est canon, créer une fiche `mj/` qui l'étend et la `[[lie]]`, sans contredire le canon en silence.
-3. **Définir les fronts (campagne)** : 1–3 horloges concrètes (`◷ 0/4 → événement`), ce qui les fait avancer, ce qui se produit à échéance, et la **pression sur le PJ** (menace sur la ligne rouge / les enjeux). Ce sont les horloges que `solo-mc` fera progresser au jeu.
-   → Écrire dans `R/_campagnes/<campagne>/fronts.md` (état de partie), en `[[liant]]` la faction.
-   → **Si aucune campagne n'existe encore** : la faction côté univers `mj/` (étape 2) est écrite, mais les fronts/horloges sont un **état de partie** sans campagne où atterrir — amorcer d'abord la campagne via `campaign`, ou différer les fronts. Ne jamais créer de dossier campagne implicitement.
-4. Mettre à jour l'`index.md` de la campagne (section fronts en cours).
+- `campagne` (required) — campaign name (for the fronts); its `config.yaml › univers` designates the setting.
+- `faction` — name; otherwise, propose from the `synopsis.md` or the `factions.md` (`canon/` and `mj/`).
 
 ## Outputs
 
-- Faction (création MJ) dans `R/_univers/<univers>/mj/factions.md` (nature, agenda, PNJ clés) ; `canon/` inchangé.
-- Fronts/horloges actifs dans `R/_campagnes/<campagne>/fronts.md`, liés à la faction + à la pression sur le PJ.
+- Faction (GM creation) in `R/_univers/<univers>/mj/factions.md` (nature, agenda, key NPCs); `canon/` unchanged.
+- Active fronts/clocks in `R/_campagnes/<campagne>/fronts.md`, linked to the faction + to the pressure on the PC.
+
+## Process
+
+1. **Read the context**: `R/_univers/<univers>/canon/{factions,personnages}.md` AND `mj/{factions,personnages}.md`, `synopsis.md`, `config.yaml` (chaos, difficulty).
+2. **Define the faction (GM creation)**: nature, resources, territory / sphere of influence, **agenda** (long-term goal), key NPCs (`[[link]]`).
+   → Write/complete in `R/_univers/<univers>/mj/factions.md` (one piece of info in a single file, do not overwrite). **Never write into `canon/`**; if the faction is canon, create an `mj/` sheet that extends it and `[[links]]` it, without silently contradicting the canon.
+3. **Define the fronts (campaign)**: 1–3 concrete clocks (`◷ 0/4 → event`), what advances them, what happens at the deadline, and the **pressure on the PC** (threat to the red line / the stakes). These are the clocks that `solo-mc` will progress during play.
+   → Write into `R/_campagnes/<campagne>/fronts.md` (game state), `[[linking]]` the faction.
+   → **If no campaign exists yet**: the faction on the setting side `mj/` (step 2) is written, but the fronts/clocks are a **game state** with no campaign to land in — first bootstrap the campaign via `campaign`, or defer the fronts. Never create a campaign folder implicitly.
+4. Update the campaign's `index.md` (current fronts section).
 
 ## Test
 
-La faction MJ est dans `R/_univers/<univers>/mj/factions.md` (jamais dans `canon/`, non dupliquée), avec un agenda ; au moins une horloge chiffrée (état + déclencheur + échéance) existe dans `R/_campagnes/<campagne>/fronts.md` et référence la faction.
+The MJ faction is in `R/_univers/<univers>/mj/factions.md` (never in `canon/`, not duplicated), with an agenda; at least one numbered clock (state + trigger + deadline) exists in `R/_campagnes/<campagne>/fronts.md` and references the faction.

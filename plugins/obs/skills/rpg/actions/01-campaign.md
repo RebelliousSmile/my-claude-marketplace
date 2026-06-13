@@ -1,20 +1,24 @@
 # 01 - campaign
 
-Crée une campagne si elle n'existe pas encore (bootstrap du `config.yaml` + structure) **et** amorce sa couche de préparation MJ (la matière MJ).
+Creates a campaign if it does not exist yet (bootstrap of the `config.yaml` + structure) **and** bootstraps its GM preparation layer (the GM material).
 
 ## Inputs
 
-- `campagne` (requis) — nom de la campagne. Demander si absent ; lister les dossiers de `R/_campagnes/` contenant un `config.yaml`.
-- `univers` (optionnel) — slug de l'univers ; à défaut : s'il n'existe **qu'un seul** univers sous `R/_univers/`, le déduire ; s'il y en a **plusieurs**, **toujours lister `R/_univers/` et demander** — ne jamais déduire silencieusement.
-- `pj` (optionnel) — PJ canonique à rattacher (lister `R/_pjs/`).
+- `campagne` (required) — campaign name. Ask if absent; list the folders in `R/_campagnes/` containing a `config.yaml`.
+- `univers` (optional) — setting slug; failing that: if there is **only one** setting under `R/_univers/`, deduce it; if there are **several**, **always list `R/_univers/` and ask** — never deduce silently.
+- `pj` (optional) — canonical PC to attach (list `R/_pjs/`).
+
+## Outputs
+
+If the campaign did not exist: `R/_campagnes/<campagne>/config.yaml` + structure (`pj/`, `scenarios/`, `prep/`). In all cases: `synopsis.md` + prep structure (`fronts.md`, `index.md`) + the setting tree `R/_univers/<univers>/{canon,mj}/` (created or identified). List the proposed fronts and the `[To complete]`.
 
 ## Process
 
-1. **Vérifier / amorcer le `config.yaml`** dans `R/_campagnes/<campagne>/`.
-   - **S'il existe** : le lire et passer à l'étape 2.
-   - **S'il manque : amorcer la campagne** (bootstrap minimal — ne PAS dérouler un long questionnaire ; ne demander que l'indispensable manquant : l'univers, et le PJ à rattacher). *(Auparavant délégué à `/obs:solo-mc setup` ; `rpg` s'en charge désormais. Si `obs:solo-mc` est installé, il pourra affiner/gérer le `config.yaml` ensuite — mais il n'est pas requis pour démarrer.)*
-     1. Créer le dossier `R/_campagnes/<slug-campagne>/` avec la structure `pj/`, `scenarios/`, `prep/`.
-     2. Écrire un `config.yaml` **minimal jouable** :
+1. **Check / bootstrap the `config.yaml`** in `R/_campagnes/<campagne>/`.
+   - **If it exists**: read it and go to step 2.
+   - **If it is missing: bootstrap the campaign** (minimal bootstrap — do NOT run a long questionnaire; ask only the indispensable missing items: the setting, and the PC to attach). *(Previously delegated to `/obs:solo-mc setup`; `rpg` now handles it. If `obs:solo-mc` is installed, it can refine/manage the `config.yaml` later — but it is not required to start.)*
+     1. Create the folder `R/_campagnes/<slug-campagne>/` with the structure `pj/`, `scenarios/`, `prep/`.
+     2. Write a **minimal playable** `config.yaml`:
         ```yaml
         jeu: <jeu>
         univers: <univers-slug>
@@ -30,22 +34,18 @@ Crée une campagne si elle n'existe pas encore (bootstrap du `config.yaml` + str
         pj_canonique: _pjs/<pj-slug>/
         pj_campagne: _campagnes/<slug-campagne>/pj/<pj-slug>.md
         compagnons:
-          roster: _pjs/<pj-slug>/compagnons/_roster.yaml   # si le PJ a une team (skill pc) ; sinon omettre
-        # ── réglage de jeu (ton, approche, difficulté, rythme, chaos, jauges) : VOLONTAIREMENT ABSENT ──
-        # Domaine de solo-mc (son setup). rpg n'écrit QUE l'identité/wiring ci-dessus.
+          roster: _pjs/<pj-slug>/compagnons/_roster.yaml   # if the PC has a team (skill pc) ; otherwise omit
+        # ── game tuning (tone, approach, difficulty, pace, chaos, gauges) : DELIBERATELY ABSENT ──
+        # solo-mc's domain (its setup). rpg writes ONLY the identity/wiring above.
         ```
-     3. **Ne pas écrire le réglage de jeu** (`ton`, `approche`, `difficulte`, `rythme`, chaos, profils de sous-système) : il appartient à **`solo-mc`** et sera renseigné par son setup au moment de jouer. `rpg` se limite à l'**identité/wiring** — juste de quoi ancrer la prep MJ. Ne rien inventer.
-     4. Si un PJ est rattaché mais que `pj/<pj-slug>.md` (instance de campagne) n'existe pas, le créer en stub qui `[[lie]]` le PJ canonique (`_pjs/<pj-slug>/`) — l'instance détaillée est remplie au lancement du jeu.
-2. **Lire le contexte** : `config.yaml` (univers, ton, rythme, difficulté, chaos, profondeur PNJ/lieux) et, si un PJ est rattaché, son `R/_pjs/<pj>/intention.md` (thèmes, ligne rouge, question viscérale).
-3. **Rattacher l'univers** : depuis `config.yaml › univers`, cibler `R/_univers/<univers>/`. Si l'arborescence n'existe pas, créer **deux sous-arbres thématiques** `canon/` (lore officiel) et `mj/` (création MJ), chacun avec `terminologie.md`, `factions.md`, `personnages.md`, `histoire.md`, `geographie.md`. S'il existe des sources brutes canoniques, proposer `/obs:lore-extract` pour les consigner **dans `canon/`** ; le contenu créé par le MJ ira dans `mj/` (via `npc`, `faction`, `scenario`).
-4. **Rédiger `R/_campagnes/<campagne>/synopsis.md`** : prémisse, thèmes (alignés sur l'intention du PJ), ton, enjeux centraux, vérités cachées, question dramatique de campagne. **Si aucun PJ n'est rattaché** (pas de `_pjs/<pj>/intention.md`), écrire les thèmes et la question dramatique en `[À compléter]` et signaler qu'ils s'ancreront sur l'`intention.md` via `pc` — ne jamais inventer la question viscérale ni la ligne rouge.
-5. **Créer la structure de prep de campagne** si absente : `scenarios/`, `prep/`, `fronts.md` (horloges actives), plus un `index.md` qui recense scénarios et fronts en cours et lie l'univers. *(Les PNJ, factions et lieux durables vivent dans l'univers, pas ici.)*
-6. **Proposer 2–3 fronts de départ** (horloges) à détailler ensuite via `faction`.
-
-## Outputs
-
-Si la campagne n'existait pas : `R/_campagnes/<campagne>/config.yaml` + structure (`pj/`, `scenarios/`, `prep/`). Dans tous les cas : `synopsis.md` + structure de prep (`fronts.md`, `index.md`) + l'arborescence univers `R/_univers/<univers>/{canon,mj}/` (créée ou identifiée). Lister les fronts proposés et les `[À compléter]`.
+     3. **Do not write the game tuning** (`ton`, `approche`, `difficulte`, `rythme`, chaos, sub-system profiles): it belongs to **`solo-mc`** and will be filled in by its setup at play time. `rpg` limits itself to the **identity/wiring** — just enough to anchor the GM prep. Invent nothing.
+     4. If a PC is attached but `pj/<pj-slug>.md` (campaign instance) does not exist, create it as a stub that `[[links]]` the canonical PC (`_pjs/<pj-slug>/`) — the detailed instance is filled at play launch.
+2. **Read the context**: `config.yaml` (setting, tone, pace, difficulty, chaos, NPC/location depth) and, if a PC is attached, its `R/_pjs/<pj>/intention.md` (themes, red line, visceral question).
+3. **Attach the setting**: from `config.yaml › univers`, target `R/_univers/<univers>/`. If the tree does not exist, create **two thematic sub-trees** `canon/` (official lore) and `mj/` (GM creation), each with `terminologie.md`, `factions.md`, `personnages.md`, `histoire.md`, `geographie.md`. If there are raw canonical sources, propose `/obs:lore-extract` to record them **into `canon/`**; the content created by the GM will go into `mj/` (via `npc`, `faction`, `scenario`).
+4. **Write `R/_campagnes/<campagne>/synopsis.md`**: premise, themes (aligned with the PC's intent), tone, central stakes, hidden truths, campaign dramatic question. **If no PC is attached** (no `_pjs/<pj>/intention.md`), write the themes and the dramatic question as `[To complete]` and signal that they will anchor on the `intention.md` via `pc` — never invent the visceral question nor the red line.
+5. **Create the campaign prep structure** if absent: `scenarios/`, `prep/`, `fronts.md` (active clocks), plus an `index.md` that lists scenarios and current fronts and links the setting. *(NPCs, factions and durable locations live in the setting, not here.)*
+6. **Propose 2–3 starting fronts** (clocks) to detail later via `faction`.
 
 ## Test
 
-`config.yaml` existe (créé ou préexistant) avec au minimum `jeu`, `univers`, `type`, `pjs` ; `synopsis.md` existe et ses thèmes renvoient à l'`intention.md` du PJ (si un PJ existe) ; la structure de prep de campagne est créée ; l'univers est rattaché avec ses deux sous-arbres `canon/` et `mj/` ; l'`index.md` lie l'univers et recense les éléments présents.
+`config.yaml` exists (created or pre-existing) with at minimum `jeu`, `univers`, `type`, `pjs`; `synopsis.md` exists and its themes refer to the PC's `intention.md` (if a PC exists); the campaign prep structure is created; the setting is attached with its two sub-trees `canon/` and `mj/`; the `index.md` links the setting and lists the present elements.

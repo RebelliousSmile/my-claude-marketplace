@@ -1,168 +1,168 @@
-# Genres & background — questionnaire de création de PJ
+# Genres & background — PJ creation questionnaire
 
-Aide à **construire le background d'un PJ** par un jeu de questions adapté au **genre du jeu**. La fiche fournit un **tronc commun** (toutes parties) puis des **questions signature** par **famille de genre**, plus des **modulateurs** à greffer. Les réponses alimentent `pj.md` (et, pour ce qui touche au sens, `intention.md`).
+Helps **build a PJ's background** through a set of questions tailored to the game's **genre**. The reference provides a **common trunk** (all settings) then **signature questions** per **genre family**, plus **modulators** to graft on. The answers feed `pj.md` (and, for anything touching meaning, `intention.md`).
 
-Inspiration de structure : le questionnaire de création d'**Ecryme 2e édition** (John Grümph) — on construit le personnage en répondant à des questions concrètes sur sa place dans le monde et ses liens, pas en remplissant des cases. La logique des **liens à double charge** rejoint la R-map de `../../rpg/references/methode-creation.md` (étape 3).
+Structure inspiration: the character-creation questionnaire of **Ecryme 2nd edition** (John Grümph) — the character is built by answering concrete questions about their place in the world and their bonds, not by filling in boxes. The logic of **double-charged bonds** echoes the R-map of `../../rpg/references/methode-creation.md` (step 3).
 
-> **Périmètre.** Ici on fabrique du **background fictionnel** — identité, liens, désir, blessure. **Aucune mécanique** : stats, tags, jets restent déférés à `R/_systeme/{canon,mj}/` du jeu. Procéder par **allers-retours** : proposer 2–3 pistes par question, l'utilisateur **choisit/amende**, puis on **consigne** — jamais une page écrite d'un bloc.
-
----
-
-## Comment s'en servir
-
-1. **Déduire le genre** du jeu actif (le domaine `R` du répertoire courant ; au besoin, demander à l'utilisateur le thème GROG ou le pitch du jeu).
-2. **Mapper** le thème vers une **famille** via la table ci-dessous (et noter les **modulateurs** éventuels).
-3. Poser le **tronc commun** (5–8 questions).
-4. Poser les **questions signature** de la famille (+ piocher dans ses **axes optionnels** si le PJ l'appelle).
-5. Appliquer les **modulateurs** (suffixe *Fantastique*, *Uchronie/Steampunk*, *Voyage dans le temps*…).
-6. **Distribuer** les réponses dans `pj.md` / `intention.md` (voir « Où atterrissent les réponses »).
-
-On ne pose pas tout d'un coup : par lots de 2–4 questions, on laisse répondre, on rebondit.
-
-> **Sonde, pas moule.** Chaque question signature explore un **axe**, pas un gabarit obligatoire. Si une question suppose un archétype (l'aventurier, l'élu, l'augmenté, le clandestin, le rebelle) et tombe **à vide** sur un PJ pourtant légitime du genre — l'artisan qui ne voyage jamais, l'aidante sans secret, le chasseur né dans le surnaturel, l'officier loyal, l'enfant de l'abri —, l'**inverser** (« et s'il ne part jamais ? », « et s'il n'a aucun secret ? ») ou la **sauter** : ne jamais fabriquer une réponse postiche. Les **axes optionnels** de chaque famille sont là précisément pour ces PJ que le cœur de liste ne mord pas.
+> **Scope.** Here we craft **fictional background** — identity, bonds, desire, wound. **No mechanics**: stats, tags, rolls stay deferred to the game's `R/_systeme/{canon,mj}/`. Proceed by **back-and-forth**: offer 2–3 leads per question, the user **chooses/amends**, then we **record** — never a page written in one block.
 
 ---
 
-## Table de correspondance — thèmes GROG → famille
+## How to use it
 
-Taxonomie de référence : les 19 thématiques du **Guide du Rôliste Galactique** (`legrog.org/themes/`).
+1. **Infer the genre** of the active game (the `R` domain of the current directory; if needed, ask the user for the GROG theme or the game pitch).
+2. **Map** the theme to a **family** via the table below (and note any **modulators**).
+3. Ask the **common trunk** (5–8 questions).
+4. Ask the family's **signature questions** (+ draw from its **optional axes** if the PJ calls for it).
+5. Apply the **modulators** (suffix *Fantasy*, *Alternate history/Steampunk*, *Time travel*…).
+6. **Distribute** the answers into `pj.md` / `intention.md` (see "Where the answers land").
 
-| Thème GROG | Famille | Modulateur(s) |
+Don't ask everything at once: in batches of 2–4 questions, let the user answer, bounce off it.
+
+> **Probe, not mold.** Each signature question explores an **axis**, not a mandatory template. If a question assumes an archetype (the adventurer, the chosen one, the augmented, the clandestine, the rebel) and falls **flat** on a PJ who is nonetheless legitimate for the genre — the artisan who never travels, the carer without a secret, the hunter born into the supernatural, the loyal officer, the child of the shelter —, **invert** it ("and what if they never leave?", "and what if they have no secret?") or **skip** it: never manufacture a fake answer. Each family's **optional axes** are there precisely for those PJs that the core list doesn't bite into.
+
+---
+
+## Mapping table — GROG themes → family
+
+Reference taxonomy: the 19 themes of the **Guide du Rôliste Galactique** (`legrog.org/themes/`).
+
+| GROG theme | Family | Modulator(s) |
 | --- | --- | --- |
-| Contemporain | Contemporain | — |
-| Contemporain Fantastique | Contemporain | + Fantastique |
+| Contemporary | Contemporary | — |
+| Contemporary Fantasy | Contemporary | + Fantasy |
 | Cyberpunk / Anticipation | Cyberpunk / Anticipation | — |
-| Cyberpunk / Anticipation Fantastique | Cyberpunk / Anticipation | + Fantastique |
-| Générique | (au choix selon la table de jeu) | Générique |
-| Historique | Historique | — |
-| Historique Fantastique | Historique | + Fantastique |
-| Humoristique | (base au choix) | + Humoristique |
-| Inclassables | (au choix) | Inclassables |
-| Médiéval Fantastique | Médiéval-fantastique | — |
-| Merveilleux / Onirique | Fantastique / Horreur | + Merveilleux / Onirique |
-| Oriental / Manga | selon l'œuvre (Historique, Medfan ou Contemporain) | + note Oriental |
-| Post Apocalyptique | Post-apocalyptique | — |
-| Post Apocalyptique Fantastique | Post-apocalyptique | + Fantastique |
-| Science Fiction divers | Science-fiction / Space opera | — |
+| Cyberpunk / Anticipation Fantasy | Cyberpunk / Anticipation | + Fantasy |
+| Generic | (chosen per the game table) | Generic |
+| Historical | Historical | — |
+| Historical Fantasy | Historical | + Fantasy |
+| Humorous | (base of choice) | + Humorous |
+| Unclassifiable | (of choice) | Unclassifiable |
+| Medieval Fantasy | Medieval-fantasy | — |
+| Wonder / Oneiric | Fantasy / Horror | + Wonder / Oneiric |
+| Oriental / Manga | per the work (Historical, Medfan or Contemporary) | + Oriental note |
+| Post Apocalyptic | Post-apocalyptic | — |
+| Post Apocalyptic Fantasy | Post-apocalyptic | + Fantasy |
+| Science Fiction misc. | Science-fiction / Space opera | — |
 | Space Opera | Science-fiction / Space opera | — |
-| Super-héros | Super-héros | — |
-| Univers parallèles / Multivers | (base au choix) | + Univers parallèles |
-| Voyage dans le Temps | (base de l'époque de départ) | + Voyage dans le temps |
-| *Steampunk* (hors nomenclature GROG) | Historique | + Uchronie / Steampunk |
+| Superheroes | Superheroes | — |
+| Parallel universes / Multiverse | (base of choice) | + Parallel universes |
+| Time Travel | (base of the starting era) | + Time travel |
+| *Steampunk* (outside the GROG nomenclature) | Historical | + Alternate history / Steampunk |
 
 ---
 
-## Tronc commun (toutes familles)
+## Common trunk (all families)
 
-Genre-neutre, posé en premier. Chaque question indique ce qu'elle nourrit.
+Genre-neutral, asked first. Each question states what it feeds.
 
-1. **Ancrage social** — Quelle est sa **place** dans le monde : métier, statut, fonction quotidienne ? *(→ pj.md : façade sociale)*
-2. **Le quotidien concret** — À quoi ressemble une **journée ordinaire** ? Lieu, gestes, texture sensorielle. *(→ pj.md : background)*
-3. **Les liens** — 2 à 3 personnes qui comptent. Pour chacune, **ce qui les unit ET ce qui les ronge** (double charge). *(→ pj.md : relations au monde)*
-4. **La blessure / le manque** — Qu'est-ce qui s'est cassé, qu'a-t-il perdu ou jamais eu ? *(→ intention.md : question viscérale)*
-5. **Le désir moteur** — Que veut-il, **maintenant**, assez fort pour agir ? *(→ intention.md)*
-6. **La part cachée** — Ce qu'il dissimule (aux autres, ou à lui-même). *(→ pj.md : personnalité ; intention.md : vérités)*
-7. **La ligne rouge** — Ce qu'il ne ferait *jamais* — et qui sera tenté. *(→ intention.md : ligne rouge)*
-8. **La signature** — Un geste, un objet, un tic mémorable. *(→ pj.md : identité)*
+1. **Social anchoring** — What is their **place** in the world: trade, status, daily function? *(→ pj.md: social facade)*
+2. **The concrete everyday** — What does an **ordinary day** look like? Place, gestures, sensory texture. *(→ pj.md: background)*
+3. **The bonds** — 2 to 3 people who matter. For each, **what unites them AND what gnaws at them** (double charge). *(→ pj.md: world relationship)*
+4. **The wound / the lack** — What broke, what did they lose or never have? *(→ intention.md: visceral question)*
+5. **The driving desire** — What do they want, **now**, strongly enough to act? *(→ intention.md)*
+6. **The hidden part** — What they conceal (from others, or from themself). *(→ pj.md: personality; intention.md: truths)*
+7. **The red line** — What they would *never* do — and which will be tempted. *(→ intention.md: red line)*
+8. **The signature** — A gesture, an object, a memorable tic. *(→ pj.md: identity)*
 
 ---
 
-## Familles
+## Families
 
-### Médiéval-fantastique
-*(GROG : Médiéval Fantastique — de la fantasy épique au picaresque / basse fantasy urbaine)*
-- **Rapport au merveilleux** — La magie/le surnaturel : part de sa vie (don, métier, sang), interdit (tabou, loi), peur — ou **indifférence** (folklore lointain auquel il ne croit qu'à moitié) ? Et s'il s'invite : que lui coûte-t-il, **ou** pourquoi le laisse-t-il froid ?
-- **Lignage & terre** — D'où vient-il, à quelle communauté/serment est-il lié ? Que doit-il à son sang ou à son seigneur — **ou** qu'a-t-il renié ?
-- **L'ombre au loin** — Quelle menace, légende ou rumeur plane (mort ancien, peste, guerre, déclin) ? Et ça change quoi à **sa** vie : il s'arme, prie, fuit, en rit au comptoir, ou ça ne franchira jamais ses murs ?
-- **Sa place dans le grand ordre** — Un **fardeau imposé** (prophétie, marque, serment, dette de sang), se **forge-t-il seul** contre tout destin, **ou** a-t-il simplement hérité d'une vie ordinaire qu'il veut tenir et transmettre ?
-- **Ce qui le pousse** — Qu'il prenne la route ou reste à sa place : or, gloire, vengeance, rédemption, survie — **ou** garder/consolider ce qu'il a (atelier, proches, rang) ? Et qu'est-il prêt à risquer ?
-- *Axes optionnels selon le PJ :* **peuple/espèce** (humain, elfe, nain, demi-orc… et l'altérité qui en découle) · **foi & panthéon** (dieux, Église, superstition, serment sacré) · **rapport au fer** (la violence : il en jouit, la subit, la refuse).
+### Medieval-fantasy
+*(GROG: Medieval Fantasy — from epic fantasy to picaresque / urban low fantasy)*
+- **Relation to the wondrous** — Magic/the supernatural: part of their life (gift, trade, blood), forbidden (taboo, law), feared — or **indifference** (distant folklore they only half believe)? And if it intrudes: what does it cost them, **or** why does it leave them cold?
+- **Lineage & land** — Where do they come from, to what community/oath are they bound? What do they owe to their blood or their lord — **or** what have they disowned?
+- **The shadow afar** — What threat, legend or rumor looms (ancient death, plague, war, decline)? And what does it change to **their** life: do they arm up, pray, flee, laugh about it at the bar, or will it never cross their walls?
+- **Their place in the great order** — An **imposed burden** (prophecy, mark, oath, blood debt), do they **forge themself alone** against all destiny, **or** have they simply inherited an ordinary life they want to hold and pass on?
+- **What drives them** — Whether they take the road or stay in place: gold, glory, revenge, redemption, survival — **or** keeping/consolidating what they have (workshop, kin, rank)? And what are they ready to risk?
+- *Optional axes per the PJ:* **people/species** (human, elf, dwarf, half-orc… and the otherness that follows) · **faith & pantheon** (gods, Church, superstition, sacred oath) · **relation to the blade** (violence: they relish it, endure it, refuse it).
 
-### Contemporain
-*(GROG : Contemporain — axe signature **ordinaire / extraordinaire**, des deux versants : intrigue/secret ET drame intime)*
-- **Ce qui le rend ordinaire** — Sa banalité, sa routine, ce par quoi il ressemble à n'importe qui (le **terrain commun** avec le joueur).
-- **Ce qui le distingue (ou pas)** — Une compétence, un accès, un secret qui le **sort du lot** — **ou**, à l'inverse, une situation ordinaire qu'il **traverse plus intensément** que les autres (une charge, une épreuve, une place singulière). Pas forcément un pouvoir : parfois juste l'acuité d'un regard banal.
-- **Le prix de sa situation** — Ce que sa singularité lui coûte au quotidien : poids de la **dissimulation** si elle se cache ; **usure, sacrifice, renoncement** si elle est au grand jour. Ce à quoi il a déjà renoncé sans bruit.
-- **L'ancrage réel** — Ville, milieu social, époque précise : le concret qui rend crédible.
-- *Axes optionnels selon le PJ :* **le poids du réel matériel** (argent, dette, loyer, administration, institutions — moteur premier du drame contemporain) · **la vie numérique & la visibilité** (écrans, réseaux, traces, surveillance : exposé, surveillé, isolé, en retrait ?).
+### Contemporary
+*(GROG: Contemporary — signature axis **ordinary / extraordinary**, on both sides: intrigue/secret AND intimate drama)*
+- **What makes them ordinary** — Their banality, their routine, what makes them resemble anyone (the **common ground** with the player).
+- **What sets them apart (or not)** — A skill, an access, a secret that **lifts them out of the crowd** — **or**, conversely, an ordinary situation they **go through more intensely** than others (a charge, an ordeal, a singular place). Not necessarily a power: sometimes just the acuity of an ordinary gaze.
+- **The price of their situation** — What their singularity costs them daily: weight of **concealment** if it is hidden; **wear, sacrifice, renunciation** if it is out in the open. What they have already quietly given up.
+- **The real anchoring** — City, social milieu, precise era: the concrete that makes it credible.
+- *Optional axes per the PJ:* **the weight of material reality** (money, debt, rent, administration, institutions — the prime mover of contemporary drama) · **digital life & visibility** (screens, networks, traces, surveillance: exposed, watched, isolated, withdrawn?).
 
-### Fantastique / Horreur
-*(GROG : Merveilleux/Onirique en base sombre ; sert aussi de greffe pour le suffixe Fantastique)*
-- **Son rapport au seuil du réel** — Le surnaturel a-t-il fait **irruption** dans une vie d'abord normale (par où ? vu, subi, nié ?), **ou** a-t-il toujours vécu de l'autre côté du voile (lignée, don, ordre, nature) ? Si natif : qu'est-ce qui, pour lui, tiendrait lieu de « monde normal » qu'il n'a jamais eu ?
-- **Ce qu'il a à perdre** — L'attache normale (famille, raison, foi) que l'horreur menace.
-- **Son rapport au savoir noir** — Que sait-il, et **comment** l'a-t-il appris : arraché par transgression (à quel prix ?), reçu en héritage/devoir (quel poids ?), ou subi sans le vouloir ? Une faute, un fardeau, ou un outil ? *(et a-t-il une dette, un pacte, un serment qui le lie à ce qui le hante ?)*
-- **Sa fragilité** — Peur intime, dépendance, faille mentale que l'épouvante viendra presser.
-- *Axes optionnels selon le PJ :* **le corps & la contamination** (qu'est-ce qui menace de le changer de l'intérieur : morsure, possession, transformation, perte de contrôle ?) · **sera-t-il cru** (quand il dit ce qu'il a vu : on le croit, on le tient pour fou, il se tait ?).
+### Fantasy / Horror
+*(GROG: Wonder/Oneiric on a dark base; also serves as the graft for the Fantasy suffix)*
+- **Their relation to the threshold of the real** — Has the supernatural **erupted** into an at-first normal life (through where? seen, endured, denied?), **or** have they always lived on the other side of the veil (lineage, gift, order, nature)? If native: what, for them, would stand in for a "normal world" they never had?
+- **What they have to lose** — The normal attachment (family, sanity, faith) that horror threatens.
+- **Their relation to dark knowledge** — What do they know, and **how** did they learn it: torn out by transgression (at what price?), received as inheritance/duty (what weight?), or endured unwillingly? A sin, a burden, or a tool? *(and do they have a debt, a pact, an oath binding them to what haunts them?)*
+- **Their fragility** — Intimate fear, dependency, mental flaw that the terror will press on.
+- *Optional axes per the PJ:* **the body & contamination** (what threatens to change them from within: bite, possession, transformation, loss of control?) · **will they be believed** (when they tell what they saw: are they believed, taken for mad, do they stay silent?).
 
 ### Science-fiction / Space opera
-*(GROG : Space Opera, Science Fiction divers)*
-- **Origine & échelle** — Monde, station ou vaisseau natal ; son rapport à l'immensité (provincial, nomade, exilé ?).
-- **Technologie & altérité** — Augmentations, IA, espèces non-humaines : intime ou méfiant ?
-- **Place dans l'ordre galactique** — Rouage, marge, rebelle, privilégié, **ou pilier loyal d'un pouvoir auquel il croit** ? À qui (ou à quoi) a-t-il prêté allégeance — et qu'arrive-t-il à ce serment le jour où l'ordre venu d'en haut devient injuste ?
-- **L'horizon** — Pourquoi est-il là, dans le grand vide : par **choix** (fortune, fuite, vérité, retour) ou parce qu'on l'y a **envoyé** (ordre, serment, déploiement, exil) ? Si on lui rendait sa liberté demain, partirait-il, resterait-il, ou ne saurait-il plus quoi vouloir ?
-- *Axes optionnels selon le PJ :* **le poids du feu donné** (a-t-il tué, commandé, laissé mourir à l'échelle du vide ? qui porte-t-il ?) · **le corps face à la tech** (clones, longévité, upload, gel) · **le vertige du temps** (dilatation, proches vieillis ou morts pendant l'absence).
+*(GROG: Space Opera, Science Fiction misc.)*
+- **Origin & scale** — Native world, station or ship; their relation to immensity (provincial, nomad, exile?).
+- **Technology & otherness** — Augmentations, AI, non-human species: intimate or wary?
+- **Place in the galactic order** — Cog, margin, rebel, privileged, **or loyal pillar of a power they believe in**? To whom (or what) have they pledged allegiance — and what happens to that oath the day the order from on high becomes unjust?
+- **The horizon** — Why are they there, in the great void: by **choice** (fortune, flight, truth, return) or because they were **sent** there (order, oath, deployment, exile)? If they were given back their freedom tomorrow, would they leave, stay, or no longer know what to want?
+- *Optional axes per the PJ:* **the weight of fire given** (have they killed, commanded, let die on the scale of the void? who do they carry?) · **the body facing tech** (clones, longevity, upload, freeze) · **the vertigo of time** (dilation, kin aged or dead during the absence).
 
 ### Cyberpunk / Anticipation
-*(GROG : Cyberpunk / Anticipation — du street-rat au cadre corpo, du courtier au transhumain)*
-- **Rapport au système** — Écrasé par lui, rouage à l'intérieur, parasite des marges, **ou courtier qui le fait tourner** ? Qui tient ta laisse, à qui tiens-tu la sienne, et à qui dois-tu une faveur que tu n'as pas envie de rembourser ?
-- **Corps & technologie** — Qu'as-tu modifié, vendu, augmenté de toi (et **troqué** en échange) — **ou** as-tu choisi de rester clean (par pauvreté, statut, méfiance, discrétion), et qu'est-ce que ça te coûte ?
-- **Ton réseau** — Un crew de rue, une allégeance corpo, ou la solitude ? Qui te couvre, qui te balance ?
-- **Survie, révolte… ou ascension ?** — Tu subis le système, tu te bats contre, ou tu en **tires parti** ? Survivre, renverser, durer sans bruit, ou **monter / accumuler** dans ses règles ? Jusqu'où — qui sacrifierais-tu pour ta place ?
-- *Axes optionnels selon le PJ :* **capital & monnaie d'échange** (ta vraie richesse : info, faveurs, accès, réputation, secrets) · **données & surveillance** (qui te regarde, que sais-tu de dangereux) · **la ville dégradée** comme décor qui te façonne (mégapole, arcologie, effondrement).
+*(GROG: Cyberpunk / Anticipation — from street-rat to corpo exec, from broker to transhuman)*
+- **Relation to the system** — Crushed by it, a cog inside it, a parasite of the margins, **or a broker who keeps it turning**? Who holds your leash, whose do you hold, and to whom do you owe a favor you don't want to repay?
+- **Body & technology** — What have you modified, sold, augmented of yourself (and **traded** in exchange) — **or** have you chosen to stay clean (out of poverty, status, distrust, discretion), and what does that cost you?
+- **Your network** — A street crew, a corpo allegiance, or solitude? Who covers you, who rats you out?
+- **Survival, revolt… or ascension?** — Do you endure the system, fight against it, or **profit** from it? Survive, overthrow, last quietly, or **climb / accumulate** within its rules? How far — who would you sacrifice for your place?
+- *Optional axes per the PJ:* **capital & currency** (your real wealth: info, favors, access, reputation, secrets) · **data & surveillance** (who watches you, what do you know that's dangerous) · **the degraded city** as a backdrop that shapes you (megalopolis, arcology, collapse).
 
-### Post-apocalyptique
-*(GROG : Post Apocalyptique — de l'errant au natif de l'enclave intacte)*
-- **Ton monde, c'est quoi ?** — Les souvenirs d'un monde d'avant disparu, les **ruines** comme seul horizon depuis toujours, **ou** un **dedans clos** (abri, station, enclave) où le dehors n'est qu'une rumeur ? Et le dehors : déjà franchi, ou jamais ?
-- **Ce qu'il a fait pour survivre** — La ligne qu'il a déjà franchie, et qu'il tait. *(ou, s'il a été protégé : ce qu'il n'a jamais eu à faire — et qui le ronge ou le naïvise.)*
-- **Son groupe : choisi ou hérité ?** — À quel groupe/abri est-il lié — **agrégé** pour survivre, ou **né dedans** sans avoir connu autre chose ? Autour de quelle ressource ou règle ça tient, et que se passe-t-il s'il part ?
-- **Il vise quoi ?** — Reconstruire du neuf, tenir coûte que coûte sans plus y croire, **ou** s'arracher à ce qui le protège (sortir, rompre, voir au-delà) ? Le danger pour lui : perdre, ou rester ?
-- *Axe optionnel selon le PJ :* **le dehors et lui** (qu'est-ce qui tue là-dehors : radiation, contamination, climat, peste, faune mutée — et son corps en porte-t-il la marque, ou n'y a-t-il jamais été exposé ? menace, interdit, ou appel ?).
+### Post-apocalyptic
+*(GROG: Post Apocalyptic — from the wanderer to the native of the intact enclave)*
+- **What is your world?** — The memories of a vanished world from before, the **ruins** as the only horizon ever known, **or** an **enclosed inside** (shelter, station, enclave) where the outside is only a rumor? And the outside: already crossed, or never?
+- **What they did to survive** — The line they have already crossed, and which they hush. *(or, if they were protected: what they never had to do — and which gnaws at them or makes them naive.)*
+- **Their group: chosen or inherited?** — To what group/shelter are they bound — **aggregated** to survive, or **born into it** without ever having known anything else? Around what resource or rule does it hold, and what happens if they leave?
+- **What do they aim for?** — Rebuild anew, hold on at all costs without believing in it anymore, **or** tear themself away from what protects them (get out, break free, see beyond)? The danger for them: to lose, or to stay?
+- *Optional axis per the PJ:* **the outside and them** (what kills out there: radiation, contamination, climate, plague, mutated fauna — and does their body bear the mark of it, or were they never exposed? threat, forbidden, or call?).
 
-### Historique
-*(GROG : Historique ; base de Steampunk/Uchronie et souvent d'Oriental/Manga)*
-- **Époque & lieu précis** — Ancrage daté, et son rang dans la société de l'époque.
-- **Le poids des contraintes d'époque** — Ce que sa condition (genre, classe, religion, métier) lui interdit ou lui impose.
-- **Les grands remous** — À quel événement ou tension historique sa vie est-elle accrochée — **ou** vit-il à l'écart de la grande Histoire, dans sa petite vie ?
-- **De son temps, ou en marge ?** — **Pleinement de son époque** (ce qui le rend crédible), ou **déborde-t-il** ponctuellement de ses mœurs (à quel risque) ? Et dans l'autre sens : à quoi participe-t-il **sans état d'âme** — normal pour lui, atroce pour nous (esclavage, conquête, châtiment, statut imposé à autrui) ? Le malaise du joueur fait partie du jeu : on n'aplatit pas le passé à nos valeurs. *(déborder comme adhérer sont des options, pas des passages obligés.)*
-- *Axes optionnels selon le PJ :* **la vision du monde tenue pour vraie** (cosmologie, religion vécue, hiérarchie « naturelle », médecine, superstition — l'habiter de l'intérieur, sans le corriger avec notre savoir) · **la matérialité d'époque** (argent, outils, distances et temps de voyage, communication) · **l'allégeance** (suzerain, maître, guilde, clan — ce que coûte la rupture).
+### Historical
+*(GROG: Historical; base of Steampunk/Alternate history and often of Oriental/Manga)*
+- **Precise era & place** — Dated anchoring, and their rank in the society of the era.
+- **The weight of the era's constraints** — What their condition (gender, class, religion, trade) forbids or imposes on them.
+- **The great upheavals** — To what historical event or tension is their life hitched — **or** do they live apart from the great History, in their small life?
+- **Of their time, or on the margin?** — **Fully of their era** (what makes them credible), or do they **overstep** its mores at times (at what risk)? And the other way around: what do they take part in **without a qualm** — normal for them, atrocious for us (slavery, conquest, punishment, status imposed on others)? The player's unease is part of the play: we don't flatten the past to our values. *(overstepping as adhering are options, not mandatory passages.)*
+- *Optional axes per the PJ:* **the worldview held as true** (cosmology, lived religion, "natural" hierarchy, medicine, superstition — inhabiting it from within, without correcting it with our knowledge) · **the materiality of the era** (money, tools, distances and travel times, communication) · **allegiance** (suzerain, master, guild, clan — what breaking it costs).
 
-### Super-héros
-*(GROG : Super-héros)*
-- **L'origine** — D'où vient le pouvoir ou la vocation : accident, héritage, choix, malédiction ?
-- **Identité, exposition, dissimulation** — Qui sait ce qu'il est ? Peut-il seulement le **cacher** (masque, double vie), **ou** son pouvoir est-il inscrit dans son corps, **visible de tous** ? Que protège-t-il en se révélant ou en se dissimulant ?
-- **Responsabilité & code** — Quelle limite morale s'impose-t-il, et qui la testera ?
-- **Le revers et la faille** — Distinguer deux choses : (a) la **faiblesse exploitable** par un ennemi (point faible, attache vulnérable, condition qui l'annule) ; (b) le **coût qu'il paie à chaque usage** (ce que le pouvoir lui prend, ou détruit autour de lui, même sans ennemi).
-- *Axes optionnels selon le PJ :* **le rapport au pouvoir** (le maîtrise-t-il ou le subit-il ? don, outil, ou malédiction dont il rêve de se défaire ?) · **la némésis-miroir** (qui est son ennemi, en quoi lui ressemble-t-il ?) · **l'échelle** (rue, ville, monde, cosmos) · **solo ou équipe**.
-
----
-
-## Modulateurs (à greffer sur une famille de base)
-
-- **Fantastique** *(suffixe GROG : Contemporain/Historique/Cyberpunk/Post-Apo Fantastique)* — garder la famille de base + greffer 1–2 questions de **Fantastique/Horreur** (par où le surnaturel entre, quel prix il coûte).
-- **Uchronie / Steampunk** — base **Historique** + « Quel **point de divergence** ou quelle technologie a changé le monde, et quelle place y tient-il ? »
-- **Voyage dans le temps** — base de l'époque de départ + « D'où et de **quand** vient-il, et qu'a-t-il laissé à son ancrage temporel ? »
-- **Univers parallèles / Multivers** — base d'un monde + « **Lequel** est vraiment le sien, et que cherche-t-il (ou fuit-il) en franchissant ? »
-- **Humoristique** — ne change pas les questions, change le **ton** des réponses : exagérer un trait, assumer le décalage.
-- **Merveilleux / Onirique** — remplacer la logique causale par la **logique du rêve/conte** : « Quelle **règle féerique** le lie ? Quel vœu, quel interdit le gouverne ? »
-- **Générique / Inclassables** — pas de setting fixe : poser le **tronc commun**, demander à l'utilisateur le genre/pitch visé, puis appliquer la **famille la plus proche**.
-- **Oriental / Manga** *(note)* — selon l'œuvre, partir d'Historique, Medfan ou Contemporain, et ajouter : code d'honneur, dette, lien maître/école.
+### Superheroes
+*(GROG: Superheroes)*
+- **The origin** — Where does the power or vocation come from: accident, inheritance, choice, curse?
+- **Identity, exposure, concealment** — Who knows what they are? Can they even **hide** it (mask, double life), **or** is their power inscribed in their body, **visible to all**? What do they protect by revealing or concealing themself?
+- **Responsibility & code** — What moral limit do they set themself, and who will test it?
+- **The flip side and the flaw** — Distinguish two things: (a) the **exploitable weakness** for an enemy (weak point, vulnerable attachment, condition that nullifies them); (b) the **cost they pay with each use** (what the power takes from them, or destroys around them, even without an enemy).
+- *Optional axes per the PJ:* **the relation to the power** (do they master it or endure it? gift, tool, or curse they dream of being rid of?) · **the mirror-nemesis** (who is their enemy, how do they resemble them?) · **the scale** (street, city, world, cosmos) · **solo or team**.
 
 ---
 
-## Où atterrissent les réponses
+## Modulators (to graft onto a base family)
 
-| Source | Fichier cible | Sections |
+- **Fantasy** *(GROG suffix: Contemporary/Historical/Cyberpunk/Post-Apo Fantasy)* — keep the base family + graft 1–2 questions from **Fantasy/Horror** (where the supernatural enters, what price it costs).
+- **Alternate history / Steampunk** — **Historical** base + "What **point of divergence** or what technology changed the world, and what place do they hold in it?"
+- **Time travel** — base of the starting era + "From where and from **when** do they come, and what did they leave at their temporal anchoring?"
+- **Parallel universes / Multiverse** — base of a world + "**Which** is truly theirs, and what do they seek (or flee) by crossing?"
+- **Humorous** — doesn't change the questions, changes the **tone** of the answers: exaggerate a trait, embrace the offset.
+- **Wonder / Oneiric** — replace causal logic with the **logic of dream/tale**: "What **faerie rule** binds them? What wish, what forbidden governs them?"
+- **Generic / Unclassifiable** — no fixed setting: ask the **common trunk**, ask the user for the targeted genre/pitch, then apply the **closest family**.
+- **Oriental / Manga** *(note)* — per the work, start from Historical, Medfan or Contemporary, and add: code of honor, debt, master/school bond.
+
+---
+
+## Where the answers land
+
+| Source | Target file | Sections |
 | --- | --- | --- |
-| Ancrage social, quotidien, signature, identité | `pj.md` | identité, façade sociale, background |
-| Liens, part cachée, personnalité | `pj.md` | personnalité, relations au monde |
-| Blessure, désir moteur, ligne rouge, vérités | `intention.md` | question viscérale, ligne rouge, thèmes, vérités |
+| Social anchoring, everyday, signature, identity | `pj.md` | identity, social facade, background |
+| Bonds, hidden part, personality | `pj.md` | personality, world relationship |
+| Wound, driving desire, red line, truths | `intention.md` | visceral question, red line, themes, truths |
 
-Les questions **signature** et **modulateurs** se rangent dans la même logique : ce qui décrit *qui il est* → `pj.md` ; ce qui décrit *ce qu'on veut vivre/éviter* → `intention.md`. Marquer `[À compléter]` toute section laissée ouverte ; ne **rien inventer** que l'utilisateur n'ait validé.
+The **signature** questions and **modulators** sort into the same logic: what describes *who they are* → `pj.md`; what describes *what we want to experience/avoid* → `intention.md`. Mark `[To complete]` any section left open; **invent nothing** the user hasn't validated.
 
 ---
 
-## Crédit
+## Credit
 
-- Taxonomie des genres : **Guide du Rôliste Galactique** — `legrog.org/themes/`.
-- Structure du questionnaire : inspirée de la création de personnage d'**Ecryme 2e édition** (John Grümph, Le Grümph / Matagot) — construction par questions concrètes plutôt que par cases.
-- Liens à double charge : cf. `../../rpg/references/methode-creation.md` (R-map, étape 3).
+- Genre taxonomy: **Guide du Rôliste Galactique** — `legrog.org/themes/`.
+- Questionnaire structure: inspired by the character creation of **Ecryme 2nd edition** (John Grümph, Le Grümph / Matagot) — built from concrete questions rather than from boxes.
+- Double-charged bonds: cf. `../../rpg/references/methode-creation.md` (R-map, step 3).

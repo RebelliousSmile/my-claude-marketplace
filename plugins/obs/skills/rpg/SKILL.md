@@ -1,83 +1,83 @@
 ---
 name: rpg
 description: >-
-  Prépare le côté MJ d'une campagne de JDR solo — écriture de scénarios et préparation
-  de campagne : synopsis, fronts/horloges, PNJ, factions, lieux, prep de session, accroches. Complète `pc`
-  (fiches de personnage-joueur) et `solo-mc` (jeu en direct) : on prépare ici, on joue avec solo-mc.
-  Utiliser quand l'utilisateur invoque /obs:rpg avec une intention de scénario ou de prep de campagne.
-  NE PAS utiliser pour jouer en direct (scene/oracle/roll → solo-mc), pour gérer la fiche de PJ (→ pc),
-  ni pour de la fiction narrative non-JDR (→ plugin writing).
+  Prepares the GM side of a solo TTRPG campaign — scenario writing and campaign
+  preparation: synopsis, fronts/clocks, NPCs, factions, locations, session prep, hooks. Complements `pc`
+  (player-character sheets) and `solo-mc` (live play): here we prepare, with solo-mc we play.
+  Use when the user invokes /obs:rpg with a scenario or campaign-prep intent.
+  Do NOT use for live play (scene/oracle/roll → solo-mc), for managing the PC sheet (→ pc),
+  nor for non-TTRPG narrative fiction (→ writing plugin).
 disable-model-invocation: true
 ---
 
-# RPG — scénarios & préparation de campagne
+# RPG — scenarios & campaign preparation
 
-Compagnon de préparation pour le JDR solo. Produit la **matière de jeu** qu'un MJ prépare avant la table : situation, intrigues, PNJ, factions, lieux, prep de session. Cette matière s'appuie sur l'intention du PJ (skill `pc`) et est consommée pendant le jeu par `solo-mc`.
+Preparation companion for solo TTRPG. Produces the **game material** a GM prepares before the table: situation, plots, NPCs, factions, locations, session prep. This material draws on the PC's intent (skill `pc`) and is consumed during play by `solo-mc`.
 
-Découpage des trois skills : `pc` = la fiche du personnage-joueur · `rpg` = la prep MJ (ici) · `solo-mc` = le jeu en direct.
+Split between the three skills: `pc` = the player-character sheet · `rpg` = the GM prep (here) · `solo-mc` = live play.
 
-**Mode de création interactif — pas un outil de rangement.** Ranger/distribuer des informations dans les bons fichiers, c'est le rôle de `lore-extract` (sources → `canon/`). `rpg` est différent : c'est un **atelier de création MJ** où l'on **part du canon** (lore officiel établi) et où l'on **imagine, en dialogue avec l'utilisateur, ce qui va se jouer avec les joueurs** — quelles situations, quels fronts, quelles accroches pour *ce* PJ et sa team. Les fichiers produits (`mj/`, synopsis, scénarios, fronts) sont le **résidu** de cette création, jamais le but. Donc : **procéder par allers-retours** — lire le canon, proposer 2-4 directions, laisser l'utilisateur choisir et infléchir, *puis* consigner. Ne jamais produire une campagne ou un scénario complet d'un seul bloc sans avoir fait émerger les choix avec l'utilisateur.
+**Interactive creation mode — not a filing tool.** Filing/distributing information into the right files is the role of `lore-extract` (sources → `canon/`). `rpg` is different: it is a **GM creation workshop** where you **start from the canon** (established official lore) and where you **imagine, in dialogue with the user, what will be played with the players** — which situations, which fronts, which hooks for *this* PC and their team. The produced files (`mj/`, synopsis, scenarios, fronts) are the **residue** of this creation, never the goal. So: **proceed by back-and-forth** — read the canon, propose 2-4 directions, let the user choose and inflect, *then* record. Never produce a complete campaign or scenario in a single block without having drawn out the choices with the user.
 
 ## Available actions
 
 | #   | Action         | Role                                                                  | Input                        |
 | --- | -------------- | --------------------------------------------------------------------- | ---------------------------- |
-| 01  | `campaign`     | Crée la campagne (config.yaml + structure) si absente, puis amorce sa prep (synopsis, fronts, index) | nom de campagne              |
-| 02  | `scenario`     | Écrit un scénario / une situation jouable                             | campagne, pitch/idée         |
-| 03  | `prep-session` | Prépare la prochaine session (scènes probables, accroches, tables)    | campagne, n° de session      |
-| 04  | `npc`          | Crée / développe un PNJ d'univers (durable, partagé)                  | univers/campagne, nom du PNJ |
-| 05  | `faction`      | Faction (univers) + ses fronts/horloges actifs (campagne)            | campagne, nom de faction     |
-| 06  | `review`       | Vérifie la cohérence et l'état de jouabilité de la prep               | campagne                     |
+| 01  | `campaign`     | Creates the campaign (config.yaml + structure) if absent, then bootstraps its prep (synopsis, fronts, index) | campaign name                |
+| 02  | `scenario`     | Writes a playable scenario / situation                                | campaign, pitch/idea         |
+| 03  | `prep-session` | Prepares the next session (likely scenes, hooks, tables)              | campaign, session number     |
+| 04  | `npc`          | Creates / develops a setting NPC (durable, shared)                    | setting/campaign, NPC name   |
+| 05  | `faction`      | Faction (setting) + its active fronts/clocks (campaign)              | campaign, faction name       |
+| 06  | `review`       | Checks the consistency and playability state of the prep             | campaign                     |
 
 ## Default flow
 
-Routeur — dispatch selon l'intention :
+Router — dispatch by intent:
 
-- "nouvelle campagne", "prépare ma campagne", "amorce la campagne <nom>" → `campaign`
-- "écris un scénario", "scénario", "situation jouable", "aventure" → `scenario`
-- "prépare la session", "prep session", "prochaine séance" → `prep-session`
-- "crée un PNJ", "nouveau PNJ", "développe <PNJ>" → `npc`
-- "crée une faction", "front", "horloge", "agenda d'une faction" → `faction`
-- "vérifie ma prep", "review", "est-ce jouable", "cohérence" → `review`
+- "new campaign", "prepare my campaign", "bootstrap the campaign <name>" → `campaign`
+- "write a scenario", "scenario", "playable situation", "adventure" → `scenario`
+- "prepare the session", "session prep", "next session" → `prep-session`
+- "create an NPC", "new NPC", "develop <NPC>" → `npc`
+- "create a faction", "front", "clock", "a faction's agenda" → `faction`
+- "check my prep", "review", "is it playable", "consistency" → `review`
 
-## Résolution du domaine `R` (locale, découverte)
+## Resolving the `R` domain (local, discovery)
 
-`rpg` opère relativement à un **répertoire de référence** (argument passé, sinon CWD) et **découvre** le domaine de jeu `R` : remonter les parents jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — ce dossier est `R` (typiquement `Perso/RPG/<jeu>/`, mais déplaçable n'importe où). Aucun marqueur trouvé → la cible n'est pas dans un domaine JDR initialisé : le signaler. Toujours vérifier l'existence d'un chemin résolu avant lecture/écriture. **Aucun chemin absolu, aucune config par machine** : tout est relatif à `R`. Référence complète : `../../references/jdr-layout.md`.
+`rpg` operates relative to a **reference directory** (passed argument, otherwise CWD) and **discovers** the game domain `R`: climb the parents up to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/` — that folder is `R` (typically `Perso/RPG/<game>/`, but movable anywhere). No marker found → the target is not within an initialized TTRPG domain: report it. Always check the existence of a resolved path before reading/writing. **No absolute path, no per-machine config**: everything is relative to `R`. Full reference: `../../references/jdr-layout.md`.
 
 ## Transversal rules
 
-- **Tout est relatif à `R`** : une campagne vit dans `R/_campagnes/<campagne>/` (même convention que `solo-mc`), avec `config.yaml`, `pj/`.
-- **`<univers-root>` (résolution de l'univers)** : un **setting est un univers du jeu**, rangé sous `R/_univers/<univers>/` — même s'il est vaste (gamme étendue, plusieurs éditions, ex. 7ème Mer / Théah pour le jeu Noblesse Oblige). Un domaine `R` peut avoir **plusieurs univers** ; chaque univers est partagé par le **groupe de campagnes** qui s'y déroulent. La campagne déclare le sien (`config.yaml › univers: <slug>`). Dans les règles ci-dessous, `<univers-root>` = `R/_univers/<univers>/`.
-- **Deux niveaux à distinguer** :
-  - **Données univers (durables, transverses aux campagnes)** — terminologie, factions, personnages, lieux/géographie, histoire. Elles vivent dans l'**arborescence partagée avec `lore-extract`** : `<univers-root>/` (= `R/_univers/<univers>/`), **scindée par provenance en deux sous-arbres thématiques identiques** :
-    - `canon/` — lore **officiel/établi**, extrait des sources via `lore-extract`. Fait autorité.
-    - `mj/` — contenu **créé par le maître de jeu** (inventé pour le jeu), écrit par `rpg`.
+- **Everything is relative to `R`**: a campaign lives in `R/_campagnes/<campaign>/` (same convention as `solo-mc`), with `config.yaml`, `pj/`.
+- **`<univers-root>` (resolving the setting)** : a **setting is a game universe**, stored under `R/_univers/<univers>/` — even when it is vast (extended product line, several editions, e.g. 7th Sea / Théah for the game Noblesse Oblige). A domain `R` can have **several settings**; each setting is shared by the **group of campaigns** that take place within it. The campaign declares its own (`config.yaml › univers: <slug>`). In the rules below, `<univers-root>` = `R/_univers/<univers>/`.
+- **Two levels to distinguish**:
+  - **Setting data (durable, transverse to campaigns)** — terminology, factions, characters, locations/geography, history. They live in the **tree shared with `lore-extract`**: `<univers-root>/` (= `R/_univers/<univers>/`), **split by provenance into two identical thematic sub-trees**:
+    - `canon/` — **official/established** lore, extracted from sources via `lore-extract`. Authoritative.
+    - `mj/` — content **created by the game master** (invented for the game), written by `rpg`.
 
-    Chaque sous-arbre contient les mêmes fichiers (`terminologie.md`, `factions.md`, `personnages.md`, `histoire.md`, `geographie.md`, + optionnels `magie.md`, `technologie.md`, `creatures.md`, `religions.md`, `economie.md`).
-  - **Prep de campagne (spécifique à une partie)** — scénarios, prep de session, fronts/horloges actifs, accroches PJ. Elle vit **dans le dossier de campagne** : `R/_campagnes/<campagne>/{scenarios,prep}/` + l'état des fronts.
-- **Conventions de l'arborescence univers** (alignées sur `lore-extract`) : une information dans **un seul fichier** (les autres référencent/`[[lient]]`) ; max ~250 lignes par fichier (sinon synthétiser) ; rédaction en français ; ne jamais écraser un fichier existant — compléter. Pour que les fichiers coïncident, `lore-extract` cible le `canon/` du même `<univers-root>`.
-- **Provenance canon vs MJ** : `rpg` écrit **uniquement dans `mj/`** (contenu créé par le maître de jeu) et ne modifie **jamais `canon/`** (réservé à `lore-extract`, qui fait autorité). Une entité vit dans **un seul** sous-arbre — si le MJ étend une entité canon, créer la fiche dans `mj/` qui `[[lie]]` l'entrée canon, sans la dupliquer. Le contenu MJ ne doit **pas contredire le canon en silence** : signaler toute divergence. En lecture, `canon/` prime pour les faits établis, `mj/` ajoute la couche MJ.
-- **PJ canonique vs instance de campagne** : le personnage durable vit dans `R/_pjs/<pj>/` (skill `pc`, source de l'`intention.md`) ; l'instance jouée d'une campagne vit dans `R/_campagnes/<campagne>/pj/` (`solo-mc`) et **référence** le PJ canonique. `rpg` s'ancre toujours sur l'`intention.md` canonique de `pc` ; si seul un PJ de campagne existe, le signaler et proposer de le rattacher à un PJ `pc`.
-- La campagne déclare son univers (`config.yaml › univers: <slug>` → `R/_univers/<univers>/` ; un domaine peut en avoir plusieurs) ; à défaut, demander quel univers et lister ceux présents sous `R/_univers/`.
-- Demander le nom de la campagne s'il n'est pas dans `$ARGUMENTS` ; lister les campagnes existantes sous `R/_campagnes/` (dossiers contenant un `config.yaml`).
-- Si `config.yaml` est absent, l'action **`campaign` l'amorce** — mais **uniquement l'identité/wiring** (`jeu`, `univers`, `type`, `pjs`, `pj_canonique`, refs lore/système, roster compagnons). Le **réglage de jeu** (`ton`, `approche`, `difficulte`, `rythme`, chaos, jauges) **n'est PAS écrit par `rpg`** : il relève de `solo-mc` (son setup), au moment de jouer. **Ne pas dérouler de questionnaire** — ne demander que l'univers et le PJ à rattacher.
-- **Système de jeu** : pour toute mécanique (récompenses, tags PNJ, défis), `rpg` consulte les règles du système de jeu au format rules-keeper (`obs:rules-keeper`), scindées canon/mj, sous `R/_systeme/{canon,mj}/`. Règles effectives = canon + house rules déclarées. **Ne jamais inventer de mécanique.** Deux cas d'indisponibilité à distinguer : si `R/_systeme/canon/` est **absent**, demander la régénération (`extract-pdf` puis `rules-keeper`) ; si le système est **présent mais muet** sur la mécanique demandée (p. ex. pas de piste d'XP/progression dans un système de simulation), le **signaler** comme non couvert par le système — ne jamais combler le silence par une mécanique inventée. Les **sous-systèmes génériques** sont des **outils de jeu en direct** consommés par `solo-mc` uniquement — hors du ressort de `rpg`.
-- **Procédure agent vs matière JDR** : si la demande porte sur la manière de travailler de l'agent, l'orchestration, ou le choix d'outils/skills, `rpg` s'appuie d'abord sur les skills pertinents pour le workflow. En revanche, la matière de jeu, le lore, les PNJ, les fronts et la campagne restent ancrés dans le domaine `R`.
-- **Méthode de création (system-agnostic)** : la référence opérationnelle est **`references/methode-creation.md`** — *notre* process de prep en 8 étapes (canon + intention → amorce du PJ → carte de relations → fronts/secrets → PNJ → scénario en situation → entrelacer/arc → préparer la session) + garde-fou sécurité + check-list. Elle s'appuie sur **`references/corpus-recherche.md`** (corpus sourcé : R-map, bangs, kicker, flags, principe de Czege, fronts/horloges, cadeaux empoisonnés, PNJ miroir…) et **`references/methodes-mj.md`** (carte des graines + contraintes). Tout est **craft transversal** : **aucune mécanique** propre à un jeu. Un framework comme l'agenda/principes/manœuvres MC est **PbtA-spécifique** (→ `_systeme/canon/` du jeu actif s'il est PbtA ; inapplicable à un système de simulation). Pour toute mécanique, déférer à `_systeme/{canon,mj}/`.
-- Servir le PJ : ancrer scénarios et sessions sur l'`intention.md` du PJ (thèmes, ligne rouge, question viscérale) géré par `pc`. La prep sert les enjeux du joueur, pas l'inverse.
-- Lire `config.yaml` (ton, rythme, difficulté, chaos, profondeur PNJ/lieux) et s'y conformer.
-- La prep est **consommée par `solo-mc`** au moment du jeu (scènes, oracle, fronts/horloges) ; ne jamais jouer en direct ici.
-- Préserver le contenu existant — compléter, ne jamais écraser ; marquer l'incomplet `[À compléter]` ; ne pas inventer ce qui manque à la source.
-- Format de date : `YYYY-MM-DD`.
+    Each sub-tree contains the same files (`terminologie.md`, `factions.md`, `personnages.md`, `histoire.md`, `geographie.md`, + optional `magie.md`, `technologie.md`, `creatures.md`, `religions.md`, `economie.md`).
+  - **Campaign prep (specific to one game)** — scenarios, session prep, active fronts/clocks, PC hooks. It lives **in the campaign folder**: `R/_campagnes/<campaign>/{scenarios,prep}/` + the state of the fronts.
+- **Conventions of the setting tree** (aligned with `lore-extract`) : one piece of information in **a single file** (the others reference/`[[link]]` it); max ~250 lines per file (otherwise synthesize); written in French; never overwrite an existing file — complete it. So that the files coincide, `lore-extract` targets the `canon/` of the same `<univers-root>`.
+- **Canon vs MJ provenance**: `rpg` writes **only into `mj/`** (content created by the game master) and **never** modifies `canon/` (reserved for `lore-extract`, which is authoritative). An entity lives in **a single** sub-tree — if the GM extends a canon entity, create the sheet in `mj/` that `[[links]]` the canon entry, without duplicating it. MJ content must **not silently contradict the canon**: report any divergence. When reading, `canon/` takes precedence for established facts, `mj/` adds the GM layer.
+- **Canonical PC vs campaign instance**: the durable character lives in `R/_pjs/<pj>/` (skill `pc`, source of the `intention.md`); the played instance of a campaign lives in `R/_campagnes/<campaign>/pj/` (`solo-mc`) and **references** the canonical PC. `rpg` always anchors on the canonical `intention.md` from `pc`; if only a campaign PC exists, report it and propose attaching it to a `pc` PC.
+- The campaign declares its setting (`config.yaml › univers: <slug>` → `R/_univers/<univers>/`; a domain may have several); failing that, ask which setting and list those present under `R/_univers/`.
+- Ask for the campaign name if it is not in `$ARGUMENTS`; list the existing campaigns under `R/_campagnes/` (folders containing a `config.yaml`).
+- If `config.yaml` is absent, the action **`campaign` bootstraps it** — but **only the identity/wiring** (`jeu`, `univers`, `type`, `pjs`, `pj_canonique`, lore/system refs, companion roster). The **game tuning** (`ton`, `approche`, `difficulte`, `rythme`, chaos, gauges) **is NOT written by `rpg`**: it belongs to `solo-mc` (its setup), at play time. **Do not run a questionnaire** — ask only for the setting and the PC to attach.
+- **Game system**: for any mechanic (rewards, NPC tags, challenges), `rpg` consults the rules of the game system in rules-keeper format (`obs:rules-keeper`), split canon/mj, under `R/_systeme/{canon,mj}/`. Effective rules = canon + declared house rules. **Never invent a mechanic.** Two unavailability cases to distinguish: if `R/_systeme/canon/` is **absent**, ask for regeneration (`extract-pdf` then `rules-keeper`); if the system is **present but silent** on the requested mechanic (e.g. no XP/progression track in a simulation system), **report it** as not covered by the system — never fill the silence with an invented mechanic. The **generic sub-systems** are **live-play tools** consumed by `solo-mc` only — outside the scope of `rpg`.
+- **Agent procedure vs TTRPG material**: if the request is about the agent's way of working, the orchestration, or the choice of tools/skills, `rpg` relies first on the relevant skills for the workflow. On the other hand, the game material, the lore, the NPCs, the fronts and the campaign remain anchored in the `R` domain.
+- **Creation method (system-agnostic)**: the operational reference is **`references/methode-creation.md`** — *our* 8-step prep process (canon + intent → bootstrap the PC → relationship map → fronts/secrets → NPCs → situation scenario → braid/arc → prepare the session) + safety guardrail + checklist. It relies on **`references/corpus-recherche.md`** (sourced corpus: R-map, bangs, kicker, flags, Czege principle, fronts/clocks, poisoned gifts, mirror NPCs…) and **`references/methodes-mj.md`** (map of seeds + constraints). Everything is **transversal craft**: **no mechanic** specific to a game. A framework like the MC agenda/principles/moves is **PbtA-specific** (→ `_systeme/canon/` of the active game if it is PbtA; inapplicable to a simulation system). For any mechanic, defer to `_systeme/{canon,mj}/`.
+- Serve the PC: anchor scenarios and sessions on the PC's `intention.md` (themes, red line, visceral question) managed by `pc`. The prep serves the player's stakes, not the reverse.
+- Read `config.yaml` (tone, pace, difficulty, chaos, NPC/location depth) and conform to it.
+- The prep is **consumed by `solo-mc`** at play time (scenes, oracle, fronts/clocks); never play live here.
+- Preserve existing content — complete it, never overwrite; mark the incomplete `[To complete]`; do not invent what is missing from the source.
+- Date format: `YYYY-MM-DD`.
 
-## Références externes (relatives à `R`)
+## External references (relative to `R`)
 
-- `R/_campagnes/<campagne>/config.yaml` — paramètres de campagne (réglage de jeu renseigné par `solo-mc setup`)
-- `R/_univers/<univers>/canon/` — lore officiel (lecture seule pour `rpg` ; écrit par `lore-extract`)
-- `R/_univers/<univers>/mj/` — contenu créé par le MJ (écrit par `rpg`) ; même arborescence thématique que `canon/`
-- `R/_pjs/<pj>/intention.md` — thèmes, ligne rouge, question viscérale du PJ (skill `pc`)
-- `R/_systeme/{canon,mj}/` — règles du **système de jeu** (format rules-keeper) ; seule référence mécanique de `rpg`. Les sous-systèmes (`R/_subsystems/<nom>/`) sont consommés par `solo-mc` uniquement.
-- Convention d'arborescence complète : `../../references/jdr-layout.md`
+- `R/_campagnes/<campagne>/config.yaml` — campaign parameters (game tuning filled in by `solo-mc setup`)
+- `R/_univers/<univers>/canon/` — official lore (read-only for `rpg`; written by `lore-extract`)
+- `R/_univers/<univers>/mj/` — content created by the GM (written by `rpg`); same thematic tree as `canon/`
+- `R/_pjs/<pj>/intention.md` — themes, red line, visceral question of the PC (skill `pc`)
+- `R/_systeme/{canon,mj}/` — rules of the **game system** (rules-keeper format); the only mechanical reference for `rpg`. The sub-systems (`R/_subsystems/<nom>/`) are consumed by `solo-mc` only.
+- Full tree convention: `../../references/jdr-layout.md`
 
 ## Evals
 
