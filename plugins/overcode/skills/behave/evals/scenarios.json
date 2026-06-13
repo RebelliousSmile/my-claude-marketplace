@@ -1,0 +1,15 @@
+[
+  { "prompt": "scaffold behavioural tests for plugins/obs/skills/rpg/SKILL.md", "expect_action": "scaffold" },
+  { "prompt": "/behave scaffold plugins/obs/agents/narrateur.md --name dialogue-quality", "expect_action": "scaffold" },
+  { "prompt": "write a scenario suite for this skill", "expect_action": "scaffold" },
+  { "prompt": "new behavioural test for the oracle agent --checker", "expect_action": "scaffold" },
+  { "prompt": "run the behavioural suite rules-triggering-scenarios.md against monsterhearts", "expect_action": "run" },
+  { "prompt": "/behave run evals/parallaxe-pov-scenarios.md zombiology", "expect_action": "run" },
+  { "prompt": "score this scenario suite against the fixture", "expect_action": "run" },
+  { "prompt": "regress all suites in plugins/obs/skills/solo-mc/evals after the fix", "expect_action": "regress" },
+  { "prompt": "/behave regress play-scenarios.md monsterhearts", "expect_action": "regress" },
+  { "prompt": "re-run the behavioural suites to confirm no regression", "expect_action": "regress" },
+  { "prompt": "run the unit tests with vitest", "expect_action": null },
+  { "prompt": "review this code against our style guide", "expect_action": null },
+  { "prompt": "implement the login feature", "expect_action": null }
+]

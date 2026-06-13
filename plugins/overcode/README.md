@@ -13,6 +13,7 @@ Plugin principal, installé globalement (`recommended`). Il ne cible pas une sta
 | `reconcile-normative` | `/reconcile-normative` | Réconcilie le normatif entre archives, mémoire et règles actives (doublons, contradictions, obsolètes) |
 | `taste` | `/taste [fichier]` | Détecte les contenus obsolètes — assess-doc (claims vs codebase) ou assess-code (imports, symboles) |
 | `foresee` | `/foresee <cible> [--depth N]` | Analyse prospective docs/code/dépendances — problèmes à moyen terme |
+| `behave` | `/behave <action>` | Harness de tests comportementaux (skills, agents, loops) — scaffold de suites de scénarios, run dry-run jugé, régression |
 | `dig` | `/dig` | Quiz interactif 5 questions sur le codebase ou la memory bank — noté /20 |
 | `web-optimize` | `/web-optimize` | Audit perf web (LCP, CLS, INP, bundle, N+1) selon une checklist stack-aware, roadmap priorisée |
 | `data-optimize` | `/data-optimize` | Audit perf de la couche données (N+1, index, pagination, cache), stack-aware |
