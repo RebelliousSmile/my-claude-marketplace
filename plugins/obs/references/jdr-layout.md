@@ -30,8 +30,22 @@ Ce mécanisme est le pendant JDR de la résolution d'ancre de `obs:tree` (qui re
 | `<pj-root>` | `R/_pjs/<pj>/` — état durable du PJ (pc) |
 | `<campagne-root>` | `R/_campagnes/<campagne>/` — **prep + état durable** : `config.yaml`, `.session-state.yaml`, `mj/`, `research/` (rpg, solo-mc) |
 | `<ecrits-root>` | `R/_ecrits/<projet>/` — projet d'écriture (writing pipeline) ; `bank.yml` à la racine |
-| `<session-root>` | `R/<AAAA>/<MM>/<campagne\|pj>/` — **journaux de session datés** (solo-mc, pc) ; fichier `session-<AAAA-MM-JJ>-<N>.md` (**sans** préfixe slug — redondant avec le dossier parent). Scan : `session-*.md` (tolère d'anciens noms `session-N.md`). |
+| `<session-root>` | `R/<AAAA>/<MM>/<campagne\|pj>/` — **journaux de session datés** (solo-mc, pc) ; fichier `session-<AAAA-MM-JJ>-<N>.md` (**sans** préfixe slug — redondant avec le dossier parent). Scan : `session-*.md` (tolère d'anciens noms `session-N.md`). Ordre/numérotation : voir **Ordre canonique des séances** ci-dessous. |
 | `<sources>` | `<univers-root>/sources/<source>/` (lore) ou `<systeme-root>/sources/<source>/` (règles) |
+
+### Ordre canonique des séances (clé partagée `play` / `play-resume` / `pc`)
+
+Le **numéro de séance `<N>`** fait foi pour l'ordre — pas la date du nom, pas l'ordre lexicographique, pas le `mtime`, pas `config.yaml`. La procédure porte sur **une seule entité** (la **campagne** courante pour `solo-mc`, le **PJ** pour `pc`) : un PJ jouant dans plusieurs campagnes a une séquence `<N>` **indépendante par campagne** — ne jamais agréger les `session-*.md` de plusieurs `<campagne>/` dans un même calcul de `<N>`. Procédure, sur l'ensemble des `session-*.md` balayés dans **tous** les mois `R/<AAAA>/<MM>/<entité>/` (même `<entité>`, tous `<AAAA>/<MM>`) :
+
+1. **Exclure** les fichiers non-séance : tout nom contenant un marqueur auxiliaire (`-prep-`, `-prep`, etc.). Ils ne comptent ni pour `<N>` ni comme « dernière séance ».
+2. **Extraire `<N>`** par forme du suffixe (après le préfixe `session-`) :
+   - `session-<N>.md` (compteur nu, ex. `session-4.md`) → `<N>` = l'entier.
+   - `session-<AAAA-MM-JJ>-<N>.md` (daté **+ suffixe**, ex. `session-2026-06-01-03.md`) → `<N>` = le segment numérique **après** la date (ici `3`) ; **jamais** un composant de la date.
+   - `session-<AAAA-MM-JJ>.md` (daté **sans** suffixe, ex. `session-2025-12-03.md`) → **pas de `<N>`** (legacy) : le `JJ` (`03`) est le **jour**, pas un numéro. Ne pas le compter comme `<N>`.
+3. **Prochain numéro** : `<N>_next = max(<N> extraits) + 1`. S'il n'existe aucun fichier numéroté (que des datés-purs legacy), `<N>_next = (nombre de séances datées-pures) + 1`.
+4. **« Dernière séance »** (référence du recap « Précédemment… » et cible de `play-resume` *latest*) = le fichier de `<N>` **maximal**. En cas d'égalité de `<N>` (collision legacy, ex. `session-3.md` ⟷ `session-2026-06-01-03.md`), départager par date du nom puis `mtime`. À défaut total de numéro, la dernière = la date du nom la plus récente, puis `mtime`.
+
+> Cette même clé sert à `play` (calcul de `<N>` + source du recap) et à `play-resume` (sélection de *latest*) : les deux doivent désigner **la même** séance.
 
 > **Invariants de portabilité** (voir `obs:tree › tree-convention.md`) : les répertoires **de travail** sont préfixés `_` (`_univers`, `_systeme`, `_pjs`, `_campagnes`, `_ecrits`, `_subsystems`…) ; leur **contenu interne ne l'est pas** (`_univers/snake-bay/`, pas `_univers/_snake-bay/`). Slugs `kebab-case` portables ; dates `AAAA`/`MM` bien formées.
 

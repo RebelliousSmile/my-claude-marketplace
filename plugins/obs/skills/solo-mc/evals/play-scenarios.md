@@ -24,6 +24,8 @@ Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_uni
 | L14 | Substitution demandée mais fiche compagnon absente | T14 | dégradation gracieuse : `[HRP]` indiquant la fiche manquante + commande `pc companion create` | message de dégradation explicite ; pas de fiche inventée |
 | L15 | Numérotation/datation d'une nouvelle session | Pitfall | balayer **tous** les dossiers `R/<AAAA>/<MM>/<campagne>/` ; ne pas se fier à `config.yaml › session_courante` | `<N>` calculé depuis le système de fichiers ; date système vérifiée |
 | L16 | Session lancée alors que `R/_systeme/canon/` est absent | T7 | exiger la régénération (`extract-pdf` + `rules-keeper`) avant de jouer | mécaniques/oracle de base indisponibles signalés ; subsystems/univers/house-rules durables préservés |
+| L17 | `play` après **plusieurs parties**, dossier aux noms **mêlés** sur plusieurs `AAAA/MM` (compteurs nus `session-3.md`/`session-4.md` **et** datés `session-2026-06-01-03.md`, `session-2025-12-03.md`, `-prep-`) | Pitfall + T10/T11 | la nouvelle séance s'**ancre sur la séance la plus récente réelle** : `<N>` = max(numéros de séance réels) + 1 ; recap « Précédemment… » et continuité fondés sur **la dernière** séance, jamais l'avant-dernière | séance de référence = `session-4.md` (N=4) → nouveau `session-…-5.md` ; recap depuis `session-4.md` ; **ni** `session-3.md`/`session-2026-06-01-03.md` (avant-dernière) **ni** un fichier `-prep-` pris comme dernière ; `<N>`≠5 ou recap depuis une séance antérieure = FAIL |
+| L18 | `play-resume` sans `session` explicite, **même dossier mêlé** que L17 | Pitfall + §3 `11-play-resume` | « latest » = la **même** séance que celle sur laquelle `play` se serait ancré (clé de tri **partagée** play/play-resume) ; départage intra-mois défini (pas « premier trouvé » ni tri lexicographique fortuit) | séance reprise = `session-4.md` (N=4) ; identique à la référence de L17 ; un départage non spécifié (date du nom classant mal les compteurs nus) = FAIL |
 
 ## How to run
 
@@ -79,3 +81,26 @@ Vérifie que le fix move-triggering (T13 Étape 1/3, `02-scene`, `04-roll`, `nar
 Vérifie que la généralisation de T13 Étape 1 (« déclencheur de move » → « action du PJ incertaine ») + pitfall + `02-scene`/`04-roll` n'a rien cassé du play-loop. **L6 non avalé** : l'Étape 1 ne se déclenche que sur une issue *incertaine ET à enjeu* — un détail trivial reste en Étape 3 « log seul ». **L10 préservé** : la branche oracle pour les enjeux *sans résolution système* survit (SKILL T13 Étape 3, `02-scene:29`, `04-roll` ne capte que le chemin système). Tous les autres PASS conservés ; L13/L16 N/A ; L15 PASS (glob nu). Identique à la baseline.
 
 **Autres frictions :** L3 (`.current-session` absent + multi-campagne → toujours demander) ; L10 (`_subsystems/` absent, dégradation non spécifiée au niveau skill — seule T14 l'a explicitement) ; configs domaine en chemins `pjs/`/`univers/`/`systeme/` sans `_`.
+
+### 2026-06-14 — run 5 (L17/L18, **initial/reproduce**, dry-run, domain=`monsterhearts`, campagne=`les-fantomes-de-snake-high`) — **0/2 PASS, 2 FAIL** (reproduit le bug « ancrage avant-dernière séance »)
+
+Fixture réel (vérifié) : `2025/12/…/session-2025-12-03-prep-02.md`, `session-2025-12-03.md` ; `2026/05/…/session-2026-05-31.md` ; `2026/06/…/session-2026-06-01-03.md`, `session-3.md`, `session-4.md`. Dernière séance réelle = `session-4.md` (N=4). Dry run — rien écrit.
+
+| #   | Verdict | Δ vs prior | Note (instruction citée) |
+|-----|---------|-----------|--------------------------|
+| L17 | **FAIL** | nouveau | `01-play` step 7 dit « `<N>` = global next number » sans **règle d'extraction** (compteur nu vs daté+suffixe vs daté-pur où `03`/`31` = jour) ni **clé de tri** ; step 8 « recap of prior sessions » non ancré sur **la dernière**. `session-2026-06-01-03.md` (avant-dernière, titre « Session 3 ») contient un bloc « Précédemment… » clé-en-main alors que `session-4.md` n'en a pas → un modèle fidèle s'ancre sur l'avant-dernière. `<N>`≠5 et recap depuis séance antérieure plausibles. |
+| L18 | **FAIL** | nouveau | `11-play-resume` step 3 ordonne par dossier « most recent year, then month, first » mais **aucun départage intra-mois** : `2026/06/` contient 3 candidats (`session-3.md`, `session-4.md`, `session-2026-06-01-03.md`). Tri par date du nom classe mal les compteurs nus. De plus la clé n'est **pas partagée** avec `play` (step 7 n'a aucune règle d'ordre). |
+
+**Root cause :** la **règle d'ordre des séances** (extraction de `<N>`, exclusion `-prep-`, désignation de « la dernière », source du recap) est **sous-spécifiée** et **divergente** entre `01-play` (aucune) et `11-play-resume` (granularité mois). La recommandation du run 2 (« `<N>` = max(suffixe daté ∪ compteur nu) + 1 ; exclure `-prep-` ») n'avait jamais été écrite dans la spec. **Fix minimal :** pinner une règle canonique unique dans `<session-root>` (`jdr-layout.md`), la référencer depuis `01-play` (7-8), `11-play-resume` (3) et le pitfall `SKILL.md`.
+
+### 2026-06-14 — run 6 (L17/L18, **post-fix/confirme**, dry-run, domain=`monsterhearts`, campagne=`les-fantomes-de-snake-high`) — **2/2 PASS, 0 N/A, 0 régression**
+
+Fix appliqué : nouvelle section « **Ordre canonique des séances** » dans `jdr-layout.md › <session-root>` (clé partagée), référencée par `01-play` (7-8 : extraction de `<N>` par forme de suffixe + recap sourcé de la séance de `<N>` max, jamais d'un fichier antérieur portant un bloc « Précédemment… »), `11-play-resume` (3 : *latest* = `<N>` max, **même** clé que `play`, départage intra-mois), et le pitfall `SKILL.md`. Même fixture qu'au run 5.
+
+| #   | Verdict | Δ vs prior | Note (instruction citée) |
+|-----|---------|-----------|--------------------------|
+| L17 | **PASS** | ▲ (FAIL→PASS) | `jdr-layout › Ordre canonique` 1-4 + `01-play` 7-8 : max(`<N>` extraits)=4 (`session-4.md`) → nouveau `<N>`=5 ; jour `03`/`31` jamais lu comme `<N>` ; `-prep-` exclu ; recap explicitement sourcé de `session-4.md` (garde verbatim contre le bloc clé-en-main de `session-2026-06-01-03.md`). |
+| L18 | **PASS** | ▲ (FAIL→PASS) | `11-play-resume` 3 + `jdr-layout` step 4 + note de clôture : *latest* = `<N>` max = `session-4.md` = **même** séance que l'ancrage de `play` ; départage intra-mois défini ; plus de chemin lexicographique/« premier trouvé ». |
+
+**Friction résiduelle (non bloquante, non exercée par ce fixture) :** le fallback « tout-legacy » (aucun fichier numéroté → `<N>_next = nb de séances datées-pures + 1`) pourrait mal compter si un fichier legacy et un fichier numéroté décrivent la **même** séance ; sans objet ici (fichiers numérotés présents). Le tie-break `<N>` égaux retombe sur `mtime` pour les compteurs nus sans date dans le nom — moot ici (4 > 3).
+**Tally :** 2/2 PASS — bug « ancrage avant-dernière séance » fermé par la spec, prouvé par reproduce (run 5) → confirm (run 6).

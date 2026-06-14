@@ -19,6 +19,9 @@ Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_uni
 | C9  | Toute action citant une stat/tag/jet alors que `R/_systeme/canon/` est absent | **ne rien inventer** ; signaler la régénération (`extract-pdf` puis `rules-keeper`) | aucune mécanique inventée ; message de régénération ; lore `_univers/` et house rules `_systeme/mj/` non bloqués |
 | C10 | `show` sans argument, avec session active | résoudre le PJ via `.current-session`, charger l'état par ordre de priorité (`.session-state.yaml` > `config.yaml` > `fiche_technique.md`/`pj.md` > dernier log daté) | fiche affichée depuis la source prioritaire disponible ; pas de question si `.current-session` suffit |
 | C11 | Contenu de prep de campagne (scénario, PNJ) collé dans `reorganize` | identifier ce qui **n'appartient pas** à `_pjs/` et rediriger (campagne → `rpg` ; univers → `lore-extract`/`rpg` ; jeu direct → `solo-mc`) | le hors-périmètre est signalé et routé, pas écrit dans `_pjs/` |
+| C12 | `log-session` avec dossier PJ aux noms **mêlés** sur plusieurs `AAAA/MM` (compteurs nus `session-3.md`/`session-4.md`, datés `session-2026-06-01-03.md`, `session-2025-12-03.md`, `-prep-`) | `<N>` calculé par l'**ordre canonique** (`jdr-layout.md`) : extraction par forme de suffixe, exclusion `-prep-`, `max+1` ; jamais le jour `03`/`31` lu comme `<N>` | `<N>`=5 (max=4 depuis `session-4.md`) → nouveau `session-…-5.md` ; `<N>` confondu avec un jour ou `-prep-` compté = FAIL |
+| C13 | `show` chargeant le « dernier log daté » (priorité 4), **même dossier mêlé** que C12 | « dernier » = fichier de `<N>` **max** par l'ordre canonique (la **même** clé que `solo-mc` play/play-resume), pas « most recent year/month, premier trouvé » | log lu = `session-4.md` (N=4) ; ancrage sur une séance antérieure (`session-3`/`session-2026-06-01-03`) = FAIL |
+| C14 | `sessions <pj>` pour un PJ présent dans **plusieurs campagnes** | découvrir les campagnes du PJ via `_campagnes/*/config.yaml` (`pjs`/`pj_campagne`), agréger les séances de **chaque** axe campagne + l'axe PJ, **read-only**, groupé par source, ordonné par l'ordre canonique | un bloc par campagne du PJ + un bloc axe PJ ; `<N>` **indépendant par campagne** (pas de séquence agrégée) ; `-prep-` non compté ; **aucune écriture** ; oublier une campagne du PJ ou fusionner les `<N>` = FAIL |
 
 ## How to run
 
@@ -55,3 +58,30 @@ Sujet `_pjs/nastya-lebedeva/` : `intention.md`, `compagnons/_roster.yaml` + 5 fi
 ### 2026-06-13 — run 2 (regression, post-fix naming, dry-run, domain=`monsterhearts`) — **9/11 PASS, 2 N/A, 0 FAIL, 0 régression**
 
 Après le fix de nommage (`session-*.md` nu). **C2 renforcé** : conditional-PASS (run 1, glob préfixé matchait 0) → **PASS net** (le glob nu matche les fichiers réels ; la logique de scan global `<N>` est correcte — l'axe campagne-vs-PJ des sessions reste une propriété du domaine, orthogonale au fix). Tous les autres PASS conservés (C1, C3, C4, C5, C7, C8, C10, C11) ; C6/C9 toujours N/A (préconditions inchangées). Le fix move-triggering de solo-mc ne touche pas `pc`. **Aucune régression.**
+
+### 2026-06-14 — run 3 (C12/C13, **reproduce-then-confirm en une passe**, dry-run, domain=`monsterhearts`) — **2/2 PASS (spec-logic), 0 FAIL**
+
+Propagation de la **règle canonique d'ordre des séances** (`jdr-layout.md › Ordre canonique des séances`, posée pour le fix solo-mc L17/L18) côté `pc` : `04-log-session` (step 1 : extraction de `<N>` par forme de suffixe, exclusion `-prep-`, `max+1`), `05-show` (priorité 4 : dernier log = `<N>` max, **même** clé que solo-mc), et nouvelle transversal rule « Session dating / numbering » dans `pc/SKILL.md`.
+
+| #   | Pré-fix | Post-fix | Note (instruction citée) |
+|-----|---------|----------|--------------------------|
+| C12 | **aurait FAIL** | **PASS** (logique) | `04-log-session` step 1 + `jdr-layout` 1-4 : exclut `-prep-`, jour `03`/`31` jamais lu comme `<N>`, `session-2026-06-01-03`→N=3, max=4 → `<N>`=5. Pré-fix (« scan, `<N>` global » sans règle d'extraction) → un modèle pouvait compter `-prep-` ou lire le jour comme `<N>`. |
+| C13 | **aurait FAIL** | **PASS** (logique) | `05-show` priorité 4 : dernier log = `<N>` max = `session-4.md`, rejette « most recent year/month, premier trouvé » ; clé partagée solo-mc (`jdr-layout` note de clôture). Pré-fix (« most recent year/month » sans départage intra-mois) → choix lexicographique/premier-trouvé sur 3 fichiers du même mois. |
+
+**Data limit (explicite) :** aucun `session-*.md` sur l'axe PJ (`R/<AAAA>/<MM>/<pj>/`) dans le domaine réel — toutes les séances vivent sur l'axe campagne. Verdicts rendus comme **spec-logic** sur le désordre équivalent de l'axe campagne (l'algorithme d'ordre est axe-agnostique). Pour une confirmation comportementale réelle, seeder le même jeu de noms mêlés sous un `R/<AAAA>/<MM>/<pj>/`. **Cohérence inter-skills vérifiée :** `pc` (log-session/show/SKILL) et `solo-mc` (play/play-resume/SKILL) pointent désormais la **même** procédure canonique — pas de dérive.
+**Tally :** 2/2 PASS (spec-logic) — propagation confirmée.
+
+### 2026-06-14 — run 4 (C14, **nouvelle action `sessions`**, dry-run, domain=`monsterhearts`) — **1/1 PASS (spec-logic)**
+
+Nouvelle action read-only `08-sessions.md` (liste toutes les séances d'un PJ, agrégées par campagne + axe PJ), branchée dans `pc/SKILL.md` (table 08 + router) et `scenarios.json`. Découverte des campagnes via `_campagnes/*/config.yaml`.
+
+| #   | Verdict | Note (instruction citée) |
+|-----|---------|--------------------------|
+| C14 | **PASS** (spec-logic) | `08-sessions` 1-5 + Test : découverte des campagnes du PJ (`pjs`/`pj_campagne`), agrégation par axe campagne + axe PJ, `<N>` **indépendant par campagne** (`jdr-layout` L38), `-prep-` exclu, **read-only** (4 assertions : titre, Outputs, step 5, Test). |
+
+**Frictions → corrigées dans la foulée :**
+- **Match de découverte fragile** (configs réels en `pjs/`/`campagnes/` **sans** `_`, ma spec matchait `_pjs/`) → step 2 rendu **tolérant** (slug nu, avec/sans préfixe `_`, normalisation avant comparaison).
+- **Campagne découverte sans séance** (ex. `l-oeil-blanc` : 0 fichier) → step 5 : bloc affiché avec ligne explicite « aucune séance », jamais silencieusement omis.
+
+**Data limits (non bloquants) :** aucun PJ réel n'est dans 2+ campagnes (clause multi-campagnes jugée spec-logic) ; axe PJ vide dans le domaine (agrégation axe-PJ jugée spec-logic). L'algorithme est axe-agnostique → l'axe campagne (réel, désordonné) est un substitut fidèle.
+**Tally :** 1/1 PASS (spec-logic) — action read-only confirmée, 0 écriture.

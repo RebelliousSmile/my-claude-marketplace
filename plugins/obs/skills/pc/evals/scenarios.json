@@ -11,6 +11,8 @@
   { "prompt": "ajouter un compagnon à l'équipe", "expect_action": "companion" },
   { "prompt": "construire le background du perso", "expect_action": "background" },
   { "prompt": "aide-moi à créer le perso par questionnaire", "expect_action": "background" },
+  { "prompt": "montre-moi toutes les sessions jouées de mon perso", "expect_action": "sessions" },
+  { "prompt": "historique des parties du PJ", "expect_action": "sessions" },
   { "prompt": "prépare le scénario de la prochaine session", "expect_action": null },
   { "prompt": "lance la partie, scène d'ouverture", "expect_action": null }
 ]

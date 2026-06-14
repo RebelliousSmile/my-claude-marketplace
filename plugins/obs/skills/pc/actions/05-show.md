@@ -22,7 +22,7 @@ Loads character state from (priority order):
 1. `R/_campagnes/<campagne>/.session-state.yaml` (if active session)
 2. `R/_campagnes/<campagne>/config.yaml`
 3. `R/_pjs/<pj>/fiche_technique.md` and `R/_pjs/<pj>/pj.md`
-4. Latest dated session file `R/<AAAA>/<MM>/<pj>/session-*.md` (most recent year/month) for recent scenes, tag changes and events
+4. Last dated session file `R/<AAAA>/<MM>/<pj>/session-*.md` — the file of maximal `<N>` per the **canonical session ordering** (`../../references/jdr-layout.md › Ordre canonique des séances`), not merely "most recent year/month first match" — for recent scenes, tag changes and events
 
 Displays a structured sheet with: progress statuses, themes, power/weakness tags, recent tag changes, active statuses, NPC relations, objectives.
 

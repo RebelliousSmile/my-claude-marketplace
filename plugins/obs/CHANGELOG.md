@@ -2,6 +2,20 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.21.0] — 2026-06-14
+
+### Fixed (`solo-mc`) — `play` s'ancrait sur l'avant-dernière séance
+- Bug observé en jeu réel : `play` recréait la séance sur l'**avant-dernière** au lieu de la dernière. Cause racine : l'ordre des séances était **sous-spécifié** (pas de règle d'extraction de `<N>`, pas de clé de tri partagée `play`/`play-resume`) — avec des noms mêlés (compteurs nus `session-4.md`, datés+suffixe `session-2026-06-01-03.md`, datés-purs `session-2025-12-03.md` où le jour pouvait être lu comme `<N>`), un modèle fidèle pouvait s'ancrer sur la mauvaise séance, d'autant qu'une séance antérieure portait un bloc « Précédemment… » clé-en-main.
+- Fix : **règle d'ordre canonique** unique dans `references/jdr-layout.md › Ordre canonique des séances` (`<N>` fait foi, extraction par forme de suffixe, exclusion `-prep-`, « dernière » = `<N>` max, clé **partagée** ; calcul **par entité courante** — un PJ multi-campagnes a une séquence `<N>` indépendante par campagne). Référencée par `01-play` (7-8 : recap sourcé de la séance de `<N>` max), `11-play-resume` (3 : *latest* = `<N>` max, même clé) et le pitfall `SKILL.md`.
+- Prouvé par `/behave` (suite `play-scenarios.md`, L17/L18) : run 5 reproduce **0/2 FAIL** → run 6 post-fix **2/2 PASS**.
+
+### Added (`pc`) — action `sessions` : toutes les séances d'un PJ
+- Nouvelle action read-only **`pc sessions <pj>`** : découvre les campagnes du PJ via `_campagnes/*/config.yaml` (match tolérant aux chemins avec/sans préfixe `_`), agrège les séances de **chaque** axe campagne + l'axe PJ, groupées par source et ordonnées par la règle canonique (`<N>` indépendant par campagne ; campagne sans séance affichée explicitement). Branchée dans `SKILL.md` (table 08 + router) et `scenarios.json`.
+
+### Changed (`pc`) — ordre des séances aligné sur `solo-mc`
+- Propagation de la règle canonique à `04-log-session` (extraction de `<N>` par forme de suffixe), `05-show` (dernier log = `<N>` max), `03-reorganize` (nommage/numérotation) + nouvelle transversal rule « Session dating / numbering » dans `SKILL.md`. `pc` et `solo-mc` désignent désormais la **même** séance comme « la dernière ».
+- Validé par `/behave` (suite `pc-scenarios.md`, C12/C13/C14) : reproduce-then-confirm spec-logic, **PASS**. (Data limit assumé : domaine réel sans séances sur l'axe PJ ni PJ multi-campagnes → verdicts spec-logic.)
+
 ## [0.20.0] — 2026-06-14
 
 ### Changed — revue R1-R10 des 12 skills (aidd-context `skills`)

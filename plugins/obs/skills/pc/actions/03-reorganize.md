@@ -29,7 +29,7 @@ Redistribution rules:
 - `fiche_technique.md` ← stats, attributes, skills, power/weakness tags, spells, equipment, persistent statuses
 - `intention.md` ← themes, tone, truths, what I want to experience/avoid, visceral question, story threads
 - `etat-jeu.md` ← mechanical game state per the active rules (game system): gauges, resources, statuses, counters and pending elements
-- **session reports** ← **dated files** `R/<AAAA>/<MM>/<pj>/session-<AAAA-MM-JJ>-<N>.md` (one per session — **not** an aggregated `journal.md`). An old `journal.md` encountered during reorganization is split into dated files (one per entry), then archived.
+- **session reports** ← **dated files** `R/<AAAA>/<MM>/<pj>/session-<AAAA-MM-JJ>-<N>.md` (one per session — **not** an aggregated `journal.md`), named and numbered per the **canonical session ordering** (`../../references/jdr-layout.md › Ordre canonique des séances`). An old `journal.md` encountered during reorganization is split into dated files (one per entry, `<N>` assigned in chronological order), then archived.
 - `backlog.md` ← scene ideas, threads to revive, open questions, narrative todo
 
 ## Test
