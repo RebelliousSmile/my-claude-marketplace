@@ -141,17 +141,19 @@ is always the consumer's path; it is never plugin-relative.
 
 **Closure invariants — a delta is "closed" ONLY when ALL hold (self-check before reporting):**
 
-- [ ] **No section is silently missing**: every mockup section has a counterpart in the target
-      (`missing_sections` is empty, or each entry is resolved/ledgered). Structure before pixels.
 - [ ] The fix lives at the **source** (import script / `theme.json` / pattern / component CSS),
-      never DB-only. If a generator owns the target, you edited the generator and re-ran it.
+      never DB-only. If a generator owns the target, you edited the generator and re-ran it,
+      **and re-imported** so the live target reflects the source (source ≠ live = not done).
 - [ ] Stack-specific realization went **through the pivot** (`sc-php`/`sc-js:design-bridge`), or
       you explicitly recorded that no `sc-<techno>` exists and used the baseline.
-- [ ] Any class/markup change is **reconciled in the config** (no stale selector).
-- [ ] You **re-ran the oracle** and the report shows **0 diff AND 0 missing** for this unit. A
-      `missing` is NOT a pass — it means unverified. Closure is asserted **from the oracle's
-      re-measure, never from your own edit**. Do not claim "fermé" on the strength of an edit
-      you have not measured green.
+- [ ] Any class/markup change is **reconciled in the config** (no stale selector → no false `missing`).
+- [ ] **The oracle's own `summary.verdict` is `CLOSED`** — and you paste that block as proof.
+      The script computes the verdict (`closed` iff 0 diff AND 0 missing AND no `missing_in_wp`
+      section AND coverage ok); you do **not** get to declare it. A residual delta tolerated for
+      DRY/SOLID is excluded only by a real ledger entry referenced in the report — never by
+      omission. **"Verified by reading my own source/diff" is NOT closure** — only the re-measured
+      `CLOSED` verdict is. If `coverage.ok` is false, you under-measured (hero-only tunnel vision):
+      add a target per section, or set `coverage_ack` with written justification.
 
 # Outputs
 

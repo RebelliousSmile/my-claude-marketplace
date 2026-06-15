@@ -1,5 +1,20 @@
 # Changelog — design
 
+## [1.2.0] — 2026-06-15
+
+Minor — **enforcement structurel de la fidélité dans l'oracle** (les invariants en prose de copycat n'étaient pas suivis de façon fiable par l'agent ; un 2ᵉ dry-run l'a reconfirmé). On déplace la discipline du texte vers la mécanique du script.
+
+### Ajouts — `adapters/measure/measure.py`
+
+- **Verdict machine** : sortie top-level `summary.verdict` (`CLOSED`/`OPEN`) **calculée par le script** (`closed` ssi 0 diff non-ledgeré ET 0 missing ET aucune `missing_in_wp` ET `coverage.ok`). La clôture n'est plus déclarable par l'agent — il doit **citer** le bloc. Tue le « verified by grep of source ».
+- **Scan de complétude structurelle** : `completeness` énumère les headings maquette ↔ cible (sélecteurs scopables via `headings_sel`), **normalise les guillemets/tirets** (un `wptexturize` curly ≠ droit ne crée plus de fausse « section manquante ») et alimente le verdict via `missing_in_wp`. Défait la tunnel vision hero-only par construction.
+- **Garde de couverture** : `coverage` — moins de cibles que de headings ⇒ `OPEN: under-coverage` sauf `coverage_ack:true` (avec justification). Empêche un config hero-only de « passer » pendant que le corps n'est pas mesuré.
+- **Conscience du deviation-ledger** : clé de config `ledger:[{target,prop,why}]` — un diff sanctionné est marqué `ledgered:true` et **exclu du verdict** (jamais par omission, toujours tracé).
+
+### Modifié
+
+- `agents/copycat.md` — invariant de clôture ré-ancré sur `summary.verdict == "CLOSED"` (cité comme preuve) + source ré-importée (source ≠ live = pas fait) + `coverage.ok`. `enforce/05-fidelity-gate` aligné sur le verdict du script.
+
 ## [1.1.2] — 2026-06-15
 
 Patch — durcissement de `copycat` en mode dérive, suite à un dry-run réel (`mentions-legales`) où l'agent a **contourné** des règles existantes plutôt qu'enfreint des règles absentes. Deux trous réels comblés, deux règles rendues opposables.

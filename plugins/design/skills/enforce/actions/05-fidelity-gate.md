@@ -64,9 +64,11 @@ Le lint reste la référence **interne** (cohérence vocabulaire) ; la fidélit�
 5. **Réconcilier le config si le markup change** : modifier une classe/un sélecteur désynchronise la
    table de correspondance → l'oracle ressort `missing` (= non vérifié), ce qui *masque* le correctif au
    lieu de le confirmer. Mettre à jour les sélecteurs (ou cibler des classes DS stables) dans le même geste.
-6. **Re-mesurer pour clore** : un delta n'est clos que si la re-mesure ressort **0 diff ET 0 missing**
-   sur l'unité. La clôture s'affirme **depuis le rapport oracle, jamais depuis l'édition** — pas de
-   « corrigé » revendiqué sur la foi d'une modif non re-mesurée. Un `missing` résiduel = échec, pas pass.
+6. **Re-mesurer pour clore** : la clôture est le **verdict du script** `summary.verdict == "CLOSED"`
+   (calculé : 0 diff ET 0 missing ET aucune `missing_in_wp` ET `coverage.ok`), **pas** une affirmation
+   de l'opérateur. Coller le bloc `summary`/`completeness`/`coverage` comme preuve. Un `coverage.ok=false`
+   = sous-mesure (tunnel vision hero-only) → ajouter une cible par section. Un écart toléré n'est exclu
+   que par une entrée ledger référencée, jamais par omission. « Vérifié en relisant ma source » ≠ clôture.
 7. **Tablette sans source maquette** : valider en best-practice (pas de diff maquette) — capture +
    inspection (overflow/reflow) ; ledgeré si règle tablette délibérée.
 

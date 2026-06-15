@@ -25,7 +25,9 @@ Config (JSON):
     "wp_url": "...",
     "breakpoints": [{"name":"desktop","width":1440,"height":900,"maq_viewport":"desktop"}],
     "props": ["fontSize", ...],
-    "targets": [{"name":"Hero · title","maq":"<sel>","wp":"<sel>"}]
+    "targets": [{"name":"Hero · title","maq":"<sel>","wp":"<sel>"}],
+    "headings_sel": {"maq":"h1, h2","wp":"h1, h2"},   # optional — completeness scan scope
+    "coverage_ack": false                              # optional — acknowledge fewer targets than headings
   }
 
 Report shape (per breakpoint):
@@ -38,6 +40,20 @@ Report shape (per breakpoint):
   Mode A
     - value row   : {"element","values": {<prop>: <computed>}}
     - missing row : {"element","missing": true, "searched": {<side>: <sel>}}
+
+Top-level (Mode B) — STRUCTURAL GATES, computed by the script, not claimed by the caller:
+  "completeness": {"maquette_headings":[...], "wp_headings":[...],
+                   "missing_in_wp":[...], "extra_in_wp":[...]}
+      -> structure before pixels: a heading present in the mockup but absent in the target
+         is a missing SECTION, the dominant delta. Defeats hero-only tunnel vision.
+  "coverage": {"wp_headings": N, "measured_targets": M, "ok": bool, "warning": "..."}
+      -> fewer targets than headings => under-coverage (a hero-only config "passing" while
+         the body is unmeasured). OPEN unless config sets "coverage_ack": true.
+  "summary": {"verdict": "CLOSED"|"OPEN", "closed": bool, "reasons": [...],
+              "total_diff": D, "total_missing": K, "missing_sections": S}
+      -> CLOSED iff D==0 AND K==0 AND no missing section AND coverage ok.
+         The CALLER MUST cite summary.verdict — closure is asserted from THIS, never from
+         inspecting one's own edit. "verified by grep of source" is not closure.
 """
 from __future__ import annotations
 
@@ -63,6 +79,11 @@ _GRAB = """(args) => {
   return out;
 }"""
 
+# JS injected to enumerate visible heading texts (structural completeness scan).
+_HEADINGS = """(sel) => Array.from(document.querySelectorAll(sel))
+  .map(e => (e.textContent || '').replace(/\\s+/g, ' ').trim())
+  .filter(Boolean)"""
+
 
 def _prepare_mockup(page, page_key, maq_viewport):
     """Drive the SPA mockup: set its viewport mode + page, hide preview chrome."""
@@ -78,10 +99,16 @@ def _grab(page, targets, props, side):
     return page.evaluate(_GRAB, {"targets": targets, "props": props, "side": side})
 
 
+def _headings(page, sel):
+    return page.evaluate(_HEADINGS, sel)
+
+
 def measure(cfg: dict, mode: str, side: str) -> dict:
     report: dict = {"mode": mode, "maquette_page": cfg.get("maquette_page"), "breakpoints": {}}
     props = cfg["props"]
     targets = cfg["targets"]
+    hsel = cfg.get("headings_sel", {"maq": "h1, h2", "wp": "h1, h2"})
+    maq_headings = wp_headings = None
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
@@ -95,11 +122,15 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
                         m.goto(cfg["maquette_url"], wait_until="networkidle", timeout=20000)
                         _prepare_mockup(m, cfg.get("maquette_page"), bp.get("maq_viewport"))
                         maq = _grab(m, targets, props, "maq")
+                        if maq_headings is None:
+                            maq_headings = _headings(m, hsel.get("maq", "h1, h2"))
                     if mode == "B" or side == "wp":
                         w = ctx.new_page()
                         w.goto(cfg["wp_url"], wait_until="networkidle", timeout=20000)
                         w.wait_for_timeout(300)
                         wp = _grab(w, targets, props, "wp")
+                        if wp_headings is None:
+                            wp_headings = _headings(w, hsel.get("wp", "h1, h2"))
                 finally:
                     ctx.close()
 
@@ -126,16 +157,100 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
                 report["breakpoints"][bp["name"]] = rows
         finally:
             browser.close()
+
+    if mode == "B":
+        _apply_ledger(report, cfg.get("ledger", []))
+        report["completeness"] = _completeness(maq_headings or [], wp_headings or [])
+        report["coverage"] = _coverage(wp_headings or [], targets, bool(cfg.get("coverage_ack", False)))
+        report["summary"] = _verdict(report)
     return report
+
+
+def _apply_ledger(report: dict, ledger: list) -> None:
+    """Tag diffs sanctioned by a deviation-ledger entry (target+prop) so the verdict can
+    exclude them. A ledgered diff is EXPLICIT (why recorded), never silent omission."""
+    why = {(e["target"], e["prop"]): e.get("why", "") for e in ledger}
+    keys = set(why)
+    for rows in report["breakpoints"].values():
+        for r in rows:
+            if r.get("match") is False and (r["element"], r["prop"]) in keys:
+                r["ledgered"] = True
+                r["why"] = why[(r["element"], r["prop"])]
+
+
+def _norm(s: str) -> str:
+    """Normalize typographic punctuation so a curly-quote target (wptexturize) and a
+    straight-quote mockup compare equal — a section is missing by STRUCTURE, not by
+    the renderer's smart-quotes."""
+    return (s.replace("’", "'").replace("‘", "'")
+             .replace("“", '"').replace("”", '"')
+             .replace("–", "-").replace("—", "-").replace(" ", " "))
+
+
+def _completeness(maq_headings: list, wp_headings: list) -> dict:
+    """Structure before pixels: which section headings exist on each side (quote-normalized)."""
+    maq_n, wp_n = {_norm(h) for h in maq_headings}, {_norm(h) for h in wp_headings}
+    return {"maquette_headings": maq_headings, "wp_headings": wp_headings,
+            "missing_in_wp": [h for h in maq_headings if _norm(h) not in wp_n],
+            "extra_in_wp": [h for h in wp_headings if _norm(h) not in maq_n]}
+
+
+def _coverage(wp_headings: list, targets: list, ack: bool) -> dict:
+    """Fewer measured targets than headings => the body is likely unmeasured (tunnel vision)."""
+    cov = {"wp_headings": len(wp_headings), "measured_targets": len(targets)}
+    if not ack and len(targets) < len(wp_headings):
+        cov["ok"] = False
+        cov["warning"] = (f"under-coverage: {len(targets)} targets for {len(wp_headings)} headings — "
+                          f"add a target per section or set coverage_ack:true with justification")
+    else:
+        cov["ok"] = True
+    return cov
+
+
+def _verdict(report: dict) -> dict:
+    total_diff = total_missing = ledgered = 0
+    for rows in report["breakpoints"].values():
+        for r in rows:
+            if r.get("match") is False:
+                if r.get("ledgered"):
+                    ledgered += 1
+                else:
+                    total_diff += 1
+        total_missing += sum(1 for r in rows if "missing" in r)
+    missing_sections = report.get("completeness", {}).get("missing_in_wp", [])
+    cov = report.get("coverage", {})
+    reasons = []
+    if total_diff:
+        reasons.append(f"{total_diff} unledgered style diff(s)")
+    if total_missing:
+        reasons.append(f"{total_missing} missing target(s) — stale selector or absent element")
+    if missing_sections:
+        reasons.append(f"{len(missing_sections)} section(s) missing in target: {missing_sections}")
+    if not cov.get("ok", True):
+        reasons.append(cov.get("warning", "under-coverage"))
+    closed = not reasons
+    return {"verdict": "CLOSED" if closed else "OPEN", "closed": closed, "reasons": reasons,
+            "total_diff": total_diff, "ledgered_diff": ledgered, "total_missing": total_missing,
+            "missing_sections": len(missing_sections)}
 
 
 def _summarize(report: dict) -> str:
     lines = []
     for bp, rows in report["breakpoints"].items():
-        diffs = sum(1 for r in rows if r.get("match") is False)
+        diffs = sum(1 for r in rows if r.get("match") is False and not r.get("ledgered"))
+        led = sum(1 for r in rows if r.get("ledgered"))
         oks = sum(1 for r in rows if r.get("match") is True)
         missing = sum(1 for r in rows if "missing" in r)
-        lines.append(f"  {bp:8s} : {oks} match · {diffs} diff · {missing} missing")
+        lines.append(f"  {bp:8s} : {oks} match · {diffs} diff · {led} ledgered · {missing} missing")
+    comp = report.get("completeness")
+    if comp and comp["missing_in_wp"]:
+        lines.append(f"  ! sections missing in target : {comp['missing_in_wp']}")
+    cov = report.get("coverage")
+    if cov and not cov.get("ok", True):
+        lines.append(f"  ! {cov['warning']}")
+    s = report.get("summary")
+    if s:
+        lines.append(f"  VERDICT  : {s['verdict']}" + ("" if s["closed"] else f" — {'; '.join(s['reasons'])}"))
     return "\n".join(lines)
 
 

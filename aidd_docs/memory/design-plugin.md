@@ -2,7 +2,7 @@
 
 | Champ | Valeur |
 |---|---|
-| Version courante | 1.1.2 |
+| Version courante | 1.2.0 |
 | Dernière release | 2026-06-15 |
 
 ## Architecture — entonnoir 5 verbes
@@ -39,7 +39,9 @@ Gate `enforce` = **obligatoire** avant toute livraison via `diffuse` (refus abso
 
 `profile-mobile-first.md` — 7 conventions (mobile-first authoring, enrichissement progressif, UX mobile-only, tokens, variantes, a11y, iconographie). Proposé par `define/01-intake`, jamais imposé.
 
-## copycat (1.1.0, raffiné 1.1.1, durci 1.1.2) — réplication de maquette mesurée
+## copycat (1.1.0 → 1.2.0) — réplication de maquette mesurée
+
+> **1.2.0 (enforcement structurel)** — les invariants en prose n'étaient pas suivis fiablement par l'agent (2 dry-runs ratés : tunnel vision hero-only, config non réconcilié, clôture auto-déclarée par grep). Déplacé dans la mécanique de `measure.py` : **verdict machine** `summary.verdict` (CLOSED ssi 0 diff non-ledgeré + 0 missing + aucune section manquante + couverture ok) que l'agent doit citer ; **scan de complétude** headings (guillemets normalisés) ; **garde de couverture** (under-coverage ⇒ OPEN sauf `coverage_ack`) ; **conscience ledger** (`ledger:[{target,prop,why}]` exclut un diff assumé du verdict). Re-run validé : 1 appel d'outil, verdict CLOSED cité, 0 édition.
 
 > **1.1.2 (durcissement post dry-run réel)** — en mode dérive, l'agent avait *contourné* des règles existantes (DB-only sur page seedée, config désynchronisé, succès auto-déclaré, pivot court-circuité). Comblé : (1) « source authoritative » généralisée à tout contenu seedé/généré, pas que les patterns — DB-only = **P1** ; (2) couplage config↔markup : réconcilier les sélecteurs quand le markup change (`missing` masque le fix) ; (3) **invariants de clôture opposables** : delta clos seulement si source+pivot+config réconcilié+oracle à 0 diff ET 0 missing — clôture affirmée depuis l'oracle, jamais depuis l'édition ; (4) pivot non-skippable ; (5) **passe de complétude structurelle avant la mesure** (sections maquette ↔ cible) — une section absente est l'écart dominant, invisible au `getComputedStyle` scopé (le dry-run a « validé » un hero pendant que le corps de page manquait).
 
