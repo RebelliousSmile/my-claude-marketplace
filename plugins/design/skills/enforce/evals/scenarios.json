@@ -8,5 +8,8 @@
   { "prompt": "enforce sur un projet sans sc-php ni sc-js", "expect_action": "build+wire" },
   { "prompt": "fige le contrat et écris le manifeste", "expect_action": null },
   { "prompt": "génère les block patterns WordPress", "expect_action": null },
-  { "prompt": "challenge la direction visuelle", "expect_action": null }
+  { "prompt": "challenge la direction visuelle", "expect_action": null },
+  { "prompt": "le lint est vert mais le rendu n'est pas fidèle à la maquette", "expect_action": "fidelity-gate" },
+  { "prompt": "mesure les écarts de style calculé par breakpoint contre la maquette", "expect_action": "fidelity-gate" },
+  { "prompt": "vérifie la fidélité du rendu et corrige à la source jusqu'à delta 0", "expect_action": "fidelity-gate" }
 ]

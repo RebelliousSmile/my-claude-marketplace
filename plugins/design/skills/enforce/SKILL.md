@@ -59,13 +59,14 @@ Le **design garde le QUOI** (contrat = autorité) ; le **sc-<techno> fait le COM
 ## Flux d'exécution
 
 ```
-01-build-linter → 02-wire-gates → 03-lint-instances → 04-pivot (si applicable)
+01-build-linter → 02-wire-gates → 03-lint-instances → 04-pivot (si applicable) → 05-fidelity-gate (si une maquette de référence existe)
 ```
 
 1. **01-build-linter** — installe lint-core.mjs dans le projet, configure les chemins, vérifie que la fixture tourne.
 2. **02-wire-gates** — câble les 3 points : rules de génération · success_condition des plans · hook pre-commit.
 3. **03-lint-instances** — lint DB/instances (WordPress : `wp post get`) + boucle corriger→propager→re-lint.
 4. **04-pivot** — détecte le langage, mappe vers sc-php/sc-js si présents, émet le spec et relaie ; sinon baseline seule.
+5. **05-fidelity-gate** — *second gate, nature différente* : mesure la FIDÉLITÉ du rendu à la maquette résolue via l'oracle Python (`getComputedStyle` par breakpoint) + boucle mesurer→corriger→re-mesurer, lit le registre d'écarts. À jouer quand une maquette de référence existe (sinon le lint vocabulaire seul s'applique).
 
 ## Les 3 gates
 
@@ -76,6 +77,17 @@ Le **design garde le QUOI** (contrat = autorité) ; le **sc-<techno> fait le COM
 | **pre-commit** | git commit | commit refusé |
 
 Voir `enforce/references/gate-wiring.md` pour le câblage détaillé.
+
+## Deux natures de gate : vocabulaire + fidélité
+
+Les 3 gates ci-dessus vérifient tous le **vocabulaire** (lint-core.mjs, référence interne). Ils sont **aveugles au rendu calculé** : un lint vert ne garantit pas la fidélité visuelle (mauvais token appliqué, cascade, pas de réduction mobile). `05-fidelity-gate` ajoute donc un **second gate de nature différente** :
+
+| Gate | Oracle | Référence | Vérifie |
+|------|--------|-----------|---------|
+| Vocabulaire (3 points) | `lint-core.mjs` (Node) | `components.json`/`tokens.json` — **interne** | vocabulaire fermé respecté |
+| Fidélité (`05`) | `measure.py` getComputedStyle (Python, par breakpoint) | la maquette résolue par `adjust` — **externe** | rendu calculé fidèle à l'intention |
+
+Les deux doivent être verts ensemble ; aucun ne remplace l'autre. Le gate de fidélité lit `ds-deviation-ledger.md` pour distinguer un écart sanctionné d'une dérive.
 
 ## Rejouabilité
 
@@ -88,3 +100,6 @@ Si `adjust` re-fige (version bump), re-jouer `/design:enforce` pour re-dériver 
 - `enforce/references/gate-wiring.md` — les 3 points de câblage détaillés
 - `design/references/sc-pivot-contract.md` — interface pivot design ↔ sc-*
 - `design/references/wordpress-pitfalls.md` — pièges WP partagés (classes appariées, eval-file, NFC/NFD…)
+- `${CLAUDE_PLUGIN_ROOT}/adapters/measure/` — oracle de fidélité Python (getComputedStyle par breakpoint) ; voir son README — utilisé par `05-fidelity-gate`
+- `${CLAUDE_PLUGIN_ROOT}/agents/copycat.md` — agent qui classe les deltas mesurés à la bonne couche (mesure dans le script, jugement dans l'agent)
+- `${CLAUDE_PLUGIN_ROOT}/references/deviation-ledger-template.md` — registre des écarts tolérés lu par le gate de fidélité

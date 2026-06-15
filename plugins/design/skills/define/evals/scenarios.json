@@ -8,5 +8,8 @@
   { "prompt": "écris la matière de design depuis ces tokens qu'on a validés", "expect_action": "write-material" },
   { "prompt": "challenge la direction de ce design system", "expect_action": null },
   { "prompt": "fige le contrat et écris le manifeste", "expect_action": null },
-  { "prompt": "audite cette page contre le système", "expect_action": null }
+  { "prompt": "audite cette page contre le système", "expect_action": null },
+  { "prompt": "réconcilie cette maquette multi-pages avec notre design system", "expect_action": "copycat-fanout" },
+  { "prompt": "copie conforme de ces 45 pages en mesurant chaque breakpoint", "expect_action": "copycat-fanout" },
+  { "prompt": "fan-out copycat sur toutes les pages de la maquette", "expect_action": "copycat-fanout" }
 ]
