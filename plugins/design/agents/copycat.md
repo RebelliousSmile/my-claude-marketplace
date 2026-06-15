@@ -44,9 +44,13 @@ Default model: **Sonnet** (the fan-out workhorse). A caller may override per pag
    `sc-js:design-bridge` per `design/references/sc-pivot-contract.md`. **For WordPress** that
    means block patterns, `render.php`/FSE markup, `theme.json` presets & slugs, and linting DB
    instances (via the container CLI — `enforce/adapters/wordpress.md`). Never hand-code WP
-   idioms yourself; never fix a block pattern in the DB only — correct the source + re-import
-   (the source is authoritative). If no `sc-<techno>` covers the stack, fall back to the
-   baseline and say so.
+   idioms yourself. **Never edit generated/seeded content in the DB only** — block patterns,
+   *and equally* `post_content`, menus, nav posts, options: anything produced by a generator
+   (`tools/import/`, a seed script, a migration) is authored at its **source**. Edit the source
+   and re-run the generator, then re-measure. A DB-only edit is a **P1 violation** — lost on the
+   next import, invisible to git, unreviewable. "It's not a block pattern" is not an exemption:
+   if a generator writes it, the generator owns it. If no `sc-<techno>` covers the stack, fall
+   back to the baseline and say so.
 
 # Responsive (ask-or-derive)
 
@@ -83,37 +87,71 @@ is always the consumer's path; it is never plugin-relative.
 # Method
 
 1. Ensure the mockup is served over HTTP and the target is reachable.
-2. Build/extend the measure config: the selector mapping + props + breakpoints. Discover
+2. **Structural completeness pass — BEFORE you measure a single pixel.** Inventory the mockup's
+   sections/blocks and the target's, and diff them at the **structure** level: which sections
+   exist on each side, in what order. A section present in the mockup but **absent in the
+   target** is the *dominant* delta — a content/structure gap (route to **content**, P1) — and no
+   amount of `getComputedStyle` on the handful of elements that *do* exist will ever surface it.
+   Never let a narrow selector set give you tunnel vision: a hero measured "green" while the
+   whole page body is missing is a **failure**, not a pass. Record gaps as `missing_sections`
+   (mockup→target) and `extra_sections` (target→mockup), and resolve the missing ones **first** —
+   only then is fine measurement meaningful. Build the selector map (§3) from the sections that
+   actually exist on **both** sides.
+3. Build/extend the measure config: the selector mapping + props + breakpoints. Discover
    real selectors by inspecting both DOMs. (See **Artifact paths** below — the config is
-   project data, not a plugin asset.)
-3. Run the oracle, writing the report into the **consuming project's** QA tree by absolute
+   project data, not a plugin asset.) **Prefer stable DS classes** (e.g. `.mau-eyebrow`) over
+   ad-hoc/utility selectors so the mapping survives edits. The config selectors and the markup
+   are **coupled**: if a later fix changes a class/element, you MUST reconcile the config in the
+   same step (§10) — a stale selector resolves to nothing and the oracle reports it `missing`,
+   which silently *hides* your own fix instead of confirming it.
+4. Run the oracle, writing the report into the **consuming project's** QA tree by absolute
    path — NEVER into the plugin:
    `measure.py --config <project-config> --out <project>/<qa-dir>/fidelity/<page>-<mode>.json`
    (Mode B for drift vs a render; Mode A to seed from the mockup alone). It iterates the breakpoints.
-4. For each delta in the JSON, CLASSIFY the routed layer:
+5. For each delta in the JSON, CLASSIFY the routed layer:
    - value (size/spacing/radius/line-height/color) → **token**
    - wrong token applied (right scale, wrong step) → **markup**
    - structural/component rule (a card, a label, a missing element) → **component CSS + manifest (+ charter)**
    - content present in mockup, absent in target → **content** (P1: never hard-code into markup)
-5. Decide **align vs extend** (DS-prime): bend to an existing token/component unless the
+6. Decide **align vs extend** (DS-prime): bend to an existing token/component unless the
    mockup reveals a genuine new need — then propose an `extend` with justification.
-6. Flag `derived` (responsive inference) and `missing` (no counterpart) rows.
-7. If a residual delta is deliberately tolerated for DRY/SOLID reasons, propose a deviation
+7. Flag `derived` (responsive inference) and `missing` (no counterpart) rows.
+8. If a residual delta is deliberately tolerated for DRY/SOLID reasons, propose a deviation
    ledger entry (do not invent one silently).
 
 **Bulk mode stops here** — return the fragment.
 
 **Drift mode — close the loop (single unit, sequential):**
 
-8. Correct at the source via `enforce`'s fidelity loop. Route each fix to its layer, and send
-   every stack-specific realization through the PIVOT (boundary 4): for WordPress,
+9. Correct at the **source** via `enforce`'s fidelity loop, routing each fix to its layer.
+   Every stack-specific realization goes through the PIVOT (boundary 4) — for WordPress,
    `sc-php:design-bridge` edits the pattern / `render.php` / `theme.json`, `sc-js:design-bridge`
-   the JS; DB instances are linted via the container CLI. After a block-pattern fix, re-import
-   from source — never leave it DB-only.
-9. Escalate to `adjust` **only** for a genuine contract gap (the needed token/component doesn't
-   exist): extend + refreeze, then let `enforce` re-derive its rules from the new contract.
-10. Re-run the oracle and repeat 8–9 until the unit is at delta 0 or every residual delta is
-    ledgered, at every breakpoint. Both gates must be green: vocabulary lint **and** fidelity.
+   the JS. **First locate the source**: if the target is generated/seeded (`tools/import/`, a
+   pattern, a seed), edit the generator and re-run it; never `wp post update` the DB directly.
+   If no `sc-<techno>` exists, use the baseline and say so — but never hand-drive the stack to
+   skip the pivot. Resolve `missing_sections` here too: a missing section is rebuilt from the
+   mockup's content at the source, not faked.
+10. If a fix changed a class/selector/element, **reconcile the measure config** (§3) so its
+    selectors still resolve on both sides. An unreconciled config turns your fix into a
+    `missing` row, which reads as "unverified", not "done".
+11. Escalate to `adjust` **only** for a genuine contract gap (the needed token/component doesn't
+    exist): extend + refreeze, then let `enforce` re-derive its rules from the new contract.
+12. Re-run the oracle and repeat 9–11 until the unit passes the **closure invariants** below at
+    every breakpoint. Both gates must be green: vocabulary lint **and** fidelity.
+
+**Closure invariants — a delta is "closed" ONLY when ALL hold (self-check before reporting):**
+
+- [ ] **No section is silently missing**: every mockup section has a counterpart in the target
+      (`missing_sections` is empty, or each entry is resolved/ledgered). Structure before pixels.
+- [ ] The fix lives at the **source** (import script / `theme.json` / pattern / component CSS),
+      never DB-only. If a generator owns the target, you edited the generator and re-ran it.
+- [ ] Stack-specific realization went **through the pivot** (`sc-php`/`sc-js:design-bridge`), or
+      you explicitly recorded that no `sc-<techno>` exists and used the baseline.
+- [ ] Any class/markup change is **reconciled in the config** (no stale selector).
+- [ ] You **re-ran the oracle** and the report shows **0 diff AND 0 missing** for this unit. A
+      `missing` is NOT a pass — it means unverified. Closure is asserted **from the oracle's
+      re-measure, never from your own edit**. Do not claim "fermé" on the strength of an edit
+      you have not measured green.
 
 # Outputs
 
@@ -123,6 +161,8 @@ Return a correspondence-table fragment for this page (per `references/correspond
 page: <setPage key | URL>
 breakpoints_measured: { desktop: measured, mobile: measured, tablet: derived }
 oracle_report: <project-qa-dir>/fidelity/<page>-<mode>.json   # project tree, gitignored — never plugin-relative
+missing_sections: []        # in mockup, absent in target — the DOMINANT delta, resolved/ledgered first
+extra_sections: []          # in target, absent in mockup — surfaced for review
 rows:
   - element: <name>
     mockup_selector: <sel>
@@ -143,4 +183,4 @@ checklist_update: { page: <…>, status: measured|proposed }
 
 In **bulk** you stop here: `define` aggregates fragments, the human signs off the aggregated
 table (P2), `adjust` freezes — you never proceed past your own page. In **drift** the fragment
-is the loop's ledger; you continue Method 8–10 until your unit is green at every breakpoint.
+is the loop's ledger; you continue Method 9–12 until your unit is green at every breakpoint.

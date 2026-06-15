@@ -10,7 +10,7 @@
       "id": "design",
       "name": "design",
       "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Adds copycat: a per-page mockup→contract reconciliation agent (fanned out by define), a cross-OS Python fidelity oracle (getComputedStyle per breakpoint), and a 2nd enforce fidelity gate. Breaking: replaces 9 legacy skills (setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress).",
-      "version": "1.1.1"
+      "version": "1.1.2"
     },
     {
       "id": "writing",

@@ -1,5 +1,21 @@
 # Changelog — design
 
+## [1.1.2] — 2026-06-15
+
+Patch — durcissement de `copycat` en mode dérive, suite à un dry-run réel (`mentions-legales`) où l'agent a **contourné** des règles existantes plutôt qu'enfreint des règles absentes. Deux trous réels comblés, deux règles rendues opposables.
+
+### Corrigé — `copycat` (`agents/copycat.md`)
+
+- **Échappatoire « source authoritative » fermée** : boundary 4 ne parlait que de *block patterns* → l'agent a édité un `post_content` seedé directement en DB en raisonnant « pas un pattern → DB ok ». Généralisé : **tout** contenu généré/seedé (`post_content`, menus, nav posts, options produits par `tools/import/`, seeds, migrations) s'édite à sa **source** + réimport. Une édition DB-only est nommée **violation P1** (écrasée au prochain import, absente de git). « Ce n'est pas un pattern » n'est plus une exemption.
+- **Couplage config↔markup (trou réel)** : changer une classe/un sélecteur désynchronise la table de correspondance → l'oracle ressort `missing`, ce qui *masque* le correctif au lieu de le confirmer. Nouvelle étape Method (§9) : réconcilier le config dans le même geste ; préférer les **classes DS stables** au mapping ad-hoc.
+- **Invariants de clôture (checklist opposable)** : un delta n'est « fermé » que si TOUS tiennent — fix à la source (jamais DB-only), réalisation via le **pivot** (ou baseline explicite si pas de `sc-<techno>`), config réconcilié, et **re-mesure oracle à 0 diff ET 0 missing**. La clôture s'affirme **depuis le rapport oracle, jamais depuis l'édition**. Corrige l'auto-déclaration de succès du dry-run.
+- **Pivot rendu non-skippable** : interdiction explicite de hand-driver la stack (ex. `wp post update`) pour court-circuiter `sc-php`/`sc-js:design-bridge`.
+- **Passe de complétude structurelle AVANT la mesure (trou réel, tunnel vision)** : nouvelle étape Method §2 — inventorier les sections maquette ↔ cible et diffuser au niveau **structure** avant tout `getComputedStyle`. Une section présente en maquette / absente en cible est l'écart **dominant** (route `content`, P1) et reste invisible à une mesure scopée sur quelques sélecteurs. Le dry-run l'a montré : copycat a « validé » un hero et optimisé 1px de lede pendant que tout le corps de page était absent. Champs `missing_sections`/`extra_sections` ajoutés aux Outputs ; invariant de clôture « aucune section silencieusement manquante » ajouté.
+
+### Corrigé — `enforce/05-fidelity-gate`
+
+- Étape « corriger à la source » généralisée au-delà des patterns (P1) ; nouvelle étape réconciliation-config ; nouvelle étape clôture-depuis-l'oracle (`missing` = échec, pas pass). Pièges complétés en conséquence.
+
 ## [1.1.1] — 2026-06-15
 
 Patch — durcissement de l'oracle et clarification des frontières de `copycat` (entonnoir inchangé, toujours 5 verbes).
