@@ -1,0 +1,5 @@
+# Fidelity-oracle deps — pinned to what the OD-1 spike validated (2026-06-15, Python 3.13, Windows).
+# After install: python -m playwright install chromium
+playwright==1.60.0
+pillow==12.2.0
+numpy==2.4.6

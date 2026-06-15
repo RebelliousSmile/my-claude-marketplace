@@ -1,0 +1,16 @@
+{
+  "_doc": "Spike fixture (OD-1) — mentions-legales: low-risk AND maquette-backed. Mode B diff. Tablet has no maquette source (v2 ships desktop+mobile only) → out of Mode B here; derive per best practice elsewhere.",
+  "maquette_url": "http://localhost:8199/mauceri-maquette-v2.html",
+  "maquette_page": "mentions-legales",
+  "wp_url": "http://localhost:8888/mentions-legales/",
+  "breakpoints": [
+    { "name": "desktop", "width": 1440, "height": 900, "maq_viewport": "desktop" },
+    { "name": "mobile", "width": 375, "height": 812, "maq_viewport": "mobile" }
+  ],
+  "props": ["fontFamily", "fontSize", "lineHeight", "fontWeight", "letterSpacing", "color", "marginTop", "marginBottom"],
+  "targets": [
+    { "name": "Hero · eyebrow", "maq": ".page-hero .section-eyebrow", "wp": ".mau-section--hero .section-eyebrow" },
+    { "name": "Hero · title", "maq": ".page-hero__title", "wp": ".mau-section--hero h1.has-hero-font-size" },
+    { "name": "Hero · lede", "maq": ".page-hero__lede", "wp": ".mau-section--hero p.has-md-font-size" }
+  ]
+}
