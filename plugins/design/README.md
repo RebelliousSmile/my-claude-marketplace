@@ -15,7 +15,7 @@ poser      challenger     figer    verrou    produire
 - **define** — pose, écoute, construit la matière : tokens de travail, inventaire composants candidat, charte brouillon. Depuis une référence (screenshot, Figma, URL) ou un brief. Peut injecter le profil mobile-first/a11y optionnel.
 - **destructure** — challenge la direction avant de la figer : critique des angles (a11y, cohérence, mobilité…), pistes alternatives. Pendant design de `aidd-refine:challenge`.
 - **adjust** — arbitre les maquettes divergentes (motif dominant gagne ; gate humain sur les cas non tranchables) et **fige le contrat 3 couches**.
-- **enforce** — dérive un linter portable (`lint-core.mjs`) du contrat figé, câble 3 gates (règles de génération, success_condition des plans, pre-commit). Pivot vers `sc-php:design-bridge` ou `sc-js:design-bridge` pour une réalisation native idiomatique.
+- **enforce** — dérive un linter portable (`lint-core.mjs`) du contrat figé, câble 3 gates (règles de génération, success_condition des plans, pre-commit). Pivot vers `sc-php:design-bridge` ou `sc-js:design-bridge` pour une réalisation native idiomatique. **Depuis 1.1.0 : un 2ᵉ gate de *fidélité*** (`05-fidelity-gate`) mesure le rendu vs la maquette résolue (voir copycat).
 - **diffuse** — produit des éléments répétables (spec neutre + baseline HTML/CSS ou pivot sc-*). **Refus absolu de livrer si lint exit 1.**
 
 ## Contrat 3 couches (figé à `adjust`)
@@ -46,6 +46,18 @@ poser      challenger     figer    verrou    produire
 2. **Pivot** (si disponible) — `sc-php:design-bridge` (WP FSE, PHP) ou `sc-js:design-bridge` (Vue/React/TS) pour une réalisation native idiomatique.
 
 Dégradation gracieuse : pas de sc-\<techno\> → baseline active, non bloquant.
+
+## copycat — réplication de maquette mesurée (1.1.0)
+
+`copycat` industrialise la copie conforme d'une maquette arbitraire vers le contrat, **sans nouveau verbe** (l'entonnoir reste à 5). C'est :
+
+- un **agent** (`agents/copycat.md`, `model: sonnet`) — opérateur **par page** : mesure les styles calculés, classe chaque écart à sa couche, propose des contributions tokens/composants. Trois frontières : il PROPOSE (n'arbitre/fige jamais), la mesure vit dans le **script déterministe**, et c'est une **feuille** (ne spawn aucun agent).
+- un **oracle Python** (`adapters/measure/`) — `getComputedStyle` **par breakpoint** (Mode A extraction / Mode B diff), cross-OS, sans dépendance Node.
+- deux **câblages** dans l'entonnoir :
+  - `define/05-copycat-fanout` — fan-out parallèle (1 agent/page, `Agent`/`Workflow`) → table de correspondance agrégée au **checkpoint humain** (avant `adjust`) ; conflits inter-pages remontés, pas arbitrés.
+  - `enforce/05-fidelity-gate` — **2ᵉ gate** : fidélité du rendu vs la maquette résolue (référence **externe**), en plus du lint vocabulaire (référence **interne**) ; les deux doivent être verts.
+
+Responsive : règle **ask-or-derive** — mesurer chaque breakpoint si la maquette le fournit, sinon déduire du profil mobile-first et **flaguer** (le tablette est le cas « derive » canonique). Écarts tolérés tracés dans `ds-deviation-ledger.md` (DRY/SOLID d'abord, pixel-identique sinon).
 
 ## Artefacts produits dans le projet
 
