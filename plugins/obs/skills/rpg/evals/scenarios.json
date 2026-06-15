@@ -9,6 +9,7 @@
   { "prompt": "développe la faction de la guilde des voleurs avec ses fronts", "expect_action": "faction" },
   { "prompt": "ajoute une horloge à cette faction", "expect_action": "faction" },
   { "prompt": "vérifie ma prep, est-ce jouable", "expect_action": "review" },
+  { "prompt": "arbitre les infos de ma prep : qu'est-ce qui devient canon, temporaire ou à jeter ?", "expect_action": "review" },
   { "prompt": "lance une scène d'action maintenant", "expect_action": null },
   { "prompt": "mets à jour la fiche de mon personnage après la session", "expect_action": null },
   { "prompt": "écris le chapitre 3 de mon roman", "expect_action": null }

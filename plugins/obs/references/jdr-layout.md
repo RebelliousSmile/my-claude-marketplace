@@ -151,6 +151,27 @@ Quand `obs:solo-mc` décide un fait en cours de partie, choisir la destination s
 
 ---
 
+## Arbitrage des informations préparatoires (`rpg`)
+
+La prep (`R/_campagnes/<campagne>/prep/session-<n>.md`) est un **fichier de travail**, pas un artefact canonique : il sert à amorcer la séance que `solo-mc` jouera, puis devient obsolète. **Une information de prep ne fait jamais foi par elle-même** — elle ne se substitue pas au canon. À la fin de chaque prep (et au `review`), **chaque information préparatoire reçoit un statut explicite**, selon ce qu'elle doit devenir :
+
+| Statut | Décision | Destination |
+|--------|----------|-------------|
+| **Canon (à promouvoir)** | Vérité durable qui doit survivre à la séance (PNJ nommé, lieu, faction, fait du monde, secret établi) | Promouvoir dans un `mj/` de fiction : `R/_campagnes/<campagne>/mj/` (portée campagne) ou `R/_univers/<univers>/mj/` (portée monde, réutilisable). **`rpg` n'écrit que dans `mj/`, jamais `canon/`** (réservé à `lore-extract`). |
+| **Travail temporaire (à garder)** | Échafaudage de séance, valable seulement pour la séance à venir (scènes probables, questions d'oracle pré-armées, tables, hooks) | Reste dans `prep/session-<n>.md`, **explicitement nommé comme prep** — jamais traité comme canon. |
+| **Jetable (à supprimer)** | Information rendue obsolète (idée abandonnée, hypothèse invalidée par le jeu, prep d'une séance déjà jouée et sans résidu durable) | Supprimer ou archiver clairement ; ne pas la laisser pourrir dans un fichier de travail où elle pourrait être reprise par erreur. |
+
+Règles de l'arbitrage :
+
+- **Visible et reproductible** : l'arbitrage est rendu explicite (un statut par information), pas implicite. Deux passes sur la même prep aboutissent au même verdict.
+- **Rien d'important coincé** : aucune vérité durable (qui doit faire partie de la campagne) ne reste piégée dans un fichier de travail — si elle compte, elle est **promue en `mj/`** ; sinon elle est temporaire ou jetable.
+- **Le fichier de travail ne se substitue pas au canon** : tant qu'une info n'est pas promue, elle n'a pas valeur de vérité ; au jeu, `solo-mc` lit `mj/` (promu), pas la prep.
+- **Frontière de provenance préservée** : la promotion va toujours vers `mj/` (création MJ), jamais vers `canon/` (cf. *Canon vs maison*). Une promotion qui contredirait le canon est signalée, pas appliquée en silence.
+
+> Pendant du *Routage des faits de fiction (solo-mc)* ci-dessus, mais côté **prep** : là où `solo-mc` route un fait **décidé en jeu**, `rpg` arbitre une info **préparée avant le jeu**. Même destination canonique (`mj/` campagne ou univers), même interdit (`canon/` réservé à `lore-extract`).
+
+---
+
 ## Recherche documentaire (`research`) — par portée
 
 `research` écrit selon une **portée** explicite (jamais « univers » par défaut) :

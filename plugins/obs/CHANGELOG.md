@@ -2,6 +2,16 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.22.0] — 2026-06-15
+
+### Added (`rpg`) — arbitrage des informations préparatoires (#6)
+- Règle explicite pour traiter la prep (`R/_campagnes/<campagne>/prep/session-<n>.md`) comme un **fichier de travail**, jamais un artefact canonique : à chaque prep (et au `review`), **chaque information reçoit un statut** — **canon** (vérité durable → promue dans un `mj/` de fiction, campagne ou univers ; jamais `canon/`, réservé à `lore-extract`), **temporaire** (échafaudage de séance gardé dans `prep/`, nommé comme tel) ou **jetable** (obsolète → supprimé). Arbitrage **visible et reproductible** ; **rien d'important ne reste coincé** dans un fichier de travail.
+- Référence canonique : nouvelle section `references/jdr-layout.md › Arbitrage des informations préparatoires (rpg)` (table des 3 statuts + invariants), pendant prep du *Routage des faits de fiction (solo-mc)*. Branchée dans `SKILL.md` (transversal rule), `03-prep-session` (étape 9 + Test), `06-review` (check 9 : signale toute vérité durable coincée en prep) et `scenarios.json`.
+
+### Added (`solo-mc`) — suite comportementale Monsterhearts recentrée (#4, #5)
+- Nouvelle suite `evals/monsterhearts-scenarios.md` **focalisée sur le canon MH2** : branches spécifiques au jeu que la suite générique délègue (économie d'*ascendant*/strings d'Allumer, Allumer sur cible non-consentante, précondition de Manipuler, texte des paliers, Darkest Self / *mues*) + garde anti-invention de mécanique. Les cas génériques (chance pure → oracle, fallback sans move, MC ne lance jamais, trigger-first) **restent** dans `rules-triggering-scenarios.md` (#4) — référence croisée ajoutée des deux côtés.
+- `How to run` **sûr pour l'arbre généré** (#5) : ne référence **que des fichiers présents in-tree** (`SKILL.md` + `actions/{01-play,02-scene,04-roll}.md`) ; les rôles narrateur/oracle sont exercés via `SKILL.md › T2` plutôt que par des chemins `agents/…` absents de la copie générée du skill.
+
 ## [0.21.0] — 2026-06-14
 
 ### Fixed (`solo-mc`) — `play` s'ancrait sur l'avant-dernière séance

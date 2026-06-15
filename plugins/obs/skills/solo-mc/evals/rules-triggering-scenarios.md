@@ -8,6 +8,7 @@ This suite is **distinct** from the others:
 - `oracle-scenarios.md` — the oracle subsystem (chance/decision draws).
 - `narrateur-scenarios.md` — the GM voice (prose, HRP/RP, micro-scene loop).
 - `play-scenarios.md` — session management (T0–T14).
+- `monsterhearts-scenarios.md` — the **game-specific** MH2 branches (string/*ascendant* economy, Darkest Self, move text read finely). This file stays **system-agnostic**; MH appears here only as a *fixture* to demonstrate the generic bridge. The MH-specific edge cases flagged below as residual gaps (run 2) are owned by that suite, not this one.
 - **this file** — the **mechanic triggering** loop: uncertain PC action → resolve via `R/_systeme/canon/` (roll + outcome + consequences) in whatever form the system uses, MC never rolls.
 
 > **What this targets (expected to FAIL until fixed).** Move-triggering currently has **no explicit owner** in the loop. The narrateur (`agents/narrateur.md`) reads `R/_systeme/canon/` for *tone only*, has **no dice** (`Read, Glob`), and its micro-scene step 4 ("Resolve action (auto / roll / oracle)") never says *read the system's move triggers and route a matching beat to a roll*. The `04-roll` action exists but nothing invokes it from the fiction. The "trigger-first" rule lives only as a SKILL pitfall, not as an enforced step. So a faithful run on current behaviour should mostly FAIL these — that is the point: this file is the regression spec that pins the missing behaviour.
