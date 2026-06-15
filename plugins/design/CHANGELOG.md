@@ -1,5 +1,20 @@
 # Changelog — design
 
+## [1.1.1] — 2026-06-15
+
+Patch — durcissement de l'oracle et clarification des frontières de `copycat` (entonnoir inchangé, toujours 5 verbes).
+
+### Corrigé / durci
+
+- **Oracle `measure.py` — schéma `missing` désambiguïsé** : sortie explicite `{"maquette":"present|absent","wp":"present|absent"}` + `searched` (sélecteurs réellement testés), au lieu du `null`/sélecteur contre-intuitif (lisible à l'envers — a déjà causé une mauvaise classification d'un eyebrow présent en maquette/absent en WP). Schéma du rapport figé en contrat dans la docstring.
+- **Règle de chemin du rapport** : `--out` pointe toujours vers l'arbre QA du **projet consommateur** (gitignored, ex. `aidd_docs/qa/fidelity/<page>-<mode>.json`), jamais le plugin (`out/` du plugin = fixtures de self-test uniquement). Encodé dans `copycat.md`, `enforce/05-fidelity-gate`, docstring `measure.py`.
+
+### Modifié — `copycat`
+
+- **Comportement mode-dépendant** : en **bulk** (fan-out parallèle de `define`) il PROPOSE seulement ; en **dérive unité** (piloté par `enforce`, séquentiel) il **ferme la boucle** `enforce` → `adjust` *au besoin* jusqu'à delta 0. Boundary 1 révisée — le figeage parallèle créerait une course d'écriture sur le contrat partagé + perdrait l'arbitrage motif-dominant et le checkpoint P2.
+- **Boundary 4 (pivot) ajoutée** : `copycat` possède le **QUOI** (classer l'écart, align/extend) ; toute réalisation stack-spécifique passe par le **pivot** `sc-php:design-bridge` / `sc-js:design-bridge`. Pour WordPress : block patterns, `render.php`/markup FSE, presets `theme.json`, lint des instances DB via le CLI conteneur ; corriger la **source + réimporter**, jamais la DB seule.
+- **`define/05-copycat-fanout`** : documente la **fermeture de boucle post-agrégation** (séquentielle, via l'entonnoir `define → adjust → enforce`), jamais dans le fan-out parallèle.
+
 ## [1.1.0] — 2026-06-15
 
 Ajout de **copycat** : réplication fidèle d'une maquette arbitraire vers le contrat, mesurée, sans casser l'entonnoir (5 verbes inchangés).

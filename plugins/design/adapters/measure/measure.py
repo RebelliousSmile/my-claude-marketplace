@@ -12,8 +12,12 @@ those hooks are called when present. Output is a per-breakpoint JSON report writ
 in UTF-8 (avoids console encoding loss); a short summary is printed to stdout.
 
 Usage:
-  python measure.py --config configs/mentions-legales.json --out out/mentions-legales.json
+  python measure.py --config <cfg> --out <project>/<qa-dir>/fidelity/<page>-B.json
   python measure.py --config <cfg> --mode A --side wp --out <file>
+
+--out is the CONSUMER's responsibility: always an absolute path into the consuming project's
+QA/artifacts tree (gitignored), never plugin-relative. The script writes wherever it is told;
+keeping reports out of the plugin is a caller convention (see the copycat agent / fidelity gate).
 
 Config (JSON):
   {
@@ -23,6 +27,17 @@ Config (JSON):
     "props": ["fontSize", ...],
     "targets": [{"name":"Hero · title","maq":"<sel>","wp":"<sel>"}]
   }
+
+Report shape (per breakpoint):
+  Mode B
+    - diff row    : {"element","prop","maquette","local","match": bool}
+    - missing row : {"element",
+                     "missing": {"maquette": "present"|"absent", "wp": "present"|"absent"},
+                     "searched": {"maquette": <sel>, "wp": <sel>}}
+      -> "present"|"absent" is explicit on purpose: do NOT infer presence from null.
+  Mode A
+    - value row   : {"element","values": {<prop>: <computed>}}
+    - missing row : {"element","missing": true, "searched": {<side>: <sel>}}
 """
 from __future__ import annotations
 
@@ -94,14 +109,16 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
                     if mode == "A":
                         src = maq if side == "maq" else wp
                         v = src[name]
-                        rows.append({"element": name, "missing": v["__missing"]} if "__missing" in v
+                        rows.append({"element": name, "missing": True, "searched": {side: v["__missing"]}}
+                                    if "__missing" in v
                                     else {"element": name, "values": v})
                         continue
                     m_v, w_v = maq[name], wp[name]
                     if "__missing" in m_v or "__missing" in w_v:
                         rows.append({"element": name,
-                                     "missing": {"maquette": m_v.get("__missing", False) if "__missing" in m_v else None,
-                                                 "wp": w_v.get("__missing", False) if "__missing" in w_v else None}})
+                                     "missing": {"maquette": "absent" if "__missing" in m_v else "present",
+                                                 "wp": "absent" if "__missing" in w_v else "present"},
+                                     "searched": {"maquette": t.get("maq"), "wp": t.get("wp")}})
                         continue
                     for p in props:
                         rows.append({"element": name, "prop": p,

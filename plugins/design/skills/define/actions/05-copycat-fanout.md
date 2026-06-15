@@ -53,6 +53,23 @@ unique soumise au **checkpoint humain (P2)**. Variante à l'échelle de `02-extr
   ni écrit dans le contrat avant sign-off. Après validation, recommander d'invoquer `adjust`
   (arbitrage + figeage) **sur Opus** — non configuré ici.
 
+## Fermer la boucle après le bulk (séquentiel, jamais dans le fan-out)
+
+Le fan-out ne **propose** que — il ne ferme jamais la boucle de fidélité en parallèle (N figeages
+concurrents sur le contrat partagé = course d'écriture + perte de l'arbitrage motif-dominant). La
+boucle se ferme **après**, au niveau de l'entonnoir, séquentiellement :
+
+```
+fan-out copycat (propose) → agréger (P2, sign-off humain) → adjust (arbitrer motif dominant + figer)
+    → enforce : gate vocabulaire + gate fidélité
+         └─ pour chaque unité encore divergente, enforce relance copycat en MODE DÉRIVE
+            (boucle mesurer → corriger via le pivot → re-mesurer jusqu'à delta 0)
+```
+
+C'est l'entonnoir (`define → adjust → enforce`) qui ferme la boucle pour le bulk, pas l'agent par
+page. Le **mode dérive** de `copycat` (loop fermé `enforce`→`adjust`, cf. son `## Method` 8-10)
+n'opère qu'**après figeage**, sur une unité à la fois — d'où l'absence de course.
+
 ## Test
 
 - Un fragment par page non `signed-off` a été produit en parallèle ; relancer est idempotent

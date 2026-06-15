@@ -42,16 +42,23 @@ Le lint reste la référence **interne** (cohérence vocabulaire) ; la fidélit�
 
 1. **Mesurer** par breakpoint (mobile / tablette / desktop), à viewport identique de chaque côté :
    ```bash
-   python adapters/measure/measure.py --config <page>.json --out out/<page>.json   # Mode B (rendu vs référence)
+   # --out pointe TOUJOURS vers l'arbre QA du projet consommateur (chemin absolu), jamais le plugin
+   python adapters/measure/measure.py --config <config-projet> \
+       --out <projet>/<qa-dir>/fidelity/<page>-B.json   # Mode B (rendu vs référence)
    ```
-   Le mapping de sélecteurs et les cibles viennent de la table de correspondance (P2).
+   Le mapping de sélecteurs et les cibles viennent de la table de correspondance (P2). Le
+   rapport et la config sont des **données projet** (gitignored), pas des assets du plugin —
+   le `out/` du plugin ne sert qu'à ses propres fixtures de self-test.
 2. **Classer chaque delta** à sa couche (token / markup / composant / contenu) — déléguer ce
    jugement à l'agent `copycat` (par page/unité) ; la mesure, elle, reste dans le script.
 3. **Lire le registre** : un delta couvert par une entrée `DEV-NNN` (avec `deviation_refs` sur le
    composant dans `components.json`) est **sanctionné** → ne fait pas échouer le gate. **Sans
    entrée → dérive → corriger** (défaut : rendu strictement identique).
 4. **Corriger à la bonne couche**, jamais en patch local : valeur → token ; mauvais token → markup ;
-   règle de composant → CSS `mau-*`/composant + manifeste. **Re-mesurer** jusqu'à delta 0.
+   règle de composant → CSS `mau-*`/composant + manifeste. La **réalisation stack-spécifique** passe
+   par le pivot (`sc-php:design-bridge` / `sc-js:design-bridge`, cf. `design/references/sc-pivot-contract.md`) —
+   pour WordPress : patterns, `render.php`/markup FSE, presets `theme.json`, lint DB via le CLI conteneur ;
+   corriger la **source + réimporter**, jamais la DB seule. **Re-mesurer** jusqu'à delta 0.
 5. **Tablette sans source maquette** : valider en best-practice (pas de diff maquette) — capture +
    inspection (overflow/reflow) ; ledgeré si règle tablette délibérée.
 
