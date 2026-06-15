@@ -21,7 +21,8 @@ Prepares the next session: the light roadmap that `solo-mc` will consume during 
 6. **Targeted random tables** (optional): encounters, complications, loot — adapted to the chaos level of the `config.yaml`.
 7. **PC hooks**: 1–2 hooks tied to the red line / visceral question.
 8. **Write** `R/_campagnes/<campagne>/prep/session-<n>.md`.
+9. **Arbitrate the preparatory information** — before closing, give **each piece** produced an explicit status (visible and reproducible): **canon → promote** the durable truths invented while prepping (a named NPC/place/faction, a world fact, an established secret) into a fiction `mj/` — `R/_campagnes/<campagne>/mj/` (campaign scope) or `R/_univers/<univers>/mj/` (world scope); `rpg` writes **only into `mj/`**, never `canon/`; **temporary → keep** the session scaffolding (likely scenes, pre-armed oracle questions, tables, hooks) inside this `prep/session-<n>.md`, named as prep; **disposable → delete** anything obsolete. The prep file never substitutes for canon, and **no durable truth is left stuck** in it. Full table: `../../references/jdr-layout.md › Arbitrage des informations préparatoires (rpg)`.
 
 ## Test
 
-The prep file lists a session objective, ≥ 3 likely scenes and ≥ 3 pre-armed oracle questions, references the active scenario/fronts, and does not write into `R/_campagnes/<campagne>/.session-state.yaml`.
+The prep file lists a session objective, ≥ 3 likely scenes and ≥ 3 pre-armed oracle questions, references the active scenario/fronts, and does not write into `R/_campagnes/<campagne>/.session-state.yaml`. Every piece of preparatory information has an explicit status — durable truths promoted to a fiction `mj/` (never `canon/`), session scaffolding kept as named prep, obsolete content deleted — with nothing important left stuck in the working file.
