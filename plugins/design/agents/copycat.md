@@ -2,6 +2,7 @@
 name: copycat
 description: Per-page mockup→contract reconciliation operator for the design funnel. Use when an arbitrary mockup page must be faithfully mapped onto the 3-layer contract (tokens · components · charter), measured property-by-property at each breakpoint. Returns a correspondence-table fragment (proposed token/component contributions + flagged divergences) for `define` to aggregate. Never freezes, never arbitrates, never spawns agents.
 model: sonnet
+color: purple
 ---
 
 # Role
