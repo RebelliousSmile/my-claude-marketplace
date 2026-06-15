@@ -30,15 +30,17 @@ La sortie est identique dans les deux cas : `design/tokens.json` + `design/desig
 | 02 | `extract` | Chemin maquettes : dérive tokens + composants candidats du visuel | évidence visuelle capturée |
 | 03 | `construct` | Chemin brief : clarifie les attributs + dérive un token set distinctif | le brief / user story |
 | 04 | `write-material` | Écrit tokens.json + design-system.md (brouillon) + adapters | tokens dérivés (de 02 ou 03) |
+| 05 | `copycat-fanout` | Maquette MULTI-PAGES mesurée : fan-out de l'agent `copycat` (1/page, //) → table de correspondance agrégée (checkpoint P2) | maquette multi-pages + contrat brouillon |
 
 ## Default flow
 
-Linéaire avec aiguillage : `01 → (02 OU 03) → 04`.
+Linéaire avec aiguillage : `01 → (02 OU 03 OU 05) → 04`.
 
 Trigger-to-action mapping :
 
 - "extrais le design system de cette maquette/ce screenshot/ce site/ce Figma/ce CSS", "matche ce visuel" → `intake` → `extract` → `write-material`
 - "construis un design system depuis ce brief/cette user story", "pas de référence, design from scratch" → `intake` → `construct` → `write-material`
+- "réconcilie cette maquette multi-pages", "copie conforme de ces N pages", "fan-out copycat sur les pages", "mesure toutes les pages par breakpoint" → `copycat-fanout` (puis checkpoint P2, puis `adjust`)
 - "écris la matière depuis ces tokens" → `write-material`
 
 Si la source est ambiguë (un brief mentionnant un visuel sans le fournir), `intake` tranche en demandant.
@@ -60,6 +62,10 @@ Si la source est ambiguë (un brief mentionnant un visuel sans le fournir), `int
 - `${CLAUDE_PLUGIN_ROOT}/references/write-system-procedure.md` — procédure d'écriture partagée (suivie par `04-write-material`, en mode brouillon)
 - `references/intake-questions.md` — détection de source + drivers de clarification du brief
 - `references/profile-mobile-first.md` — profil injectable OPTIONNEL (mobile-first, enrichissement, a11y, iconographie)
+- `${CLAUDE_PLUGIN_ROOT}/agents/copycat.md` — agent feuille fan-outé par `05-copycat-fanout` (1/page)
+- `${CLAUDE_PLUGIN_ROOT}/adapters/measure/` — oracle de fidélité Python (getComputedStyle par breakpoint) ; voir son README
+- `${CLAUDE_PLUGIN_ROOT}/references/correspondence-table-template.md` — livrable agrégé du checkpoint P2
+- `${CLAUDE_PLUGIN_ROOT}/references/copycat-checklist-schema.md` — checklist résumable (bulk) pour la mi-intégration
 
 ## Evals
 
