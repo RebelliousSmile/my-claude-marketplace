@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "design",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Design system funnel — 5-verb pipeline: define (extract tokens + component inventory from references or brief), destructure (challenge direction, propose alternatives), adjust (arbitrate + freeze 3-layer contract: tokens · components.json · charter), enforce (portable linter derived from contract + pivot to sc-php/sc-js + 3 gates), diffuse (repeatable elements under lint gate, baseline HTML/CSS + pivot to sc-*). Adds the copycat agent (per-page mockup→contract reconciliation, fanned out by define over many pages), a cross-OS Python fidelity oracle (getComputedStyle per breakpoint), and a 2nd enforce gate (fidelity vs the resolved mockup, alongside the vocabulary lint). Replaces: setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress.",
   "author": {
     "name": "François-Xavier Guillois"

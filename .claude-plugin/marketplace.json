@@ -16,9 +16,9 @@
     },
     {
       "name": "design",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "source": "./plugins/design",
-      "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Adds copycat (per-page mockup→contract reconciliation agent + Python fidelity oracle: machine CLOSED/OPEN verdict, structural completeness scan, coverage guard, deviation-ledger with id + registry validation, ledger-unused detection, active-frame isolation). Adds harness (standalone HTML mockup generator, responsive class-based, setPage/setViewport). Breaking: replaces 9 legacy skills (setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress).",
+      "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Adds copycat (per-page mockup→contract reconciliation agent + Python fidelity oracle: machine CLOSED/OPEN verdict, structural completeness scan, coverage guard, deviation-ledger with id + registry validation, ledger-unused detection, active-frame isolation, text-parity check_text P7, sequence-parity collections P8). Adds harness (standalone HTML mockup generator, responsive class-based, setPage/setViewport). Breaking: replaces 9 legacy skills (setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress).",
       "recommended": false
     },
     {

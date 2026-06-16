@@ -31,6 +31,15 @@ Config (JSON):
     "coverage_ack": {"sections":["..."],"reason":"..."},  # optional — justify which sections
                                                           # are deliberately unmeasured (non-empty
                                                           # sections list required to disable guard)
+    "check_text": true,                                       # optional — also diff textContent
+                                                              # per target; emits prop:"text" rows.
+                                                              # Catches eyebrow/button label drift.
+    "collections": [                                          # optional — sequence parity check
+      {"name":"Stats hero","maq":".stat-item","wp":".stat-item"}
+      # Oracle enumerates ALL matching elements on both sides, normalises their text, diffs the
+      # sequences → count diff, per-index label mismatch, missing/extra items, reordering.
+      # ok:false contributes to OPEN verdict like missing_sections.
+    ],
     "ledger": [                                           # deviation-ledger entries
       {"id":"DEV-001","target":"Hero · title","prop":"fontSize","why":"..."}
       # id (DEV-xxx) is REQUIRED — unsigned entries are surfaced in ledger_ids for human review.
@@ -64,11 +73,18 @@ Top-level (Mode B) — STRUCTURAL GATES, computed by the script, not claimed by 
                "ack_sections": [...]}
       -> fewer targets than headings => under-coverage (a hero-only config "passing" while
          the body is unmeasured). OPEN unless coverage_ack supplies a non-empty sections list.
+  "collections": [{"name","maq_count","wp_count",
+                   "diffs":[{"index","maquette","wp","match":bool}],
+                   "missing_in_wp":[...], "extra_in_wp":[...], "ok":bool}]
+      -> sequence parity: count mismatch, per-index label diff, missing/extra items, reordering.
+         Catches stat-block drift, card counts, nav items — structures invisible to getComputedStyle.
+         Each entry with ok:false contributes to OPEN verdict like missing_sections.
+         Measured once (first breakpoint load), content is layout-independent.
   "summary": {"verdict": "CLOSED"|"OPEN", "closed": bool, "reasons": [...],
               "total_diff": D, "total_missing": K, "missing_sections": S,
-              "ledger_ids": [...], "ledger_unused_count": N}
+              "collection_failures": N, "ledger_ids": [...], "ledger_unused_count": N}
       -> CLOSED iff D==0 AND K==0 AND no missing section AND coverage ok
-         AND all ledger ids validated (if --ledger-registry provided).
+         AND all collections ok AND all ledger ids validated (if --ledger-registry provided).
          The CALLER MUST cite summary.verdict — closure is asserted from THIS, never from
          inspecting one's own edit. "verified by grep of source" is not closure.
 """
@@ -82,8 +98,9 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 # JS injected to read getComputedStyle for each target on the current page.
+# When check_text is true, also captures __text (normalised textContent) for P7 text-parity.
 _GRAB = """(args) => {
-  const { targets, props, side } = args;
+  const { targets, props, side, check_text } = args;
   const out = {};
   for (const t of targets) {
     const sel = t[side];
@@ -92,6 +109,7 @@ _GRAB = """(args) => {
     const cs = getComputedStyle(el);
     const o = {};
     for (const p of props) o[p] = cs[p];
+    if (check_text) o['__text'] = (el.textContent || '').replace(/\\s+/g, ' ').trim();
     out[t.name] = o;
   }
   return out;
@@ -101,6 +119,18 @@ _GRAB = """(args) => {
 _HEADINGS = """(sel) => Array.from(document.querySelectorAll(sel))
   .map(e => (e.textContent || '').replace(/\\s+/g, ' ').trim())
   .filter(Boolean)"""
+
+# JS injected to enumerate all items of a collection (P8 sequence parity).
+_COLLECT = """(args) => {
+  const { collections, side } = args;
+  const out = {};
+  for (const c of collections) {
+    const sel = c[side];
+    const els = sel ? Array.from(document.querySelectorAll(sel)) : [];
+    out[c.name] = els.map(e => (e.textContent || '').replace(/\\s+/g, ' ').trim());
+  }
+  return out;
+}"""
 
 # JS injected to isolate the active .preview-frame by detaching non-active ones (P3).
 # Each breakpoint opens a fresh page, so detaching is safe and permanent for this measurement.
@@ -127,20 +157,53 @@ def _prepare_mockup(page, page_key, maq_viewport):
     page.wait_for_timeout(400)
 
 
-def _grab(page, targets, props, side):
-    return page.evaluate(_GRAB, {"targets": targets, "props": props, "side": side})
+def _grab(page, targets, props, side, check_text=False):
+    return page.evaluate(_GRAB, {"targets": targets, "props": props, "side": side,
+                                 "check_text": check_text})
 
 
 def _headings(page, sel):
     return page.evaluate(_HEADINGS, sel)
 
 
+def _collect(page, collections, side):
+    return page.evaluate(_COLLECT, {"collections": collections, "side": side})
+
+
+def _diff_collections(maq_items: dict, wp_items: dict, collections: list) -> list:
+    """Diff two sides of each named collection: count, per-index label, missing/extra (P8)."""
+    result = []
+    for c in collections:
+        name = c["name"]
+        maq = [_norm(t) for t in maq_items.get(name, [])]
+        wp = [_norm(t) for t in wp_items.get(name, [])]
+        diffs = []
+        for i in range(max(len(maq), len(wp), 1)):
+            mv = maq[i] if i < len(maq) else None
+            wv = wp[i] if i < len(wp) else None
+            diffs.append({"index": i, "maquette": mv, "wp": wv, "match": mv == wv})
+        maq_set, wp_set = set(maq), set(wp)
+        result.append({
+            "name": name,
+            "maq_count": len(maq),
+            "wp_count": len(wp),
+            "diffs": diffs,
+            "missing_in_wp": [t for t in maq if t not in wp_set],
+            "extra_in_wp": [t for t in wp if t not in maq_set],
+            "ok": maq == wp,
+        })
+    return result
+
+
 def measure(cfg: dict, mode: str, side: str) -> dict:
     report: dict = {"mode": mode, "maquette_page": cfg.get("maquette_page"), "breakpoints": {}}
     props = cfg["props"]
     targets = cfg["targets"]
+    check_text = cfg.get("check_text", False)
+    collections = cfg.get("collections", [])
     hsel = cfg.get("headings_sel", {"maq": "h1, h2", "wp": "h1, h2"})
     maq_headings = wp_headings = None
+    maq_coll = wp_coll = None  # collected once across breakpoints (content is layout-independent)
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
@@ -153,16 +216,20 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
                         m = ctx.new_page()
                         m.goto(cfg["maquette_url"], wait_until="networkidle", timeout=20000)
                         _prepare_mockup(m, cfg.get("maquette_page"), bp.get("maq_viewport"))
-                        maq = _grab(m, targets, props, "maq")
+                        maq = _grab(m, targets, props, "maq", check_text)
                         if maq_headings is None:
                             maq_headings = _headings(m, hsel.get("maq", "h1, h2"))
+                        if collections and maq_coll is None:
+                            maq_coll = _collect(m, collections, "maq")
                     if mode == "B" or side == "wp":
                         w = ctx.new_page()
                         w.goto(cfg["wp_url"], wait_until="networkidle", timeout=20000)
                         w.wait_for_timeout(300)
-                        wp = _grab(w, targets, props, "wp")
+                        wp = _grab(w, targets, props, "wp", check_text)
                         if wp_headings is None:
                             wp_headings = _headings(w, hsel.get("wp", "h1, h2"))
+                        if collections and wp_coll is None:
+                            wp_coll = _collect(w, collections, "wp")
                 finally:
                     ctx.close()
 
@@ -186,6 +253,11 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
                     for p in props:
                         rows.append({"element": name, "prop": p,
                                      "maquette": m_v[p], "local": w_v[p], "match": m_v[p] == w_v[p]})
+                    # P7 — text parity: compare normalised textContent when check_text is enabled
+                    if check_text and "__text" in m_v and "__text" in w_v:
+                        mt, wt = _norm(m_v["__text"]), _norm(w_v["__text"])
+                        rows.append({"element": name, "prop": "text",
+                                     "maquette": mt, "local": wt, "match": mt == wt})
                 report["breakpoints"][bp["name"]] = rows
         finally:
             browser.close()
@@ -194,6 +266,9 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
         _apply_ledger(report, cfg.get("ledger", []))
         report["completeness"] = _completeness(maq_headings or [], wp_headings or [])
         report["coverage"] = _coverage(wp_headings or [], targets, cfg.get("coverage_ack"))
+        # P8 — collection parity (evaluated once, content is layout-independent)
+        if collections:
+            report["collections"] = _diff_collections(maq_coll or {}, wp_coll or {}, collections)
         report["summary"] = _verdict(report)
     return report
 
@@ -316,6 +391,7 @@ def _verdict(report: dict) -> dict:
     cov = report.get("coverage", {})
     ledger_ids = report.get("ledger_ids", [])
     ledger_unused = report.get("ledger_unused", [])
+    failed_collections = [c for c in report.get("collections", []) if not c.get("ok")]
 
     reasons = []
     if total_diff:
@@ -326,6 +402,10 @@ def _verdict(report: dict) -> dict:
         reasons.append(f"{len(missing_sections)} section(s) missing in target: {missing_sections}")
     if not cov.get("ok", True):
         reasons.append(cov.get("warning", "under-coverage"))
+    for fc in failed_collections:
+        reasons.append(f"collection '{fc['name']}': {fc['maq_count']} maq vs {fc['wp_count']} wp"
+                       + (f", missing: {fc['missing_in_wp']}" if fc["missing_in_wp"] else "")
+                       + (f", extra: {fc['extra_in_wp']}" if fc["extra_in_wp"] else ""))
     # Unsigned ledger entries (no id): surfaced for human review but not blocking
     unsigned = [eid for eid in ledger_ids if not eid]
     if unsigned:
@@ -335,6 +415,7 @@ def _verdict(report: dict) -> dict:
     return {"verdict": "CLOSED" if closed else "OPEN", "closed": closed, "reasons": reasons,
             "total_diff": total_diff, "ledgered_diff": ledgered, "total_missing": total_missing,
             "missing_sections": len(missing_sections),
+            "collection_failures": len(failed_collections),
             "ledger_ids": ledger_ids,
             "ledger_unused_count": len(ledger_unused)}
 
@@ -353,6 +434,11 @@ def _summarize(report: dict) -> str:
     cov = report.get("coverage")
     if cov and not cov.get("ok", True):
         lines.append(f"  ! {cov['warning']}")
+    for fc in report.get("collections", []):
+        if not fc.get("ok"):
+            lines.append(f"  ! collection '{fc['name']}': {fc['maq_count']} maq vs {fc['wp_count']} wp"
+                         + (f"  missing={fc['missing_in_wp']}" if fc["missing_in_wp"] else "")
+                         + (f"  extra={fc['extra_in_wp']}" if fc["extra_in_wp"] else ""))
     unused = report.get("ledger_unused", [])
     if unused:
         ids = [e.get("id") or "(unsigned)" for e in unused]

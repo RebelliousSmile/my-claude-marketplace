@@ -1,5 +1,25 @@
 # Changelog — design
 
+## [1.5.0] — 2026-06-16
+
+Minor — **oracle P7+P8** : parité de texte et parité de collection — les écarts de contenu/structure (eyebrow manquant, libellé bouton, stats 3 vs 4 items) passaient silencieusement ; ils alimentent maintenant le verdict OPEN.
+
+### Modifié — `adapters/measure/measure.py`
+
+- **P7 — Parité de texte (`check_text`)** : nouveau flag config `"check_text": true`. Quand actif, `_GRAB` capture le `textContent` normalisé de chaque target et émet une ligne `{prop:"text", match}`. Coût quasi nul (DOM déjà chargé). Attrape les dérives de libellé (eyebrow "Offre …", bouton "Être rappelé").
+- **P8 — Parité de collection (`collections`)** : nouvelle clé config `"collections": [{name, maq:<sél>, wp:<sél>}]`. `_COLLECT` énumère tous les éléments correspondants, `_diff_collections` diffe les séquences normalisées → `maq_count`, `wp_count`, `diffs[{index,maquette,wp,match}]`, `missing_in_wp`, `extra_in_wp`, `ok`. Chaque entrée `ok:false` alimente le verdict OPEN exactement comme `missing_sections`. Mesuré une fois (contenu layout-indépendant). Attrape stats 3 vs 4 items, items manquants (étoiles), items en trop ("48 h délai").
+- `_verdict` : intègre `failed_collections` dans les `reasons` + `collection_failures` dans le résumé.
+- `_summarize` : affiche les collections en échec.
+
+### Config (additions)
+
+```json
+"check_text": true,
+"collections": [
+  {"name": "Stats hero", "maq": ".hero__stat", "wp": ".hero__stat"}
+]
+```
+
 ## [1.4.0] — 2026-06-16
 
 Minor — **durcissement oracle + agent copycat** : 6 corrections issues d'observations terrain (projet SARL). P1–P2 : intégrité du ledger (id obligatoire, registre canonique, entrées inutilisées). P3 : isolation frame active. P4 : `coverage_ack` structuré. P5 : `!important` WP documenté. P6 : route "remove-override" codifiée.
