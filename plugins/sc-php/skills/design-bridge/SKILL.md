@@ -52,6 +52,24 @@ Lire `plugins/design/references/wordpress-pitfalls.md` avant toute action WP :
 - `wp eval-file` deprecated en PHP 8.2
 - Block patterns = copies en DB — réimporter après modification
 
+### Cascade CSS : presets `has-*-font-size` / `has-*-color` et `!important`
+
+WP génère les classes `.has-<slug>-font-size` (depuis `theme.json` → `settings.typography.fontSizes`) **avec `!important`** dans sa feuille consolidée. Un override CSS composant sans `!important` ne gagne jamais la cascade.
+
+Routes (par ordre de préférence) :
+
+1. **Supprimer l'override de markup** — retirer l'attribut du bloc qui génère `.has-*-font-size`. Le CSS composant gouverne seul. Côté `copycat` : `routed_layer: markup`, `action: align`, `action_detail: remove-override`.
+
+2. **Counter avec `!important`** — si le preset doit rester sur d'autres instances du même bloc :
+   ```css
+   @media (max-width: 767px) { .hero__title { font-size: 1.5rem !important; } }
+   ```
+   Documenter dans une entrée `ds-deviation-ledger.md`.
+
+3. **Réaligner via `theme.json`** — si le bon token existe déjà, retirer l'attribut et laisser la feuille du thème appliquer le bon slug.
+
+> Si un diff `fontSize` ne se ferme pas malgré un fix CSS : vérifier que le markup ne porte pas une classe `has-*-font-size` concurrente.
+
 ## Références
 
 - `plugins/design/references/sc-pivot-contract.md` — format des specs reçus

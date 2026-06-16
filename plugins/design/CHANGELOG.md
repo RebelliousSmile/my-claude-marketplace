@@ -1,5 +1,42 @@
 # Changelog — design
 
+## [1.4.0] — 2026-06-16
+
+Minor — **durcissement oracle + agent copycat** : 6 corrections issues d'observations terrain (projet SARL). P1–P2 : intégrité du ledger (id obligatoire, registre canonique, entrées inutilisées). P3 : isolation frame active. P4 : `coverage_ack` structuré. P5 : `!important` WP documenté. P6 : route "remove-override" codifiée.
+
+### Modifié — `adapters/measure/measure.py`
+
+- **P1 — Clôture du ledger** : chaque entrée `ledger` doit porter un champ `id` (DEV-xxx). Les ids sont systématiquement reportés dans `summary.ledger_ids` pour revue humaine. Nouveau CLI `--ledger-registry <path>` : si fourni, chaque id est vérifié dans le fichier registre ; un id absent force `verdict=OPEN` avec raison explicite. Les entrées sans id sont appliquées mais signalées comme "non signées" dans `ledger_ids` (chaîne vide).
+- **P2 — Ledger inutilisé** : `_apply_ledger` calcule `ledger_unused` (entrées ne correspondant à aucun diff réel — delta déjà corrigé ou sélecteur fantôme). Reporté dans le JSON top-level ET dans `_summarize`. Non-bloquant pour le verdict mais visible : signale le gonflement du ledger.
+- **P3 — Isolation du frame actif** : `_prepare_mockup` détache du DOM les `.preview-frame` non-actifs après `setViewport()`. Chaque breakpoint ouvre une page fraîche (`ctx.new_page()`), le détachement est donc sans effet de bord sur les autres breakpoints. Règle le bug SARL où `document.querySelector(sel)` frappait le frame desktop lors de la mesure mobile.
+- **P4 — `coverage_ack` structuré** : accepte désormais un dict `{"sections":[…],"reason":"…"}` avec liste de sections non vide pour désactiver la garde. Un `true` brut (legacy) déclenche un avertissement de migration (le dict est requis) ; il est encore accepté mais la garde reste active s'il n'y a pas de liste `sections`. Le champ `ack_sections` est écrit dans `coverage` pour traçabilité.
+
+### Modifié — `agents/copycat.md`
+
+- **P1 — Write-through registre** : invariant de clôture renforcé — une entrée `ledger` en config DOIT avoir un `id` ET cet id doit exister dans `ds-deviation-ledger.md` du projet. Citer le config-ledger sans entrée registre n'est pas une clôture. Procédure : enregistrer dans le registre d'abord, puis référencer l'id.
+- **P4** : `coverage_ack` mis à jour dans l'invariant (dict requis, `true` brut rejeté).
+- **P6 — Route "remove-override"** : route nommée dans l'étape Classify — quand la correction est de supprimer un style concurrent (attr bloc WP, inline style, classe utilitaire) pour que le CSS composant gouverne seul → `routed_layer: markup`, `action: align`, `action_detail: remove-override`. Préférée à un counter-`!important`. Les entrées ledger proposées doivent inclure un `id` placeholder (DEV-TBD) pour assignation humaine.
+
+### Modifié — `skills/enforce/adapters/wordpress.md`
+
+- **P5 — `has-*-font-size` et `!important`** : nouvelle section documentant que WP génère ces classes avec `!important`. Un override CSS composant sans `!important` ne gagne pas la cascade. Route préférée : supprimer l'override de markup (`remove-override`) ; alternative : counter-`!important` documenté.
+
+## [1.3.0] — 2026-06-16
+
+Minor — **skill `harness`** : générateur de maquette de référence HTML autonome.
+
+### Ajouts
+
+- **Skill `harness`** (`skills/harness/SKILL.md`) — génère un fichier HTML standalone exposant `window.setPage(key)` / `window.setViewport(mode)` + barre `.preview-bar` (page selector + boutons device Desktop/Tablette/Mobile). Paramètres : `--out`, `--title`, `--pages "key:Label, …"`, `--pages-json`. Défaut : une page placeholder `page-1`. Piloté par l'oracle `measure.py` et l'agent `copycat`.
+- **Adaptateur `adapters/harness/harness.py`** — générateur Python (stdlib uniquement, aucune dépendance). Responsive class-based (`.preview-frame.mobile|tablet`), pages en fonctions JS (isolation DOM par page), optgroups supportés dans le sélecteur, hash URL pour navigation directe.
+
+### Contrat
+
+- **Responsive** : variations device via `.preview-frame.mobile <sel>` / `.preview-frame.tablet <sel>` dans le `<style>` du `<head>`. `@media` fonctionne sous l'oracle (viewport réel) mais pas pour l'aperçu manuel — le class-based est préféré.
+- **Scroll** : `overflow:hidden` sur body/html → `.preview-stage` est le seul scrolleur (contrainte oracle).
+- **Pages** : fonctions JS (seule la page active est dans le DOM → pas de collision de sélecteurs entre pages).
+- **Oracle** : `.preview-bar` masquée avant mesure ; sélecteurs stables/BEM ; un seul `h1` par page.
+
 ## [1.2.0] — 2026-06-15
 
 Minor — **enforcement structurel de la fidélité dans l'oracle** (les invariants en prose de copycat n'étaient pas suivis de façon fiable par l'agent ; un 2ᵉ dry-run l'a reconfirmé). On déplace la discipline du texte vers la mécanique du script.

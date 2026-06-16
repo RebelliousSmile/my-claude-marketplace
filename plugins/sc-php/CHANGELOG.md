@@ -1,5 +1,10 @@
 # Changelog — sc-php
 
+## v0.5.1 — 2026-06-16
+
+### Added
+- `design-bridge/SKILL.md` : section "Cascade CSS : presets `has-*-font-size` et `!important`" — routes (remove-override, counter-`!important`, réalignement `theme.json`). Contenu déplacé depuis `design/enforce/adapters/wordpress.md` : `design` doit rester stack-agnostique.
+
 ## v0.4.8 — 2026-05-29
 
 ### Changed

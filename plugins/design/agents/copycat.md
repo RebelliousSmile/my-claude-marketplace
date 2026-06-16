@@ -113,11 +113,20 @@ is always the consumer's path; it is never plugin-relative.
    - wrong token applied (right scale, wrong step) → **markup**
    - structural/component rule (a card, a label, a missing element) → **component CSS + manifest (+ charter)**
    - content present in mockup, absent in target → **content** (P1: never hard-code into markup)
+   - competing override that prevents the component CSS from governing → **markup** with
+     `action: align`, `action_detail: remove-override` (see below)
 6. Decide **align vs extend** (DS-prime): bend to an existing token/component unless the
    mockup reveals a genuine new need — then propose an `extend` with justification.
+   **When the fix is to REMOVE a competing override** (e.g. a WP block attribute that injects
+   `.has-xl-font-size`, an inline style, a utility class applied in markup) so the component CSS
+   can govern without fighting it: route to `routed_layer: markup`, `action: align`,
+   `action_detail: remove-override`. This is preferable to adding a counter-`!important` — it
+   removes the conflict at its source and keeps the component rule authoritative.
 7. Flag `derived` (responsive inference) and `missing` (no counterpart) rows.
 8. If a residual delta is deliberately tolerated for DRY/SOLID reasons, propose a deviation
-   ledger entry (do not invent one silently).
+   ledger entry (do not invent one silently). A proposed entry MUST include an `id` placeholder
+   (e.g. `DEV-TBD`) for the human to assign and register in `ds-deviation-ledger.md` before
+   the oracle can accept it as a valid sanction.
 
 **Bulk mode stops here** — return the fragment.
 
@@ -153,7 +162,14 @@ is always the consumer's path; it is never plugin-relative.
       DRY/SOLID is excluded only by a real ledger entry referenced in the report — never by
       omission. **"Verified by reading my own source/diff" is NOT closure** — only the re-measured
       `CLOSED` verdict is. If `coverage.ok` is false, you under-measured (hero-only tunnel vision):
-      add a target per section, or set `coverage_ack` with written justification.
+      add a target per section, or set `coverage_ack: {"sections":[...],"reason":"..."}` listing
+      sections deliberately skipped (non-empty sections list required — a bare `true` is rejected).
+- [ ] **Every `ledger` entry in the config has an `id` (DEV-xxx) AND that id appears in the
+      project's `ds-deviation-ledger.md` canonical registry.** A config-ledger entry without a
+      matching registry entry is an unsigned deviation — it does NOT constitute closure. The oracle
+      will surface unsigned ids in `summary.ledger_ids`; if `--ledger-registry` is provided it will
+      force `verdict=OPEN` directly. Procedure: (1) register the deviation in the project's
+      `ds-deviation-ledger.md` first, (2) then reference its id in the config ledger entry.
 
 # Outputs
 

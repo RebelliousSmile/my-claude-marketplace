@@ -9,8 +9,8 @@
     {
       "id": "design",
       "name": "design",
-      "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Adds copycat: a per-page mockup→contract reconciliation agent (fanned out by define) + a cross-OS Python fidelity oracle with a machine CLOSED/OPEN verdict, structural completeness scan, coverage guard and deviation-ledger awareness. Breaking: replaces 9 legacy skills (setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress).",
-      "version": "1.2.0"
+      "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Adds copycat (per-page mockup→contract reconciliation agent + Python fidelity oracle: machine CLOSED/OPEN verdict, structural completeness scan, coverage guard, deviation-ledger with id + registry validation, ledger-unused detection, active-frame isolation). Adds harness (standalone HTML mockup generator, responsive class-based, setPage/setViewport). Breaking: replaces 9 legacy skills (setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress).",
+      "version": "1.4.0"
     },
     {
       "id": "writing",
@@ -34,7 +34,7 @@
       "id": "sc-php",
       "name": "sc-php",
       "description": "PHP ecosystem skills: sniff, audit, improve, legacy, teach. WordPress/Laravel/Symfony perf pivots, HTMX hybrid, Eloquent + Doctrine data pivots. design-bridge: réceptacle pivot design (linter PHP/WP natif + block pattern WP).",
-      "version": "0.5.0"
+      "version": "0.5.1"
     },
     {
       "id": "sc-js",

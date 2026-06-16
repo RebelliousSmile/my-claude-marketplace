@@ -14,6 +14,7 @@ in UTF-8 (avoids console encoding loss); a short summary is printed to stdout.
 Usage:
   python measure.py --config <cfg> --out <project>/<qa-dir>/fidelity/<page>-B.json
   python measure.py --config <cfg> --mode A --side wp --out <file>
+  python measure.py --config <cfg> --out <file> --ledger-registry <project>/ds-deviation-ledger.md
 
 --out is the CONSUMER's responsibility: always an absolute path into the consuming project's
 QA/artifacts tree (gitignored), never plugin-relative. The script writes wherever it is told;
@@ -26,13 +27,22 @@ Config (JSON):
     "breakpoints": [{"name":"desktop","width":1440,"height":900,"maq_viewport":"desktop"}],
     "props": ["fontSize", ...],
     "targets": [{"name":"Hero · title","maq":"<sel>","wp":"<sel>"}],
-    "headings_sel": {"maq":"h1, h2","wp":"h1, h2"},   # optional — completeness scan scope
-    "coverage_ack": false                              # optional — acknowledge fewer targets than headings
+    "headings_sel": {"maq":"h1, h2","wp":"h1, h2"},       # optional — completeness scan scope
+    "coverage_ack": {"sections":["..."],"reason":"..."},  # optional — justify which sections
+                                                          # are deliberately unmeasured (non-empty
+                                                          # sections list required to disable guard)
+    "ledger": [                                           # deviation-ledger entries
+      {"id":"DEV-001","target":"Hero · title","prop":"fontSize","why":"..."}
+      # id (DEV-xxx) is REQUIRED — unsigned entries are surfaced in ledger_ids for human review.
+      # If --ledger-registry is provided, each id is validated against that file; an id absent
+      # from the registry forces verdict=OPEN.
+    ]
   }
 
 Report shape (per breakpoint):
   Mode B
     - diff row    : {"element","prop","maquette","local","match": bool}
+                    if ledgered: adds "ledgered":true, "why":"...", "ledger_id":"DEV-xxx"
     - missing row : {"element",
                      "missing": {"maquette": "present"|"absent", "wp": "present"|"absent"},
                      "searched": {"maquette": <sel>, "wp": <sel>}}
@@ -42,16 +52,23 @@ Report shape (per breakpoint):
     - missing row : {"element","missing": true, "searched": {<side>: <sel>}}
 
 Top-level (Mode B) — STRUCTURAL GATES, computed by the script, not claimed by the caller:
+  "ledger_ids":   ["DEV-001", ...]   -> ids declared in config ledger (for human cross-check)
+  "ledger_unused":[{"id","target","prop"}, ...]
+      -> ledger entries that matched no actual diff (stale sanction or already-fixed delta).
+         Non-blocking for verdict but signals ledger bloat.
   "completeness": {"maquette_headings":[...], "wp_headings":[...],
                    "missing_in_wp":[...], "extra_in_wp":[...]}
       -> structure before pixels: a heading present in the mockup but absent in the target
          is a missing SECTION, the dominant delta. Defeats hero-only tunnel vision.
-  "coverage": {"wp_headings": N, "measured_targets": M, "ok": bool, "warning": "..."}
+  "coverage": {"wp_headings": N, "measured_targets": M, "ok": bool, "warning": "...",
+               "ack_sections": [...]}
       -> fewer targets than headings => under-coverage (a hero-only config "passing" while
-         the body is unmeasured). OPEN unless config sets "coverage_ack": true.
+         the body is unmeasured). OPEN unless coverage_ack supplies a non-empty sections list.
   "summary": {"verdict": "CLOSED"|"OPEN", "closed": bool, "reasons": [...],
-              "total_diff": D, "total_missing": K, "missing_sections": S}
-      -> CLOSED iff D==0 AND K==0 AND no missing section AND coverage ok.
+              "total_diff": D, "total_missing": K, "missing_sections": S,
+              "ledger_ids": [...], "ledger_unused_count": N}
+      -> CLOSED iff D==0 AND K==0 AND no missing section AND coverage ok
+         AND all ledger ids validated (if --ledger-registry provided).
          The CALLER MUST cite summary.verdict — closure is asserted from THIS, never from
          inspecting one's own edit. "verified by grep of source" is not closure.
 """
@@ -59,6 +76,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -84,14 +102,28 @@ _HEADINGS = """(sel) => Array.from(document.querySelectorAll(sel))
   .map(e => (e.textContent || '').replace(/\\s+/g, ' ').trim())
   .filter(Boolean)"""
 
+# JS injected to isolate the active .preview-frame by detaching non-active ones (P3).
+# Each breakpoint opens a fresh page, so detaching is safe and permanent for this measurement.
+_ISOLATE_FRAME = """(v) => {
+  document.querySelectorAll('.preview-frame').forEach(f => {
+    const isActive = v === 'desktop'
+      ? !f.classList.contains('tablet') && !f.classList.contains('mobile')
+      : f.classList.contains(v);
+    if (!isActive && f.parentNode) f.parentNode.removeChild(f);
+  });
+}"""
+
 
 def _prepare_mockup(page, page_key, maq_viewport):
-    """Drive the SPA mockup: set its viewport mode + page, hide preview chrome."""
+    """Drive the SPA mockup: set its viewport mode + page, hide preview chrome,
+    then isolate the active .preview-frame so querySelector targets the right DOM."""
     if maq_viewport:
         page.evaluate("(v) => window.setViewport && window.setViewport(v)", maq_viewport)
     if page_key:
         page.evaluate("(k) => window.setPage && window.setPage(k)", page_key)
     page.evaluate("() => { const b = document.querySelector('.preview-bar'); if (b) b.style.display = 'none'; }")
+    # Detach non-active frames so document.querySelector hits the right one (P3).
+    page.evaluate(_ISOLATE_FRAME, maq_viewport or "desktop")
     page.wait_for_timeout(400)
 
 
@@ -161,21 +193,56 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
     if mode == "B":
         _apply_ledger(report, cfg.get("ledger", []))
         report["completeness"] = _completeness(maq_headings or [], wp_headings or [])
-        report["coverage"] = _coverage(wp_headings or [], targets, bool(cfg.get("coverage_ack", False)))
+        report["coverage"] = _coverage(wp_headings or [], targets, cfg.get("coverage_ack"))
         report["summary"] = _verdict(report)
     return report
 
 
 def _apply_ledger(report: dict, ledger: list) -> None:
-    """Tag diffs sanctioned by a deviation-ledger entry (target+prop) so the verdict can
-    exclude them. A ledgered diff is EXPLICIT (why recorded), never silent omission."""
-    why = {(e["target"], e["prop"]): e.get("why", "") for e in ledger}
-    keys = set(why)
+    """Tag diffs sanctioned by a deviation-ledger entry (target+prop+id).
+
+    Each entry MUST carry an 'id' field (DEV-xxx). Entries without id are applied
+    but flagged as unsigned (visible in report['ledger_ids'] as empty string).
+    Unused entries — those that match no actual diff — are collected in
+    report['ledger_unused'] to prevent silent ledger bloat (P2).
+    """
+    entry_map = {(e["target"], e["prop"]): (e.get("why", ""), e.get("id", ""))
+                 for e in ledger}
+    consumed: set = set()
     for rows in report["breakpoints"].values():
         for r in rows:
-            if r.get("match") is False and (r["element"], r["prop"]) in keys:
+            k = (r.get("element", ""), r.get("prop", ""))
+            if r.get("match") is False and k in entry_map:
+                why, eid = entry_map[k]
                 r["ledgered"] = True
-                r["why"] = why[(r["element"], r["prop"])]
+                r["why"] = why
+                if eid:
+                    r["ledger_id"] = eid
+                consumed.add(k)
+
+    report["ledger_ids"] = [e.get("id", "") for e in ledger]
+    report["ledger_unused"] = [
+        {"id": e.get("id", ""), "target": e["target"], "prop": e["prop"]}
+        for e in ledger if (e["target"], e["prop"]) not in consumed
+    ]
+
+
+def _validate_ledger_registry(report: dict, registry_path: str) -> list[str]:
+    """Verify each ledger id against a deviation-ledger registry file.
+
+    Returns a list of validation error strings (empty = all ids present).
+    Only ids that are non-empty strings are checked (unsigned entries are skipped
+    here; they are already surfaced via ledger_ids as empty strings).
+    """
+    try:
+        registry_content = Path(registry_path).read_text(encoding="utf-8")
+    except OSError as exc:
+        return [f"ledger-registry unreadable: {exc}"]
+    errors = []
+    for eid in report.get("ledger_ids", []):
+        if eid and not re.search(re.escape(eid), registry_content):
+            errors.append(f"ledger entry {eid} absent du registre ({registry_path})")
+    return errors
 
 
 def _norm(s: str) -> str:
@@ -183,7 +250,7 @@ def _norm(s: str) -> str:
     straight-quote mockup compare equal — a section is missing by STRUCTURE, not by
     the renderer's smart-quotes."""
     return (s.replace("’", "'").replace("‘", "'")
-             .replace("“", '"').replace("”", '"')
+             .replace("”", '"').replace("“", '"')
              .replace("–", "-").replace("—", "-").replace(" ", " "))
 
 
@@ -195,15 +262,43 @@ def _completeness(maq_headings: list, wp_headings: list) -> dict:
             "extra_in_wp": [h for h in wp_headings if _norm(h) not in maq_n]}
 
 
-def _coverage(wp_headings: list, targets: list, ack: bool) -> dict:
-    """Fewer measured targets than headings => the body is likely unmeasured (tunnel vision)."""
+def _coverage(wp_headings: list, targets: list, ack) -> dict:
+    """Fewer measured targets than headings => the body is likely unmeasured (tunnel vision).
+
+    coverage_ack must be a structured dict {"sections": [...], "reason": "..."}
+    with a non-empty sections list to disable the guard. A bare boolean true is
+    accepted for backward compatibility but triggers a migration warning.
+    """
     cov = {"wp_headings": len(wp_headings), "measured_targets": len(targets)}
-    if not ack and len(targets) < len(wp_headings):
-        cov["ok"] = False
-        cov["warning"] = (f"under-coverage: {len(targets)} targets for {len(wp_headings)} headings — "
-                          f"add a target per section or set coverage_ack:true with justification")
-    else:
+
+    # Parse coverage_ack
+    ack_sections: list = []
+    ack_legacy = False
+    if isinstance(ack, dict):
+        ack_sections = ack.get("sections") or []
+        if ack_sections:
+            cov["ack_sections"] = ack_sections
+            cov["ack_reason"] = ack.get("reason", "")
+    elif ack is True:
+        ack_legacy = True
+
+    under = len(targets) < len(wp_headings)
+    if not under or ack_sections:
         cov["ok"] = True
+        if ack_legacy:
+            cov["ok"] = True
+            cov["warning"] = ("coverage_ack: upgrade to structured form "
+                              '{"sections":[...],"reason":"..."} — bare true accepted but opaque')
+    else:
+        cov["ok"] = False
+        if ack_legacy:
+            cov["warning"] = (f"under-coverage: {len(targets)} targets for {len(wp_headings)} headings — "
+                              "coverage_ack:true accepted but opaque; upgrade to "
+                              '{"sections":[...],"reason":"..."} listing the sections deliberately skipped')
+        else:
+            cov["warning"] = (f"under-coverage: {len(targets)} targets for {len(wp_headings)} headings — "
+                              'set coverage_ack:{"sections":[...],"reason":"..."} listing sections '
+                              "deliberately not measured (non-empty list required)")
     return cov
 
 
@@ -219,6 +314,9 @@ def _verdict(report: dict) -> dict:
         total_missing += sum(1 for r in rows if "missing" in r)
     missing_sections = report.get("completeness", {}).get("missing_in_wp", [])
     cov = report.get("coverage", {})
+    ledger_ids = report.get("ledger_ids", [])
+    ledger_unused = report.get("ledger_unused", [])
+
     reasons = []
     if total_diff:
         reasons.append(f"{total_diff} unledgered style diff(s)")
@@ -228,10 +326,17 @@ def _verdict(report: dict) -> dict:
         reasons.append(f"{len(missing_sections)} section(s) missing in target: {missing_sections}")
     if not cov.get("ok", True):
         reasons.append(cov.get("warning", "under-coverage"))
+    # Unsigned ledger entries (no id): surfaced for human review but not blocking
+    unsigned = [eid for eid in ledger_ids if not eid]
+    if unsigned:
+        reasons.append(f"{len(unsigned)} unsigned ledger entry(ies) — add 'id' (DEV-xxx) and register in ds-deviation-ledger.md")
+
     closed = not reasons
     return {"verdict": "CLOSED" if closed else "OPEN", "closed": closed, "reasons": reasons,
             "total_diff": total_diff, "ledgered_diff": ledgered, "total_missing": total_missing,
-            "missing_sections": len(missing_sections)}
+            "missing_sections": len(missing_sections),
+            "ledger_ids": ledger_ids,
+            "ledger_unused_count": len(ledger_unused)}
 
 
 def _summarize(report: dict) -> str:
@@ -248,6 +353,10 @@ def _summarize(report: dict) -> str:
     cov = report.get("coverage")
     if cov and not cov.get("ok", True):
         lines.append(f"  ! {cov['warning']}")
+    unused = report.get("ledger_unused", [])
+    if unused:
+        ids = [e.get("id") or "(unsigned)" for e in unused]
+        lines.append(f"  ! ledger_unused ({len(unused)}) — no matching diff: {ids}")
     s = report.get("summary")
     if s:
         lines.append(f"  VERDICT  : {s['verdict']}" + ("" if s["closed"] else f" — {'; '.join(s['reasons'])}"))
@@ -258,12 +367,28 @@ def main():
     ap = argparse.ArgumentParser(description="Fidelity oracle (computed-style diff, per breakpoint).")
     ap.add_argument("--config", required=True, help="Path to the JSON config.")
     ap.add_argument("--out", required=True, help="Path to write the JSON report (UTF-8).")
-    ap.add_argument("--mode", choices=["A", "B"], default="B", help="A=extract one side, B=diff mockup<->target.")
-    ap.add_argument("--side", choices=["maq", "wp"], default="wp", help="Mode A only: which side to extract.")
+    ap.add_argument("--mode", choices=["A", "B"], default="B",
+                    help="A=extract one side, B=diff mockup<->target.")
+    ap.add_argument("--side", choices=["maq", "wp"], default="wp",
+                    help="Mode A only: which side to extract.")
+    ap.add_argument("--ledger-registry", default=None,
+                    help="Path to the canonical ds-deviation-ledger.md. When provided, each "
+                         "ledger id in the config is validated against this file; an id absent "
+                         "from the registry forces verdict=OPEN.")
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
     report = measure(cfg, args.mode, args.side)
+
+    # P1 — validate ledger ids against the canonical registry if provided
+    if args.ledger_registry and args.mode == "B":
+        registry_errors = _validate_ledger_registry(report, args.ledger_registry)
+        if registry_errors:
+            s = report.get("summary", {})
+            s["reasons"] = registry_errors + s.get("reasons", [])
+            s["verdict"] = "OPEN"
+            s["closed"] = False
+            report["summary"] = s
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
