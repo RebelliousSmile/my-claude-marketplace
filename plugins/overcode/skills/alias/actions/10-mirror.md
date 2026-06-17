@@ -11,6 +11,19 @@ Avec `--page`, enchaîne automatiquement plusieurs screenshots page par page.
 - `--page <chemin>` — répétable. Fournir un screenshot par page à comparer. Les pages sont traitées dans l'ordre fourni.
 - Accès au codebase de l'implémentation en lecture/écriture.
 
+## Quand utiliser mirror (vs prompt direct)
+
+Mirror ne rend pas le modèle plus intelligent — il ajoute de la discipline de process (ancrage, anti-ré-analyse) et **délègue l'analyse de style à `copycat`** (contexte neuf + prompt spécialisé propriété-par-propriété). Ce gain a un coût en tokens (action chargée + spawn d'un sous-agent qui recharge le contrat design) et en latence. À déclencher en conséquence :
+
+| Situation | Choix |
+|---|---|
+| Une diff évidente (un titre, une couleur nommée) | **Prompt direct** — mirror est du surcoût pur |
+| Corrections précises déjà fournies (mode B) | **Mirror léger** ou prompt direct soigné — équivalents |
+| Analyse de style fine (fonds par niveau, puces, emphase, spacing) | **Mirror** — la délégation copycat est le vrai gain |
+| Plusieurs pages à réconcilier | **Mirror `--page`** — l'automatisation justifie le coût |
+
+La valeur de mirror est proportionnelle à la qualité de `copycat`, pas à mirror lui-même.
+
 ## Prompt
 
 Execute the following workflow verbatim.
@@ -57,8 +70,9 @@ Côté référence : <gauche / droite>
 ```
 
 **Si l'une des deux sources n'est pas identifiable avec certitude depuis le contexte ou l'image :**
-Arrêter et demander :
-> "Quelles sont les deux sources à comparer ? (URL locale ou chemin de fichier pour chacune)"
+- En mode single → arrêter et demander :
+  > "Quelles sont les deux sources à comparer ? (URL locale ou chemin de fichier pour chacune)"
+- En mode multi-page → ne pas stopper toute la file : signaler la page non ancrable, la consigner comme écart résiduel (`⚠ [Page N] non ancrable — sautée`), puis passer à la page suivante.
 
 En mode multi-page, distinguer deux niveaux :
 - **Origine** (base de l'implémentation, ex. `http://localhost:3000`) — stable d'une page à l'autre, réutilisable sans re-demander.
@@ -116,7 +130,9 @@ Si un texte présent dans l'implémentation est absent de la référence, le sup
 
 ### Step 3 — Invocation de design:copycat *(mode A)*
 
-Invoquer `/design:copycat` avec le prompt structuré suivant, en substituant les variables contextuelles :
+**Court-circuit** : si le Step 1 n'a relevé aucun écart susceptible d'être de style (seulement des écarts texte déjà traités au Step 2 et/ou des écarts layout), sauter ce Step et passer au Step 4b — ne pas invoquer `copycat` pour rien. (S'il n'y a aucun écart du tout, aller au Step 6.)
+
+Sinon, invoquer `/design:copycat` avec le prompt structuré suivant, en substituant les variables contextuelles :
 
 ---
 
@@ -205,7 +221,7 @@ Résiduels   : <liste compacte ⚠ ou "aucun">
 
 Pages traitées  : N  (liste des noms)
 Côté référence  : <gauche / droite>
-Mode            : <analyse initiale / correction directe>
+Mode            : <analyse initiale / correction directe>   ← omettre cette ligne en multi-page (toujours mode A)
 
 Différences texte   : N total — N corrigées
 Différences style   : N total — N corrigées
