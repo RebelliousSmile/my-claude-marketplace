@@ -14,31 +14,55 @@ Execute the following workflow verbatim.
 
 ---
 
-### Step 0 — Identifier les côtés
+### Step -1 — Ancrage (gate obligatoire)
 
-Lire l'image fournie en argument.
+Avant toute analyse, afficher un bloc de confirmation :
 
-Déterminer : quel côté est la **référence** (maquette / attendu) et quel côté est l'**implémentation** (état actuel). Par défaut, gauche = référence, droite = implémentation. Si `--ref right` est passé, inverser.
+```
+🪞 mirror — ancrage
 
-Identifier le contexte de la page (titre, URL visible, section en cours) pour centrer l'analyse.
+Référence      : <URL ou chemin identifié — ex. http://localhost:8080/page, /maquettes/home.png>
+Implémentation : <URL ou chemin identifié — ex. http://localhost:3000/page>
+Côté référence : <gauche / droite>
+```
+
+**Si l'une des deux sources n'est pas identifiable avec certitude depuis le contexte ou l'image :**
+Arrêter immédiatement et demander :
+> "Quelles sont les deux sources à comparer ? (URL locale ou chemin de fichier pour chacune)"
+
+Ne pas continuer au Step 0 tant que les deux sources ne sont pas confirmées.
 
 ---
 
-### Step 1 — Inventaire des différences
+### Step 0 — Mode de déclenchement
 
-Parcourir l'image section par section (de haut en bas). Pour chaque bloc visible, produire un tableau de différences structuré :
+Déterminer dans quel mode mirror est invoqué :
+
+**Mode A — analyse initiale** : l'utilisateur fournit une image, aucun écart précis n'est encore décrit. Continuer au Step 1.
+
+**Mode B — correction directe** : l'utilisateur décrit explicitement des écarts précis (texte ou propriétés CSS nommées, ex. "le fond de section est blanc crème", "les puces ont un fond bleu incorrect"). Dans ce cas :
+- **Ne pas prendre de capture. Ne pas relancer d'analyse visuelle. Ne pas revisiter ce qui a déjà été analysé.**
+- Traiter chaque écart décrit comme une entrée directe — les enregistrer avec `Type = correction-directe`.
+- Si corrections texte uniquement → sauter au Step 2.
+- Si corrections style uniquement → sauter au Step 4.
+- Si corrections texte ET style → exécuter Step 2 puis Step 4 (les deux, dans l'ordre).
+
+> **Règle absolue mode B** : si l'utilisateur a fourni l'information, elle fait autorité. Ne pas la re-vérifier visuellement ni relancer un outil pour confirmer ce qui a déjà été dit. Appliquer, puis rapporter.
+
+---
+
+### Step 1 — Inventaire de surface (mode A uniquement)
+
+Parcourir l'image section par section pour repérer les différences évidentes : texte manquant ou erroné, blocs absents, ordre visuel incorrect.
 
 ```
-| Section     | Propriété        | Référence              | Implémentation         | Type   |
-|-------------|------------------|------------------------|------------------------|--------|
-| Hero        | Titre H1         | "Construire ensemble"  | "Construire ensemble." | texte  |
-| Hero        | Sous-titre       | absent                 | "Lorem ipsum…"         | texte  |
-| Hero        | bg-color         | #1A1A2E                | #1B1C30                | style  |
-| Offres      | font-size titre  | 32px                   | 28px                   | style  |
-| Offres      | gap entre cartes | 24px                   | 16px                   | style  |
+| Section | Propriété         | Référence       | Implémentation  | Type   |
+|---------|-------------------|-----------------|-----------------|--------|
+| Hero    | Titre H1          | "Titre exact"   | "Titre erroné"  | texte  |
+| Offres  | Carte 3           | présente        | absente         | layout |
 ```
 
-Types : `texte` (contenu ou hiérarchie), `style` (couleur, typographie, espacement, layout), `layout` (structure DOM ou ordre visuel).
+Types : `texte` (contenu), `layout` (structure visible). **Ne pas analyser les styles ici — c'est le rôle de `copycat` au Step 3.**
 
 **Ne pas corriger à cette étape — inventorier seulement.**
 
@@ -46,7 +70,7 @@ Types : `texte` (contenu ou hiérarchie), `style` (couleur, typographie, espacem
 
 ### Step 2 — Corrections texte
 
-Pour chaque différence de type `texte` :
+Pour chaque différence de type `texte` ou `correction-directe` textuelle :
 
 1. Localiser le fichier source (template, composant, import) contenant ce texte.
 2. Appliquer la correction pour aligner sur la référence.
@@ -56,39 +80,61 @@ Si un texte présent dans l'implémentation est absent de la référence, le sup
 
 ---
 
-### Step 3 — Analyse style via copycat
+### Step 3 — Invocation de design:copycat
 
-Pour les différences de type `style` et `layout`, invoquer `/design:copycat` en lui fournissant :
-- L'image complète (ou le crop du côté référence si possible).
-- La liste des propriétés divergentes issue du Step 1.
-
-`copycat` produit le fragment de correspondance token/composant/charte. Lire sa sortie attentivement.
-
-Si `design:copycat` n'est pas disponible (skill absent ou contexte insuffisant), faire l'analyse manuellement : pour chaque propriété divergente, identifier le token design ou la règle CSS à ajuster dans le codebase.
+Invoquer `/design:copycat` avec le prompt structuré suivant, en substituant les variables contextuelles :
 
 ---
 
-### Step 4 — Corrections style
+> **Page analysée** : `<nom de la page / URL référence>`
+> **Image fournie** : `<chemin ou image collée>` — côté gauche = référence, côté droit = implémentation (ou inverse si `--ref right`).
+>
+> Analyser la page section par section. Pour chaque section, relever **toute propriété visuellement perceptible qui diffère** entre la référence et l'implémentation — sans se limiter à une liste prédéfinie.
+>
+> Points fréquemment manqués à vérifier explicitement (non exhaustifs) :
+> - Fond appliqué sur la **section entière** vs fond sur un composant ou un élément enfant (ne pas les confondre)
+> - Fond des éléments inline souvent ignorés : puces, badges, chips, tags, icônes cerclées
+> - Couleur d'emphase / accent sur un mot, une stat, un CTA
+> - Espacement à l'échelle section (padding-block) vs espacement interne entre composants
+>
+> Pour chaque propriété divergente, retourner le tableau de correspondance token/composant/charte avec :
+> - valeur dans la référence
+> - valeur dans l'implémentation
+> - token ou règle CSS candidate
+> - statut : conforme / divergent / à créer
 
-Appliquer les corrections issues de `copycat` (ou de l'analyse manuelle) :
+---
 
-1. Pour un token divergent : mettre à jour la valeur du token dans le fichier de design tokens.
-2. Pour une règle CSS locale : mettre à jour la règle dans le fichier de style du composant.
-3. Pour un écart de spacing : ajuster la variable ou la classe utilitaire concernée.
+Lire la sortie de `copycat` attentivement avant de passer au Step 4.
+
+Si `/design:copycat` est indisponible : pour chaque propriété divergente du tableau Step 1, identifier manuellement le token ou la règle CSS dans le codebase et noter la correction à appliquer en Step 4.
+
+---
+
+### Step 4 — Corrections style *(mode A + mode B style)*
+
+Appliquer chaque correction issue de la sortie `copycat` (ou des écarts décrits explicitement en mode B) :
+
+1. Token divergent → mettre à jour la valeur dans le fichier de design tokens.
+2. Règle CSS locale → mettre à jour le sélecteur ou la valeur dans le fichier du composant.
+3. Écart de spacing → ajuster la variable ou la classe utilitaire concernée.
 
 Appliquer dans l'ordre : tokens globaux → composants → overrides locaux.
 
-Résumé après chaque correction : `✅ Offres / font-size titre — 28px → 32px (--font-size-heading-md)`.
+Résumé après chaque correction : `✅ Offres / section background-color — #FFFFFF → #F5F0EB (--color-surface-soft)`.
 
 ---
 
 ### Step 5 — Vérification (si MCP Playwright disponible)
 
-Si le navigateur MCP est disponible et l'implémentation est servie localement :
+**Seulement si les sources sont des URLs servies localement et que l'analyse n'a pas déjà été faite dans cette session.**
 
-1. Prendre une capture de la page courante à viewport identique.
-2. Comparer visuellement avec le côté référence de l'image initiale.
-3. Signaler tout écart résiduel non corrigé.
+Ne pas reprendre de capture pour confirmer un écart que l'utilisateur a déjà décrit explicitement.
+
+Si le navigateur MCP est disponible :
+1. Prendre une capture de l'implémentation après corrections, à viewport identique.
+2. Comparer avec le côté référence de l'image initiale.
+3. Signaler uniquement les écarts résiduels non encore traités.
 
 Si Playwright n'est pas disponible, lister les vérifications à faire manuellement.
 
@@ -101,13 +147,14 @@ Si Playwright n'est pas disponible, lister les vérifications à faire manuellem
 
 Page : <contexte identifié>
 Côté référence : <gauche / droite>
+Mode : <analyse initiale / correction directe>
 
 Différences texte   : N trouvées — N corrigées
 Différences style   : N trouvées — N corrigées
 Différences layout  : N trouvées — N à corriger manuellement (trop invasif)
 
 Corrections appliquées :
-  ✅ <section> / <propriété> — <avant> → <après>
+  ✅ <section> / <niveau> / <propriété> — <avant> → <après>
   …
 
 Écarts résiduels (non corrigés) :
