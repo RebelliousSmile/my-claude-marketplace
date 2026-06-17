@@ -2,10 +2,13 @@
 
 Reçoit une image montrant deux navigateurs côte à côte (référence vs implémentation courante), identifie toutes les différences de texte et de style, puis les corrige en s'appuyant sur `design:copycat`.
 
+Avec `--page`, enchaîne automatiquement plusieurs screenshots page par page.
+
 ## Context required
 
 - **Image** — capture d'écran avec la référence (maquette ou navigateur de gauche) et l'implémentation (navigateur de droite), ou l'inverse. Fournir le chemin de fichier ou coller l'image directement.
 - La référence est à gauche par défaut. Si l'ordre est inversé, l'indiquer en argument (`--ref right`).
+- `--page <chemin>` — répétable. Fournir un screenshot par page à comparer. Les pages sont traitées dans l'ordre fourni.
 - Accès au codebase de l'implémentation en lecture/écriture.
 
 ## Prompt
@@ -14,21 +17,50 @@ Execute the following workflow verbatim.
 
 ---
 
+### Step -2 — Détection multi-page
+
+Vérifier si `--page` est présent dans les arguments.
+
+**Mode single (défaut)** : pas de `--page`. Continuer au Step -1 avec l'image fournie.
+
+**Mode multi-page** : un ou plusieurs `--page <chemin>` fournis. Dans ce cas :
+
+1. Construire la file de pages dans l'ordre des arguments :
+   ```
+   Page 1 : <chemin1>
+   Page 2 : <chemin2>
+   …
+   ```
+2. Afficher la file et confirmer avant de démarrer :
+   ```
+   🪞 mirror — file multi-page
+   N pages à traiter : <liste>
+   Côté référence : <gauche / droite>
+   → Démarrage page 1…
+   ```
+3. Pour chaque page de la file, exécuter **les Steps -1 à 5** complets, dans l'ordre. Accumuler les résultats (corrections appliquées + écarts résiduels) dans un registre global.
+4. Ne passer à la page suivante qu'après avoir terminé et rapporté les corrections de la page courante (Step 6 abrégé par page).
+5. Après la dernière page, émettre le **rapport global** (Step 6 étendu, voir format ci-dessous).
+
+---
+
 ### Step -1 — Ancrage (gate obligatoire)
 
-Avant toute analyse, afficher un bloc de confirmation :
+Avant toute analyse de la page courante, afficher un bloc de confirmation :
 
 ```
-🪞 mirror — ancrage
+🪞 mirror — ancrage [page N/N si multi-page]
 
-Référence      : <URL ou chemin identifié — ex. http://localhost:8080/page, /maquettes/home.png>
-Implémentation : <URL ou chemin identifié — ex. http://localhost:3000/page>
+Référence      : <URL ou chemin identifié>
+Implémentation : <URL ou chemin identifié>
 Côté référence : <gauche / droite>
 ```
 
 **Si l'une des deux sources n'est pas identifiable avec certitude depuis le contexte ou l'image :**
-Arrêter immédiatement et demander :
+Arrêter et demander :
 > "Quelles sont les deux sources à comparer ? (URL locale ou chemin de fichier pour chacune)"
+
+En mode multi-page, si les sources sont déjà connues du contexte (pages précédentes ou argument explicite), ne pas les re-demander — les réutiliser.
 
 Ne pas continuer au Step 0 tant que les deux sources ne sont pas confirmées.
 
@@ -36,7 +68,7 @@ Ne pas continuer au Step 0 tant que les deux sources ne sont pas confirmées.
 
 ### Step 0 — Mode de déclenchement
 
-Déterminer dans quel mode mirror est invoqué :
+Déterminer dans quel mode mirror est invoqué pour la page courante :
 
 **Mode A — analyse initiale** : l'utilisateur fournit une image, aucun écart précis n'est encore décrit. Continuer au Step 1.
 
@@ -51,7 +83,7 @@ Déterminer dans quel mode mirror est invoqué :
 
 ---
 
-### Step 1 — Inventaire de surface (mode A uniquement)
+### Step 1 — Inventaire de surface *(mode A uniquement)*
 
 Parcourir l'image section par section pour repérer les différences évidentes : texte manquant ou erroné, blocs absents, ordre visuel incorrect.
 
@@ -68,7 +100,7 @@ Types : `texte` (contenu), `layout` (structure visible). **Ne pas analyser les s
 
 ---
 
-### Step 2 — Corrections texte
+### Step 2 — Corrections texte *(mode A + mode B texte)*
 
 Pour chaque différence de type `texte` ou `correction-directe` textuelle :
 
@@ -80,7 +112,7 @@ Si un texte présent dans l'implémentation est absent de la référence, le sup
 
 ---
 
-### Step 3 — Invocation de design:copycat
+### Step 3 — Invocation de design:copycat *(mode A)*
 
 Invoquer `/design:copycat` avec le prompt structuré suivant, en substituant les variables contextuelles :
 
@@ -138,24 +170,41 @@ Si les conditions sont réunies (URL locale servie, Playwright disponible, navig
 
 ---
 
-### Step 6 — Rapport final
+### Step 6 — Rapport
+
+**Par page (mode multi-page)** — afficher après chaque page avant de passer à la suivante :
 
 ```
-🪞 mirror — rapport
-
-Page : <contexte identifié>
-Côté référence : <gauche / droite>
-Mode : <analyse initiale / correction directe>
+🪞 mirror — page N/N : <nom de la page>
 
 Différences texte   : N trouvées — N corrigées
 Différences style   : N trouvées — N corrigées
-Différences layout  : N trouvées — N à corriger manuellement (trop invasif)
+Différences layout  : N trouvées — N à corriger manuellement
+
+Corrections : <liste compacte ✅>
+Résiduels   : <liste compacte ⚠ ou "aucun">
+
+→ Passage à la page suivante…
+```
+
+**Rapport global (fin du mode multi-page ou mode single)** :
+
+```
+🪞 mirror — rapport [global si multi-page]
+
+Pages traitées  : N  (liste des noms)
+Côté référence  : <gauche / droite>
+Mode            : <analyse initiale / correction directe>
+
+Différences texte   : N total — N corrigées
+Différences style   : N total — N corrigées
+Différences layout  : N total — N à corriger manuellement
 
 Corrections appliquées :
-  ✅ <section> / <niveau> / <propriété> — <avant> → <après>
+  ✅ [Page X] <section> / <propriété> — <avant> → <après>
   …
 
 Écarts résiduels (non corrigés) :
-  ⚠ <raison> — action recommandée
+  ⚠ [Page X] <raison> — action recommandée
   …
 ```
