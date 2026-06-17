@@ -3,14 +3,14 @@
     {
       "id": "overcode",
       "name": "overcode",
-      "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, seo-optimize, behave, status. Alias: rechallenge, endtask, bump-plugin, previously, smarten, skillconf, aiddlegacy, weeklyemail, gitit.",
-      "version": "3.1.0"
+      "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, seo-optimize, behave, status. Alias: rechallenge, endtask, bump-plugin, previously, smarten, skillconf, weeklyemail, gitit, mirror.",
+      "version": "3.1.1"
     },
     {
       "id": "design",
       "name": "design",
-      "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Adds copycat (per-page mockup→contract reconciliation agent + Python fidelity oracle: machine CLOSED/OPEN verdict, structural completeness scan, coverage guard, deviation-ledger with id + registry validation, ledger-unused detection, active-frame isolation). Adds harness (standalone HTML mockup generator, responsive class-based, setPage/setViewport). Breaking: replaces 9 legacy skills (setup, from-reference, from-brief, wireframe, component, audit, diagnose, refactor, export-wordpress).",
-      "version": "1.5.0"
+      "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Adds copycat (per-page mockup→contract reconciliation agent + Python fidelity oracle: machine CLOSED/OPEN verdict, structural completeness scan, coverage guard, deviation-ledger with id + registry validation, ledger-unused detection, active-frame isolation, check_text per-target P7+P11, collections LCS-diff P8+P12, Windows stdout P10, collection-level ack P13, visual-diff companion P14). Adds config-gen.py (P15): auto-derive oracle config from contract — components.json BEM selectors + tokens.json prop groups → targets+props+breakpoints. Breaking: replaces 9 legacy skills.",
+      "version": "1.9.1"
     },
     {
       "id": "writing",
@@ -41,6 +41,12 @@
       "name": "sc-js",
       "description": "JavaScript ecosystem: sniff (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), audit, improve (8 capability pivots), legacy (Vue 2→3/ESM/TS), teach + SvelteKit/Svelte stores/Biome pivots + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots. design-bridge: réceptacle pivot design (règle ESLint + composant Vue 3/React).",
       "version": "0.7.0"
+    },
+    {
+      "id": "sc-css",
+      "name": "sc-css",
+      "description": "CSS ecosystem skills: sniff (architecture + stack), audit (spécificité, code mort, magic numbers, a11y CSS), improve (custom properties, cascade layers, modernisation), legacy (float→flex/grid, px→rem, préfixes→standard, vars Sass→custom props), teach. design-bridge: tokens.json → custom properties CSS, components.json → BEM stylesheets en @layer.",
+      "version": "0.1.0"
     },
     {
       "id": "sc-tiers",
