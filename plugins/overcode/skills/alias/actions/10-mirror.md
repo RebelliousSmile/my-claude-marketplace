@@ -125,18 +125,16 @@ Résumé après chaque correction : `✅ Offres / section background-color — #
 
 ---
 
-### Step 5 — Vérification (si MCP Playwright disponible)
+### Step 5 — Vérification (optionnelle, best-effort)
 
-**Seulement si les sources sont des URLs servies localement et que l'analyse n'a pas déjà été faite dans cette session.**
+**Skippée immédiatement si** : Playwright MCP est indisponible, le navigateur est déjà ouvert et ne répond pas à la première tentative de navigation, ou l'utilisateur n'a pas demandé de vérification visuelle.
 
 Ne pas reprendre de capture pour confirmer un écart que l'utilisateur a déjà décrit explicitement.
 
-Si le navigateur MCP est disponible :
-1. Prendre une capture de l'implémentation après corrections, à viewport identique.
-2. Comparer avec le côté référence de l'image initiale.
+Si les conditions sont réunies (URL locale servie, Playwright disponible, navigateur répond) :
+1. Tenter une seule navigation vers l'URL de l'implémentation. En cas d'échec ou de blocage → passer au Step 6 sans retry.
+2. Prendre une capture à viewport identique.
 3. Signaler uniquement les écarts résiduels non encore traités.
-
-Si Playwright n'est pas disponible, lister les vérifications à faire manuellement.
 
 ---
 
