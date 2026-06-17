@@ -23,7 +23,7 @@ Vérifier si `--page` est présent dans les arguments.
 
 **Mode single (défaut)** : pas de `--page`. Continuer au Step -1 avec l'image fournie.
 
-**Mode multi-page** : un ou plusieurs `--page <chemin>` fournis. Dans ce cas :
+**Mode multi-page** : un ou plusieurs `--page <chemin>` fournis. `--page` force le **mode A** (analyse via copycat) — le routing mode B (Step 0) ne s'applique pas. Si des corrections verbales sont aussi décrites, les ignorer pour cette passe et le signaler. Dans ce cas :
 
 1. Construire la file de pages dans l'ordre des arguments :
    ```
@@ -34,11 +34,11 @@ Vérifier si `--page` est présent dans les arguments.
 2. Afficher la file et confirmer avant de démarrer :
    ```
    🪞 mirror — file multi-page
-   N pages à traiter : <liste>
+   N pages à traiter (traitement séquentiel, peut être long) : <liste>
    Côté référence : <gauche / droite>
    → Démarrage page 1…
    ```
-3. Pour chaque page de la file, exécuter **les Steps -1 à 5** complets, dans l'ordre. Accumuler les résultats (corrections appliquées + écarts résiduels) dans un registre global.
+3. Pour chaque page de la file, exécuter **les Steps -1, 1, 2, 3, 4, 4b, 5** (mode A, sans le branchement mode B du Step 0). Accumuler les résultats dans un registre global ; **chaque entrée du registre porte son numéro de page** (pour le préfixe `[Page X]` du rapport).
 4. Ne passer à la page suivante qu'après avoir terminé et rapporté les corrections de la page courante (Step 6 abrégé par page).
 5. Après la dernière page, émettre le **rapport global** (Step 6 étendu, voir format ci-dessous).
 
@@ -60,7 +60,9 @@ Côté référence : <gauche / droite>
 Arrêter et demander :
 > "Quelles sont les deux sources à comparer ? (URL locale ou chemin de fichier pour chacune)"
 
-En mode multi-page, si les sources sont déjà connues du contexte (pages précédentes ou argument explicite), ne pas les re-demander — les réutiliser.
+En mode multi-page, distinguer deux niveaux :
+- **Origine** (base de l'implémentation, ex. `http://localhost:3000`) — stable d'une page à l'autre, réutilisable sans re-demander.
+- **URL/chemin de page** (ex. `/offres`, le screenshot de la page courante) — **ré-identifié à chaque itération**. Ne jamais réutiliser l'URL de page précédente comme ancrage de la page courante.
 
 Ne pas continuer au Step 0 tant que les deux sources ne sont pas confirmées.
 
@@ -157,6 +159,15 @@ Résumé après chaque correction : `✅ Offres / section background-color — #
 
 ---
 
+### Step 4b — Écarts layout *(mode A)*
+
+Pour chaque finding de type `layout` inventorié au Step 1 (bloc absent, carte en trop, ordre visuel incorrect) :
+
+1. **Écart simple** (bloc/élément manquant ou en surplus dans un template ou une boucle) → corriger directement la source (ajouter/retirer l'item, réordonner). Résumé : `✅ Offres / Carte 3 absente — ajoutée au template`.
+2. **Écart structurel invasif** (refonte DOM, changement de composant) → ne pas tenter ; flaguer en écart résiduel avec la raison précise. Résumé : `⚠ Hero / structure 2 colonnes vs 1 — refonte manuelle requise`.
+
+---
+
 ### Step 5 — Vérification (optionnelle, best-effort)
 
 **Skippée immédiatement si** : Playwright MCP est indisponible, le navigateur est déjà ouvert et ne répond pas à la première tentative de navigation, ou l'utilisateur n'a pas demandé de vérification visuelle.
@@ -179,7 +190,7 @@ Si les conditions sont réunies (URL locale servie, Playwright disponible, navig
 
 Différences texte   : N trouvées — N corrigées
 Différences style   : N trouvées — N corrigées
-Différences layout  : N trouvées — N à corriger manuellement
+Différences layout  : N trouvées — N corrigées, N manuelles (invasives)
 
 Corrections : <liste compacte ✅>
 Résiduels   : <liste compacte ⚠ ou "aucun">
@@ -198,7 +209,7 @@ Mode            : <analyse initiale / correction directe>
 
 Différences texte   : N total — N corrigées
 Différences style   : N total — N corrigées
-Différences layout  : N total — N à corriger manuellement
+Différences layout  : N total — N corrigées, N manuelles (invasives)
 
 Corrections appliquées :
   ✅ [Page X] <section> / <propriété> — <avant> → <après>
