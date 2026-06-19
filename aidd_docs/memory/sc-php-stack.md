@@ -2,12 +2,16 @@
 
 | Champ | Valeur |
 |---|---|
-| Version courante | 0.5.0 |
-| Dernière release | 2026-06-11 |
+| Version courante | 0.5.2 |
+| Dernière release | 2026-06-19 |
 
 ## Skills disponibles
 
 sniff, audit, improve, legacy, teach, design-bridge
+
+## Capability pivots (chargés à l'audit)
+
+`php/solid.md` (toujours), `testing/bruno.md` (si Bruno), `wordpress/ssr.md` (v0.5.2+, si WordPress détecté — authoring de blocs SSR : attributs additifs, `wp_kses_post`, compteurs serveur, `blocks/` vs `build/`, nav SSR vs show/hide JS)
 
 ## Pivots perf
 

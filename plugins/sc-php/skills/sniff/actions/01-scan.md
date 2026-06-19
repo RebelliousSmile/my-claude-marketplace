@@ -66,6 +66,7 @@ If either signal is found, enable the `testing/bruno.md` capability pivot.
 |---|---|---|
 | PHP SOLID violations | always (every PHP project) | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/php/solid.md` |
 | Bruno test conventions | `bruno/` folder or `*.bru` files detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/testing/bruno.md` |
+| WordPress SSR block authoring | WordPress detected (Step 2) | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/wordpress/ssr.md` |
 
 After listing capability pivots, append the `/sc-php:audit` readiness line:
 - → `/sc-php:audit` : PRÊT (capability pivots: list the active ones)
@@ -179,6 +180,23 @@ Pivot manifeste:
   Data pivots → .claude/rules/07-quality/:
     data/eloquent.md → data-pivots-eloquent.md MISSING
   → /data-optimize : PRÊT (will be installed)
+```
+
+**Example — WordPress:**
+```
+Pivot manifeste:
+  Capability pivots (loaded at audit time, not installed):
+    ✅ php/solid.md     (always — every PHP project)
+    ✅ wordpress/ssr.md (WordPress detected)
+  → /sc-php:audit : PRÊT
+
+  Perf pivots → .claude/rules/07-quality/:
+    perf/wordpress.md → perf-pivots-wordpress.md MISSING
+  → /web-optimize : PRÊT (will be installed)
+
+  Data pivots → .claude/rules/07-quality/:
+    — aucun (pas d'ORM détecté)
+  → /data-optimize : NOT APPLICABLE
 ```
 
 Then proceed to action `02-install-pivots`.

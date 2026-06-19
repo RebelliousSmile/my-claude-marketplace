@@ -44,6 +44,9 @@ PHP Code Quality Criteria — sc-php 0.4.0
 ## Bruno test conventions   (only if testing/bruno.md was in the manifeste)
 <content of testing/bruno.md>
 
+## WordPress SSR block authoring   (only if wordpress/ssr.md was in the manifeste)
+<content of wordpress/ssr.md>
+
 [...additional capability pivots from manifeste...]
 ```
 

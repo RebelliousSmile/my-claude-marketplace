@@ -1,5 +1,12 @@
 # Changelog — sc-php
 
+## v0.5.2 — 2026-06-19
+
+### Added
+- Capability pivot `wordpress/ssr.md` — conventions d'authoring de blocs dynamiques (SSR `render_callback`/`render.php`), framées en critères d'audit : attributs de bloc additifs (ne pas casser les insertions sérialisées), `wp_kses_post` vs `esc_html`/echo brut pour le HTML inline dynamique, agrégats/compteurs calculés côté serveur (pas en dur, garde N+1), édition de la source `blocks/` vs build `build/` régénéré, et navigation SSR (liens + routes réelles) vs show/hide JS. Distinct du pivot perf (`perf/wordpress.md`) et de `design-bridge` (markup/design).
+- `sniff/01-scan.md` : pivot câblé en Step 5a (capability pivots, condition « WordPress détecté ») + exemple de manifeste WordPress.
+- `audit/01-audit.md` : `wordpress/ssr.md` ajouté à la structure de critères chargés à l'audit.
+
 ## v0.5.1 — 2026-06-16
 
 ### Added
