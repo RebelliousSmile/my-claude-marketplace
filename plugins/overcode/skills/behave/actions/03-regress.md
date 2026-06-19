@@ -31,7 +31,7 @@ Collect the suites: explicit paths, or every `*-scenarios.md` under the given di
 
 ### Step 2 — Run each suite (pipeline)
 
-For each suite, execute the dry-run judge harness exactly as `@02-run.md` (load target instructions + suite, READ-ONLY fixture, score PASS/FAIL/N/A with intended-writes reasoning). Suites are independent — run them in parallel where possible.
+For each suite, execute the dry-run judge harness exactly as `@02-run.md` (load target instructions + suite + `@../references/judgment-rules.md`, READ-ONLY fixture, score PASS/FAIL/N/A with intended-writes reasoning). Suites are independent — run them in parallel where possible.
 
 ### Step 3 — Compute Δ vs the prior run
 

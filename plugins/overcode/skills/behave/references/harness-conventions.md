@@ -54,3 +54,5 @@ Each run appends:
 
 - **0 FAIL** → green; record the run, note any N/A and their fixture cause.
 - **≥1 FAIL** → the suite caught a real behavioural miss. Report the root cause (which instruction is missing/contradictory), propose the minimal fix, and — only after the fix — re-run to confirm PASS. Do not silently "fix the test" to make it pass.
+
+For detailed PASS / FAIL / N/A rules, false-good-test detection, and anti-patterns (too vague, too broad): see `@judgment-rules.md`.

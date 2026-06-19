@@ -1,6 +1,6 @@
 ---
 name: behave
-description: Behavioural-test harness for skills, agents, and prompt-driven workflows — scaffolds scenario suites (Situation → Expected behaviour → Pass criteria), runs a dry-run judge harness that scores each scenario against a populated fixture without mutating real data, and re-runs suites for non-regression. Triggers on "behave", "scaffold behavioural tests", "run the behavioural suite", "regression-test this skill/agent", "write a scenario suite for", or "/behave <action>". Do NOT use for unit/integration tests of code (use the project's test runner), for code review against a style guide (use review/foresee), or for one-off manual checks.
+description: Behavioural-test harness for skills, agents, and prompt-driven workflows — scaffolds scenario suites (Situation → Expected behaviour → Pass criteria), runs a dry-run judge harness that scores each scenario against a populated fixture without mutating real data, re-runs suites for non-regression, and reviews an existing suite for behavioural coverage and per-scenario quality (7-axis grid). Triggers on "behave", "scaffold behavioural tests", "run the behavioural suite", "regression-test this skill/agent", "write a scenario suite for", "review/audit the behavioural suite", "does this suite cover the target", "is this test well-written", or "/behave <action>". Do NOT use for unit/integration tests of code (use the project's test runner), for code review against a style guide (use review/foresee), or for one-off manual checks.
 model: opus
 ---
 
@@ -15,6 +15,7 @@ Manages **behavioural tests** for non-deterministic, prompt-driven targets — s
 | 01 | `scaffold` | Author a new scenario suite for a target (skill / agent / loop), GO/NO-GO or matrix form  | `<target>` (path to SKILL.md/agent.md) `[--name <slug>] [--checker]` |
 | 02 | `run`      | Execute the dry-run judge harness for a suite against a fixture; append a dated run to its Results log | `<suite.md> <fixture>` `[--only <ids>]`            |
 | 03 | `regress`  | Re-run one or more existing suites; compare to the last recorded run; flag any PASS→FAIL  | `<suite.md…>|<dir>` `<fixture>`                     |
+| 04 | `review`   | Audit an existing suite: coverage pass (spec behaviours vs scenarios) + quality pass (7-axis grid per scenario); produce an actionable review report — does NOT run the judge, does NOT modify the suite | `<suite.md> <target>`                              |
 
 ## Default flow
 
@@ -22,8 +23,10 @@ Dispatch on intent:
 - "scaffold / write a suite / new behavioural test for `<target>`" → `scaffold`
 - "run the suite / score `<suite>` against `<fixture>`" → `run`
 - "regress / re-run / confirm no regression after a change" → `regress`
+- "review / audit the suite / is this suite good / does it cover the target / quality of these tests" → `review`
 
 If no suite exists yet for a target, `scaffold` first, then `run`.
+If a suite exists and its reliability is in doubt, `review` before running — a red-quality suite produces unreliable verdicts.
 
 ## Transversal rules — the harness contract
 
@@ -42,7 +45,18 @@ Read in full before any action: `@references/harness-conventions.md`. The load-b
 
 - Scenario suite skeleton: `@assets/scenario-template.md`
 - Optional Python data-integrity checker pattern (for data-backed targets): `@references/checker-pattern.md`
+- **7-axis quality grid** (per-scenario scoring, anti-pattern detection): `@references/quality-grid.md`
+- **Judgment rules** (PASS / FAIL / N/A, false-good-test detection, too-vague / too-broad anti-patterns): `@references/judgment-rules.md`
 - Suites live next to the target under test, conventionally in its `evals/` dir, named `<target>-scenarios.md` (or `<aspect>-scenarios.md`).
+
+## Two questions — two tools
+
+| Question | Tool |
+|----------|------|
+| "Is this behavioural test well-written?" | `@references/quality-grid.md` (per-scenario scoring) |
+| "Does this suite actually cover the target behaviour?" | `review` action (`04-review.md`) |
+
+The two levels are complementary and independent — do not conflate them. A well-written test can leave a behaviour uncovered; a suite with full coverage can contain poorly-written tests whose verdicts are unreliable. `review` is advisory — it does not block `run` or `regress`.
 
 ## Evals
 

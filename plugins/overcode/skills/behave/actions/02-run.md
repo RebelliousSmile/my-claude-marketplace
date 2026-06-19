@@ -30,7 +30,7 @@ Read the suite (scenarios + pass criteria + Fixture/preconditions). Confirm the 
 
 ### Step 2 — Spawn dry-run judge subagent(s)
 
-Per `@../references/harness-conventions.md`, spawn a judge that:
+Per `@../references/harness-conventions.md` and `@../references/judgment-rules.md`, spawn a judge that:
 - loads the **target's own instructions** (its `SKILL.md`/`agent.md`/action+reference files named in "How to run") + the suite,
 - reads the fixture **READ-ONLY — writes/creates/moves/deletes nothing**,
 - for each in-scope scenario, reasons out what the target **would** do (response + **intended writes**: paths + scope), and scores **PASS / FAIL / N/A** against the pass criteria, citing the instruction (file + section) that maps or is missing and the concrete fixture element acted on,
