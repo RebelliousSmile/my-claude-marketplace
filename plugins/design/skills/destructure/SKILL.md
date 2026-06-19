@@ -5,9 +5,11 @@ description: >-
   Verbe 2 de l'entonnoir design (define → destructure → adjust → enforce → diffuse). Le CHALLENGE côté design —
   pendant de aidd-refine:02-challenge, mais pour la direction visuelle, pas pour un plan. Déconstruit le
   "plausible générique", critique la direction posée par define, et propose des inspirations et pistes
-  d'évolution alternatives (phase DIVERGENTE). Double usage : (1) dans l'entonnoir, sur la sortie de define ;
-  (2) STANDALONE sur un élément existant isolé pour explorer comment il pourrait évoluer. Lecture seule —
-  produit un rapport structuré (critique + pistes actionnables + score), n'applique RIEN (l'application est adjust).
+  d'évolution alternatives (phase DIVERGENTE). 7 lentilles : générique/distinctif, cohérence interne,
+  accessibilité (contrastes WCAG, états d'interaction, navigation clavier), tendances, divergence d'inspiration,
+  états comportementaux UX (états composants manquants, affordance, flux), lisibilité & hiérarchie de lecture.
+  Double usage : (1) dans l'entonnoir, sur la sortie de define ; (2) STANDALONE sur un élément existant isolé.
+  Lecture seule — produit un rapport structuré (critique + pistes actionnables + score), n'applique RIEN.
   Absorbe l'ancien diagnose. Ne pose pas la matière — c'est define ; ne fige pas — c'est adjust.
 ---
 
@@ -44,12 +46,12 @@ Trigger-to-action mapping :
 - Chaque piste doit être **actionnable** et concrète — jamais « améliore le contraste » ou « rends-le plus moderne ». Utiliser les lentilles de `references/critique-lenses.md` pour forcer la précision.
 - En mode standalone sur un projet figé, **lire d'abord** `design/components.json` (manifeste) et `design/design-system.md` (charte) s'ils existent, pour situer chaque piste contre le vocabulaire fermé en vigueur — distinguer ce qui rentre dans le contrat actuel de ce qui demanderait un re-figeage par `adjust`.
 - **Diverger, pas trancher** : proposer 2–4 pistes contrastées par axe critiqué, pas une seule "bonne" réponse. L'arbitrage est le rôle d'`adjust`.
-- Classer les trouvailles (générique / incohérent / risque a11y / occasion manquée) et donner un **score** de distinction de la direction.
+- Classer les trouvailles (générique / incohérent / risque a11y / risque UX / occasion manquée) et donner un **score** de distinction de la direction.
 - Signaler l'emoji-comme-icône explicitement (smell bloquant) et proposer le jeu d'icônes de remplacement.
 
 ## References
 
-- `references/critique-lenses.md` — les lentilles de critique (générique vs distinctif, cohérence, accessibilité, tendances, divergence d'inspiration)
+- `${CLAUDE_PLUGIN_ROOT}/skills/destructure/references/critique-lenses.md` — les lentilles de critique (générique vs distinctif, cohérence, accessibilité, tendances, divergence d'inspiration)
 - `${CLAUDE_PLUGIN_ROOT}/references/design-system-contract.md` — pour situer les pistes contre les artefacts du contrat
 - `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md` — les groupes de tokens contre lesquels juger la matière
 

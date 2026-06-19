@@ -14,9 +14,9 @@ triggers:
   - "cristallise le design system"
   - "canonise les tokens"
 references:
-  - adjust/references/manifest-schema.md
-  - design/references/design-system-contract.md
-  - design/references/token-schema.md
+  - ${CLAUDE_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md
+  - ${CLAUDE_PLUGIN_ROOT}/references/design-system-contract.md
+  - ${CLAUDE_PLUGIN_ROOT}/references/token-schema.md
 ---
 
 # adjust
@@ -58,6 +58,6 @@ Si `components.json` existe déjà (projet déjà figé), `adjust` rejoue unique
 
 ## Références
 
-- `adjust/references/manifest-schema.md` — structure et invariants de `components.json`
-- `design/references/design-system-contract.md` — contrat 3 couches et règles de consommation
-- `design/references/token-schema.md` — groupes requis, liaison tokens ↔ manifeste
+- `${CLAUDE_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md` — structure et invariants de `components.json`
+- `${CLAUDE_PLUGIN_ROOT}/references/design-system-contract.md` — contrat 3 couches et règles de consommation
+- `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md` — groupes requis, liaison tokens ↔ manifeste

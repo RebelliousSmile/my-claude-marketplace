@@ -19,11 +19,11 @@ requires:
   - "design/tokens.json (figé par adjust)"
   - "design/components.json (figé par adjust)"
 references:
-  - enforce/references/gate-wiring.md
-  - enforce/adapters/lint-core.mjs
-  - enforce/adapters/wordpress.md
-  - design/references/sc-pivot-contract.md
-  - design/references/wordpress-pitfalls.md
+  - ${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md
+  - ${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/lint-core.mjs
+  - ${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/wordpress.md
+  - ${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md
+  - ${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md
 ---
 
 # enforce
@@ -76,7 +76,7 @@ Le **design garde le QUOI** (contrat = autorité) ; le **sc-<techno> fait le COM
 | **success_condition** | dans les plans aidd-dev | plan bloqué tant que gate rouge |
 | **pre-commit** | git commit | commit refusé |
 
-Voir `enforce/references/gate-wiring.md` pour le câblage détaillé.
+Voir `${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md` pour le câblage détaillé.
 
 ## Deux natures de gate : vocabulaire + fidélité
 
@@ -95,11 +95,11 @@ Si `adjust` re-fige (version bump), re-jouer `/design:enforce` pour re-dériver 
 
 ## Références
 
-- `enforce/adapters/lint-core.mjs` — cœur portable du linter (code réel, tourne avec Node.js ≥ 18)
-- `enforce/adapters/wordpress.md` — adaptateur WP (lint DB via CLI conteneur)
-- `enforce/references/gate-wiring.md` — les 3 points de câblage détaillés
-- `design/references/sc-pivot-contract.md` — interface pivot design ↔ sc-*
-- `design/references/wordpress-pitfalls.md` — pièges WP partagés (classes appariées, eval-file, NFC/NFD…)
+- `${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/lint-core.mjs` — cœur portable du linter (code réel, tourne avec Node.js ≥ 18)
+- `${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/wordpress.md` — adaptateur WP (lint DB via CLI conteneur)
+- `${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md` — les 3 points de câblage détaillés
+- `${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md` — interface pivot design ↔ sc-*
+- `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md` — pièges WP partagés (classes appariées, eval-file, NFC/NFD…)
 - `${CLAUDE_PLUGIN_ROOT}/adapters/measure/` — oracle de fidélité Python (getComputedStyle par breakpoint) ; voir son README — utilisé par `05-fidelity-gate`
 - `${CLAUDE_PLUGIN_ROOT}/agents/copycat.md` — agent qui classe les deltas mesurés à la bonne couche (mesure dans le script, jugement dans l'agent)
 - `${CLAUDE_PLUGIN_ROOT}/references/deviation-ledger-template.md` — registre des écarts tolérés lu par le gate de fidélité

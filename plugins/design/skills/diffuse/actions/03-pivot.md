@@ -2,9 +2,9 @@
 
 ## Rôle
 
-Détecter la stack cible. Si un `sc-<techno>:design-bridge` est disponible pour cette stack, émettre le spec de rendu (cf `design/references/sc-pivot-contract.md`) et relayer à `sc-<techno>:design-bridge`. Sinon, utiliser la baseline `adapters/html-css.md` et le signaler.
+Détecter la stack cible. Si un `sc-<techno>:design-bridge` est disponible pour cette stack, émettre le spec de rendu (cf `${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md`) et relayer à `sc-<techno>:design-bridge`. Sinon, utiliser la baseline `${CLAUDE_PLUGIN_ROOT}/skills/diffuse/adapters/html-css.md` et le signaler.
 
-Consomme `design/references/wordpress-pitfalls.md` pour le cas WordPress FSE.
+Consomme `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md` pour le cas WordPress FSE.
 
 ## Prérequis
 
@@ -23,7 +23,7 @@ Consomme `design/references/wordpress-pitfalls.md` pour le cas WordPress FSE.
 
 ## Étape 2a — Si sc-* disponible : émettre le spec de rendu
 
-Construire le spec de rendu depuis la spec neutre, selon le format de `design/references/sc-pivot-contract.md § Spec de rendu` :
+Construire le spec de rendu depuis la spec neutre, selon le format de `${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md § Spec de rendu` :
 
 ```
 ## Design render spec
@@ -56,7 +56,7 @@ Output dir: <design/components/<canonical-name>/ ou autre cible précisée>
 
 Puis appeler `/sc-<techno>:design-bridge` avec ce spec en contexte.
 
-**Cas WordPress spécifique** : avant d'appeler `sc-php:design-bridge`, lire `design/references/wordpress-pitfalls.md` et injecter les contraintes WP dans le spec :
+**Cas WordPress spécifique** : avant d'appeler `sc-php:design-bridge`, lire `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md` et injecter les contraintes WP dans le spec :
 - Classes appariées `has-*` : documenter la décision (déclarer dans le manifeste ou exclure du lint).
 - CLI conteneur obligatoire pour la propagation en DB.
 - `wp eval-file` deprecated → utiliser `wp eval` avec `file_get_contents`.
@@ -64,7 +64,7 @@ Puis appeler `/sc-<techno>:design-bridge` avec ce spec en contexte.
 
 ## Étape 2b — Si sc-* absent : baseline + signal
 
-Utiliser `adapters/html-css.md` et informer :
+Utiliser `${CLAUDE_PLUGIN_ROOT}/skills/diffuse/adapters/html-css.md` et informer :
 
 ```
 Pivot non disponible pour <stack> : sc-<techno>:design-bridge n'est pas installé.

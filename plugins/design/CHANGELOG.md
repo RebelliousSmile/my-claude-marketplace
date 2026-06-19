@@ -1,5 +1,103 @@
 # Changelog — design
 
+## [1.9.0] — 2026-06-16
+
+Minor — **pont manifest → config oracle** — le config oracle (`measure.py`) était construit de zéro à chaque page, source de friction et d'oublis. `components.json` contient déjà les sélecteurs WP (classes BEM) et `tokens.json` les propriétés CSS à mesurer. 1.9.0 ferme ce gap.
+
+### Ajouté — `adapters/measure/config-gen.py`
+
+Génère un config oracle complet depuis `design/components.json` + `design/tokens.json` :
+- **Targets** : un target par élément BEM (`elements.*`) + target racine par composant, sélecteurs dérivés directement du manifeste.
+- **Props** : dérivées des groupes de tokens présents (`font.size` → `fontSize`, `color` → `color/backgroundColor`, `space` → `padding/gap`, `radius` → `borderRadius`, `shadow` → `boxShadow`, etc.).
+- **Breakpoints** : dérivés de `tokens.breakpoint.*` (heuristique mobile/tablet/desktop) ou fallback 375+1440.
+- **Hints oracle** : `check_text` et `collections` lus depuis le nouveau champ `components.oracle` si présent.
+- Le config produit est un point de départ : vérifier que les sélecteurs résolvent sur les deux DOMs (measure.py signale `missing` sinon), surcharger le champ `maq` si la maquette utilise des classes différentes des classes DS.
+
+### Modifié — `skills/adjust/references/manifest-schema.md`
+
+Nouveau champ optionnel `oracle` par composant — ignoré par `enforce`, lu par `config-gen.py` :
+- `oracle.elements.<elem>.check_text` : label dont le `textContent` doit matcher la maquette.
+- `oracle.elements.<elem>.props` : surcharge la liste de props pour cet élément.
+- `oracle.collections[]` : structures répétées à mesurer (`name` + `item_selector`), avec `ack` optionnel (P13).
+
+### Modifié — `agents/copycat.md`
+
+- **§3 (build config)** remplacé : démarrer par `config-gen.py` (contrat → config auto), puis étendre par inspection DOM pour les éléments hors manifeste et pour valider/surcharger les sélecteurs maquette. Ne plus construire le config de zéro.
+
+## [1.9.1] — 2026-06-16
+
+Patch — **`destructure` étendu aux lentilles UX et a11y approfondies** — la critique de direction incluait déjà une lentille accessibilité minimale ; deux nouvelles lentilles et un approfondissement de la lentille 3 couvrent les risques UX dès la phase divergente, avant `adjust`.
+
+### Modifié — `skills/destructure/references/critique-lenses.md`
+
+- **Lentille 3 — Accessibilité** : étendue — contrastes WCAG détaillés (AA corps vs AA grands titres), états portés uniquement par la couleur, cibles tactiles, presets-reduced-motion, **navigation clavier impliquée par la direction** (focus-trap modal, rôles ARIA implicites), emoji-icône (conservé).
+- **Lentille 6 — États comportementaux (UX implicite)** : nouvelle — inventaire des états composants manquants (default/hover/focus/active/disabled/loading/error/empty), friction de flux, affordance des éléments cliquables, densité vs contexte d'usage.
+- **Lentille 7 — Lisibilité & hiérarchie de lecture** : nouvelle — taille de corps, longueur de ligne, contraste de taille H1→H3, line-height, point d'entrée visuel, poids du CTA primaire.
+
+### Modifié — `skills/destructure/SKILL.md`
+
+- Description mise à jour : 7 lentilles listées explicitement.
+- Classification des trouvailles : ajout de `risque UX` aux catégories existantes.
+
+## [1.8.0] — 2026-06-16
+
+Minor — **visual-diff pass intégrée dans la méthode copycat** — le gap entre « oracle CLOSED sur les éléments mappés » et « rendu visuellement fidèle » était comblé de façon ad-hoc (screenshot + demande LLM non structurée). La passe visuelle est maintenant un step de §4, produit des rows `source: visual` classifiées au même format que l'oracle, et ferme la boucle enforce existante.
+
+### Ajouté — `references/visual-diff-procedure.md`
+
+Procédure détaillée : commandes `screenshot.py` + `pixeldiff.py`, protocole d'analyse des zones magenta, filtrage du bruit (< 5px isolés), format de sortie des rows visuelles, règle de clôture (un delta visuel n'est pas clos par re-capture seule — re-mesurer l'oracle pour confirmer).
+
+### Modifié — `agents/copycat.md`
+
+- **§4 (run oracle)** : étendu en « run the full measurement suite » — l'oracle style (`measure.py`) et la passe visuelle (`screenshot.py` + `pixeldiff.py`) tournent sur la même config. Les diff images `-sbs.png` sont analysées zone par zone. Référence vers `visual-diff-procedure.md` pour le protocole.
+- **§5 (classify)** : « for each delta in the JSON » → « from the oracle JSON **and** from the visual zones » — tous les deltas, quelle que soit leur source, passent par les mêmes routes de classification.
+- **Outputs YAML** : `source:` ajoute `visual` ; `confidence: high | medium | low` ajouté (requis sur les rows visuelles, omis sur measured/derived). `visual_noise:` ajouté pour les zones low-confidence (signalées, non actionnées sans validation humaine).
+
+## [1.7.0] — 2026-06-16
+
+Minor — **P13 : mécanisme de sanction pour les collections** — les échecs `ok:false` ne pouvaient être ni sanctionnés ni omis proprement ; ils forçaient soit un gate OPEN permanent soit une exclusion silencieuse du config. P13 ajoute un `ack` par entrée de collection, miroir exact du `ledger` de ligne, validé par `--ledger-registry`.
+
+### Modifié — `adapters/measure/measure.py`
+
+- **P13 — `ack` sur entrée `collections`** : `{"ack":{"id":"DEV-xxx","reason":"..."}}` sur une entrée sanctionne une divergence de contenu/structure délibérée. L'entrée `ok:false` ackée est exclue de `collection_failures` → ne bloque plus le verdict. Son `id` est intégré dans `report["ledger_ids"]` et validé par `--ledger-registry` au même titre que les ids de ligne. Un ack sans `id` (non signé) : même comportement qu'une entrée de ledger non signée — appliqué mais signalé dans `ledger_ids` comme chaîne vide → seul `--ledger-registry` force OPEN.
+- `_diff_collections` : propage `acked`, `ack_id`, `ack_reason` (et `ack_unused` quand `ok:true` + ack présent) depuis la config vers le rapport.
+- `measure()` : après `_diff_collections`, intègre les `ack_id` des collections dans `report["ledger_ids"]` avant `_verdict` et `_validate_ledger_registry`.
+- `_verdict` : `collection_failures` ne compte que les échecs non-ackés. `collection_acked` (nb de sanctions appliquées) et `collection_ack_unused` (sanctions inutiles — `ok:true` + ack) ajoutés au résumé si non nuls.
+- `_summarize` : collections ackées → `~` (avec id), échecs non-ackés → `!`, acks inutilisés → `~` (avec note).
+
+### Modifié — `agents/copycat.md`
+
+- **§3 (build config)** : documentation de `ack` par entrée de collection — quand la divergence est un choix de contenu/métier délibéré (ex. stats SLA produit vs social-proof maquette), ajouter `"ack":{"id":"DEV-TBD","reason":"..."}`. Enregistrer dans `ds-deviation-ledger.md` d'abord. **Ne jamais omettre une collection divergente** — l'omettre la rend invisible à tous les runs futurs.
+- **§5 (classify)** : route `collections` failure enrichie — si choix éditorial/métier assumé → `ack` + enregistrement registre (jamais omission) ; si alignement requis → fix à la source.
+- **Invariant de clôture** `collection_failures == 0` : mis à jour — les entrées ackées sont exclues du compte mais leur `id` doit être enregistré dans `ds-deviation-ledger.md` (unsigned ack = gate non fermé).
+- **Outputs YAML** `collections_checked` : ajout des champs `acked: bool`, `ack_id: DEV-xxx`.
+
+## [1.6.0] — 2026-06-16
+
+Minor — **P9–P12 : oracle et méthode copycat durcis** — P7/P8 rendus obligatoires dans la méthode de l'agent (check_text + collections désormais des défauts dans tout config Mode B, pas des options laissées à l'interprétation). Crash Windows corrigé. check_text ciblable par target. diff collections robuste aux réordonnancemements. Unification des conventions de référencement en `${CLAUDE_PLUGIN_ROOT}`.
+
+### Modifié — `adapters/measure/measure.py`
+
+- **P10 — Crash stdout Windows** : `sys.stdout.reconfigure(encoding="utf-8", errors="replace")` en tête de `main()`. Les caractères →/★/· de `_summarize` ne causent plus de `UnicodeEncodeError` sur les terminaux cp1252 Windows. Le rapport JSON était déjà UTF-8 (`ensure_ascii=False`) ; seule la console était vulnérable.
+- **P11 — `check_text` ciblable par target** : `_GRAB` JS évalue maintenant `t.check_text !== undefined ? t.check_text : check_text` — un flag par cible surpasse le défaut global. La détection côté Python (`measure()`) vérifie la présence de `__text` dans le résultat JS, pas le flag global. Evite les dizaines de lignes `prop:"text"` non-match sur les cibles en prose (corps, testimonials) qui nécessiteraient un ledger individuel et réintroduiraient l'interprétation humaine.
+- **P12 — `_diff_collections` LCS** : le diff par index est remplacé par un alignement `SequenceMatcher` (LCS). Une insertion en tête ne cascade plus tous les items suivants en "mismatch". `missing_in_wp`/`extra_in_wp` (set-based) restent les données d'entrée du verdict ; `diffs[]` est une trace lisible.
+- `import sys`, `from difflib import SequenceMatcher` ajoutés aux imports.
+- Docstring config : `check_text` documenté avec sa sémantique per-target (P11).
+
+### Modifié — `agents/copycat.md`
+
+- **P9 — P7/P8 obligatoires dans la méthode** :
+  - **§2 (complétude structurelle)** étendu : inventorier les structures répétées (stats, grilles de cartes, nav, FAQ, steps, groupes de boutons) → une entrée `collections` par structure. Inventorier les libellés-clés singletons → couverts par `check_text` per-target. La complétude couvre maintenant les contenus invisibles à `getComputedStyle`.
+  - **§3 (build config)** : `check_text: true` par cible de libellé-clé et `collections` par structure répétée sont désormais des **défauts obligatoires** dans tout config Mode B. Garde-fou sélecteur : vérifier `maq_count`/`wp_count` avant d'interpréter les diffs (un sélecteur trop large pollue la séquence).
+  - **§5 (classify)** : routes ajoutées — `prop:"text"` non-match → content/markup/ledger selon la nature ; échec `collections` → content/structure, traité comme `missing_sections`.
+  - **Invariants de clôture** : deux cases ajoutées — `summary.collection_failures == 0` ET toute ligne `prop:"text"` matchée ou ledgerée. Description du verdict corrigée (était "closed iff 0 diff AND 0 missing AND no missing_in_wp AND coverage ok", périmée depuis 1.5.0 — inclut maintenant collections et text).
+  - **Outputs YAML** : `collections_checked` ajouté ; `prop:` annoté `text` parmi les valeurs valides.
+- Conventions de référencement : `design/references/sc-pivot-contract.md`, `enforce/adapters/wordpress.md`, `references/correspondence-table-template.md` → `${CLAUDE_PLUGIN_ROOT}/...` (unification #1 du plan d'audit).
+
+### Modifié — `skills/*/SKILL.md`, actions, adapters (refactoring pur)
+
+- Unification des conventions de référencement sur `${CLAUDE_PLUGIN_ROOT}/...` dans tous les SKILL.md (enforce, adjust, diffuse, define, destructure) et leurs fichiers d'action/adapter. Findings #1 et #4 de l'audit architecture 2026-06 résolus.
+
 ## [1.5.0] — 2026-06-16
 
 Minor — **oracle P7+P8** : parité de texte et parité de collection — les écarts de contenu/structure (eyebrow manquant, libellé bouton, stats 3 vs 4 items) passaient silencieusement ; ils alimentent maintenant le verdict OPEN.

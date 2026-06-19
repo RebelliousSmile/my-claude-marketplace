@@ -21,10 +21,10 @@ requires:
   - "design/components.json (figé par adjust)"
   - "enforce gate installé (lint-core.mjs opérationnel)"
 references:
-  - diffuse/adapters/html-css.md
-  - design/references/sc-pivot-contract.md
-  - design/references/wordpress-pitfalls.md
-  - enforce/adapters/lint-core.mjs
+  - ${CLAUDE_PLUGIN_ROOT}/skills/diffuse/adapters/html-css.md
+  - ${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md
+  - ${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md
+  - ${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/lint-core.mjs
 ---
 
 # diffuse
@@ -78,7 +78,7 @@ diffuse
 
 ## Références
 
-- `diffuse/adapters/html-css.md` — baseline renderer (universel)
-- `design/references/sc-pivot-contract.md` — format du spec de rendu (pivot)
-- `design/references/wordpress-pitfalls.md` — pièges WP (propagation, classes appariées, CLI)
-- `enforce/adapters/lint-core.mjs` — gate de lint (exécuté avant toute clôture)
+- `${CLAUDE_PLUGIN_ROOT}/skills/diffuse/adapters/html-css.md` — baseline renderer (universel)
+- `${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md` — format du spec de rendu (pivot)
+- `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md` — pièges WP (propagation, classes appariées, CLI)
+- `${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/lint-core.mjs` — gate de lint (exécuté avant toute clôture)

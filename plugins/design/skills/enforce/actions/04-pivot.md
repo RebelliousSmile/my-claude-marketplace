@@ -2,7 +2,7 @@
 
 ## Rôle
 
-Détecter le langage du projet courant. Si un `sc-<techno>:design-bridge` est disponible pour ce langage, émettre le spec d'enforcement (cf `design/references/sc-pivot-contract.md`) et relayer à `sc-<techno>:design-bridge`. Sinon, rester sur la baseline `lint-core.mjs` et le signaler.
+Détecter le langage du projet courant. Si un `sc-<techno>:design-bridge` est disponible pour ce langage, émettre le spec d'enforcement (cf `${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md`) et relayer à `sc-<techno>:design-bridge`. Sinon, rester sur la baseline `lint-core.mjs` et le signaler.
 
 ## Prérequis
 
@@ -34,7 +34,7 @@ Si le plugin sc-php ou sc-js n'est pas installé dans la session → dégradatio
 
 ## Étape 3a — Si réceptacle disponible : émettre le spec
 
-Construire le spec d'enforcement depuis `design/components.json` + `design/tokens.json` selon le format de `design/references/sc-pivot-contract.md § Spec d'enforcement` :
+Construire le spec d'enforcement depuis `design/components.json` + `design/tokens.json` selon le format de `${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md § Spec d'enforcement` :
 
 ```
 ## Design enforcement spec

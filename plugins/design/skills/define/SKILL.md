@@ -60,8 +60,8 @@ Si la source est ambiguë (un brief mentionnant un visuel sans le fournir), `int
 - `${CLAUDE_PLUGIN_ROOT}/references/design-system-contract.md` — emplacement des artefacts et sections requises
 - `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md` — groupes de tokens et génération des adapters
 - `${CLAUDE_PLUGIN_ROOT}/references/write-system-procedure.md` — procédure d'écriture partagée (suivie par `04-write-material`, en mode brouillon)
-- `references/intake-questions.md` — détection de source + drivers de clarification du brief
-- `references/profile-mobile-first.md` — profil injectable OPTIONNEL (mobile-first, enrichissement, a11y, iconographie)
+- `${CLAUDE_PLUGIN_ROOT}/skills/define/references/intake-questions.md` — détection de source + drivers de clarification du brief
+- `${CLAUDE_PLUGIN_ROOT}/skills/define/references/profile-mobile-first.md` — profil injectable OPTIONNEL (mobile-first, enrichissement, a11y, iconographie)
 - `${CLAUDE_PLUGIN_ROOT}/agents/copycat.md` — agent feuille fan-outé par `05-copycat-fanout` (1/page)
 - `${CLAUDE_PLUGIN_ROOT}/adapters/measure/` — oracle de fidélité Python (getComputedStyle par breakpoint) ; voir son README
 - `${CLAUDE_PLUGIN_ROOT}/references/correspondence-table-template.md` — livrable agrégé du checkpoint P2

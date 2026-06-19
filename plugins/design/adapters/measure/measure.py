@@ -31,14 +31,23 @@ Config (JSON):
     "coverage_ack": {"sections":["..."],"reason":"..."},  # optional — justify which sections
                                                           # are deliberately unmeasured (non-empty
                                                           # sections list required to disable guard)
-    "check_text": true,                                       # optional — also diff textContent
-                                                              # per target; emits prop:"text" rows.
-                                                              # Catches eyebrow/button label drift.
+    "check_text": true,                                       # optional — global default OR per-target:
+                                                              # targets:[{"name":…,"check_text":true}]
+                                                              # Compare textContent where label parity
+                                                              # is meaningful (eyebrow, CTA, stat label).
+                                                              # NEVER set globally on prose targets
+                                                              # (body, testimonials) — those diverge
+                                                              # legitimately from placeholder copy.
+                                                              # Use per-target to avoid false diffs. (P11)
     "collections": [                                          # optional — sequence parity check
-      {"name":"Stats hero","maq":".stat-item","wp":".stat-item"}
+      {"name":"Stats hero","maq":".stat-item","wp":".stat-item",
+       "ack":{"id":"DEV-004","reason":"..."}}               # P13 — sanction a deliberate divergence
       # Oracle enumerates ALL matching elements on both sides, normalises their text, diffs the
       # sequences → count diff, per-index label mismatch, missing/extra items, reordering.
-      # ok:false contributes to OPEN verdict like missing_sections.
+      # ok:false with no ack contributes to OPEN verdict like missing_sections.
+      # P13 — "ack":{"id":"DEV-xxx","reason":"..."} sanctions a deliberate content/structure
+      # divergence (different business content). Acked ok:false entries are excluded from
+      # collection_failures. Their id is validated via --ledger-registry like row-level ledger.
     ],
     "ledger": [                                           # deviation-ledger entries
       {"id":"DEV-001","target":"Hero · title","prop":"fontSize","why":"..."}
@@ -75,16 +84,21 @@ Top-level (Mode B) — STRUCTURAL GATES, computed by the script, not claimed by 
          the body is unmeasured). OPEN unless coverage_ack supplies a non-empty sections list.
   "collections": [{"name","maq_count","wp_count",
                    "diffs":[{"index","maquette","wp","match":bool}],
-                   "missing_in_wp":[...], "extra_in_wp":[...], "ok":bool}]
+                   "missing_in_wp":[...], "extra_in_wp":[...], "ok":bool,
+                   "acked":bool, "ack_id":"DEV-xxx", "ack_reason":"..."}]  # P13 — when ack present
       -> sequence parity: count mismatch, per-index label diff, missing/extra items, reordering.
          Catches stat-block drift, card counts, nav items — structures invisible to getComputedStyle.
-         Each entry with ok:false contributes to OPEN verdict like missing_sections.
-         Measured once (first breakpoint load), content is layout-independent.
+         ok:false with no ack contributes to OPEN verdict. ok:false with ack is excluded from
+         collection_failures (ack_id validated via --ledger-registry). ack_unused:true when ok:true
+         and ack is present (stale sanction). Measured once (content is layout-independent).
   "summary": {"verdict": "CLOSED"|"OPEN", "closed": bool, "reasons": [...],
               "total_diff": D, "total_missing": K, "missing_sections": S,
-              "collection_failures": N, "ledger_ids": [...], "ledger_unused_count": N}
+              "collection_failures": N,   # P13: only unacked failures
+              "collection_acked": N,      # P13: present only if > 0 (acked sanctions applied)
+              "ledger_ids": [...],        # P13: includes collection ack ids
+              "ledger_unused_count": N}
       -> CLOSED iff D==0 AND K==0 AND no missing section AND coverage ok
-         AND all collections ok AND all ledger ids validated (if --ledger-registry provided).
+         AND collection_failures==0 (unacked only) AND all ledger ids validated.
          The CALLER MUST cite summary.verdict — closure is asserted from THIS, never from
          inspecting one's own edit. "verified by grep of source" is not closure.
 """
@@ -93,6 +107,8 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
+from difflib import SequenceMatcher
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -109,7 +125,8 @@ _GRAB = """(args) => {
     const cs = getComputedStyle(el);
     const o = {};
     for (const p of props) o[p] = cs[p];
-    if (check_text) o['__text'] = (el.textContent || '').replace(/\\s+/g, ' ').trim();
+    const do_text = t.check_text !== undefined ? t.check_text : check_text;
+    if (do_text) o['__text'] = (el.textContent || '').replace(/\\s+/g, ' ').trim();
     out[t.name] = o;
   }
   return out;
@@ -171,27 +188,56 @@ def _collect(page, collections, side):
 
 
 def _diff_collections(maq_items: dict, wp_items: dict, collections: list) -> list:
-    """Diff two sides of each named collection: count, per-index label, missing/extra (P8)."""
+    """Diff two sides of each named collection: count, LCS-aligned label diffs, missing/extra (P8+P12).
+
+    P12 — uses SequenceMatcher (LCS) for per-item alignment so a single insertion at position 0
+    does not cascade all subsequent items as false mismatches. The set-based missing_in_wp /
+    extra_in_wp remain the authoritative verdict input; diffs[] is a human-readable trace.
+
+    P13 — collection-level ack: {"id":"DEV-xxx","reason":"..."} on a config entry sanctions
+    a deliberate content/structure divergence (mirrors row-level ledger). An acked ok:false entry
+    does NOT contribute to collection_failures. ack_unused:true when ok:true and ack is present.
+    """
     result = []
     for c in collections:
         name = c["name"]
         maq = [_norm(t) for t in maq_items.get(name, [])]
         wp = [_norm(t) for t in wp_items.get(name, [])]
-        diffs = []
-        for i in range(max(len(maq), len(wp), 1)):
-            mv = maq[i] if i < len(maq) else None
-            wv = wp[i] if i < len(wp) else None
-            diffs.append({"index": i, "maquette": mv, "wp": wv, "match": mv == wv})
+        diffs: list = []
+        sm = SequenceMatcher(None, maq, wp, autojunk=False)
+        for tag, i1, i2, j1, j2 in sm.get_opcodes():
+            if tag == "equal":
+                for k in range(i2 - i1):
+                    diffs.append({"index": i1 + k, "maquette": maq[i1 + k],
+                                  "wp": wp[j1 + k], "match": True})
+            else:  # replace / delete / insert
+                maq_sl, wp_sl = maq[i1:i2], wp[j1:j2]
+                for k in range(max(len(maq_sl), len(wp_sl))):
+                    mv = maq_sl[k] if k < len(maq_sl) else None
+                    wv = wp_sl[k] if k < len(wp_sl) else None
+                    diffs.append({"index": i1 + k if k < len(maq_sl) else None,
+                                  "maquette": mv, "wp": wv, "match": False})
         maq_set, wp_set = set(maq), set(wp)
-        result.append({
+        ok = maq == wp
+        entry: dict = {
             "name": name,
             "maq_count": len(maq),
             "wp_count": len(wp),
             "diffs": diffs,
             "missing_in_wp": [t for t in maq if t not in wp_set],
             "extra_in_wp": [t for t in wp if t not in maq_set],
-            "ok": maq == wp,
-        })
+            "ok": ok,
+        }
+        # P13 — propagate ack from config entry
+        ack = c.get("ack")
+        if ack:
+            entry["ack_id"] = ack.get("id", "")
+            entry["ack_reason"] = ack.get("reason", "")
+            if not ok:
+                entry["acked"] = True
+            else:
+                entry["ack_unused"] = True
+        result.append(entry)
     return result
 
 
@@ -253,8 +299,8 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
                     for p in props:
                         rows.append({"element": name, "prop": p,
                                      "maquette": m_v[p], "local": w_v[p], "match": m_v[p] == w_v[p]})
-                    # P7 — text parity: compare normalised textContent when check_text is enabled
-                    if check_text and "__text" in m_v and "__text" in w_v:
+                    # P7+P11 — text parity: emit when JS captured __text (per-target or global)
+                    if "__text" in m_v and "__text" in w_v:
                         mt, wt = _norm(m_v["__text"]), _norm(w_v["__text"])
                         rows.append({"element": name, "prop": "text",
                                      "maquette": mt, "local": wt, "match": mt == wt})
@@ -269,6 +315,10 @@ def measure(cfg: dict, mode: str, side: str) -> dict:
         # P8 — collection parity (evaluated once, content is layout-independent)
         if collections:
             report["collections"] = _diff_collections(maq_coll or {}, wp_coll or {}, collections)
+            # P13 — merge collection ack ids into ledger_ids for --ledger-registry validation
+            coll_ack_ids = [c["ack_id"] for c in report["collections"] if "ack_id" in c]
+            if coll_ack_ids:
+                report["ledger_ids"] = report.get("ledger_ids", []) + coll_ack_ids
         report["summary"] = _verdict(report)
     return report
 
@@ -391,7 +441,11 @@ def _verdict(report: dict) -> dict:
     cov = report.get("coverage", {})
     ledger_ids = report.get("ledger_ids", [])
     ledger_unused = report.get("ledger_unused", [])
-    failed_collections = [c for c in report.get("collections", []) if not c.get("ok")]
+    # P13 — separate acked from non-acked collection failures
+    all_collections = report.get("collections", [])
+    failed_collections = [c for c in all_collections if not c.get("ok") and not c.get("acked")]
+    acked_collections = [c for c in all_collections if c.get("acked")]
+    unused_ack_collections = [c for c in all_collections if c.get("ack_unused")]
 
     reasons = []
     if total_diff:
@@ -406,18 +460,24 @@ def _verdict(report: dict) -> dict:
         reasons.append(f"collection '{fc['name']}': {fc['maq_count']} maq vs {fc['wp_count']} wp"
                        + (f", missing: {fc['missing_in_wp']}" if fc["missing_in_wp"] else "")
                        + (f", extra: {fc['extra_in_wp']}" if fc["extra_in_wp"] else ""))
-    # Unsigned ledger entries (no id): surfaced for human review but not blocking
+    # Unsigned ledger entries (no id) — includes unsigned collection acks: surfaced but not alone blocking
     unsigned = [eid for eid in ledger_ids if not eid]
     if unsigned:
         reasons.append(f"{len(unsigned)} unsigned ledger entry(ies) — add 'id' (DEV-xxx) and register in ds-deviation-ledger.md")
 
     closed = not reasons
-    return {"verdict": "CLOSED" if closed else "OPEN", "closed": closed, "reasons": reasons,
-            "total_diff": total_diff, "ledgered_diff": ledgered, "total_missing": total_missing,
-            "missing_sections": len(missing_sections),
-            "collection_failures": len(failed_collections),
-            "ledger_ids": ledger_ids,
-            "ledger_unused_count": len(ledger_unused)}
+    summary: dict = {"verdict": "CLOSED" if closed else "OPEN", "closed": closed, "reasons": reasons,
+                     "total_diff": total_diff, "ledgered_diff": ledgered, "total_missing": total_missing,
+                     "missing_sections": len(missing_sections),
+                     "collection_failures": len(failed_collections),
+                     "ledger_ids": ledger_ids,
+                     "ledger_unused_count": len(ledger_unused)}
+    if acked_collections:
+        summary["collection_acked"] = len(acked_collections)
+    if unused_ack_collections:
+        summary["collection_ack_unused"] = [{"name": c["name"], "ack_id": c.get("ack_id", "")}
+                                            for c in unused_ack_collections]
+    return summary
 
 
 def _summarize(report: dict) -> str:
@@ -436,9 +496,17 @@ def _summarize(report: dict) -> str:
         lines.append(f"  ! {cov['warning']}")
     for fc in report.get("collections", []):
         if not fc.get("ok"):
-            lines.append(f"  ! collection '{fc['name']}': {fc['maq_count']} maq vs {fc['wp_count']} wp"
-                         + (f"  missing={fc['missing_in_wp']}" if fc["missing_in_wp"] else "")
-                         + (f"  extra={fc['extra_in_wp']}" if fc["extra_in_wp"] else ""))
+            if fc.get("acked"):
+                lines.append(f"  ~ collection '{fc['name']}': {fc['maq_count']} maq vs {fc['wp_count']} wp"
+                             + f" [ACKED {fc.get('ack_id') or 'unsigned'}]"
+                             + (f"  missing={fc['missing_in_wp']}" if fc["missing_in_wp"] else "")
+                             + (f"  extra={fc['extra_in_wp']}" if fc["extra_in_wp"] else ""))
+            else:
+                lines.append(f"  ! collection '{fc['name']}': {fc['maq_count']} maq vs {fc['wp_count']} wp"
+                             + (f"  missing={fc['missing_in_wp']}" if fc["missing_in_wp"] else "")
+                             + (f"  extra={fc['extra_in_wp']}" if fc["extra_in_wp"] else ""))
+        elif fc.get("ack_unused"):
+            lines.append(f"  ~ collection '{fc['name']}': ok but ack {fc.get('ack_id') or 'unsigned'} unused")
     unused = report.get("ledger_unused", [])
     if unused:
         ids = [e.get("id") or "(unsigned)" for e in unused]
@@ -450,6 +518,8 @@ def _summarize(report: dict) -> str:
 
 
 def main():
+    # P10 — fix UnicodeEncodeError on Windows (cp1252 stdout) when _summarize emits →/★/·
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description="Fidelity oracle (computed-style diff, per breakpoint).")
     ap.add_argument("--config", required=True, help="Path to the JSON config.")
     ap.add_argument("--out", required=True, help="Path to write the JSON report (UTF-8).")

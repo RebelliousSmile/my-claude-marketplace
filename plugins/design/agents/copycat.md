@@ -41,9 +41,9 @@ Default model: **Sonnet** (the fan-out workhorse). A caller may override per pag
 4. **Stack-specific realization goes through the PIVOT — you own the QUOI, not the COMMENT.**
    You classify a delta to its contract layer and decide align/extend (the QUOI). Every
    language/framework-specific *realization* is delegated to `sc-php:design-bridge` /
-   `sc-js:design-bridge` per `design/references/sc-pivot-contract.md`. **For WordPress** that
+   `sc-js:design-bridge` per `${CLAUDE_PLUGIN_ROOT}/references/sc-pivot-contract.md`. **For WordPress** that
    means block patterns, `render.php`/FSE markup, `theme.json` presets & slugs, and linting DB
-   instances (via the container CLI — `enforce/adapters/wordpress.md`). Never hand-code WP
+   instances (via the container CLI — `${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/wordpress.md`). Never hand-code WP
    idioms yourself. **Never edit generated/seeded content in the DB only** — block patterns,
    *and equally* `post_content`, menus, nav posts, options: anything produced by a generator
    (`tools/import/`, a seed script, a migration) is authored at its **source**. Edit the source
@@ -97,24 +97,85 @@ is always the consumer's path; it is never plugin-relative.
    (mockup→target) and `extra_sections` (target→mockup), and resolve the missing ones **first** —
    only then is fine measurement meaningful. Build the selector map (§3) from the sections that
    actually exist on **both** sides.
-3. Build/extend the measure config: the selector mapping + props + breakpoints. Discover
-   real selectors by inspecting both DOMs. (See **Artifact paths** below — the config is
-   project data, not a plugin asset.) **Prefer stable DS classes** (e.g. `.mau-eyebrow`) over
-   ad-hoc/utility selectors so the mapping survives edits. The config selectors and the markup
-   are **coupled**: if a later fix changes a class/element, you MUST reconcile the config in the
-   same step (§10) — a stale selector resolves to nothing and the oracle reports it `missing`,
-   which silently *hides* your own fix instead of confirming it.
-4. Run the oracle, writing the report into the **consuming project's** QA tree by absolute
-   path — NEVER into the plugin:
+   **In the same pass, inventory structures invisible to `getComputedStyle`:**
+   - **Repeated structures** (stats blocks, card grids, nav items, FAQ rows, process steps,
+     feature lists, button groups): measuring a single `:first-of-type` is the same tunnel vision
+     as hero-only — count/order/label all drift between items. Enumerate the **full sequence** on
+     each side → one `collections` entry per structure. A count drift (3 items vs 4) or a missing
+     item is a structural gap with the same urgency as a missing section.
+   - **Singleton key labels** (eyebrow text, CTA label, stat value, badge): these are literal
+     copies from the mockup and must match → covered by `check_text: true` on the relevant
+     target objects (never on prose targets).
+3. **Start from the contract, not from scratch.** Run `config-gen.py` to derive the base
+   config automatically from `design/components.json` + `design/tokens.json`:
+   ```
+   python ${CLAUDE_PLUGIN_ROOT}/adapters/measure/config-gen.py \
+     --components design/components.json \
+     --tokens design/tokens.json \
+     --maquette-url <maq-url> --wp-url <wp-url> \
+     --page <setPage-key-if-spa> \
+     --out <project>/<qa-dir>/fidelity/<page>.config.json
+   ```
+   This gives you targets (one per component element from `.elements.*`), props (token-group
+   → CSS), breakpoints (`tokens.breakpoint.*`), and any `check_text`/`collections` hints
+   declared in `components.oracle`. **Then extend/validate** by inspecting both DOMs:
+   confirm generated selectors resolve on both sides (`measure.py` reports them `missing` if
+   not, which is your cue to override the `maq` or `wp` field). Add page-specific targets for
+   elements not covered by the manifest (discovered in §2 or from visual zones in §4). The
+   config is project data, not a plugin asset — always write it to the project's QA tree by
+   absolute path. **Prefer stable DS classes** (e.g. `.mau-eyebrow`) over ad-hoc/utility
+   selectors so the mapping survives edits. The config selectors and the markup are **coupled**:
+   if a later fix changes a class/element, you MUST reconcile the config in the same step (§10)
+   — a stale selector resolves to nothing and the oracle reports it `missing`, which silently
+   *hides* your own fix instead of confirming it.
+   **Mandatory in every Mode B config (not optional, not "when relevant"):**
+   - `"check_text": true` on each **key-label target** (eyebrow, heading, CTA, stat value, badge):
+     set it on the **target object** (`{"name":…,"maq":…,"wp":…,"check_text":true}`) — never
+     globally if any target contains prose (body copy, testimonials, placeholders vs live text).
+     A global flag on a prose-heavy page produces dozens of non-match rows you'd need to ledger
+     one by one, which is exactly the human judgment the oracle is meant to eliminate.
+   - One `collections` entry per repeated structure inventoried in §2. Before interpreting diffs,
+     **verify `maq_count` and `wp_count` match expectations** — a selector that grabs 4 buttons
+     instead of 2 (too broad) pollutes the sequence and produces false mismatches that obscure
+     the real gap. Narrow the selector or add a scope ancestor until the count is correct.
+     If the count/label divergence is a **deliberate content/business choice** (e.g. a product
+     page carries SLA stats where the mockup shows social-proof stats), add
+     `"ack":{"id":"DEV-TBD","reason":"…"}` to the entry. Register the deviation in the project's
+     `ds-deviation-ledger.md` **first**, then reference its `id` — same procedure as a row-level
+     `ledger` entry. The oracle excludes acked entries from `collection_failures` but validates
+     their `id` via `--ledger-registry`. **Never omit a diverging collection from the config** —
+     omission hides it from all future runs; an ack makes it explicit and gate-enforced.
+4. Run the full measurement suite, writing all outputs into the **consuming project's** QA tree
+   by absolute path — NEVER into the plugin.
+   **Style oracle** (getComputedStyle per breakpoint, mapped elements):
    `measure.py --config <project-config> --out <project>/<qa-dir>/fidelity/<page>-<mode>.json`
-   (Mode B for drift vs a render; Mode A to seed from the mockup alone). It iterates the breakpoints.
-5. For each delta in the JSON, CLASSIFY the routed layer:
+   **Visual companion** (run in parallel on the same config — surfaces what getComputedStyle cannot):
+   `screenshot.py --config <project-config> --out <project>/<qa-dir>/shots/<page>`
+   `pixeldiff.py --a <shots>/<page>__maq__<bp>.png --b <shots>/<page>__wp__<bp>.png --out <shots>/<page>/<bp>`
+   The `-sbs.png` per breakpoint shows divergent pixels in magenta. Analyze each continuous magenta
+   block as a visual zone: layout relationships, composite effects, unmapped elements — things the
+   style oracle cannot reach. See `${CLAUDE_PLUGIN_ROOT}/references/visual-diff-procedure.md` for
+   the zone-analysis and noise-filtering protocol. Visual zones feed into §5 as `source: visual`
+   rows alongside oracle rows; confidence (high/medium/low) required on each.
+5. For each delta — from the oracle JSON **and** from the visual zones — CLASSIFY the routed layer:
    - value (size/spacing/radius/line-height/color) → **token**
    - wrong token applied (right scale, wrong step) → **markup**
    - structural/component rule (a card, a label, a missing element) → **component CSS + manifest (+ charter)**
    - content present in mockup, absent in target → **content** (P1: never hard-code into markup)
    - competing override that prevents the component CSS from governing → **markup** with
      `action: align`, `action_detail: remove-override` (see below)
+   - `prop:"text"` non-match → **content** (P1) if the label is copy that must follow the mockup
+     (eyebrow, CTA, badge, stat label); **markup** if it is authored inside a block pattern or
+     template (fix at the source, re-import, re-measure); **ledger** only if the content
+     difference is explicitly sanctioned (e.g. placeholder vs live copy, i18n variant).
+   - `collections` failure (count drift, missing item, extra item, reorder) →
+     **content/structure**: realign the repeated structure at its source (import script, pattern,
+     seed data). Treat with the same urgency as `missing_sections` — never defer.
+     **Exception — deliberate content choice**: if the difference is a confirmed business/editorial
+     decision (e.g. product-page SLA stats vs social-proof items in mockup), add
+     `"ack":{"id":"DEV-TBD","reason":"…"}` to the collection config entry and register in
+     `ds-deviation-ledger.md` (same flow as a row ledger entry). The gate closes for this
+     collection. **Never omit from the config** — omission = invisible divergence in all future runs.
 6. Decide **align vs extend** (DS-prime): bend to an existing token/component unless the
    mockup reveals a genuine new need — then propose an `extend` with justification.
    **When the fix is to REMOVE a competing override** (e.g. a WP block attribute that injects
@@ -158,22 +219,31 @@ is always the consumer's path; it is never plugin-relative.
 - [ ] Any class/markup change is **reconciled in the config** (no stale selector → no false `missing`).
 - [ ] **The oracle's own `summary.verdict` is `CLOSED`** — and you paste that block as proof.
       The script computes the verdict (`closed` iff 0 diff AND 0 missing AND no `missing_in_wp`
-      section AND coverage ok); you do **not** get to declare it. A residual delta tolerated for
-      DRY/SOLID is excluded only by a real ledger entry referenced in the report — never by
-      omission. **"Verified by reading my own source/diff" is NOT closure** — only the re-measured
-      `CLOSED` verdict is. If `coverage.ok` is false, you under-measured (hero-only tunnel vision):
-      add a target per section, or set `coverage_ack: {"sections":[...],"reason":"..."}` listing
-      sections deliberately skipped (non-empty sections list required — a bare `true` is rejected).
+      section AND coverage ok AND `collection_failures == 0` AND every `prop:"text"` row matched
+      or ledgered); you do **not** get to declare it. A residual delta tolerated for DRY/SOLID is
+      excluded only by a real ledger entry referenced in the report — never by omission.
+      **"Verified by reading my own source/diff" is NOT closure** — only the re-measured `CLOSED`
+      verdict is. If `coverage.ok` is false, you under-measured (hero-only tunnel vision): add a
+      target per section, or set `coverage_ack: {"sections":[...],"reason":"..."}` listing sections
+      deliberately skipped (non-empty sections list required — a bare `true` is rejected).
 - [ ] **Every `ledger` entry in the config has an `id` (DEV-xxx) AND that id appears in the
       project's `ds-deviation-ledger.md` canonical registry.** A config-ledger entry without a
       matching registry entry is an unsigned deviation — it does NOT constitute closure. The oracle
       will surface unsigned ids in `summary.ledger_ids`; if `--ledger-registry` is provided it will
       force `verdict=OPEN` directly. Procedure: (1) register the deviation in the project's
       `ds-deviation-ledger.md` first, (2) then reference its id in the config ledger entry.
+- [ ] **`summary.collection_failures == 0`** — every repeated structure listed in `collections`
+      has `ok:true` **or** is acked (`ack.id` registered in `ds-deviation-ledger.md`). A count
+      drift, missing item, or reorder with no ack is a structural gap with the same weight as a
+      missing section. An unsigned ack (no `id`) is non-blocking alone but will fail
+      `--ledger-registry` validation — an unsigned ack is never a closed gate.
+- [ ] **Every `prop:"text"` row is either `match:true` or `ledgered:true`.** A non-matched,
+      non-ledgered text row means a key label drifted (eyebrow, CTA, stat value) — the fix has
+      not been re-measured yet. Re-run the oracle after correcting the source.
 
 # Outputs
 
-Return a correspondence-table fragment for this page (per `references/correspondence-table-template.md`):
+Return a correspondence-table fragment for this page (per `${CLAUDE_PLUGIN_ROOT}/references/correspondence-table-template.md`):
 
 ```yaml
 page: <setPage key | URL>
@@ -181,20 +251,26 @@ breakpoints_measured: { desktop: measured, mobile: measured, tablet: derived }
 oracle_report: <project-qa-dir>/fidelity/<page>-<mode>.json   # project tree, gitignored — never plugin-relative
 missing_sections: []        # in mockup, absent in target — the DOMINANT delta, resolved/ledgered first
 extra_sections: []          # in target, absent in mockup — surfaced for review
+collections_checked:        # repeated-structure parity (from oracle collections[], measured once)
+  - { name: <…>, maq_count: N, wp_count: M, ok: bool,
+      missing_in_wp: [], extra_in_wp: [],
+      acked: bool, ack_id: DEV-xxx }  # P13 — present when divergence is sanctioned (ok:false + ack)
 rows:
   - element: <name>
     mockup_selector: <sel>
     contract_target: <token or component key>
-    prop: <css prop | —>
+    prop: <css prop | text | —>    # "text" = label-parity row (check_text); route via §5
     mockup_value: <…>
     current_value: <… | MISSING>
     breakpoint: <mobile|tablet|desktop|all>
-    source: measured | derived
+    source: measured | derived | visual    # "visual" = pixel diff zone (layout, effect, unmapped)
+    confidence: high | medium | low        # visual rows only; omit on measured/derived rows
     action: align | extend | add-component | add-content
     routed_layer: tokens | markup | components | charter | content
 proposed_extensions:        # action=extend / add-component — each justified (DS-prime)
   - { target: <…>, why: <why the contract grows rather than the mockup aligning> }
 conflicts_for_define: []    # cross-page disagreements you noticed — surfaced, not resolved
+visual_noise: []            # confidence:low visual zones — surfaced for human review, not corrected
 proposed_ledger_entries: [] # tolerated DRY/SOLID deviations to record (P3)
 checklist_update: { page: <…>, status: measured|proposed }
 ```

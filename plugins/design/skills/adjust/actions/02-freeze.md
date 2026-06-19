@@ -4,7 +4,7 @@
 
 Figer le contrat. Prend le brief d'arbitrage produit par `01-arbitrate` et :
 1. Canonise `design/tokens.json` (déduplique, vérifie les groupes requis).
-2. Écrit `design/components.json` conforme à `adjust/references/manifest-schema.md`.
+2. Écrit `design/components.json` conforme à `${CLAUDE_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md`.
 3. Marque `design/design-system.md` comme figé et bumpe la version.
 
 **Prérequis** : le brief d'arbitrage doit être complet (aucun cas non tranché). Si ce n'est pas le cas, interrompre et renvoyer à `01-arbitrate`.
@@ -15,7 +15,7 @@ Figer le contrat. Prend le brief d'arbitrage produit par `01-arbitrate` et :
 
 ### 1a. Vérifier les groupes requis
 
-Auditer `tokens.json` contre les groupes requis de `design/references/token-schema.md` :
+Auditer `tokens.json` contre les groupes requis de `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md` :
 - Groupes présents → OK
 - Groupes manquants → les créer avec les valeurs retenues dans le brief
 - Groupes partiels → les compléter
@@ -34,7 +34,7 @@ Réécrire `design/tokens.json` avec les tokens canonisés. Conserver le format 
 
 ## Étape 2 — Écrire `design/components.json`
 
-Construire le manifeste à partir des composants résolus dans le brief d'arbitrage, en suivant le schéma de `adjust/references/manifest-schema.md`.
+Construire le manifeste à partir des composants résolus dans le brief d'arbitrage, en suivant le schéma de `${CLAUDE_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md`.
 
 ### Structure minimale requise
 

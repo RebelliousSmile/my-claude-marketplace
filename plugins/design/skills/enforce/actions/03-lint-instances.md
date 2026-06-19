@@ -15,7 +15,7 @@ Le lint fichiers (Gate 3, pre-commit) couvre les commits futurs. Il ne couvre pa
 
 ### WordPress (stack principale)
 
-Voir `enforce/adapters/wordpress.md` pour les commandes complètes. Résumé :
+Voir `${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/wordpress.md` pour les commandes complètes. Résumé :
 
 **1. Exporter le contenu HTML des pages concernées :**
 
@@ -75,7 +75,7 @@ Certains contenus legacy peuvent utiliser des classes non reprises dans le nouve
 
 ## Pièges à éviter
 
-Voir `design/references/wordpress-pitfalls.md` pour les pièges spécifiques à WordPress (classes appariées `has-background` / `has-text-color`, `wp eval-file` deprecated, NFC/NFD sur Windows).
+Voir `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md` pour les pièges spécifiques à WordPress (classes appariées `has-background` / `has-text-color`, `wp eval-file` deprecated, NFC/NFD sur Windows).
 
 ## Sortie attendue
 

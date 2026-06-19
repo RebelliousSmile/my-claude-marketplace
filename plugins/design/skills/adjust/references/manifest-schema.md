@@ -137,6 +137,40 @@ Règle absolue : **une valeur vit dans une seule couche.** Les valeurs vivent en
 }
 ```
 
+## Hints oracle — champ `oracle` (optionnel)
+
+Le champ `oracle` encode des métadonnées de mesure directement dans le manifeste. Il est **inerte pour `enforce`** (le linter l'ignore) et **lu uniquement par `adapters/measure/config-gen.py`** pour enrichir le config oracle généré.
+
+| Champ | Description |
+|-------|-------------|
+| `oracle.elements.<elem>.check_text` | `true` sur les éléments dont le `textContent` doit correspondre à la maquette (eyebrow, CTA, libellé de stat, badge). Interdit sur les cibles en prose. |
+| `oracle.elements.<elem>.props` | Surcharge la liste globale de props pour cet élément (ex. `["fontSize","color","letterSpacing"]`). Utile quand les props pertinentes diffèrent de la liste token-dérivée. |
+| `oracle.collections[]` | Structures répétées à mesurer en séquence (P8/P12). Une entrée par structure répétitive : `{ "name": "…", "item_selector": "bem__elem" }`. |
+| `oracle.collections[].ack` | Pré-sanction d'une divergence de contenu/métier attendue sur cette collection (P13) : `{ "id": "DEV-xxx", "reason": "…" }`. |
+
+```json
+"hero": {
+  "base": "hero",
+  "elements": {
+    "eyebrow": "hero__eyebrow",
+    "headline": "hero__headline",
+    "cta":     "hero__cta"
+  },
+  "oracle": {
+    "elements": {
+      "eyebrow":  { "check_text": true, "props": ["fontSize", "color", "letterSpacing"] },
+      "headline": { "check_text": true },
+      "cta":      { "check_text": true }
+    },
+    "collections": [
+      { "name": "Hero · stats", "item_selector": "hero__stat" }
+    ]
+  }
+}
+```
+
+Les hints `oracle` évitent de décrire ces exigences à la main dans chaque config par page — `config-gen.py` les propage automatiquement. Si un élément n'a pas de hint, `config-gen` génère quand même un target pour lui, sans `check_text` et avec les props token-dérivées par défaut.
+
 ## Consommation par `enforce`
 
 `enforce/adapters/lint-core.mjs` lit `design/components.json` et dérive :

@@ -15,14 +15,14 @@ Prendre la spec neutre produite par `01-define-element` et la rendre dans la sta
 |-----------|-----------|
 | Stack cible = WordPress FSE ET sc-php disponible | `03-pivot` → sc-php:design-bridge |
 | Stack cible = Vue / React / JS ET sc-js disponible | `03-pivot` → sc-js:design-bridge |
-| Aucun sc-* disponible OU stack non identifiée | `adapters/html-css.md` (baseline) |
+| Aucun sc-* disponible OU stack non identifiée | `${CLAUDE_PLUGIN_ROOT}/skills/diffuse/adapters/html-css.md` (baseline) |
 
 Si la stack cible n'a pas été précisée dans `01-define-element`, demander avant de continuer :
 > Stack cible pour ce rendu ? (WordPress FSE / Vue / React / HTML+CSS baseline / autre)
 
 ## Étape 2 — Rendre
 
-Appliquer l'adaptateur sélectionné (voir `adapters/html-css.md` pour la baseline, `03-pivot.md` pour le pivot). Produire le fichier de rendu.
+Appliquer l'adaptateur sélectionné (voir `${CLAUDE_PLUGIN_ROOT}/skills/diffuse/adapters/html-css.md` pour la baseline, `03-pivot.md` pour le pivot). Produire le fichier de rendu.
 
 ## Étape 3 — Gate enforce (obligatoire)
 
@@ -51,12 +51,12 @@ Annoncer le résultat et proposer la prochaine action.
 
 ## Étape 4 — Propagation WP (si applicable)
 
-Si le rendu produit un block pattern WordPress, déléguer la propagation à `enforce/03-lint-instances.md` :
+Si le rendu produit un block pattern WordPress, déléguer la propagation à `${CLAUDE_PLUGIN_ROOT}/skills/enforce/actions/03-lint-instances.md` :
 - Le pattern source est mis à jour.
 - Le pattern est réimporté en DB via le script d'import du projet.
 - Les pages qui utilisent ce pattern sont re-lintées.
 
-Voir `design/references/wordpress-pitfalls.md § Piège 2 : Block patterns = copies indépendantes`.
+Voir `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md § Piège 2 : Block patterns = copies indépendantes`.
 
 ## Étape 5 — Livraison
 
@@ -66,13 +66,13 @@ Annoncer à l'utilisateur :
 > Gate enforce : vert (0 erreur, <N> warning(s))
 > Variantes produites : <liste>
 >
-> [Si WP] Propagation nécessaire → relancer `enforce/03-lint-instances` pour mettre à jour les instances en DB.
+> [Si WP] Propagation nécessaire → relancer `${CLAUDE_PLUGIN_ROOT}/skills/enforce/actions/03-lint-instances` pour mettre à jour les instances en DB.
 
 ## Exemple — rendu baseline d'un `card` (fixture enforce)
 
 Spec neutre d'entrée : composant `card`, variante `featured`, fond `color.semantic.surface`.
 
-Rendu baseline attendu (voir `adapters/html-css.md`) :
+Rendu baseline attendu (voir `${CLAUDE_PLUGIN_ROOT}/skills/diffuse/adapters/html-css.md`) :
 
 ```html
 <article class="card card--featured" role="article">

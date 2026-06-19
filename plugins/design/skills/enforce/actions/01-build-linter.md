@@ -14,7 +14,7 @@ Installer `lint-core.mjs` dans le projet courant et vérifier qu'il tourne corre
 ```
 design/
   lint/
-    lint-core.mjs       ← copie du cœur portable (source : plugin enforce/adapters/lint-core.mjs)
+    lint-core.mjs       ← copie du cœur portable (source : ${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/lint-core.mjs)
     .lintrc.json        ← config projet (chemins, préfixe BEM optionnel)
 ```
 
@@ -22,7 +22,7 @@ Créer `design/lint/` s'il n'existe pas.
 
 ## Étape 2 — Copier lint-core.mjs
 
-Copier `enforce/adapters/lint-core.mjs` vers `design/lint/lint-core.mjs` dans le projet.
+Copier `${CLAUDE_PLUGIN_ROOT}/skills/enforce/adapters/lint-core.mjs` vers `design/lint/lint-core.mjs` dans le projet.
 
 Si le projet gère déjà Node avec un `package.json`, ajouter un script :
 

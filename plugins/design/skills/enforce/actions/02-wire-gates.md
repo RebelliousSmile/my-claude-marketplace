@@ -2,7 +2,7 @@
 
 ## Rôle
 
-Câbler les 3 gates du linter dans le projet : rules de génération, success_condition des plans, hook pre-commit auto-armé. Voir `enforce/references/gate-wiring.md` pour la spécification complète de chaque gate.
+Câbler les 3 gates du linter dans le projet : rules de génération, success_condition des plans, hook pre-commit auto-armé. Voir `${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md` pour la spécification complète de chaque gate.
 
 ## Prérequis
 
@@ -55,7 +55,7 @@ success_condition: >
 
 ### Étape 4 — Câbler Gate 3 (pre-commit)
 
-Créer `scripts/hooks/pre-commit` avec le contenu de `enforce/references/gate-wiring.md § Gate 3`.
+Créer `scripts/hooks/pre-commit` avec le contenu de `${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md § Gate 3`.
 
 Rendre exécutable :
 ```bash

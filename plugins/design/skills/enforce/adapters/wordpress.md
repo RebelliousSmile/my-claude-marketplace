@@ -1,6 +1,6 @@
 # Adaptateur WordPress — lint instances DB
 
-Instructions spécifiques pour linter le contenu d'un projet WordPress FSE contre le manifeste design system. À lire en complément de `03-lint-instances.md` et `design/references/wordpress-pitfalls.md`.
+Instructions spécifiques pour linter le contenu d'un projet WordPress FSE contre le manifeste design system. À lire en complément de `03-lint-instances.md` et `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md`.
 
 ## Règle absolue : CLI du conteneur
 
@@ -63,7 +63,7 @@ Si le manifeste ne déclare pas ces classes comme modifiers, `lint-core.mjs` les
 1. Les déclarer comme modifiers dans `components.json` (si le projet utilise des blocs natifs WP).
 2. Les exclure du lint (modifier `lint-core.mjs` pour ignorer les classes `has-*` générées par Gutenberg).
 
-Voir `design/references/wordpress-pitfalls.md` pour la décision recommandée.
+Voir `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md` pour la décision recommandée.
 
 ## Piège : `wp eval-file` deprecated en PHP 8.2
 
