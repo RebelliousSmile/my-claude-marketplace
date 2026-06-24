@@ -1,0 +1,11 @@
+[
+  { "prompt": "valide les blocs gutenberg de ce site WordPress", "expect_action": "validate-roundtrip" },
+  { "prompt": "vérifie que mes patterns FSE ne sont pas cassés dans l'éditeur", "expect_action": "validate-roundtrip" },
+  { "prompt": "mes pages s'affichent bien mais sont-elles éditables sans erreur de bloc ?", "expect_action": "validate-roundtrip" },
+  { "prompt": "round-trip de validité sur le post_content généré par l'import", "expect_action": "validate-roundtrip" },
+  { "prompt": "ajoute un gate qa:blocks qui ouvre chaque page dans l'éditeur", "expect_action": "validate-roundtrip" },
+  { "prompt": "détecte les blocs core/missing après activation du plugin", "expect_action": "validate-roundtrip" },
+  { "prompt": "audite le code JS de ce projet Vue", "expect_action": null },
+  { "prompt": "compare le texte de mes pages à la maquette", "expect_action": null },
+  { "prompt": "installe la règle de lint design system", "expect_action": null }
+]

@@ -1,5 +1,14 @@
 # Changelog — sc-js
 
+## [0.8.0] — 2026-06-24
+
+### Nouvelle skill — `wp-blocks` (validation de blocs Gutenberg)
+
+- **Round-trip de validité** : ouvre chaque page/article dans l'éditeur (Playwright) et asserte que tout bloc natif statique survit au cycle parse → `save()` → compare. Cible les projets WordPress FSE où le `post_content` / les patterns sont **générés hors éditeur** (chaînes PHP, scripts d'import) — le frontend masque les blocs invalides, seul l'éditeur les détecte.
+- Action `01-validate-roundtrip` : script `gutenberg-validate.mjs` réutilisable (énumération REST des pages+posts, login admin, lecture récursive de `wp.data … getBlocks().isValid`, rapport page · type · markup fautif, exit 1 si ≥ 1 invalide), gate `qa:blocks`.
+- Distingue `core/missing` (bloc non enregistré) de l'invalidité `save()`. Orthogonal au lint design system et au diff texte/visuel — les trois sont complémentaires.
+- Issu de la session fidélité maquette Mauceri : `diff-all` (texte) et `ds-lint` (vocabulaire) ne voient pas un markup cassé pour l'éditeur ; il manquait ce juge.
+
 ## [0.6.8] — 2026-05-29
 
 ### Capability pivot — perf/vanilla.md
