@@ -4,7 +4,7 @@ Source de vérité partagée par **tous** les skills `writing`. `writing` **prod
 
 > `writing` est **totalement découplé** : aucune notion de `bank.yml`, de vault, de chemin global (`~/.jdr.yaml`, racine absolue). Les chemins sont **locaux et portables** — déplacer `<brief>`/`<output>` ailleurs ne casse rien, car tout le contexte vit dans `<projet>/` (`<brief>` + `<output>`). `writing` ne lit **jamais** hors de `<projet>/`.
 >
-> **Convention de nommage** : par défaut `<brief>` = `_brief/` et `<output>` = `_output/` (répertoires de **travail**, donc préfixés `_` ; leur contenu interne n'est pas préfixé). Ils vivent côte à côte dans le **projet** (unité de travail) `<projet>/`, typiquement `R/<Year>/<Month>/mon-projet/` — où `R` est le **domaine** (qui héberge les ressources globales, hors périmètre de `writing`). `_brief/` est produit en amont par **`obsidian:brief`**, qui consolide *inline* les globales de `R` ; `writing` ne lit donc jamais hors de `<projet>/`. La convention d'organisation `R`/`<projet>` dans `Documents/` est portée par **`obsidian:tree`**.
+> **Convention de nommage** : par défaut `<brief>` = `_brief/` et `<output>` = `_output/` (répertoires de **travail**, donc préfixés `_` ; leur contenu interne n'est pas préfixé). Ils vivent côte à côte dans le **projet** (unité de travail) `<projet>/`, typiquement `R/<Year>/<Month>/mon-projet/` — où `R` est le **domaine** (qui héberge les ressources globales, hors périmètre de `writing`). `_brief/` est produit en amont par **`obs:brief`**, qui consolide *inline* les globales de `R` ; `writing` ne lit donc jamais hors de `<projet>/`. La convention d'organisation `R`/`<projet>` dans `Documents/` est portée par **`obs:tree`**.
 
 ## Entrée — répertoire de brief `<brief>/` (lecture seule)
 

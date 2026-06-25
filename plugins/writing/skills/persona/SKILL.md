@@ -1,7 +1,7 @@
 ---
 name: persona
 model: sonnet
-description: Creates and refines reader persona YAML files used by the review pipeline. Use when creating a new reader persona for a project brief, or refining an existing persona based on accumulated review feedback. Do NOT use for running the review itself — use `review` instead; do NOT use to assemble the brief — use `obsidian:brief` instead.
+description: Creates and refines reader persona YAML files used by the review pipeline. Use when creating a new reader persona for a project brief, or refining an existing persona based on accumulated review feedback. Do NOT use for running the review itself — use `review` instead; do NOT use to assemble the brief — use `obs:brief` instead.
 ---
 
 # Persona

@@ -44,9 +44,9 @@ chapter-NN.md
                                       (export ICML = étape séparée)
 ```
 
-Correspondance avec l'ancien schéma (pré-refonte v3) : `brainstorm`→`obsidian:forge`,
+Correspondance avec l'ancien schéma (pré-refonte v3) : `brainstorm`→`obs:forge`,
 `generate-toc`/`write-toc-chapter`→`toc`, `write-novel|write-roleplaying`→`write`,
-`univers-extract`→`obsidian:lore-extract`. `bank.yml` n'intervient **plus** dans
+`univers-extract`→`obs:lore-extract`. `bank.yml` n'intervient **plus** dans
 cette boucle (`writing` est découplé). `md-to-tex` est **abandonné** ; le terminal
 est le chapitre figé, l'export ICML est postérieur.
 
