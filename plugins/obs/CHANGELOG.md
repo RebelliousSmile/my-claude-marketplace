@@ -2,6 +2,11 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.24.0] — 2026-06-25
+
+### Changed (`tree`) — skill invocable par le modèle
+- Retrait de `disable-model-invocation` du frontmatter de `tree/SKILL.md` : `obs:tree` peut désormais être déclenché automatiquement par le modèle (index/check/fix/sort/judge/destinations) selon le trigger mapping, en plus de l'invocation explicite.
+
 ## [0.23.0] — 2026-06-25
 
 ### Added (`tree`) — action `destinations` : export de la routing map email

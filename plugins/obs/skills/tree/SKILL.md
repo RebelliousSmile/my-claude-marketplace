@@ -1,7 +1,6 @@
 ---
 name: tree
 description: Keeps the Documents/ tree navigable as it evolves — maintains a cache (map of the real arborescence), verifies it against a small set of portability invariants, fixes drift safely, and helps sort loose items into place by arbitration. Use to check whether a directory is well-organised, to tidy it, or to decide where something belongs. Do NOT use to build a writing brief — use `obs:brief`; do NOT use to produce content — use the `writing` plugin.
-disable-model-invocation: true
 ---
 
 # Tree
