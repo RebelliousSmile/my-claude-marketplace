@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.25.0] — 2026-06-25
+
+### Changed (`tree/destinations`) — projets `pro-projet` = destinations email actives
+- Les répertoires de projet `Projets/<projet>` sont désormais émis comme destinations **actives** (cible de la correspondance client classée sous `Projets/<projet>/<AAAA>/<MM>`), plus commentés. Seul `_code/` (et les autres répertoires de travail préfixés `_`) reste exclu.
+- La liste des catégories commentées passe aux domaines **savoir/assets** sans email (`Dev`, `tech`, `Library`, `Design`…) en plus des médias.
+
 ## [0.24.0] — 2026-06-25
 
 ### Changed (`tree`) — skill invocable par le modèle

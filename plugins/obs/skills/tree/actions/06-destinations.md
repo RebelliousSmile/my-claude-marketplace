@@ -46,7 +46,8 @@ The generated file content (a `destinations.txt` per `${CLAUDE_PLUGIN_ROOT}/refe
 4. **Group and format** per the template:
    - One `# ── <Category> ──` header per top-level category, then its destinations.
    - Empty attributes — a line with no rule is a valid folder, AI-routed (if enabled) else default.
-5. **Comment out (`#`) categories that never receive email** — media/photos/music/video/games and `pro-projet` code domains (`Projets/<projet>`): they stay visible without cluttering deterministic routing.
+5. **Comment out (`#`) categories that never receive email** — media/photos/music/video/games and pure knowledge/asset domains (`Dev`, `tech`, `Library`, `Design`…): they stay visible without cluttering deterministic routing.
+   - **`pro-projet` project dirs (`Projets/<projet>`) are ACTIVE email destinations, NOT commented.** The project's code lives in its `_code/` working dir (already excluded); the project dir itself receives client correspondence filed under `Projets/<projet>/<AAAA>/<MM>`. Emit every `Projets/<projet>` as an active line — client mail is high-volume and must route here. Only `_code/` (and other `_`-prefixed working dirs) are excluded, never the project dir.
 6. **Add a commented catch-all** placeholder (`# <anchor>/Communication/Emails  | default`) so the user can opt into overriding the hard-coded `Perso/Messy/Emails` fallback.
 7. **Never invent matching rules** (`domain:`/`from:`/`subject:`) — only the user knows their senders. Emit attributes empty.
 8. **Emit.** Print the content. If `--out <path>` is given: write it — but **never overwrite** an existing destinations.txt silently; on collision, show a diff against the existing file and ask before replacing (the file is **manually curated** — the router never rewrites it).
@@ -63,4 +64,4 @@ The generated file content (a `destinations.txt` per `${CLAUDE_PLUGIN_ROOT}/refe
 
 Run `destinations` on a `Perso/` anchor whose cache holds `RPG/zombiology` (dated), `Bank/example` (dated) and a `photos/2026/...` media domain. Confirm: the output begins with the template header carrying the anchor and date; `Perso/RPG/zombiology` and `Perso/Bank/example` appear as active lines with **no** `AAAA/MM` suffix and **no** invented attributes; the `photos` category is **commented out**; and a commented `| default` catch-all line is present. No file under the tree is modified.
 
-Run `destinations` on a `Pro/` anchor containing `Projets/overcode/` (`pro-projet`). Confirm the `Projets/overcode` line is emitted **commented out** (code domain, not an email target) and that no `_code/` or `AAAA/MM` segment leaks into any path.
+Run `destinations` on a `Pro/` anchor containing `Projets/overcode/` (`pro-projet`, with a `_code/` working dir and `2026/06/` travaux). Confirm the `Pro/Projets/overcode` line is emitted as an **active** destination (client correspondence target), that `_code/` is **not** emitted, and that no `_code/` or `AAAA/MM` segment leaks into any path.
