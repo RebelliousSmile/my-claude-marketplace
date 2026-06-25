@@ -12,7 +12,9 @@
   { "prompt": "classe ces scénarios par arbitrage", "expect_action": "sort" },
   { "prompt": "build the _brief/ for my novel", "expect_action": null },
   { "prompt": "write chapter 3", "expect_action": null },
-  { "prompt": "vérifie que Pro/Projets/aidd-overlay est bien rangé", "expect_action": "check" },
+  { "prompt": "vérifie que Pro/Projets/overcode est bien rangé", "expect_action": "check" },
   { "prompt": "index Pro/Projets/mon-saas avec _code et 2026/06", "expect_action": "index" },
-  { "prompt": "classe ce fichier NOTES-juin.md dans le bon projet Pro", "expect_action": "sort" }
+  { "prompt": "classe ce fichier NOTES-juin.md dans le bon projet Pro", "expect_action": "sort" },
+  { "prompt": "exporte ce répertoire en destinations.txt pour email-to-markdown", "expect_action": "destinations" },
+  { "prompt": "génère la routing map email depuis l'arbo Perso", "expect_action": "destinations" }
 ]

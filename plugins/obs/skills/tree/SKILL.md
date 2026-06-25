@@ -26,6 +26,7 @@ Keeps `Documents/` **navigable while it keeps changing**. Rather than enforcing 
 | 03  | `fix`   | Apply safe corrections for confirmed anomalies/drift (rename, move; never delete) | `[<target>]` (default: CWD)        |
 | 04  | `sort`  | Arbitrate placement of loose/unsorted items into the tree, using the cache     | `<items…>` `[--into <target>]`     |
 | 05  | `judge` | Interactive session: arbitrate content in `R` node by node — delete/summarise/merge/keep+advance | `[<target R>]` (default: CWD → R) |
+| 06  | `destinations` | Export the durable tree (`(Perso\|Pro)/category/subcategory`) as a `destinations.txt` routing map for `email-to-markdown` | `[<target>]` `[--out <path>]` |
 
 ## Default flow
 
@@ -35,8 +36,9 @@ Trigger-to-action mapping:
 - "fix the tree", "tidy", "ranger", "corriger l'arbo" → `fix`
 - "where does this go", "sort these files", "trier", "classe ça" → `sort`
 - "judge R", "arbitrer le contenu", "trier R", "nettoyer R", "juger les fichiers" → `judge`
+- "export destinations", "génère le destinations.txt", "routing map email", "exporter le répertoire en destinations" → `destinations`
 
-`check`/`fix`/`sort` auto-refresh the cache if it is missing or stale (the target changed since `scanned_at`).
+`check`/`fix`/`sort`/`destinations` auto-refresh the cache if it is missing or stale (the target changed since `scanned_at`).
 
 ## Transversal rules
 
@@ -55,5 +57,6 @@ Trigger-to-action mapping:
 ## External data
 
 - `${CLAUDE_PLUGIN_ROOT}/references/tree-convention.md` — invariants, default pattern, cache format, anchor resolution.
+- `${CLAUDE_PLUGIN_ROOT}/references/destinations-template.md` — `destinations.txt` format + fillable template for the `email-to-markdown` router; how to derive it from a scanned tree.
 - `<anchor>/_tree/cache.json` — the navigation cache `tree` maintains.
 - `R/bank.yml` — per-domain resource manifest `tree` maintains; format in `obs:brief`'s `references/bank-yml.md`. Consumed by `brief`.

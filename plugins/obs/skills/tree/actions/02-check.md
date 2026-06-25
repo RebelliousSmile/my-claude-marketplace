@@ -54,4 +54,4 @@ CLEAN / DRIFT (N soft) / ANOMALIES (N hard) — run `tree fix` to correct.
 
 Run `check` on a tree containing `Perso/RPG/Zombiology/` (uppercase — I3) and a unit placed off its domain's dated axis. Confirm the uppercase slug is reported under **Invariant anomalies** and the misplaced unit under **Convention drift**, that the verdict reflects both, and that no file was modified.
 
-Run `check` on `Pro/Projets/aidd-overlay/` with `_code/` and `2026/06/`. Confirm that no anomaly is raised for the absence of INDEX.md, that `_code/` is not flagged as drift, and that `2026/06/` without `_brief/` is not reported.
+Run `check` on `Pro/Projets/overcode/` with `_code/` and `2026/06/`. Confirm that no anomaly is raised for the absence of INDEX.md, that `_code/` is not flagged as drift, and that `2026/06/` without `_brief/` is not reported.

@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.23.0] — 2026-06-25
+
+### Added (`tree`) — action `destinations` : export de la routing map email
+- Nouvelle action `06-destinations` : exporte la partie **durable** de l'arbo (`(Perso|Pro)/category/subcategory`, parent des niveaux datés `AAAA/MM`) en `destinations.txt` consommé par le routeur `email-to-markdown`. Dérive les destinations depuis le cache (auto-`index` si absent/périmé), une ligne par domaine préfixée du segment d'ancre, **sans** `AAAA/MM` (le routeur ajoute `/<Year>/<Month>`), groupée par catégorie ; règles de matching laissées vides (jamais inventées), catégories non-email (médias, `pro-projet`) commentées, catch-all `| default` commenté. Artefact dérivé : ne déplace/renomme/supprime jamais de contenu utilisateur ; n'écrase jamais un `destinations.txt` curé sans diff + confirmation.
+- Référence `references/destinations-template.md` (format, attributs de matching, priorité, template) **déplacée** de `skills/tree/references/` vers la racine `references/` du plugin (à côté de `tree-convention.md`) pour que `${CLAUDE_PLUGIN_ROOT}/references/…` résolve correctement. Branchée dans `SKILL.md` (table, trigger mapping, External data) et `evals/scenarios.json`.
+
 ## [0.22.0] — 2026-06-15
 
 ### Added (`rpg`) — arbitrage des informations préparatoires (#6)
