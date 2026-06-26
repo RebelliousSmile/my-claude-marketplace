@@ -1,5 +1,12 @@
 # Changelog — sc-php
 
+## v0.5.3 — 2026-06-26
+
+### Added
+- Capability pivot `wordpress/fse-patterns.md` — conventions d'authoring des **block patterns FSE statiques** (`patterns/*.php`), framées en critères d'audit : texte client-éditable en blocs natifs (jamais piégé dans `wp:html`), neutralisation de l'injection de layout WP au passage en natif (`is-layout-flex:center`, `block-gap` ; bouton stylé sur `.wp-block-button__link`), CSS de bloc aussi en `add_editor_style()` (WYSIWYG éditeur), en-têtes complets + catégories enregistrées, slug ↔ nom de fichier sans doublon, grammaire de blocs valide. Scope = correction d'écriture + éditabilité, distinct du vocabulaire design (`design-bridge`) et des blocs SSR (`wordpress/ssr.md`). Note le pendant déterministe (linter de patterns en pre-commit, réalisé via `design:enforce` → `sc-php:design-bridge`).
+- `sniff/01-scan.md` : Step 4c — détection d'un thème bloc (`theme.json`) avec dossier `patterns/` → émet le pivot ; câblé en Step 5a + exemple de manifeste WordPress (block theme).
+- `audit/01-audit.md` : `wordpress/fse-patterns.md` ajouté à la structure de critères chargés à l'audit.
+
 ## v0.5.2 — 2026-06-19
 
 ### Added

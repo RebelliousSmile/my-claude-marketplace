@@ -58,6 +58,15 @@ Check the project root for:
 
 If either signal is found, enable the `testing/bruno.md` capability pivot.
 
+### Step 4c — Detect FSE block patterns (WordPress only)
+
+When WordPress is detected, check for a **block theme authoring static patterns**:
+- a `theme.json` somewhere under `wp-content/themes/` (block theme signal), AND
+- a `patterns/` directory under a theme containing at least one `*.php` file
+  (`wp-content/themes/**/patterns/*.php`).
+
+If both signals are found, enable the `wordpress/fse-patterns.md` capability pivot.
+
 ### Step 5 — Map capabilities to knowledge pivots
 
 #### 5a — Capability pivots (loaded at audit time by `/sc-php:audit`, NOT installed to disk)
@@ -67,6 +76,7 @@ If either signal is found, enable the `testing/bruno.md` capability pivot.
 | PHP SOLID violations | always (every PHP project) | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/php/solid.md` |
 | Bruno test conventions | `bruno/` folder or `*.bru` files detected | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/testing/bruno.md` |
 | WordPress SSR block authoring | WordPress detected (Step 2) | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/wordpress/ssr.md` |
+| WordPress FSE pattern authoring | block theme + `patterns/` dir detected (Step 4c) | `${CLAUDE_PLUGIN_ROOT}/skills/sniff/references/capabilities/wordpress/fse-patterns.md` |
 
 After listing capability pivots, append the `/sc-php:audit` readiness line:
 - → `/sc-php:audit` : PRÊT (capability pivots: list the active ones)
@@ -182,12 +192,13 @@ Pivot manifeste:
   → /data-optimize : PRÊT (will be installed)
 ```
 
-**Example — WordPress:**
+**Example — WordPress (block theme with patterns/):**
 ```
 Pivot manifeste:
   Capability pivots (loaded at audit time, not installed):
-    ✅ php/solid.md     (always — every PHP project)
-    ✅ wordpress/ssr.md (WordPress detected)
+    ✅ php/solid.md             (always — every PHP project)
+    ✅ wordpress/ssr.md         (WordPress detected)
+    ✅ wordpress/fse-patterns.md (block theme + patterns/ detected)
   → /sc-php:audit : PRÊT
 
   Perf pivots → .claude/rules/07-quality/:

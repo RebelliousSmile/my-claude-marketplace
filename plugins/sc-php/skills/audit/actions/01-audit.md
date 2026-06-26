@@ -47,6 +47,9 @@ PHP Code Quality Criteria — sc-php 0.4.0
 ## WordPress SSR block authoring   (only if wordpress/ssr.md was in the manifeste)
 <content of wordpress/ssr.md>
 
+## WordPress FSE pattern authoring   (only if wordpress/fse-patterns.md was in the manifeste)
+<content of wordpress/fse-patterns.md>
+
 [...additional capability pivots from manifeste...]
 ```
 
