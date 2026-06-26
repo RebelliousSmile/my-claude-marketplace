@@ -27,6 +27,14 @@ directory is detected.
   structural/decorative markup that carries *no* editable copy (an inline SVG icon, a CSS
   grid wrapper). For content/article patterns (the ones a non-dev edits), use **no
   `wp:html` at all** — every text-bearing node is a native block.
+- Carve-outs (not violations):
+  - **Forms.** WP core has no form/input block, so `<form>`/`<input>`/`<select>` legitimately
+    need raw HTML. Treat the form scaffolding as structural — but still lift the highest-churn
+    copy a client edits (submit-button label, a standalone consent/intro sentence) to native
+    `wp:button` / `wp:paragraph` where practical.
+  - **Reference / non-inserter patterns.** A pattern marked `Inserter: no` (design-system
+    showcases, code-only previews) is not client-edited — exempt it from the native-blocks
+    rule. Scope this rule to inserter-visible, content-bearing patterns.
 
 #### Native conversion must neutralize WP layout injection (else the render drifts)
 
@@ -79,6 +87,10 @@ directory is detected.
   that doesn't parse, a `wp:name` that isn't a registered block.
 - Convention: balanced/properly-nested delimiters, parseable attribute JSON, real block
   names.
+- Soft (not "invalid content"): a `wp:list` whose `<li>` children are bare (no inner
+  `wp:list-item` blocks) is a registered core **deprecation** — it auto-migrates and is NOT
+  flagged invalid, so grade it a consistency nit, not an error. Normalize to `wp:list-item`
+  children for future-proofing.
 
 > Deterministic counterpart: these conventions can be enforced as a project gate by a
 > structural pattern linter (header/native/slug/grammar checks) wired into pre-commit —

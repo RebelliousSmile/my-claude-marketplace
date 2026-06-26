@@ -1,5 +1,10 @@
 # Changelog — sc-php
 
+## v0.5.4 — 2026-06-26
+
+### Changed
+- `wordpress/fse-patterns.md` — carve-outs affinés après audit réel sur un thème bloc : (1) **formulaires** — WP core n'a pas de bloc form natif, donc `<form>`/`<input>`/`<select>` en HTML brut est légitime ; ne lever que la copie à fort churn (label submit, phrase de consentement/intro). (2) **Patterns `Inserter: no`** (showcases design-system, previews) — non édités par le client, exemptés de la règle tout-natif ; la règle se limite aux patterns insérables et porteurs de contenu. (3) **Nuance grammaire** — un `wp:list` à `<li>` nus (sans `wp:list-item`) est une **déprécation core auto-migrée**, pas un « invalid content » : nit de cohérence, pas une erreur.
+
 ## v0.5.3 — 2026-06-26
 
 ### Added
