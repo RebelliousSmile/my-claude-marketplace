@@ -1,0 +1,48 @@
+{
+  "scenarios": [
+    {
+      "id": "survey-basic",
+      "description": "L'utilisateur pointe vers un répertoire avec des fichiers markdown mixtes",
+      "input": "qu'est-ce qu'il y a dans C:/Users/fxgui/Documents/Notes/inbox",
+      "expected_action": "survey",
+      "expected_output_contains": ["total", "fichiers", "extension"]
+    },
+    {
+      "id": "survey-path-only",
+      "description": "L'utilisateur donne seulement un chemin, sans verbe",
+      "input": "C:/Users/fxgui/Documents/Notes/drafts",
+      "expected_action": "survey",
+      "expected_output_contains": ["fichiers", "date"]
+    },
+    {
+      "id": "merge-dated",
+      "description": "L'utilisateur demande de fusionner les notes de janvier 2024",
+      "input": "rassemble les notes de janvier 2024 dans /Notes/inbox",
+      "expected_action": "merge",
+      "expected_output_contains": ["_merged.md", "TOC"]
+    },
+    {
+      "id": "clean-empty",
+      "description": "L'utilisateur demande de nettoyer les fichiers vides",
+      "input": "nettoie les fichiers vides dans /Notes/drafts",
+      "expected_action": "clean",
+      "expected_criteria": ["empty"],
+      "expected_output_contains": ["plan", "confirmation"]
+    },
+    {
+      "id": "digest-global",
+      "description": "L'utilisateur demande un résumé global d'un répertoire",
+      "input": "fais un digest de /Pro/Projets/smartlockers/2026/06",
+      "expected_action": "digest",
+      "expected_scope": "global",
+      "expected_output_contains": ["_digest.md"]
+    },
+    {
+      "id": "sort-infer",
+      "description": "L'utilisateur demande de trier sans préciser le schéma",
+      "input": "trie les fichiers de /Notes/inbox",
+      "expected_action": "sort",
+      "expected_output_contains": ["plan", "schéma", "confirmation"]
+    }
+  ]
+}

@@ -23,6 +23,28 @@ Ces règles servent la **portabilité** ; elles ne dépendent pas de l'organisat
 
 ---
 
+## Niveaux sémantiques — notion de bucket
+
+Chaque niveau de l'arborescence est un **bucket** : un conteneur nommé qui délimite un périmètre sémantique ou temporel. Les buckets se nichent les uns dans les autres.
+
+| Niveau | Nom | Rôle | Exemple |
+|--------|-----|------|---------|
+| 1 | Ancre | Séparateur Perso / Pro | `Perso`, `Pro` |
+| 2 | Category | Bucket sémantique de premier niveau | `Projets`, `Finance`, `Correspondance` |
+| 3 | Subcategory (R) | Bucket domaine — point d'ancrage du domaine | `smartlockers`, `mauceri` |
+| 3b | Bucket de travail | Répertoire `_`-préfixé dans R — contenu général durable, hors axe temporel | `_univers/`, `_systeme/`, `_onet/`, `_references/` |
+| 4 | YYYY | Bucket temporel annuel | `2026` |
+| 5 | MM | Bucket temporel mensuel | `06` |
+| 6 | Unité / entité | Bucket feuille — projet, sous-dossier thématique ou entité source | `onet`, `mon-projet` |
+
+**Bucket de travail (niveau 3b)** : répertoire préfixé `_` posé directement dans R, sans axe temporel. Contient des fichiers généraux liés au domaine — références, ressources durables, digests transversaux, données consolidées — qui n'appartiennent à aucune période YYYY/MM en particulier. Conforme à l'invariant I1 (`_` prefix). Exemples : `R/_univers/`, `R/_systeme/`, `R/_onet/`, `R/_references/`. Plusieurs buckets de travail peuvent coexister dans R, chacun délimitant un sous-thème ou une entité du domaine.
+
+Un bucket de niveau N peut contenir des buckets de niveau N+1 ou des fichiers de contenu directement. Il n'est pas obligatoire d'atteindre le niveau 6 : un domaine peut s'arrêter à `Subcategory/YYYY/MM/` si ses unités sont des fichiers plutôt que des répertoires.
+
+La notion de **bucket entité** (niveau 6, regroupement par source expéditrice ou par thème) est distincte des buckets temporels YYYY/MM : elle découpe un bucket temporel en sous-groupes nommés selon l'origine du contenu, et non selon la date.
+
+---
+
 ## Schéma par défaut (observé, non figé)
 
 Le pattern recommandé, enregistré dans le cache comme défaut du domaine :

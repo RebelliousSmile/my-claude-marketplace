@@ -31,7 +31,8 @@ Decide where loose items belong and place them — **by arbitration**. `tree` pr
 2. For each item, **propose a destination** using the cache:
    - Match against existing domains (`domains[].path`) and their learned conventions — where do comparable items already live?
    - If the item is a dated work unit, target `<domain>/<AAAA>/<MM>/<unit>/` (date from the item's own metadata/content, else ask).
-   - If it is durable knowledge, target `<domain>/_univers/`, `<domain>/_systeme/`, or `<domain>/_subsystems/` as appropriate.
+   - If it is durable knowledge with no temporal axis, target a **level-3b working-dir bucket** (`<domain>/_<theme>/`) — see bucket taxonomy in `tree-convention.md`. Prefer an existing `_`-prefixed dir before proposing a new one.
+   - If it is a dated item belonging to a known source entity (email sender, system emitter), target `<domain>/<AAAA>/<MM>/<entity>/` — an **entity bucket** (level 6) inside the temporal bucket. Use the entity slug already present in the directory if it exists.
    - **`pro-projet` domains:** route by content type — source code / project file → `<projet>/_code/` ; note / task / tracking document → `<projet>/<AAAA-courant>/<MM-courant>/`. If the current month dir does not exist yet, propose creating it.
    - Apply invariants to the proposed name (kebab-case, `_` prefix for working dirs).
 3. **Arbitrate:**

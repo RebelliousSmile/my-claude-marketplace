@@ -104,7 +104,10 @@ Wait for the user's response before proceeding to the next node.
 
 #### Résumer
 1. Read the full content.
-2. Generate a condensed version: strip slop, marketing copy, code blocks (unless essential), redundant preamble. Keep the core factual content.
+2. Generate a condensed version following these rules (aligned with `filler:condense`):
+   - **Preserve verbatim — never summarise or truncate:** code blocks (``` or inline), credentials/tokens/keys, specific data (amounts, IDs, reference numbers), image inclusions (`![[…]]` or `![…](…)`), URLs.
+   - **Summarise:** prose ideas → bullet points or short sentences. Keep the what/how, drop rhetorical justification.
+   - **Remove:** greetings, sign-offs, politeness formulas, repetitions, filler transitions, context already present in the frontmatter.
 3. Ensure the file has YAML frontmatter. Add or update:
    ```yaml
    summarized: true
