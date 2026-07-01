@@ -7,10 +7,12 @@ description: >-
   donc insérable et éditable dans l'éditeur. C'est la promesse d'un builder
   (Divi/Elementor) portée nativement par FSE : tout élément de page est un bloc
   réutilisable. Deux actions : 01-scan (audit → liste des composants non couverts)
-  et 02-close-gaps (créer les patterns manquantes, natives et lint-propres).
+  02-close-gaps (créer les patterns manquantes, natives et lint-propres) et
+  03-organize (ranger les patterns par rôle de section + lint d'équilibre).
   Sibling de design-bridge (qui PRODUIT une pattern depuis le pivot design) :
-  builder-coverage VÉRIFIE la complétude et se chaîne après. Invoquer sur un thème
-  FSE quand on veut garantir l'édition WYSIWYG de toutes les pages.
+  builder-coverage VÉRIFIE la complétude ET l'organisation, et se chaîne après.
+  Invoquer sur un thème FSE quand on veut garantir l'édition WYSIWYG de toutes
+  les pages, comme un page-builder (Divi/Elementor).
 triggers:
   - "sc-php:builder-coverage"
   - "vérifier que toutes les pages sont éditables en WYSIWYG / au clic"
@@ -47,6 +49,11 @@ builder-coverage contrôle la complétude. Il reste autonome et lançable seul.
 |---|--------|-------|
 | 01 | `01-scan` | Auditer la couverture → liste des composants non couverts |
 | 02 | `02-close-gaps` | Créer/étendre les patterns pour amener les gaps à 0 |
+| 03 | `03-organize` | Ranger les patterns par rôle de section + lint d'équilibre (taxonomie de référence, généralisable ~90 % des projets) |
+
+**Deux dimensions de qualité** : `01/02` = *complétude* (chaque composant a une
+pattern) ; `03` = *organisation* (patterns rangées par rôle, sans fourre-tout,
+nommage cohérent). Une bibliothèque complète mais mal rangée reste inutilisable.
 
 ## Prérequis
 
@@ -61,6 +68,19 @@ builder-coverage contrôle la complétude. Il reste autonome et lançable seul.
   configurables (`BC_POST_TYPES`).
 - `actions/scripts/dump-section.php` — extrait le markup natif d'un composant
   (`BC_DUMP_POST`, `BC_DUMP_CLASS`) pour bâtir sa pattern fidèlement.
+- `actions/scripts/category-balance.php` — lint d'organisation : effectif par
+  catégorie, alerte fourre-tout (> `BC_MAX`, défaut 8) et patterns orphelines.
+
+> **Nom des scripts côté projet** : `builder-coverage.php` est la version
+> canonique généralisée. Un projet peut en garder une variante locale
+> spécialisée sous un autre nom (ex. Mauceri : `tools/qa/pattern-coverage.php`,
+> préfixe `mau-` en dur) — c'est acceptable tant que le verdict `GAPS: N` est
+> équivalent. Adapter les chemins des commandes ci-dessous au nom local.
+
+> **Maturité** : méthode et scripts **éprouvés sur 1 projet (Mauceri)** à ce
+> jour. Le préfixe auto-détecté, `BC_POST_TYPES` et la taxonomie 9 rôles sont
+> conçus pour être portables mais n'ont pas encore tourné sur un autre thème FSE
+> — les vérifier sur un 2ᵉ projet consolidera la généralisation.
 
 ## Pièges (lire avant d'agir)
 
