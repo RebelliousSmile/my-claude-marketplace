@@ -46,7 +46,7 @@
       "name": "sc-php",
       "version": "0.5.2",
       "source": "./plugins/sc-php",
-      "description": "PHP ecosystem skills: sniff, audit, improve, legacy, teach. WordPress/Laravel/Symfony perf pivots, HTMX hybrid, Eloquent + Doctrine data pivots. design-bridge: réceptacle pivot design (linter PHP/WP natif + block pattern WP).",
+      "description": "PHP ecosystem skills: sniff, audit, improve, legacy, teach. WordPress/Laravel/Symfony perf pivots, HTMX hybrid, Eloquent + Doctrine data pivots. design-bridge: réceptacle pivot design (linter PHP/WP natif + block pattern WP). builder-coverage: gate de couverture WYSIWYG FSE (chaque composant de page a une pattern éditable dans l'éditeur, comme un builder Divi/Elementor).",
       "recommended": false
     },
     {
