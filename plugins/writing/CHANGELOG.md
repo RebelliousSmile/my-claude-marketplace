@@ -2,6 +2,12 @@
 
 > Fusion de `doc-writer` (v0.1.0) et `rpg-writer` (v0.10.0). Historique détaillé : `git log -- plugins/writing plugins/doc-writer plugins/rpg-writer`.
 
+## [1.2.0] — 2026-07-02
+
+### Added — `forge` rapatrié depuis `obs`
+- Le skill `forge` (challenge du concept/overview narratif jusqu'à validation, avant `toc`) rejoint `writing` : c'est une compétence de craft narratif générique (roman, scénario JDR écrit, guide), sans dépendance aux autres skills `obs`. Références internes ajustées (`toc` en bare, `research`/`brief` repointés vers `obs:research`/`obs:brief`).
+- `README.md`, `.claude-plugin/plugin.json` et `skills/toc/SKILL.md` mis à jour en conséquence.
+
 ## [1.1.1] — 2026-06-13
 
 ### Fixed

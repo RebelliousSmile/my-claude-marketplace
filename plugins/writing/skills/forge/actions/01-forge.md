@@ -6,7 +6,7 @@ Challenge and iterate on a writing project's overview until all required narrati
 
 - `<projet>` (optional, positional) — the writing project directory. Default: current working directory. Local path — `forge` operates relative to it, never via a global vault.
 
-> If the project belongs to a JDR domain, universe docs are resolved locally: `R/_univers/<univers>/{canon,mj}/` where `R` is discovered by walking up to l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`. See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
+> If the project belongs to a JDR domain, universe docs are resolved locally: `R/_univers/<univers>/{canon,mj}/` where `R` is discovered by walking up to l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`. See `ttrpg`'s `references/jdr-layout.md`.
 
 ## Outputs
 
@@ -52,7 +52,7 @@ Plus optional detail files for projects with 3+ distinct parts, under `<projet>/
 6. **Propose alternatives**: for each vague zone, offer 2–3 options with advantages, drawbacks, and output-style compatibility note.
 7. **Update**: after user responds, draft the updated overview excerpt. Present it with a change summary: "Additions: X. Modifications: Y → Z. Deletions: W. Confirm?" Write only after confirmation.
 8. **Iterate** (back to step 4): identify 2–3 new open questions from the update.
-9. **Exit check**: all required overview elements present AND the last 2–3 iterations produced only minor adjustments? → Present the completion summary and suggest the next step: `obs:brief assemble <projet>` to consolidate the brief, then `writing:toc`.
+9. **Exit check**: all required overview elements present AND the last 2–3 iterations produced only minor adjustments? → Present the completion summary and suggest the next step: `obs:brief assemble <projet>` to consolidate the brief, then `toc`.
 
 ## Test
 

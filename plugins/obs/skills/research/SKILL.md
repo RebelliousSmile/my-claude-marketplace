@@ -1,7 +1,7 @@
 ---
 name: research
 model: sonnet
-description: Performs cross-referenced documentary research for writing projects — web research on historical, cultural, or world-building topics, plus terminology extraction from universe source files. Use when a topic lacks documentation in the universe docs, when forge identifies a knowledge gap, or when extracting terminology from a PDF extraction result. Do NOT use for general software research — use web search directly; do NOT use for reviewing chapter content — use `writing:review` instead.
+description: Performs cross-referenced documentary research for writing projects — web research on historical, cultural, or world-building topics, plus terminology extraction from universe source files. Use when a topic lacks documentation in the universe docs, when `writing:forge` identifies a knowledge gap, or when extracting terminology from a PDF extraction result. Do NOT use for general software research — use web search directly; do NOT use for reviewing chapter content — use `writing:review` instead.
 ---
 
 # Research

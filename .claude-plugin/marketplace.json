@@ -23,9 +23,9 @@
     },
     {
       "name": "writing",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "source": "./plugins/writing",
-      "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, lore, données) est délégué à obs. Fusion de doc-writer + rpg-writer.",
+      "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (forge, toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, données) est délégué à obs ; le lore/règles de jeu à ttrpg. Fusion de doc-writer + rpg-writer.",
       "recommended": false
     },
     {
@@ -86,9 +86,9 @@
     },
     {
       "name": "obs",
-      "version": "0.28.0",
+      "version": "0.29.0",
       "source": "./plugins/obs",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser tree (cache-based: index, check, fix, sort, judge, destinations), and brief/data assembly for writing: brief (builds the portable _brief/ working dir), forge (concept), research (data), extract-pdf (raw source ingestion, also feeds the ttrpg plugin). All solo TTRPG domain tooling — pc, campaign, solo-mc, lore-extract, rules-keeper — moved to the ttrpg plugin.",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser tree (cache-based: index, check, fix, sort, judge, destinations), and brief/data assembly for writing: brief (builds the portable _brief/ working dir), research (data), extract-pdf (raw source ingestion, also feeds the ttrpg plugin). All solo TTRPG domain tooling — pc, campaign, solo-mc, lore-extract, rules-keeper — moved to the ttrpg plugin; concept development (forge) moved to the writing plugin.",
       "recommended": false
     },
     {

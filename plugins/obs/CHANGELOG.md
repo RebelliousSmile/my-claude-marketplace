@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.29.0] — 2026-07-02
+
+### Removed — `forge` déplacé vers `writing`
+- Le skill `forge` (développement/challenge du concept narratif) rejoint `writing` : il ne produit que du craft narratif générique (roman, scénario JDR écrit, guide), sans dépendance aux autres skills `obs`. `obs` reste en amont via `brief` (assemblage de `_brief/`) et `research` (données) ; les références croisées vers le concept pointent désormais vers `writing:forge`.
+- `README.md`, `.claude-plugin/plugin.json`, `references/jdr-layout.md`, `skills/research/SKILL.md` et `skills/brief/` mis à jour en conséquence.
+
 ## [0.28.0] — 2026-07-02
 
 ### Removed — `lore-extract` et `rules-keeper` extraits vers `ttrpg`

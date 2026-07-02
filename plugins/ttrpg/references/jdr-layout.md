@@ -2,7 +2,7 @@
 
 > Dupliquée depuis `obs/references/jdr-layout.md` (extraction du plugin `ttrpg`) — les deux copies doivent rester synchronisées manuellement.
 
-Référence unique de l'arborescence d'un **domaine JDR** (`R = <jeu>`) et de la façon dont les skills JDR s'y repèrent. Pointée par les skills de `ttrpg` (`pc`, `campaign`, `solo-mc`, `lore-extract`, `rules-keeper`) et par les skills de `obs` qui produisent du contenu JDR (`extract-pdf`, `research`, `forge`).
+Référence unique de l'arborescence d'un **domaine JDR** (`R = <jeu>`) et de la façon dont les skills JDR s'y repèrent. Pointée par les skills de `ttrpg` (`pc`, `campaign`, `solo-mc`, `lore-extract`, `rules-keeper`), par les skills de `obs` qui produisent du contenu JDR (`extract-pdf`, `research`), et par `writing:forge` (référence cross-plugin, pas de copie locale).
 
 > **Pas de coffre global, pas de config par machine.** Plus de `<vault>`, plus de `~/.jdr.yaml`, plus de dépôt séparé. Un domaine JDR est un **répertoire autonome** dans `Documents/` (typiquement `Perso/RPG/<jeu>/`) : tout ce dont le jeu a besoin vit dessous, en chemins **relatifs**. Déplace le domaine n'importe où → tous les skills continuent de fonctionner.
 

@@ -1,12 +1,12 @@
 ---
 name: brief
-description: Builds the portable, self-contained _brief/ working directory consumed by the writing plugin — summary.md (autonomous brief), personas/, output-styles/. Use when starting a new writing unit (technical doc, cheat sheet, RPG scenario, novel…) and you need to assemble its brief before producing with writing. Do NOT use to write chapters — use `writing:write`; do NOT use to develop the concept — use `forge` first.
+description: Builds the portable, self-contained _brief/ working directory consumed by the writing plugin — summary.md (autonomous brief), personas/, output-styles/. Use when starting a new writing unit (technical doc, cheat sheet, RPG scenario, novel…) and you need to assemble its brief before producing with writing. Do NOT use to write chapters — use `writing:write`; do NOT use to develop the concept — use `writing:forge` first.
 disable-model-invocation: true
 ---
 
 # Brief
 
-Assembles the **`_brief/` working directory** that the `writing` plugin consumes. `brief` is the *assembler*: it consolidates the gathered inputs (concept from `forge`, lore from `ttrpg:lore-extract`/`research`, rules from `ttrpg:rules-keeper`, raw notes) plus the domain's **global/durable resources** into a **self-contained `summary.md`**, and lays out the brief structure.
+Assembles the **`_brief/` working directory** that the `writing` plugin consumes. `brief` is the *assembler*: it consolidates the gathered inputs (concept from `writing:forge`, lore from `ttrpg:lore-extract`/`research`, rules from `ttrpg:rules-keeper`, raw notes) plus the domain's **global/durable resources** into a **self-contained `summary.md`**, and lays out the brief structure.
 
 ## Two levels: domain `R` vs project `<projet>`
 
@@ -57,5 +57,5 @@ Trigger-to-action mapping:
 - `<projet>/_brief/summary.md` — the autonomous brief this skill produces.
 - `R/bank.yml` — the domain resource manifest (`${CLAUDE_PLUGIN_ROOT}/references/bank-yml.md`): catalogues `R`'s global/durable resources so `brief` can pick what to consolidate. Read at assembly only.
 - `R` (domain) global/durable resources — `R/_univers/`, `R/_systeme/`, `R/_subsystems/` lore/rules/references, consolidated inline. Source of truth lives at the domain; the project gets a self-contained copy of what it needs.
-- Source files passed as arguments (concept, lore, rules, notes) — produced upstream by `forge`, `research`, `ttrpg:lore-extract`, `ttrpg:rules-keeper`.
+- Source files passed as arguments (concept, lore, rules, notes) — produced upstream by `writing:forge`, `research`, `ttrpg:lore-extract`, `ttrpg:rules-keeper`.
 - The `_brief/ → _output/` contract is the `writing` plugin's brief model (`writing:references/brief-model.md`). The `R` / `<projet>` layout is owned by `obs:tree` (`tree:references/tree-convention.md`).

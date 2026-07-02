@@ -1,10 +1,10 @@
 # obs
 
-*Gestion personnelle de notes Obsidian : projets Pro, tri des emails, organisation de l'arborescence `Documents/` — et **assemblage des intrants** (brief, lore, données) consommés par le plugin `writing`.*
+*Gestion personnelle de notes Obsidian : projets Pro, tri des emails, organisation de l'arborescence `Documents/` — et **assemblage des intrants** (brief, données) consommés par le plugin `writing`.*
 
 Plugin personnel orienté coffre Obsidian (chemins et conventions propres à l'auteur).
 
-**Séparation des responsabilités** : `obs` **rassemble les intrants** (brief, lore, données, init projet) ; `writing` **produit** à partir de ces intrants ; `ttrpg` (plugin séparé) porte l'outillage JDR solo (`pc`, `campaign`, `solo-mc`) ainsi que la ventilation lore/règles (`lore-extract`, `rules-keeper`) sur le même domaine de jeu `R`.
+**Séparation des responsabilités** : `obs` **rassemble les intrants** (brief, données, init projet) ; `writing` **produit** à partir de ces intrants (et développe le concept via son propre `forge`) ; `ttrpg` (plugin séparé) porte l'outillage JDR solo (`pc`, `campaign`, `solo-mc`) ainsi que la ventilation lore/règles (`lore-extract`, `rules-keeper`) sur le même domaine de jeu `R`.
 
 ## Skills
 
@@ -20,7 +20,6 @@ Plugin personnel orienté coffre Obsidian (chemins et conventions propres à l'a
 | Skill | Déclencheur | Description |
 |---|---|---|
 | `brief` | `/obs:brief` | Construit le répertoire de travail portable `_brief/` (summary.md autosuffisant + personas/ + output-styles/) consommé par writing |
-| `forge` | `/obs:forge` | Développe et challenge le concept / brief narratif jusqu'à validation de la structure |
 | `research` | `/obs:research` | Recherche documentaire cross-référencée ; extraction de terminologie |
 | `extract-pdf` | `/obs:extract-pdf` | Pipeline multi-sessions d'extraction de gros PDF vers les sources |
 
