@@ -1,6 +1,6 @@
 ---
 name: extract-pdf
-description: Multi-session pipeline for extracting content from large PDF files and distributing it into reference source documents under sources/. Use when importing an existing PDF (rulebook, novel, source document) into a by-game domain (R) across multiple sessions. Do NOT use for web research — use `writing:research` instead; do NOT use for writing new content — use `writing:write` instead. Do NOT use to produce final canon — run `ttrpg:lore-extract` (lore) and `ttrpg:rules-keeper` (rules) on the resulting sources/ files to ventilate into canon/.
+description: Multi-session pipeline for extracting content from large PDF files and distributing it into reference source documents under sources/. Use when importing an existing PDF (rulebook, novel, source document) into a by-game domain (R) across multiple sessions. Do NOT use for web research — use `research` instead; do NOT use for writing new content — use `writing:write` instead. Do NOT use to produce final canon — run `ttrpg:lore-extract` (lore) and `ttrpg:rules-keeper` (rules) on the resulting sources/ files to ventilate into canon/.
 disable-model-invocation: true
 ---
 

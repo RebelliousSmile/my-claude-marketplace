@@ -58,4 +58,4 @@ Trigger-to-action mapping:
 - `R/bank.yml` — the domain resource manifest (`${CLAUDE_PLUGIN_ROOT}/references/bank-yml.md`): catalogues `R`'s global/durable resources so `brief` can pick what to consolidate. Read at assembly only.
 - `R` (domain) global/durable resources — `R/_univers/`, `R/_systeme/`, `R/_subsystems/` lore/rules/references, consolidated inline. Source of truth lives at the domain; the project gets a self-contained copy of what it needs.
 - Source files passed as arguments (concept, lore, rules, notes) — produced upstream by `writing:forge`, `research`, `ttrpg:lore-extract`, `ttrpg:rules-keeper`.
-- The `_brief/ → _output/` contract is the `writing` plugin's brief model (`writing:references/brief-model.md`). The `R` / `<projet>` layout is owned by `obs:tree` (`tree:references/tree-convention.md`).
+- The `_brief/ → _output/` contract is the `writing` plugin's brief model (`writing:references/brief-model.md`). The `R` / `<projet>` layout is owned by `obs:tree` (`obs:references/tree-convention.md`).

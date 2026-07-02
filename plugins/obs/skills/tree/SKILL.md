@@ -58,4 +58,4 @@ Trigger-to-action mapping:
 - `${CLAUDE_PLUGIN_ROOT}/references/tree-convention.md` — invariants, default pattern, cache format, anchor resolution.
 - `${CLAUDE_PLUGIN_ROOT}/references/destinations-template.md` — `destinations.txt` format + fillable template for the `email-to-markdown` router; how to derive it from a scanned tree.
 - `<anchor>/_tree/cache.json` — the navigation cache `tree` maintains.
-- `R/bank.yml` — per-domain resource manifest `tree` maintains; format in `obs:brief`'s `references/bank-yml.md`. Consumed by `brief`.
+- `R/bank.yml` — per-domain resource manifest `tree` maintains; format in `${CLAUDE_PLUGIN_ROOT}/references/bank-yml.md`. Consumed by `brief`.

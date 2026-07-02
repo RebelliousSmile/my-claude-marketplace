@@ -1,7 +1,7 @@
 ---
 name: lore-extract
 model: sonnet
-description: Extracts and organizes universe lore from raw source files into structured thematic files under canon/ and mj/ (terminologie, factions, histoire, géographie, personnages, and optional themes), separating canonical lore (canon/) from homemade/user-created content (mj/). Works from the current directory; resolves the game domain R locally (walks up to the _campagnes/, _univers/ or _pjs/ marker) to place outputs. Use when processing PDF extracts, notes, or raw text into universe documentation ready for other writing skills (and by ttrpg:campaign for JDR universes). Do NOT use for web research — use `writing:research` instead; do NOT use for PDF extraction — use `extract-pdf` first, then pipe output here.
+description: Extracts and organizes universe lore from raw source files into structured thematic files under canon/ and mj/ (terminologie, factions, histoire, géographie, personnages, and optional themes), separating canonical lore (canon/) from homemade/user-created content (mj/). Works from the current directory; resolves the game domain R locally (walks up to the _campagnes/, _univers/ or _pjs/ marker) to place outputs. Use when processing PDF extracts, notes, or raw text into universe documentation ready for other writing skills (and by ttrpg:campaign for JDR universes). Do NOT use for web research — use `obs:research` instead; do NOT use for PDF extraction — use `extract-pdf` first, then pipe output here.
 ---
 
 # Lore Extract
