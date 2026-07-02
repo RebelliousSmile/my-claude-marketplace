@@ -54,6 +54,6 @@ Adapter les libellés au domaine. Inclure uniquement les agrégats qui ont une v
 
 ## Règles générales
 
-- Ne jamais reproduire le contenu verbatim des fichiers sources dans la table : extraire uniquement les champs structurés.
+- Ne jamais reproduire le contenu verbatim des fichiers sources dans la table : extraire uniquement les champs structurés. Cette règle suppose que les champs structurés capturent déjà toute la valeur informative (cas des notifications/logs automatiques). Si un fichier porte un contenu libre rédigé par un humain dont le sens n'est pas réductible à des champs (le corps du message *est* l'information), le fichier n'est pas un candidat `digest` — voir la garde à l'étape 3 de `03-digest.md`.
 - Si un champ n'est pas extractible de façon fiable depuis un fichier, laisser la cellule vide (ne pas inventer).
 - Le fichier digest est autonome : il doit être lisible sans les fichiers sources (qui seront supprimés).

@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.30.0] — 2026-07-02
+
+### Fixed (`filler`) — `digest` ne s'applique plus aux messages humains
+- `digest` extrayait les champs structurés d'un groupe homogène et supprimait les sources sans jamais reproduire le contenu verbatim — correct pour une notification automatique (l'information tient dans les champs), mais destructeur pour un message humain (l'information tient dans le corps du texte libre, non réductible à une colonne) : une fois la source supprimée, on savait seulement « untel a écrit à telle date », plus ce qui avait été dit.
+- Garde ajoutée à l'étape 3 de `03-digest.md` : si un champ variable est un texte libre porteur de sens rédigé par un humain, le groupe n'est pas un candidat `digest`, même structurellement homogène — rediriger vers `synthesize`, qui préserve l'information sous forme de prose. Règle correspondante explicitée dans `references/digest-matrix.md` et dans le tableau des actions / la philosophie de `SKILL.md`. Scénario d'éval ajouté (`digest-refuse-human-messages`).
+
 ## [0.29.0] — 2026-07-02
 
 ### Removed — `forge` déplacé vers `writing`

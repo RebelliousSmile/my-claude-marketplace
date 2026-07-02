@@ -15,7 +15,7 @@ Le contenu a un cycle de vie : ce qui est essentiel aujourd'hui devient superflu
 
 1. **Arrivée** — fichiers bruts, hétérogènes, bruités
 2. **Tri** — regrouper par entité pour rendre le volume lisible
-3. **Digest** — N fichiers homogènes → 1 fichier de données (suppression des sources)
+3. **Digest** — N fichiers homogènes de contenu identifié (notifications, logs) → 1 fichier de données (suppression des sources) ; jamais sur des messages humains, voir `synthesize`
 4. **Condense** — 1 fichier verbeux → son essence (suppression du bruit)
 5. **Déclin** — l'essence elle-même vieillit et peut être supprimée
 
@@ -27,7 +27,7 @@ Il n'existe pas d'état final "rangé". Chaque passage de `filler` sur un réper
 |---|--------|------|--------|
 | 01 | `survey` | Inventorier le répertoire : nb fichiers, types, plage de dates, word count, flags | `<path>` |
 | 02 | `sort` | Regrouper par entité/date/type/topic — scheme `entity` produit aussi un triage par répertoire | `<path>` [scheme] |
-| 03 | `digest` | Consolidation destructive : N fichiers homogènes → 1 fichier de données, sources supprimées | `<path>` `<filter>` |
+| 03 | `digest` | Consolidation destructive : N fichiers homogènes de contenu identifié (notifications/logs) → 1 fichier de données, sources supprimées — jamais sur des messages humains | `<path>` `<filter>` |
 | 04 | `index` | Créer un fichier d'index/MOC au niveau `<Subcategory>` avec wikilinks groupés | `<path>` [group-by] |
 | 05 | `merge` | Concaténer les fichiers sélectionnés en un document consolidé avec TOC | `<path>` [glob\|list] |
 | 06 | `clean` | Identifier et supprimer ou archiver les fichiers selon des critères (vide, doublon, vieux, orphelin) | `<path>` [criteria] |

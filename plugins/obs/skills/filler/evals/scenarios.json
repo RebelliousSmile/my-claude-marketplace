@@ -43,6 +43,13 @@
       "input": "trie les fichiers de /Notes/inbox",
       "expected_action": "sort",
       "expected_output_contains": ["plan", "schéma", "confirmation"]
+    },
+    {
+      "id": "digest-refuse-human-messages",
+      "description": "L'utilisateur demande un digest sur des emails rédigés par un humain, au contenu libre non réductible à des colonnes",
+      "input": "fais un digest des messages de Julie dans /Pro/Clients/acme/2026/06",
+      "expected_action": "digest",
+      "expected_output_contains": ["synthesize", "texte libre"]
     }
   ]
 }
