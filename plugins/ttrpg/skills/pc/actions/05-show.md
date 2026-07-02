@@ -14,7 +14,7 @@ A structured, read-only character sheet rendered to the user: progress statuses,
 ## Process
 
 Determines the active PJ:
-- If argument supplied (`/obs:pc show @<pj>`): use it
+- If argument supplied (`/ttrpg:pc show @<pj>`): use it
 - Otherwise read `.current-session` at the domain root (`R/.current-session`)
 - If empty or missing: prompt the user
 

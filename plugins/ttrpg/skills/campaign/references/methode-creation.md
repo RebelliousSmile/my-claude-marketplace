@@ -1,6 +1,6 @@
 # Our method — Preparing a solo TTRPG campaign from canon
 
-This method describes **our** way of producing play material for the `rpg` skill. It deals exclusively with the **craft of preparation** — relationships, situation, NPCs, scenes, clues — and **never** with mechanics. Any rule (reward, tag, challenge, roll) is deferred to the game's `R/_systeme/{canon,mj}/`: we invent no mechanics here.
+This method describes **our** way of producing play material for the `campaign` skill. It deals exclusively with the **craft of preparation** — relationships, situation, NPCs, scenes, clues — and **never** with mechanics. Any rule (reward, tag, challenge, roll) is deferred to the game's `R/_systeme/{canon,mj}/`: we invent no mechanics here.
 
 Three principles govern it from start to finish:
 
@@ -43,7 +43,7 @@ Three principles govern it from start to finish:
 
 **What to do.** The relationship map is static; it needs a **trajectory**. Limit to **≈3 antagonistic forces** (factions, threats, setting dynamics). For each: a name, its **own motivation** (what pushes it to act on its own), a **chain of visible steps** (from bad to worse) if no one intervenes, and the targeted **final catastrophe**. Calibrate the speeds: one slow background one, one or two immediate ones. In parallel, **seed redundant secrets and clues**: for each hidden truth the PC could discover, provide **at least three clues** of different kinds (witness, physical trace, document/deduction), spread across distinct places and NPCs. Propose the forces + their steps, have the user choose which to activate, record the state in `R/_campagnes/<campagne>/`.
 
-> The mechanical formalism of advancement (rolls, ticked segments) does not belong to `rpg`: to advance a force via a rule, defer to `R/_systeme/{canon,mj}/`. Here we prepare **fictional steps** and **deadlines**.
+> The mechanical formalism of advancement (rolls, ticked segments) does not belong to `campaign`: to advance a force via a rule, defer to `R/_systeme/{canon,mj}/`. Here we prepare **fictional steps** and **deadlines**.
 
 **Techniques from the corpus that feed it.**
 - *Fronts and clocks as a preparation tool* — forces endowed with an impulse and visible steps, played "to discover"; ~3 fronts at varied speeds. ([Fronts — Dungeon World SRD](https://www.dungeonworldsrd.com/gamemastering/fronts/), [SlyFlourish](https://slyflourish.com/looking_back_on_fronts.html)) — *Adapted system-agnostic: we keep the idea of forces with a trajectory, we remove the system-specific mechanical vocabulary.*

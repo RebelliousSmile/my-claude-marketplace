@@ -37,6 +37,7 @@ poser      challenger     figer    verrou    produire
 | `adjust` | `/design:adjust` | Arbitrage maquettes + figeage du contrat 3 couches (tokens.json · components.json · design-system.md). |
 | `enforce` | `/design:enforce` | Linter portable dérivé du contrat · 3 gates · pivot sc-php/sc-js · lint instances/DB. |
 | `diffuse` | `/design:diffuse` | Éléments répétables sous gate lint · baseline HTML/CSS · pivot sc-php/sc-js. |
+| `harness` | `/design:harness` | Génère le harness HTML autonome (`setPage`/`setViewport`) piloté par l'oracle de fidélité et le fan-out `copycat`. |
 
 ## Enforcement hybride
 

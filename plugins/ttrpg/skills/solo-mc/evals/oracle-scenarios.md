@@ -1,6 +1,6 @@
 # Oracle — Functional Test Scenarios
 
-Functional tests for the `oracle` agent (`plugins/obs/agents/oracle.md`). Each scenario gives an in-play situation; the oracle must route to the right subsystem, **read the real domain data**, **roll a real die**, and return the structured Output block. Pass = correct routing + a real draw grounded in the subsystem tables + structured (non-prose) output.
+Functional tests for the `oracle` agent (`plugins/ttrpg/agents/oracle.md`). Each scenario gives an in-play situation; the oracle must route to the right subsystem, **read the real domain data**, **roll a real die**, and return the structured Output block. Pass = correct routing + a real draw grounded in the subsystem tables + structured (non-prose) output.
 
 Game domain `R` resolved **locally** (walk up to l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — no global config). Subsystems at `R/_subsystems/<nom>/canon/`. See `../../../references/jdr-layout.md`.
 
@@ -19,7 +19,7 @@ Game domain `R` resolved **locally** (walk up to l'un des marqueurs `_campagnes/
 **Two test artifacts:**
 
 1. **`oracle-data-checks.py`** (this dir) — reproducible data-integrity checks on the subsystems the oracle draws from (resolves `R` locally via l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`; pass the domain path as an argument or run from inside `R`). Run: `python oracle-data-checks.py [chemin-vers-R]`. Asserts: muses master table 200×17, the `[d10] → réponse d'oracle` invariant (200/200), the weighted distribution 40/40/40/40/20/20, parallaxe 54 cards, filter correctness, and the systematic-exclusion exceptions (Le Retour, Le Sanctuaire). 11/11 PASS at 2026-06-01.
-2. **The scenario table above** — behavioural test of the agent itself: run an agent that loads `plugins/obs/agents/oracle.md` as its instructions, against a real domain `R`, one scenario at a time, and capture the Output block. The oracle **draws a card** (single `random.randint(1,N)`); a game-system die is **read off** the card's `[dX]`, not rolled.
+2. **The scenario table above** — behavioural test of the agent itself: run an agent that loads `plugins/ttrpg/agents/oracle.md` as its instructions, against a real domain `R`, one scenario at a time, and capture the Output block. The oracle **draws a card** (single `random.randint(1,N)`); a game-system die is **read off** the card's `[dX]`, not rolled.
 
 ## Results log
 

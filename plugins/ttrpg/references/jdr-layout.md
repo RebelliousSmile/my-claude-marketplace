@@ -1,8 +1,8 @@
 # JDR Layout — convention locale d'un domaine de jeu
 
-> Dupliquée dans `ttrpg/references/jdr-layout.md` (extraction du plugin `ttrpg`) — les deux copies doivent rester synchronisées manuellement.
+> Dupliquée depuis `obs/references/jdr-layout.md` (extraction du plugin `ttrpg`) — les deux copies doivent rester synchronisées manuellement.
 
-Référence unique de l'arborescence d'un **domaine JDR** (`R = <jeu>`) et de la façon dont les skills JDR s'y repèrent. Pointée par les skills de `obs` qui produisent du contenu JDR (`lore-extract`, `rules-keeper`, `extract-pdf`, `research`, `forge`) et par les skills de `ttrpg` (`pc`, `campaign`, `solo-mc`).
+Référence unique de l'arborescence d'un **domaine JDR** (`R = <jeu>`) et de la façon dont les skills JDR s'y repèrent. Pointée par les skills de `ttrpg` (`pc`, `campaign`, `solo-mc`) et par les skills de `obs` qui produisent du contenu JDR (`lore-extract`, `rules-keeper`, `extract-pdf`, `research`, `forge`).
 
 > **Pas de coffre global, pas de config par machine.** Plus de `<vault>`, plus de `~/.jdr.yaml`, plus de dépôt séparé. Un domaine JDR est un **répertoire autonome** dans `Documents/` (typiquement `Perso/RPG/<jeu>/`) : tout ce dont le jeu a besoin vit dessous, en chemins **relatifs**. Déplace le domaine n'importe où → tous les skills continuent de fonctionner.
 
@@ -153,13 +153,13 @@ Quand `ttrpg:solo-mc` décide un fait en cours de partie, choisir la destination
 
 ---
 
-## Arbitrage des informations préparatoires (`rpg`)
+## Arbitrage des informations préparatoires (`campaign`)
 
 La prep (`R/_campagnes/<campagne>/prep/session-<n>.md`) est un **fichier de travail**, pas un artefact canonique : il sert à amorcer la séance que `solo-mc` jouera, puis devient obsolète. **Une information de prep ne fait jamais foi par elle-même** — elle ne se substitue pas au canon. À la fin de chaque prep (et au `review`), **chaque information préparatoire reçoit un statut explicite**, selon ce qu'elle doit devenir :
 
 | Statut | Décision | Destination |
 |--------|----------|-------------|
-| **Canon (à promouvoir)** | Vérité durable qui doit survivre à la séance (PNJ nommé, lieu, faction, fait du monde, secret établi) | Promouvoir dans un `mj/` de fiction : `R/_campagnes/<campagne>/mj/` (portée campagne) ou `R/_univers/<univers>/mj/` (portée monde, réutilisable). **`rpg` n'écrit que dans `mj/`, jamais `canon/`** (réservé à `lore-extract`). |
+| **Canon (à promouvoir)** | Vérité durable qui doit survivre à la séance (PNJ nommé, lieu, faction, fait du monde, secret établi) | Promouvoir dans un `mj/` de fiction : `R/_campagnes/<campagne>/mj/` (portée campagne) ou `R/_univers/<univers>/mj/` (portée monde, réutilisable). **`campaign` n'écrit que dans `mj/`, jamais `canon/`** (réservé à `lore-extract`). |
 | **Travail temporaire (à garder)** | Échafaudage de séance, valable seulement pour la séance à venir (scènes probables, questions d'oracle pré-armées, tables, hooks) | Reste dans `prep/session-<n>.md`, **explicitement nommé comme prep** — jamais traité comme canon. |
 | **Jetable (à supprimer)** | Information rendue obsolète (idée abandonnée, hypothèse invalidée par le jeu, prep d'une séance déjà jouée et sans résidu durable) | Supprimer ou archiver clairement ; ne pas la laisser pourrir dans un fichier de travail où elle pourrait être reprise par erreur. |
 
@@ -170,7 +170,7 @@ Règles de l'arbitrage :
 - **Le fichier de travail ne se substitue pas au canon** : tant qu'une info n'est pas promue, elle n'a pas valeur de vérité ; au jeu, `solo-mc` lit `mj/` (promu), pas la prep.
 - **Frontière de provenance préservée** : la promotion va toujours vers `mj/` (création MJ), jamais vers `canon/` (cf. *Canon vs maison*). Une promotion qui contredirait le canon est signalée, pas appliquée en silence.
 
-> Pendant du *Routage des faits de fiction (solo-mc)* ci-dessus, mais côté **prep** : là où `solo-mc` route un fait **décidé en jeu**, `rpg` arbitre une info **préparée avant le jeu**. Même destination canonique (`mj/` campagne ou univers), même interdit (`canon/` réservé à `lore-extract`).
+> Pendant du *Routage des faits de fiction (solo-mc)* ci-dessus, mais côté **prep** : là où `solo-mc` route un fait **décidé en jeu**, `campaign` arbitre une info **préparée avant le jeu**. Même destination canonique (`mj/` campagne ou univers), même interdit (`canon/` réservé à `lore-extract`).
 
 ---
 
@@ -181,7 +181,7 @@ Règles de l'arbitrage :
 | Portée | Rapport de travail | Trouvailles vérifiées |
 |--------|--------------------|-----------------------|
 | **Setting/univers** (durable, partagé) | `<univers-root>/research/<slug>-<date>.md` | `<univers-root>/canon/<thème>.md` |
-| **Campagne** (propre à une partie) | `<campagne-root>/research/<slug>-<date>.md` | restent dans la prep de campagne (`rpg`) ; promues en canon **sur décision explicite** |
+| **Campagne** (propre à une partie) | `<campagne-root>/research/<slug>-<date>.md` | restent dans la prep de campagne (`campaign`) ; promues en canon **sur décision explicite** |
 | **Projet d'écriture** | `<projet-root>/research/<slug>-<date>.md` | `canon/` de l'univers du projet |
 
 ---
@@ -190,9 +190,9 @@ Règles de l'arbitrage :
 
 Les sous-arbres `canon/` + `mj/` sont **partagés** au sein du plugin obs :
 
-- `_systeme/{canon,mj}/` — référence mécanique partagée par `solo-mc`, `pc`, `rpg`. `mj/solo.md` est **écrit par `solo-mc`** en partie.
-- `_subsystems/<nom>/{canon,mj}/` — **produit par `rules-keeper`, consommé par `solo-mc` uniquement** (outils de jeu en direct) ; ni `pc` ni `rpg` ne les référencent.
-- `_univers/<univers>/{canon,mj}/` — `lore-extract` écrit `canon/` ; `rpg` écrit `mj/` (jamais `canon/`).
+- `_systeme/{canon,mj}/` — référence mécanique partagée par `solo-mc`, `pc`, `campaign`. `mj/solo.md` est **écrit par `solo-mc`** en partie.
+- `_subsystems/<nom>/{canon,mj}/` — **produit par `rules-keeper`, consommé par `solo-mc` uniquement** (outils de jeu en direct) ; ni `pc` ni `campaign` ne les référencent.
+- `_univers/<univers>/{canon,mj}/` — `lore-extract` écrit `canon/` ; `campaign` écrit `mj/` (jamais `canon/`).
 - `_campagnes/<campagne>/mj/` — **écrit par `solo-mc`** (périmètre campagne seul).
 
 Ne jamais renommer ni déplacer ces dossiers sans coordination : c'est le contrat d'interopérabilité entre skills JDR.

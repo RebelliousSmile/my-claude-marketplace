@@ -1,6 +1,6 @@
 # Narrateur — Functional Test Scenarios
 
-Functional tests for the `narrateur` agent (`plugins/obs/agents/narrateur.md`) — the GM voice. Unlike the oracle (data-deterministic), the narrateur is **qualitative**: tests observe the rendered output against behavioural criteria. Run via an agent that loads `narrateur.md` + `references/response-templates.md`, against a real domain `R`, with a minimal synthetic context.
+Functional tests for the `narrateur` agent (`plugins/ttrpg/agents/narrateur.md`) — the GM voice. Unlike the oracle (data-deterministic), the narrateur is **qualitative**: tests observe the rendered output against behavioural criteria. Run via an agent that loads `narrateur.md` + `references/response-templates.md`, against a real domain `R`, with a minimal synthetic context.
 
 Subsystems for the narrateur (under `R/_subsystems/`): **conversation-cards** (dialogue — present, `validated: true`) and **cinerio** (description — NOT installed yet → must graceful-degrade). Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — see `../../../references/jdr-layout.md`.
 
@@ -14,7 +14,7 @@ Subsystems for the narrateur (under `R/_subsystems/`): **conversation-cards** (d
 
 ## How to run
 
-Agent-as-narrateur: load `plugins/obs/agents/narrateur.md` + `plugins/obs/skills/solo-mc/references/response-templates.md` as instructions; provide a minimal context (a system + a scene); for each scenario render the output and capture it. conversation-cards drawn from `R/_subsystems/conversation-cards/canon/conversation-cards.md`.
+Agent-as-narrateur: load `plugins/ttrpg/agents/narrateur.md` + `plugins/ttrpg/skills/solo-mc/references/response-templates.md` as instructions; provide a minimal context (a system + a scene); for each scenario render the output and capture it. conversation-cards drawn from `R/_subsystems/conversation-cards/canon/conversation-cards.md`.
 
 Note: the narrateur has `tools: Read, Glob` (no Bash) — it **selects** a conversation card by attitude/emphasis rather than rolling; true random draws are the oracle's job.
 

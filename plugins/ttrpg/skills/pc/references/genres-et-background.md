@@ -2,7 +2,7 @@
 
 Helps **build a PJ's background** through a set of questions tailored to the game's **genre**. The reference provides a **common trunk** (all settings) then **signature questions** per **genre family**, plus **modulators** to graft on. The answers feed `pj.md` (and, for anything touching meaning, `intention.md`).
 
-Structure inspiration: the character-creation questionnaire of **Ecryme 2nd edition** (John Grümph) — the character is built by answering concrete questions about their place in the world and their bonds, not by filling in boxes. The logic of **double-charged bonds** echoes the R-map of `../../rpg/references/methode-creation.md` (step 3).
+Structure inspiration: the character-creation questionnaire of **Ecryme 2nd edition** (John Grümph) — the character is built by answering concrete questions about their place in the world and their bonds, not by filling in boxes. The logic of **double-charged bonds** echoes the R-map of `../../campaign/references/methode-creation.md` (step 3).
 
 > **Scope.** Here we craft **fictional background** — identity, bonds, desire, wound. **No mechanics**: stats, tags, rolls stay deferred to the game's `R/_systeme/{canon,mj}/`. Proceed by **back-and-forth**: offer 2–3 leads per question, the user **chooses/amends**, then we **record** — never a page written in one block.
 
@@ -165,4 +165,4 @@ The **signature** questions and **modulators** sort into the same logic: what de
 
 - Genre taxonomy: **Guide du Rôliste Galactique** — `legrog.org/themes/`.
 - Questionnaire structure: inspired by the character creation of **Ecryme 2nd edition** (John Grümph, Le Grümph / Matagot) — built from concrete questions rather than from boxes.
-- Double-charged bonds: cf. `../../rpg/references/methode-creation.md` (R-map, step 3).
+- Double-charged bonds: cf. `../../campaign/references/methode-creation.md` (R-map, step 3).

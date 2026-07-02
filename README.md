@@ -18,7 +18,8 @@ Le **détail des skills de chaque plugin vit dans son propre README** — ce tab
 | [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) · [CHANGELOG](plugins/sc-python/CHANGELOG.md) | — | Stack Python : Django / FastAPI / Flask / Celery |
 | [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) · [CHANGELOG](plugins/sc-rust/CHANGELOG.md) | — | Stack Rust : Axum / Actix-web |
 | [`sc-tiers`](plugins/sc-tiers/README.md) | [README](plugins/sc-tiers/README.md) · [CHANGELOG](plugins/sc-tiers/CHANGELOG.md) | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
-| [`obs`](plugins/obs/README.md) | [README](plugins/obs/README.md) · [CHANGELOG](plugins/obs/CHANGELOG.md) | — | Notes Obsidian — projets Pro, JDR solo, tri d'emails, assemblage d'intrants pour `writing` |
+| [`obs`](plugins/obs/README.md) | [README](plugins/obs/README.md) · [CHANGELOG](plugins/obs/CHANGELOG.md) | — | Notes Obsidian — projets Pro, tri d'emails, assemblage d'intrants pour `writing` et `ttrpg` |
+| [`ttrpg`](plugins/ttrpg/README.md) | [README](plugins/ttrpg/README.md) · [CHANGELOG](plugins/ttrpg/CHANGELOG.md) | — | JDR solo sur domaines de jeu autonomes : fiches de personnage, prépa MJ, jeu en direct sous Claude Code |
 
 ## Installation
 
@@ -73,7 +74,8 @@ Par projet — `.claude/settings.json` du projet, ou via commande :
 | SaaS tiers (Firebase, Klaviyo, GTM…) | `sc-tiers` |
 | Jeu vidéo (contenu narratif) | `game-writer` |
 | Jeu vidéo (code Godot) | `sc-godot` |
-| Notes Obsidian / JDR solo | `obs` |
+| Notes Obsidian | `obs` |
+| JDR solo | `ttrpg` |
 
 ## Licence
 

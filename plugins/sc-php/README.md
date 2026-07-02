@@ -16,8 +16,9 @@ Détecte la stack du projet et charge à la demande les pivots de capacité appl
 | `teach` | `/sc-php:teach` | Enseigne PHP, patterns OOP et idiomes de framework |
 | `bruno` | `/sc-php:bruno` | Tests API Bruno en CLI — itère jusqu'au vert (scripts, environnements, assertions) |
 | `design-bridge` | `/sc-php:design-bridge` | Réceptacle du pivot design pour PHP/WP — linter natif PHP/WP + export de block patterns WordPress |
+| `builder-coverage` | `/sc-php:builder-coverage` | Gate de couverture WYSIWYG pour un thème bloc WordPress FSE — prouve par parcours exhaustif que chaque composant a une block pattern éditable, et que les patterns sont rangées par rôle de section |
 
-> `bruno` et `design-bridge` sont spécifiques à PHP et ne sont pas propagés aux autres plugins `sc-*`.
+> `bruno`, `design-bridge` et `builder-coverage` sont spécifiques à PHP/WordPress et ne sont pas propagés aux autres plugins `sc-*`.
 
 ## Licence
 

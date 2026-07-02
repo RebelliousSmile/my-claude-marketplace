@@ -86,9 +86,16 @@
     },
     {
       "name": "obs",
-      "version": "0.25.0",
+      "version": "0.27.0",
       "source": "./plugins/obs",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), solo TTRPG domain tooling (pc, rpg, solo-mc) on autonomous local game domains, the Documents/ organiser tree (cache-based: index, check, fix, sort, judge, destinations), and brief/lore/data assembly for writing: brief (builds the portable _brief/ working dir), forge (concept), research (data), lore-extract, rules-keeper, extract-pdf.",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser tree (cache-based: index, check, fix, sort, judge, destinations), and brief/lore/data assembly for writing: brief (builds the portable _brief/ working dir), forge (concept), research (data), lore-extract, rules-keeper, extract-pdf — lore-extract and rules-keeper also feed the ttrpg plugin. Solo TTRPG domain tooling (pc, campaign, solo-mc) moved to the ttrpg plugin.",
+      "recommended": false
+    },
+    {
+      "name": "ttrpg",
+      "version": "0.1.0",
+      "source": "./plugins/ttrpg",
+      "description": "Solo tabletop RPG toolkit on autonomous local game domains (R): pc (player-character sheets), campaign (GM prep — scenarios, fronts, NPCs, factions; ex-obs:rpg), solo-mc (live play under Claude Code) with its narrateur and oracle agents. Extracted from obs; consumes obs:lore-extract and obs:rules-keeper.",
       "recommended": false
     }
   ]

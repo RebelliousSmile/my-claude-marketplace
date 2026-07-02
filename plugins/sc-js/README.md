@@ -34,6 +34,7 @@ Pertinent si tu travailles sur des projets Vue / Nuxt / Vite / Alpine avec le fr
 /sc-js:legacy         → migration Vue 2 → 3, ESM, TypeScript strict
 /sc-js:teach          → explications composables, réactivité, patterns async
 /sc-js:design-bridge  → réceptacle du pivot design (règle ESLint + composant Vue 3/React)
+/sc-js:wp-blocks      → round-trip de validité des blocs Gutenberg (Playwright) pour markup FSE généré hors éditeur
 ```
 
 ## Utilisation

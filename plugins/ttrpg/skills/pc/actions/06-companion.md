@@ -89,7 +89,7 @@ When the companion already has a complete sheet elsewhere (pre-gen, mue, univers
 
 The roster's `ref:` (`_roster.yaml`) points to the same canonical sheet.
 
-Wrapper sheets live under `_pjs/<pj>/compagnons/`; the **PJ-level roster** (`_roster.yaml`) lists them, and a campaign's `config.yaml` (if one exists) only **references** this roster (the way a campaign instance references the canonical PJ). Read by `obs:solo-mc` in play for substitution.
+Wrapper sheets live under `_pjs/<pj>/compagnons/`; the **PJ-level roster** (`_roster.yaml`) lists them, and a campaign's `config.yaml` (if one exists) only **references** this roster (the way a campaign instance references the canonical PJ). Read by `ttrpg:solo-mc` in play for substitution.
 
 ## Test
 

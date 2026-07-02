@@ -17,7 +17,7 @@ A validated redistribution into the standard PJ files under `R/_pjs/<pj>/`, plus
 2. Presents a redistribution plan before writing anything:
    - Which source content goes to which target file
    - Which missing files will be created from template
-   - Which content belongs outside `_pjs/` (campaign prep → `rpg` ; durable univers → `lore-extract`/`rpg` tree ; live play → `obs:solo-mc`)
+   - Which content belongs outside `_pjs/` (campaign prep → `campaign` ; durable univers → `lore-extract`/`campaign` tree ; live play → `ttrpg:solo-mc`)
    - Which content is ambiguous and needs user arbitration
 3. Waits for user validation.
 4. If source is a single `.md`: creates `R/_pjs/<slug>/` first, then copies missing files from template.

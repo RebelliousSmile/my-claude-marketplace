@@ -16,7 +16,7 @@ Read the campaign prep (`synopsis.md`, `scenarios/`, `prep/`, `fronts.md`, `conf
 
 1. **Serving the PC** (blocking) — at least one scenario/hook touches the PC's red line or visceral question; otherwise the prep does not serve the player.
 2. **Playable fronts** (blocking) — each active faction has at least one numbered clock (state + trigger + deadline) in `fronts.md`, which `solo-mc` can advance.
-3. **Canon/MJ provenance** (blocking) — no `rpg` write into `canon/`; no entity duplicated between `canon/` and `mj/` (one entity in a single sub-tree, the MJ extension `[[links]]` the canon); no MJ content contradicting the canon without reporting it.
+3. **Canon/MJ provenance** (blocking) — no `campaign` write into `canon/`; no entity duplicated between `canon/` and `mj/` (one entity in a single sub-tree, the MJ extension `[[links]]` the canon); no MJ content contradicting the canon without reporting it.
 4. **Actionable scenarios** (warning) — each scenario has scene seeds AND possible outcomes (not a fixed script, not a mere idea).
 5. **Playable NPCs** (warning) — each NPC in play has motivation + secret/leverage + a voice.
 6. **Links & setting tree** (warning) — the `[[links]]` scenario→setting (canon/ and mj/) resolve; no setting data duplicated on the campaign side; `index.md` up to date.

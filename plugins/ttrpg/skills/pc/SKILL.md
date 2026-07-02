@@ -5,9 +5,9 @@ description: >-
   fill or reorganize its files, log a game session (game system), display the character
   sheet tied to the active campaign, or manage the PJ's companions (the recurring team).
   Use when the user's message is about PJ management in a solo JDR domain or invokes
-  /obs:pc with a player-character intent.
-  Do NOT use for campaign prep (scénarios, PNJ, factions) — use `rpg`; nor for live play
-  (scene, oracle, roll) — use `obs:solo-mc`.
+  /ttrpg:pc with a player-character intent.
+  Do NOT use for campaign prep (scénarios, PNJ, factions) — use `campaign`; nor for live play
+  (scene, oracle, roll) — use `ttrpg:solo-mc`.
 disable-model-invocation: true
 ---
 
@@ -52,16 +52,16 @@ Router — dispatches based on user intent:
 - Template (shared, in `R`): `R/_shared/pj-template/`
 - Manager script (shared, in `R`): `R/_shared/pj-manager.py`
 - Ask for the PJ name if not supplied via `$ARGUMENTS`. List existing folders in `R/_pjs/`.
-- Rules reference (terminology and mechanics): the active **game system**'s rules-keeper-optimized rules at `R/_systeme/{canon,mj}/` (official `canon/` + GM house rules `mj/`), produced by `obs:rules-keeper`. Effective rules = canon + declared house rules. **Generic subsystems** (Parallaxe, Cinério, Muses et Oracles) are live-play tools consumed by `obs:solo-mc` only — `pc` does not reference them.
+- Rules reference (terminology and mechanics): the active **game system**'s rules-keeper-optimized rules at `R/_systeme/{canon,mj}/` (official `canon/` + GM house rules `mj/`), produced by `obs:rules-keeper`. Effective rules = canon + declared house rules. **Generic subsystems** (Parallaxe, Cinério, Muses et Oracles) are live-play tools consumed by `ttrpg:solo-mc` only — `pc` does not reference them.
 - Never invent mechanics — always consult the references above.
 - **Rules unavailable** — if `R/_systeme/canon/` (output of `rules-keeper`) does not exist yet (for example, raw sources not yet dispatched: re-run `extract-pdf` then `rules-keeper`), the rules references above are unavailable: invent no mechanics, ask the user to regenerate the system. The house rules `R/_systeme/mj/` and the lore `R/_univers/<univers>/canon/` do not depend on this regeneration.
-- The `_template/` and `pj-manager.py` reflect the active **game system**; for any mechanical term, this skill defers to the rules-keeper references (`R/_systeme/{canon,mj}/`) of the game system above. (Subsystems — Parallaxe, Cinério, Muses et Oracles — remain the purview of `obs:solo-mc`.)
+- The `_template/` and `pj-manager.py` reflect the active **game system**; for any mechanical term, this skill defers to the rules-keeper references (`R/_systeme/{canon,mj}/`) of the game system above. (Subsystems — Parallaxe, Cinério, Muses et Oracles — remain the purview of `ttrpg:solo-mc`.)
 - Date format: `YYYY-MM-DD` throughout all files.
-- **Session dating / numbering** — dated session journals live at `R/<AAAA>/<MM>/<pj>/session-<AAAA-MM-JJ>-<N>.md`. Number them and pick "the last session" with the **canonical session ordering** (`../../references/jdr-layout.md › Ordre canonique des séances`), shared with `obs:solo-mc`: `<N>` is the authority, extracted by suffix form (never read a date day as `<N>`); exclude `-prep-`; the last session is the file of **maximal `<N>`**. This is the same key `solo-mc`'s `play`/`play-resume` use — `pc` and `solo-mc` must agree on which session is the last.
+- **Session dating / numbering** — dated session journals live at `R/<AAAA>/<MM>/<pj>/session-<AAAA-MM-JJ>-<N>.md`. Number them and pick "the last session" with the **canonical session ordering** (`../../references/jdr-layout.md › Ordre canonique des séances`), shared with `ttrpg:solo-mc`: `<N>` is the authority, extracted by suffix form (never read a date day as `<N>`); exclude `-prep-`; the last session is the file of **maximal `<N>`**. This is the same key `solo-mc`'s `play`/`play-resume` use — `pc` and `solo-mc` must agree on which session is the last.
 - **Companions (PJ's team)** — The PJ can have a **team** of companions played **by substitution** (recreate the feel of a tabletop session, not drive 4–5 full PCs). Lightweight **wrapper** sheets in `R/_pjs/<pj>/compagnons/<slug>.md`.
   - **Roster.** The reference roster lives **at the PJ level**: `R/_pjs/<pj>/compagnons/_roster.yaml`. It is thus definable **without an active campaign** (a team can be built from PJ creation onward). When a campaign starts, its `config.yaml` (key `compagnons:`) **references** this PJ-level roster (via `roster: _pjs/<pj>/compagnons/_roster.yaml`, or by copying the `actif: true` entries) rather than redefining it.
   - **Sheet by reference.** A companion sheet can either be autonomous (*Minimal playable* shape — see the `companion` action), or **reference an existing canonical character sheet** (a setting pre-gen, a mue, an univers NPC) via the `ref:` field. In that case, the wrapper sheet does **not** duplicate the mechanics: it points to the canonical source and adds only role in the team, link to the PJ and current state. This is the recommended mode when the companion already has a complete sheet elsewhere (e.g. `_univers/<univers>/pretires/<x>.md`).
-  - Read by `obs:solo-mc` in play (substitution) — `pc` holds the data, play is solo-mc's business.
+  - Read by `ttrpg:solo-mc` in play (substitution) — `pc` holds the data, play is solo-mc's business.
 
 ## References
 

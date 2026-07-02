@@ -1,10 +1,10 @@
 # PC — Behavioural Test Scenarios
 
-Behavioural tests for the `pc` skill (`plugins/obs/skills/pc/SKILL.md`) — player-character management. `scenarios.json` only declares the trigger→action routing; these observe the **rendered behaviour**: which files land where, what stays out of `_pjs/`, and what the skill refuses to invent.
+Behavioural tests for the `pc` skill (`plugins/ttrpg/skills/pc/SKILL.md`) — player-character management. `scenarios.json` only declares the trigger→action routing; these observe the **rendered behaviour**: which files land where, what stays out of `_pjs/`, and what the skill refuses to invent.
 
 Run via an agent that loads `SKILL.md` + the targeted `actions/*.md`, against a real domain `R` with a `_pjs/<pj>/` and a `_systeme/`. Pass = expected behaviour observed AND no forbidden write/invention.
 
-Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — see `../../references/jdr-layout.md`. PJ durable state at `R/_pjs/<pj>/`; dated session logs at `R/<AAAA>/<MM>/<pj>/`; system rules at `R/_systeme/{canon,mj}/`.
+Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — see `../../../references/jdr-layout.md`. PJ durable state at `R/_pjs/<pj>/`; dated session logs at `R/<AAAA>/<MM>/<pj>/`; system rules at `R/_systeme/{canon,mj}/`.
 
 | #   | Situation (input) | Expected behaviour | Pass criteria |
 |-----|-------------------|--------------------|---------------|
@@ -18,7 +18,7 @@ Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_uni
 | C8  | `fill` invoqué mais l'utilisateur n'a aucun texte | basculer sur `background` plutôt que remplir à vide | le skill redirige vers `background` ; ne fabrique pas de contenu |
 | C9  | Toute action citant une stat/tag/jet alors que `R/_systeme/canon/` est absent | **ne rien inventer** ; signaler la régénération (`extract-pdf` puis `rules-keeper`) | aucune mécanique inventée ; message de régénération ; lore `_univers/` et house rules `_systeme/mj/` non bloqués |
 | C10 | `show` sans argument, avec session active | résoudre le PJ via `.current-session`, charger l'état par ordre de priorité (`.session-state.yaml` > `config.yaml` > `fiche_technique.md`/`pj.md` > dernier log daté) | fiche affichée depuis la source prioritaire disponible ; pas de question si `.current-session` suffit |
-| C11 | Contenu de prep de campagne (scénario, PNJ) collé dans `reorganize` | identifier ce qui **n'appartient pas** à `_pjs/` et rediriger (campagne → `rpg` ; univers → `lore-extract`/`rpg` ; jeu direct → `solo-mc`) | le hors-périmètre est signalé et routé, pas écrit dans `_pjs/` |
+| C11 | Contenu de prep de campagne (scénario, PNJ) collé dans `reorganize` | identifier ce qui **n'appartient pas** à `_pjs/` et rediriger (campagne → `campaign` ; univers → `lore-extract`/`campaign` ; jeu direct → `solo-mc`) | le hors-périmètre est signalé et routé, pas écrit dans `_pjs/` |
 | C12 | `log-session` avec dossier PJ aux noms **mêlés** sur plusieurs `AAAA/MM` (compteurs nus `session-3.md`/`session-4.md`, datés `session-2026-06-01-03.md`, `session-2025-12-03.md`, `-prep-`) | `<N>` calculé par l'**ordre canonique** (`jdr-layout.md`) : extraction par forme de suffixe, exclusion `-prep-`, `max+1` ; jamais le jour `03`/`31` lu comme `<N>` | `<N>`=5 (max=4 depuis `session-4.md`) → nouveau `session-…-5.md` ; `<N>` confondu avec un jour ou `-prep-` compté = FAIL |
 | C13 | `show` chargeant le « dernier log daté » (priorité 4), **même dossier mêlé** que C12 | « dernier » = fichier de `<N>` **max** par l'ordre canonique (la **même** clé que `solo-mc` play/play-resume), pas « most recent year/month, premier trouvé » | log lu = `session-4.md` (N=4) ; ancrage sur une séance antérieure (`session-3`/`session-2026-06-01-03`) = FAIL |
 | C14 | `sessions <pj>` pour un PJ présent dans **plusieurs campagnes** | découvrir les campagnes du PJ via `_campagnes/*/config.yaml` (`pjs`/`pj_campagne`), agréger les séances de **chaque** axe campagne + l'axe PJ, **read-only**, groupé par source, ordonné par l'ordre canonique | un bloc par campagne du PJ + un bloc axe PJ ; `<N>` **indépendant par campagne** (pas de séquence agrégée) ; `-prep-` non compté ; **aucune écriture** ; oublier une campagne du PJ ou fusionner les `<N>` = FAIL |
@@ -27,7 +27,7 @@ Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_uni
 
 **Run against a *populated*, layout-conformant domain — not a minimal stub.** Mechanics deferral (C9) only manifests against a **filled** `_systeme/canon/`; companion-by-reference (C4) needs a real canonical sheet under `_univers/<u>/pretires/` to point at. A real example fixture is the `zombiology` domain (filled `_systeme/canon/` + `_univers/wot/canon/`); for C2 it must carry prior **dated** sessions across ≥2 year/month folders. **Pre-flight:** run `../../../references/jdr-layout-checks.py <R>` first — a domain failing layout conformance (e.g. legacy `_savoir/systeme/`) invalidates the run.
 
-Agent-as-pc: load `plugins/obs/skills/pc/SKILL.md` + the targeted `actions/<NN>-*.md` (+ `references/genres-et-background.md` for C7), against the populated domain `R`. For each scenario, run the action and capture (a) the assistant message, (b) the domain diff. Pass requires the expected behaviour **and** the path/anti-invention invariant.
+Agent-as-pc: load `plugins/ttrpg/skills/pc/SKILL.md` + the targeted `actions/<NN>-*.md` (+ `references/genres-et-background.md` for C7), against the populated domain `R`. For each scenario, run the action and capture (a) the assistant message, (b) the domain diff. Pass requires the expected behaviour **and** the path/anti-invention invariant.
 
 Decisive write-scoped checks: C1 (no `journal.md`), C2 (global `<N>` + dated path), C3 (journal exploded + archived not deleted), C4 (no mechanics duplicated), C9 (no invented mechanics), C11 (nothing out-of-scope written into `_pjs/`).
 

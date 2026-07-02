@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.27.0] — 2026-07-02
+
+### Removed — extraction du plugin `ttrpg`
+- Le trio JDR solo `pc`, `rpg` (renommé `campaign`) et `solo-mc`, ainsi que les agents `narrateur` et `oracle`, sont **extraits** dans un plugin séparé `ttrpg` (nouveau plugin, `plugins/ttrpg/`). `lore-extract` et `rules-keeper` **restent** dans `obs` — partagés par `writing` et `ttrpg` — de même que `references/jdr-layout.md` (dupliquée dans `ttrpg/references/`, à resynchroniser manuellement).
+- `README.md` et `plugin.json` mis à jour en conséquence.
+
 ## [0.25.0] — 2026-06-25
 
 ### Changed (`tree/destinations`) — projets `pro-projet` = destinations email actives

@@ -1,10 +1,10 @@
 # Solo-MC — Play-Loop Behavioural Test Scenarios
 
-Behavioural tests for the `solo-mc` **skill loop itself** (`plugins/obs/skills/solo-mc/SKILL.md`, transversal rules T0–T14) — distinct from the two agents it drives (`oracle`, `narrateur`), which have their own scenario files (`oracle-scenarios.md`, `narrateur-scenarios.md`). These observe the **session-management behaviour**: domain resolution, state read/write discipline, continuous logging, fact routing, and companion substitution.
+Behavioural tests for the `solo-mc` **skill loop itself** (`plugins/ttrpg/skills/solo-mc/SKILL.md`, transversal rules T0–T14) — distinct from the two agents it drives (`oracle`, `narrateur`), which have their own scenario files (`oracle-scenarios.md`, `narrateur-scenarios.md`). These observe the **session-management behaviour**: domain resolution, state read/write discipline, continuous logging, fact routing, and companion substitution.
 
 Run via an agent that loads `SKILL.md` + the targeted `actions/*.md`, against a real domain `R` with an active campaign. Pass = the transversal rule is honoured AND no forbidden write/invention occurs.
 
-Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — see `../../references/jdr-layout.md`. Mechanical state at `R/_campagnes/<c>/.session-state.yaml`; dated narrative logs at `R/<AAAA>/<MM>/<campagne>/`; system rules at `R/_systeme/{canon,mj}/`; subsystems at `R/_subsystems/<nom>/{canon,mj}/`.
+Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` — see `../../../references/jdr-layout.md`. Mechanical state at `R/_campagnes/<c>/.session-state.yaml`; dated narrative logs at `R/<AAAA>/<MM>/<campagne>/`; system rules at `R/_systeme/{canon,mj}/`; subsystems at `R/_subsystems/<nom>/{canon,mj}/`.
 
 | #   | Situation (input) | Rule | Expected behaviour | Pass criteria |
 |-----|-------------------|------|--------------------|---------------|
@@ -31,7 +31,7 @@ Game domain `R` resolved **locally** via l'un des marqueurs `_campagnes/`, `_uni
 
 **Run against a *populated*, layout-conformant domain — not a minimal stub.** Fact routing by scope (L7/L8/L9) only means something against a real `_campagnes/<c>/mj/`, `_univers/<u>/mj/` and `_systeme/mj/`; the no-play-without-canon gate (L16) needs a filled `_systeme/canon/` to begin with; world-fact-first (L12) needs filled `_univers/<u>/`. A real example fixture is the `zombiology` domain (filled `_systeme/canon/` + `_univers/wot/canon/`), augmented with an active `_campagnes/<c>/` (a `config.yaml`, a `.session-state.yaml`, a `mj/`) and — for L13/L14 — a `_pjs/<pj>/compagnons/`. **Pre-flight:** run `../../../references/jdr-layout-checks.py <R>` first — a domain failing layout conformance (e.g. legacy `_savoir/systeme/`) invalidates the run.
 
-Agent-as-solo-mc: load `plugins/obs/skills/solo-mc/SKILL.md` + the targeted `actions/<NN>-*.md`, against the populated domain `R`. For each scenario, run the loop and capture (a) the assistant message, (b) the domain diff (which `mj/`, log, or state file changed). Pass requires the rule **and** the write-scope invariant.
+Agent-as-solo-mc: load `plugins/ttrpg/skills/solo-mc/SKILL.md` + the targeted `actions/<NN>-*.md`, against the populated domain `R`. For each scenario, run the loop and capture (a) the assistant message, (b) the domain diff (which `mj/`, log, or state file changed). Pass requires the rule **and** the write-scope invariant.
 
 Decisive write-scoped checks: L4 (state written only at `play-end`), L5 (log written *before* the reply), L6–L9 (fact lands in the right `mj/` by scope, or nowhere), L10 (no free narration of stakes), L13 (freeze/thaw recorded), L16 (no play without regenerated canon).
 

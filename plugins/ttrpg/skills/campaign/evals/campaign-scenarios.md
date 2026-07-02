@@ -1,10 +1,10 @@
 # RPG — Behavioural Test Scenarios
 
-Behavioural tests for the `rpg` skill (`plugins/obs/skills/rpg/SKILL.md`) — the GM-prep workshop. Unlike `scenarios.json` (which only declares the trigger→action routing), these observe the **rendered behaviour** of an action run against a real domain `R`: which files it touches, what it refuses to do, and whether it works *with* the user rather than dumping a finished campaign.
+Behavioural tests for the `campaign` skill (`plugins/ttrpg/skills/campaign/SKILL.md`) — the GM-prep workshop. Unlike `scenarios.json` (which only declares the trigger→action routing), these observe the **rendered behaviour** of an action run against a real domain `R`: which files it touches, what it refuses to do, and whether it works *with* the user rather than dumping a finished campaign.
 
 Run via an agent that loads `SKILL.md` + the relevant `actions/*.md` + `references/methode-creation.md`, against a real domain `R` holding at least one universe and one PJ with an `intention.md`. Pass = the expected behaviour is observed AND no forbidden write occurs.
 
-Game domain `R` resolved **locally** via one of the markers `_campagnes/`, `_univers/` or `_pjs/` — see `../../references/jdr-layout.md`. Universe lore at `R/_univers/<univers>/{canon,mj}/`, system rules at `R/_systeme/{canon,mj}/`, PJ at `R/_pjs/<pj>/`, campaign at `R/_campagnes/<campagne>/`.
+Game domain `R` resolved **locally** via one of the markers `_campagnes/`, `_univers/` or `_pjs/` — see `../../../references/jdr-layout.md`. Universe lore at `R/_univers/<univers>/{canon,mj}/`, system rules at `R/_systeme/{canon,mj}/`, PJ at `R/_pjs/<pj>/`, campaign at `R/_campagnes/<campagne>/`.
 
 | #  | Situation (input) | Expected behaviour | Pass criteria |
 |----|-------------------|--------------------|---------------|
@@ -23,7 +23,7 @@ Game domain `R` resolved **locally** via one of the markers `_campagnes/`, `_uni
 
 **Run against a *populated*, layout-conformant domain — not a minimal stub.** The decisive behaviours only manifest on **filled** dirs: canon-vs-`mj/` routing (P3/P4/P10) needs a real `_univers/<u>/canon/` with content to read and not overwrite; mechanics deferral (P6) needs a filled `_systeme/canon/` to defer *to*; universe listing (P7) needs ≥2 real `_univers/<u>/`. A real example fixture is the `zombiology` domain (`_systeme/canon/adrenaline-d100.md` + `_univers/wot/canon/` are filled). **Pre-flight:** run `../../../references/jdr-layout-checks.py <R>` first — a domain that fails layout conformance (e.g. one still on legacy `_savoir/systeme/`) invalidates the behavioural run.
 
-Agent-as-rpg: load `plugins/obs/skills/rpg/SKILL.md` + the targeted `actions/<NN>-*.md` + `references/methode-creation.md` as instructions, against the populated domain `R`. For each scenario, run the action and capture: (a) the assistant's message, (b) the set of files written/modified (diff the domain before/after). A scenario passes only if the expected behaviour holds **and** no forbidden path (`canon/`, game-tuning keys, hardcoded absolute path) was touched.
+Agent-as-campaign: load `plugins/ttrpg/skills/campaign/SKILL.md` + the targeted `actions/<NN>-*.md` + `references/methode-creation.md` as instructions, against the populated domain `R`. For each scenario, run the action and capture: (a) the assistant's message, (b) the set of files written/modified (diff the domain before/after). A scenario passes only if the expected behaviour holds **and** no forbidden path (`canon/`, game-tuning keys, hardcoded absolute path) was touched.
 
 The decisive checks are **write-scoped**: P3/P4/P10 hinge on `canon/` staying untouched; P1 on game-tuning keys never landing in `config.yaml`; P6 on no invented mechanics. These are observable by diffing the domain, not just by reading the prose.
 
@@ -48,12 +48,12 @@ Domain `R` resolved to `Perso/RPG/zombiology` via marker `_univers/` (no hardcod
 | P9 | faction Ajah Noire + fronts | faction → `_univers/wot/mj/factions.md` liant le canon ; fronts → pas de campagne → flag/ask | PASS |
 | P10| étendre une entité canon (Tour Blanche) | `mj/` fiche qui `[[lie]]` le canon, sans dupliquer | PASS |
 
-**Frictions → à traiter dans les actions `rpg` :**
+**Frictions → à traiter dans les actions `campaign` :**
 1. **P1↔P5** : action 01 impose un `synopsis.md` aux « thèmes alignés sur l'intention du PJ » ; sans `_pjs/` c'est satisfiable seulement en `[À compléter]`, mais l'action ne le dit pas explicitement (inférable de la règle transversale `[À compléter]`). → ajouter une ligne « si aucun PJ → thèmes en placeholder ».
 2. **P3/P9** : les actions 03/04/05 écrivent côté campagne (`index.md`, `fronts.md`) sans décrire le chemin *pas-encore-de-campagne*. Le write côté univers `mj/` est net ; le côté campagne est laissé implicite. → ajouter « si aucune campagne → amorcer via `campaign` ou différer ».
 3. **P6** : le critère « si `_systeme/` absent → régénérer » couvre un *fichier manquant*, pas un *système présent mais muet sur la mécanique* (cas réel ici : pas de piste XP dans Adrénaline). Refus d'inventer = correct, mais le wording du critère est sous-spécifié.
 4. **P7 non testable** : domaine mono-univers — branche ≥2 univers inexerçable. Marqué N/A (pas PASS) pour ne pas sur-créditer.
-5. **`mj/` bootstrap** : P3/P9/P10 créent le sous-arbre `_univers/wot/mj/` (inexistant) — write légitime (`rpg` écrit `mj/`), mais à noter pour le diff d'un run réel (non-dry).
+5. **`mj/` bootstrap** : P3/P9/P10 créent le sous-arbre `_univers/wot/mj/` (inexistant) — write légitime (`campaign` écrit `mj/`), mais à noter pour le diff d'un run réel (non-dry).
 
 ### 2026-06-13 — run 2 (agent-as-rpg, dry-run, domain=`monsterhearts`) — **P7 PASS** (ferme le N/A du run 1)
 
