@@ -1,6 +1,6 @@
 ---
 name: extract-pdf
-description: Multi-session pipeline for extracting content from large PDF files and distributing it into reference source documents under sources/. Use when importing an existing PDF (rulebook, novel, source document) into a by-game domain (R) across multiple sessions. Do NOT use for web research — use `writing:research` instead; do NOT use for writing new content — use `writing:write` instead. Do NOT use to produce final canon — run `lore-extract` (lore) and `rules-keeper` (rules) on the resulting sources/ files to ventilate into canon/.
+description: Multi-session pipeline for extracting content from large PDF files and distributing it into reference source documents under sources/. Use when importing an existing PDF (rulebook, novel, source document) into a by-game domain (R) across multiple sessions. Do NOT use for web research — use `writing:research` instead; do NOT use for writing new content — use `writing:write` instead. Do NOT use to produce final canon — run `ttrpg:lore-extract` (lore) and `ttrpg:rules-keeper` (rules) on the resulting sources/ files to ventilate into canon/.
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Four-phase pipeline for large PDF extraction across multiple Claude Code sessions.
 
-> **Role in the canon pipeline**: `extract-pdf` produces **raw reference sources** under `sources/` (`<univers-root>/sources/<source>/` for lore, `<systeme-root>/sources/<source>/` for rules). It never ventilates into `canon/` or `mj/` directly — that is the role of `lore-extract` and `rules-keeper`.
+> **Role in the canon pipeline**: `extract-pdf` produces **raw reference sources** under `sources/` (`<univers-root>/sources/<source>/` for lore, `<systeme-root>/sources/<source>/` for rules). It never ventilates into `canon/` or `mj/` directly — that is the role of `ttrpg:lore-extract` and `ttrpg:rules-keeper`.
 > See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` for the full path convention.
 
 ## Two modes
@@ -67,7 +67,7 @@ python scripts/extract-pdf.py --status docs/extraction/<source>/progress.md
 - **Call the skill from the writing project directory** (`R/<AAAA>/<MM>/<projet>/`). All relative working paths (`docs/`, `scripts/`) are resolved from this directory.
 - `R` (the game domain root) is **discovered locally**: start from the reference directory (argument or CWD), walk up the parents to the first folder containing `_campagnes/`, `_univers/` or `_pjs/`. No global path, no per-machine config. See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
 - The extracted reference sources land in `<univers-root>/sources/<source>/` (lore) and `<systeme-root>/sources/<source>/` (rules), with `<univers-root> = R/_univers/<univers>/` and `<systeme-root> = R/_systeme/` — never in `canon/` or `mj/`.
-- **Preserve the raw text.** Every populated `sources/<source>/` ALSO contains `fulltext.md` — the document's full normalized text, assembled from the chunks. This is "the content of the extraction": it must never be destroyed during cleanup. The classified files (`lore.md`, `terminology.md`, `rules.md`…) are **reference bundles** placed alongside it, which serve as input to `lore-extract`/`rules-keeper` (which, in turn, produce `canon/`). Thus `sources/` = raw + input bundles; `canon/` = final synthesis produced downstream.
+- **Preserve the raw text.** Every populated `sources/<source>/` ALSO contains `fulltext.md` — the document's full normalized text, assembled from the chunks. This is "the content of the extraction": it must never be destroyed during cleanup. The classified files (`lore.md`, `terminology.md`, `rules.md`…) are **reference bundles** placed alongside it, which serve as input to `ttrpg:lore-extract`/`ttrpg:rules-keeper` (which, in turn, produce `canon/`). Thus `sources/` = raw + input bundles; `canon/` = final synthesis produced downstream.
 - **Companion documents.** A game line often ships related material in SEPARATE files (character booklets, MC screen, accessories, supplements). The detail (e.g. lists of names/appearances from the player booklets) is NOT in the core book. Treat each file as a **distinct source** (one `setup` per file, or per coherent batch), with its own `<source>`.
 - One chunk per session for large PDFs (>50 pages).
 - Working artifacts (PDF chunks, working folder) stored in `docs/extraction/<source-name>/`; only `fulltext.md` and the classified bundles survive in `sources/` after cleanup.
@@ -79,7 +79,7 @@ python scripts/extract-pdf.py --status docs/extraction/<source>/progress.md
 
 ## References
 
-- `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` — local path convention of an `R` domain, resolution by domain marker, canon pipeline, the extract-pdf / lore-extract / rules-keeper boundary.
+- `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` — local path convention of an `R` domain, resolution by domain marker, canon pipeline, the extract-pdf / ttrpg:lore-extract / ttrpg:rules-keeper boundary.
 
 ## External data
 

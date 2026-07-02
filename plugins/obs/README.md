@@ -4,7 +4,7 @@
 
 Plugin personnel orienté coffre Obsidian (chemins et conventions propres à l'auteur).
 
-**Séparation des responsabilités** : `obs` **rassemble les intrants** (brief, lore, données, init projet) ; `writing` **produit** à partir de ces intrants ; `ttrpg` (plugin séparé) porte l'outillage JDR solo (`pc`, `campaign`, `solo-mc`) qui consomme `lore-extract`/`rules-keeper` produits ici.
+**Séparation des responsabilités** : `obs` **rassemble les intrants** (brief, lore, données, init projet) ; `writing` **produit** à partir de ces intrants ; `ttrpg` (plugin séparé) porte l'outillage JDR solo (`pc`, `campaign`, `solo-mc`) ainsi que la ventilation lore/règles (`lore-extract`, `rules-keeper`) sur le même domaine de jeu `R`.
 
 ## Skills
 
@@ -22,11 +22,9 @@ Plugin personnel orienté coffre Obsidian (chemins et conventions propres à l'a
 | `brief` | `/obs:brief` | Construit le répertoire de travail portable `_brief/` (summary.md autosuffisant + personas/ + output-styles/) consommé par writing |
 | `forge` | `/obs:forge` | Développe et challenge le concept / brief narratif jusqu'à validation de la structure |
 | `research` | `/obs:research` | Recherche documentaire cross-référencée ; extraction de terminologie |
-| `lore-extract` | `/obs:lore-extract` | Extrait et organise le lore d'univers (canon/ + mj/) — partagé avec `ttrpg:campaign` |
-| `rules-keeper` | `/obs:rules-keeper` | Restructure les règles de jeu en format optimisé LLM (canon/ + house rules mj/) — partagé avec la suite `ttrpg` |
 | `extract-pdf` | `/obs:extract-pdf` | Pipeline multi-sessions d'extraction de gros PDF vers les sources |
 
-> **JDR solo** : l'outillage de jeu (`pc`, `campaign`, `solo-mc`) a été extrait dans le plugin `ttrpg`. Il consomme `lore-extract` et `rules-keeper` (restés ici) sur le même domaine de jeu `R` — voir `references/jdr-layout.md`.
+> **JDR solo** : tout l'outillage JDR (`pc`, `campaign`, `solo-mc`, `lore-extract`, `rules-keeper`) a été extrait dans le plugin `ttrpg`. `obs` reste en amont sur le même domaine de jeu `R` : `extract-pdf` y dépose les sources brutes, `research` y ajoute des rapports de recherche — voir `references/jdr-layout.md`.
 
 ## Licence
 

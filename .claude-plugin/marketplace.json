@@ -86,16 +86,16 @@
     },
     {
       "name": "obs",
-      "version": "0.27.0",
+      "version": "0.28.0",
       "source": "./plugins/obs",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser tree (cache-based: index, check, fix, sort, judge, destinations), and brief/lore/data assembly for writing: brief (builds the portable _brief/ working dir), forge (concept), research (data), lore-extract, rules-keeper, extract-pdf — lore-extract and rules-keeper also feed the ttrpg plugin. Solo TTRPG domain tooling (pc, campaign, solo-mc) moved to the ttrpg plugin.",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser tree (cache-based: index, check, fix, sort, judge, destinations), and brief/data assembly for writing: brief (builds the portable _brief/ working dir), forge (concept), research (data), extract-pdf (raw source ingestion, also feeds the ttrpg plugin). All solo TTRPG domain tooling — pc, campaign, solo-mc, lore-extract, rules-keeper — moved to the ttrpg plugin.",
       "recommended": false
     },
     {
       "name": "ttrpg",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./plugins/ttrpg",
-      "description": "Solo tabletop RPG toolkit on autonomous local game domains (R): pc (player-character sheets), campaign (GM prep — scenarios, fronts, NPCs, factions; ex-obs:rpg), solo-mc (live play under Claude Code) with its narrateur and oracle agents. Extracted from obs; consumes obs:lore-extract and obs:rules-keeper.",
+      "description": "Solo tabletop RPG toolkit on autonomous local game domains (R): pc (player-character sheets), campaign (GM prep — scenarios, fronts, NPCs, factions; ex-obs:rpg), solo-mc (live play under Claude Code) with its narrateur and oracle agents, plus lore-extract and rules-keeper (canon/mj ventilation). Extracted from obs across two rounds; obs remains upstream via extract-pdf and research.",
       "recommended": false
     }
   ]

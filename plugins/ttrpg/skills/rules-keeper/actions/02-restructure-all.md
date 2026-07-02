@@ -12,7 +12,7 @@ The system canon is derived from a commercial PDF. If `<systeme-root>/canon/` is
 1. **Detect the absence** — if `<systeme-root>/canon/` is absent/empty **and** no bundle exists under `<systeme-root>/sources/`, there is nothing to restructure: the sources must be (re-)extracted first.
 2. **Re-extract the sources** — provide the commercial rules PDF and run `extract-pdf` to rebuild `<systeme-root>/sources/<source>/rules.md` (+ terminology, etc.). `rules-keeper` **never** writes into `canon/` without a source.
 3. **Restructure** — re-run this action (`restructure-all`): Step 1 detects the new bundles under `<systeme-root>/sources/` and dispatches them to `<systeme-root>/canon/`.
-4. **Check the consumers** — `solo-mc`, `pc`, `rpg` and `writing:write` become operational again once `<systeme-root>/canon/` is regenerated. The house rules `<systeme-root>/mj/` and the lore `<univers-root>/canon/` are unaffected: nothing to regenerate on that side.
+4. **Check the consumers** — `solo-mc`, `pc`, `campaign` and `writing:write` become operational again once `<systeme-root>/canon/` is regenerated. The house rules `<systeme-root>/mj/` and the lore `<univers-root>/canon/` are unaffected: nothing to regenerate on that side.
 
 > Without the source PDF, the canon **cannot** be regenerated: this content derives from commercial material.
 

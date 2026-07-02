@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.28.0] — 2026-07-02
+
+### Removed — `lore-extract` et `rules-keeper` extraits vers `ttrpg`
+- Les deux skills de ventilation JDR `lore-extract` et `rules-keeper`, laissés dans `obs` lors de la première extraction (0.27.0), rejoignent finalement `ttrpg` : tout l'outillage JDR (jeu **et** assemblage) vit désormais dans un seul plugin. `obs` reste en amont sur le même domaine `R` via `extract-pdf` (sources brutes) et `research` (rapports).
+- `README.md`, `references/jdr-layout.md`, `references/jdr-layout-checks.py` et `references/bank-yml.md` mis à jour en conséquence ; références croisées (`brief`, `research`, `extract-pdf`) repointées vers `ttrpg:lore-extract`/`ttrpg:rules-keeper`.
+
 ## [0.27.0] — 2026-07-02
 
 ### Removed — extraction du plugin `ttrpg`

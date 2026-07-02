@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Layout-conformance linter for a JDR game domain `R` (see jdr-layout.md).
 
-Pre-flight for the behavioural test suites (rpg/pc/solo-mc): asserts that a *real,
+Pre-flight for the behavioural test suites (campaign/pc/solo-mc): asserts that a *real,
 populated* domain respects the local layout convention before any behavioural run is
 trusted. A domain that fails here invalidates the behavioural results.
 

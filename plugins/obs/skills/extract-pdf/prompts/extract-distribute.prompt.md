@@ -219,8 +219,8 @@ git -C "<R>" diff
 
 ## Prochaines étapes
 
-- Lore → `lore-extract <univers-root>/sources/<source-name>/lore.md` pour ventiler vers `<univers-root>/canon/`
-- Règles → `rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md` pour ventiler vers `<systeme-root>/canon/`
+- Lore → `ttrpg:lore-extract <univers-root>/sources/<source-name>/lore.md` pour ventiler vers `<univers-root>/canon/`
+- Règles → `ttrpg:rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md` pour ventiler vers `<systeme-root>/canon/`
 ```
 
 ---
@@ -235,7 +235,7 @@ from pathlib import Path
 base = Path('docs/extraction/<source-name>/raw')
 chunks = sorted(base.glob('chunk_*.txt'))
 full = '\n\n'.join(p.read_text(encoding='utf-8') for p in chunks)
-header = '# <source-name> — TEXTE BRUT INTÉGRAL\n\n> Contenu d\'extraction brut (normalisé). Matériau de référence ; la synthèse est dans canon/ (via lore-extract/rules-keeper).\n\n---\n\n'
+header = '# <source-name> — TEXTE BRUT INTÉGRAL\n\n> Contenu d\'extraction brut (normalisé). Matériau de référence ; la synthèse est dans canon/ (via ttrpg:lore-extract/ttrpg:rules-keeper).\n\n---\n\n'
 for root in ['<univers-root>/sources/<source-name>', '<systeme-root>/sources/<source-name>']:
     d = Path(root)
     if d.exists():
@@ -275,8 +275,8 @@ Commit :
 Archive: docs/extraction/<source-name>/DONE-YYYY-MM-DD.md
 
 Prochaines étapes :
-  lore-extract <univers-root>/sources/<source-name>/lore.md
-  rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md
+  ttrpg:lore-extract <univers-root>/sources/<source-name>/lore.md
+  ttrpg:rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md
 
 Pour supprimer l'archive:
   python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>')"

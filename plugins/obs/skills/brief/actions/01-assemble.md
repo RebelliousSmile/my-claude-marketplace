@@ -8,7 +8,7 @@ Create the `<projet>/_brief/` working directory and consolidate the gathered inp
 
 - `<projet>` (optional, positional) — the writing project (work-unit) directory, where `_brief/` is created. Default: current working directory. Typically `R/<Year>/<Month>/mon-projet`.
 - `--resources <R>` (optional) — the domain dir holding global/durable resources. `brief` reads its `R/bank.yml` manifest (see `${CLAUDE_PLUGIN_ROOT}/references/bank-yml.md`) to discover what is available; falls back to scanning `R/_univers/`, `R/_systeme/`, etc. if no manifest.
-- source files (optional) — local paths to project-specific concept/lore/rules/notes (e.g. a `forge` overview, `lore-extract` canon files, a `rules-keeper` cheatsheet, raw notes).
+- source files (optional) — local paths to project-specific concept/lore/rules/notes (e.g. a `forge` overview, `ttrpg:lore-extract` canon files, a `ttrpg:rules-keeper` cheatsheet, raw notes).
 
 ## Outputs
 

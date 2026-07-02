@@ -37,5 +37,5 @@ resources:
 ## Cycle de vie
 
 - **Maintenu par** `obs:tree` : `tree index` scanne `R/_univers/`, `R/_systeme/`, etc. et (re)génère `R/bank.yml` — entrées `id`/`kind`/`path` déduites du scan, `summary` au mieux depuis le titre/premières lignes de chaque fichier. **Régénérable** : c'est un cache dérivé des répertoires durables de `R`, pas une source de vérité.
-- **Fusion non destructive au re-scan** : un `summary` curé (édité à la main, ou enrichi plus tard par les skills d'assemblage `lore-extract`/`rules-keeper`/`research`) est **préservé** ; `tree` ajoute les nouvelles ressources et signale celles disparues, sans écraser les descriptions curées.
+- **Fusion non destructive au re-scan** : un `summary` curé (édité à la main, ou enrichi plus tard par `research`, ou par `ttrpg:lore-extract`/`ttrpg:rules-keeper`) est **préservé** ; `tree` ajoute les nouvelles ressources et signale celles disparues, sans écraser les descriptions curées.
 - **Consommé par** `obs:brief` : à `assemble`, `brief` **lit** `R/bank.yml` (via `--resources <R>`), propose les ressources pertinentes (sur la foi de `summary`), et **inline** la part retenue dans `summary.md`. `brief` ne l'écrit jamais.

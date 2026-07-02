@@ -3,7 +3,7 @@
 Final session: pour the classified content into the **reference sources** of the universe and the system, with git stash/rollback.
 
 > **Boundary**: `extract-pdf` writes only into `sources/` — never into `canon/` or `mj/` directly.
-> The ventilation into `canon/` is handled by `lore-extract` (lore) and `rules-keeper` (rules).
+> The ventilation into `canon/` is handled by `ttrpg:lore-extract` (lore) and `ttrpg:rules-keeper` (rules).
 > See `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` for the full convention.
 
 ## Inputs
@@ -19,10 +19,10 @@ Final session: pour the classified content into the **reference sources** of the
 
 Reference sources created or enriched:
 - `<univers-root>/sources/<source>/fulltext.md` — **full raw text** normalized (the "content of the extraction"; assembled from the chunks, preserved)
-- `<univers-root>/sources/<source>/lore.md` — narrative reference content (input bundle for `lore-extract`)
-- `<univers-root>/sources/<source>/terminology.md` — extracted terminology (input bundle for `lore-extract`)
+- `<univers-root>/sources/<source>/lore.md` — narrative reference content (input bundle for `ttrpg:lore-extract`)
+- `<univers-root>/sources/<source>/terminology.md` — extracted terminology (input bundle for `ttrpg:lore-extract`)
 - `<systeme-root>/sources/<source>/fulltext.md` — full raw text (if rules were extracted)
-- `<systeme-root>/sources/<source>/rules.md` — extracted rules (input bundle for `rules-keeper`)
+- `<systeme-root>/sources/<source>/rules.md` — extracted rules (input bundle for `ttrpg:rules-keeper`)
 - `<univers-root>/.output-styles/<univers>-<source>.md` — style guidelines (convenience artifact)
 - `.toc/INDEX.md` — extracted structure (convenience artifact, in the project)
 
@@ -58,7 +58,7 @@ Reference sources created or enriched:
 
    > Lore and terminology → `<univers-root>/sources/<source-name>/` (universe reference).
    > Rules → `<systeme-root>/sources/<source-name>/` (system reference).
-   > Never write into `canon/` or `mj/` — that is the role of `lore-extract` and `rules-keeper`.
+   > Never write into `canon/` or `mj/` — that is the role of `ttrpg:lore-extract` and `ttrpg:rules-keeper`.
 
 7. After user validation (`Y`): create the `sources/<source-name>/` folders if absent, write the files, commit (single repository = `R`):
    ```bash
@@ -94,8 +94,8 @@ Reference sources created or enriched:
 ## Next steps (suggest to the user)
 
 Once the sources are created, run the ventilation into canon:
-- **Lore**: `lore-extract <univers-root>/sources/<source-name>/lore.md` → feeds `<univers-root>/canon/`
-- **Rules**: `rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md` → feeds `<systeme-root>/canon/`
+- **Lore**: `ttrpg:lore-extract <univers-root>/sources/<source-name>/lore.md` → feeds `<univers-root>/canon/`
+- **Rules**: `ttrpg:rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md` → feeds `<systeme-root>/canon/`
 
 ## Test
 

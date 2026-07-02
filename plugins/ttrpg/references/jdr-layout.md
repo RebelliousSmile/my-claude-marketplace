@@ -2,7 +2,7 @@
 
 > Dupliquée depuis `obs/references/jdr-layout.md` (extraction du plugin `ttrpg`) — les deux copies doivent rester synchronisées manuellement.
 
-Référence unique de l'arborescence d'un **domaine JDR** (`R = <jeu>`) et de la façon dont les skills JDR s'y repèrent. Pointée par les skills de `ttrpg` (`pc`, `campaign`, `solo-mc`) et par les skills de `obs` qui produisent du contenu JDR (`lore-extract`, `rules-keeper`, `extract-pdf`, `research`, `forge`).
+Référence unique de l'arborescence d'un **domaine JDR** (`R = <jeu>`) et de la façon dont les skills JDR s'y repèrent. Pointée par les skills de `ttrpg` (`pc`, `campaign`, `solo-mc`, `lore-extract`, `rules-keeper`) et par les skills de `obs` qui produisent du contenu JDR (`extract-pdf`, `research`, `forge`).
 
 > **Pas de coffre global, pas de config par machine.** Plus de `<vault>`, plus de `~/.jdr.yaml`, plus de dépôt séparé. Un domaine JDR est un **répertoire autonome** dans `Documents/` (typiquement `Perso/RPG/<jeu>/`) : tout ce dont le jeu a besoin vit dessous, en chemins **relatifs**. Déplace le domaine n'importe où → tous les skills continuent de fonctionner.
 
@@ -30,7 +30,7 @@ Ce mécanisme est le pendant JDR de la résolution d'ancre de `obs:tree` (qui re
 | `<systeme-root>` | `R/_systeme/` — règles du système de jeu |
 | `<subsys-root>` | `R/_subsystems/<nom>/` — sous-systèmes génériques greffés (parallaxe, cinério…) |
 | `<pj-root>` | `R/_pjs/<pj>/` — état durable du PJ (pc) |
-| `<campagne-root>` | `R/_campagnes/<campagne>/` — **prep + état durable** : `config.yaml`, `.session-state.yaml`, `mj/`, `research/` (rpg, solo-mc) |
+| `<campagne-root>` | `R/_campagnes/<campagne>/` — **prep + état durable** : `config.yaml`, `.session-state.yaml`, `mj/`, `research/` (campaign, solo-mc) |
 | `<ecrits-root>` | `R/_ecrits/<projet>/` — projet d'écriture (writing pipeline) ; `bank.yml` à la racine |
 | `<session-root>` | `R/<AAAA>/<MM>/<campagne\|pj>/` — **journaux de session datés** (solo-mc, pc) ; fichier `session-<AAAA-MM-JJ>-<N>.md` (**sans** préfixe slug — redondant avec le dossier parent). Scan : `session-*.md` (tolère d'anciens noms `session-N.md`). Ordre/numérotation : voir **Ordre canonique des séances** ci-dessous. |
 | `<sources>` | `<univers-root>/sources/<source>/` (lore) ou `<systeme-root>/sources/<source>/` (règles) |
@@ -66,7 +66,7 @@ Perso/RPG/<jeu>/                       ← R = domaine autonome (un jeu)
 │       │   ├── terminologie.md
 │       │   ├── factions.md
 │       │   └── ...
-│       ├── mj/                        ← lore maison / non-canon (lore-extract --homemade, rpg)
+│       ├── mj/                        ← lore maison / non-canon (lore-extract --homemade, campaign)
 │       ├── research/                  ← rapports de recherche, portée univers (research)
 │       └── sources/<source>/          ← lore brut (extract-pdf)
 ├── _systeme/                          ← règles du système de jeu
@@ -82,7 +82,7 @@ Perso/RPG/<jeu>/                       ← R = domaine autonome (un jeu)
 ├── _pjs/
 │   └── <pj>/                          ← personnages (pc)
 ├── _campagnes/
-│   └── <campagne>/                    ← prep (rpg) + état durable de la campagne
+│   └── <campagne>/                    ← prep (campaign) + état durable de la campagne
 │       ├── config.yaml                ← système, PJ, sous-systèmes actifs
 │       ├── .session-state.yaml        ← état mécanique courant (solo-mc)
 │       ├── mj/                        ← fiction décidée en partie (solo-mc)
@@ -186,9 +186,9 @@ Règles de l'arbitrage :
 
 ---
 
-## Interopérabilité interne (obs)
+## Interopérabilité interne (ttrpg)
 
-Les sous-arbres `canon/` + `mj/` sont **partagés** au sein du plugin obs :
+Les sous-arbres `canon/` + `mj/` sont **partagés** au sein du plugin ttrpg :
 
 - `_systeme/{canon,mj}/` — référence mécanique partagée par `solo-mc`, `pc`, `campaign`. `mj/solo.md` est **écrit par `solo-mc`** en partie.
 - `_subsystems/<nom>/{canon,mj}/` — **produit par `rules-keeper`, consommé par `solo-mc` uniquement** (outils de jeu en direct) ; ni `pc` ni `campaign` ne les référencent.

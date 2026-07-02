@@ -4,7 +4,7 @@
 
 Fusion de `doc-writer` (documentation pro) et des parties génériques de `rpg-writer` (craft narratif).
 
-**Séparation des responsabilités** : `writing` **produit à partir d'un brief**. L'**assemblage des intrants** est délégué au plugin `obs` — `brief` (construit le répertoire `_brief/`), `forge` (concept), `research` (données), `lore-extract`, `rules-keeper`, `extract-pdf`.
+**Séparation des responsabilités** : `writing` **produit à partir d'un brief**. L'**assemblage des intrants** est délégué au plugin `obs` — `brief` (construit le répertoire `_brief/`), `forge` (concept), `research` (données), `extract-pdf` (sources brutes). Pour le lore et les règles de jeu (`lore-extract`, `rules-keeper`), voir le plugin `ttrpg`.
 
 > **Rédaction en français par défaut.** Les noms de skills et certains termes (`specification`, `runbook`…) sont en anglais, mais les documents produits sont rédigés en français, sauf demande explicite d'une autre langue.
 
@@ -65,7 +65,8 @@ Principes partagés (documentation) : `references/doc-principles.md`.
 | README de dépôt | `overcode:readme` |
 | Forger le concept / brief narratif | `obs:forge` |
 | Rédaction narrative à partir d'un brief | `toc` → `write` → `review` |
-| Assembler le brief / lore / données / règles de jeu | plugin `obs` (`brief`, `research`, `lore-extract`, `rules-keeper`) |
+| Assembler le brief / données | plugin `obs` (`brief`, `research`) |
+| Assembler le lore / les règles de jeu (JDR) | plugin `ttrpg` (`lore-extract`, `rules-keeper`) |
 
 ## Format de sortie (documentation)
 

@@ -5,7 +5,7 @@ Distill terminology, proper nouns, and world-building elements from universe sou
 > Path variables & domain resolution: see `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
 > The domain `R` is **discovered locally** (walk up from the `univers`/source argument or CWD to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`) — no global vault, no per-machine config.
 > `extract-terminology` is a canon producer: its output lands in `<univers-root>/canon/terminologie.md` (= `R/_univers/<univers>/canon/terminologie.md`).
-> It is the terminology-focused complement of `lore-extract` (both write `canon/`; `lore-extract` remains the primary thematic ventilator for lore files).
+> It is the terminology-focused complement of `ttrpg:lore-extract` (both write `canon/`; `ttrpg:lore-extract` remains the primary thematic ventilator for lore files).
 
 ## Inputs
 

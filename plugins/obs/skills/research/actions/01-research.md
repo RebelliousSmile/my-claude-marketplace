@@ -61,7 +61,7 @@ Validated findings saved to: `<univers-root>/canon/<topic-file>.md` (after user 
 6. Compare ALL findings against existing universe documentation. Identify: confirmed facts, contradictions with existing docs, new information to add.
 7. Assemble the research report in the Outputs format.
 8. Save the working report to `<scope-root>/research/<slug>-<date>.md` (always, without prompting — it is a working artifact). `<scope-root>` is the chosen scope's root: `<univers-root>`, `<campagne-root>`, or `<projet-root>`.
-9. Ask user: "Should I save the validated findings to `<univers-root>/canon/<topic-file>.md`?" Save on confirmation. These findings become canon alongside `lore-extract` output.
+9. Ask user: "Should I save the validated findings to `<univers-root>/canon/<topic-file>.md`?" Save on confirmation. These findings become canon alongside `ttrpg:lore-extract` output.
 10. List recommended actions: terms to add to `<univers-root>/canon/terminologie.md`, sections to update in `<univers-root>/canon/UNIVERS.md`, new canon documentation files to create.
 
 ## Test

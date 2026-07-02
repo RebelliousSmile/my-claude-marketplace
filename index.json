@@ -69,8 +69,14 @@
     {
       "id": "obs",
       "name": "obs",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), solo TTRPG tooling on autonomous local game domains (pc, rpg, solo-mc), the Documents/ organiser (tree), and brief/lore/data assembly for writing: brief (portable _brief/), forge (concept), research (data), lore-extract, rules-keeper, extract-pdf.",
-      "version": "0.21.0"
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser (tree, cache-based), filler (content reduction), and brief/data assembly for writing: brief (portable _brief/), forge (concept), research (data), extract-pdf (raw source ingestion, also feeds the ttrpg plugin).",
+      "version": "0.28.0"
+    },
+    {
+      "id": "ttrpg",
+      "name": "ttrpg",
+      "description": "Solo tabletop RPG toolkit on autonomous local game domains (R): pc (player-character sheets), campaign (GM prep), solo-mc (live play under Claude Code) with narrateur/oracle agents, plus lore-extract and rules-keeper (canon/mj ventilation).",
+      "version": "0.2.0"
     }
   ]
 }

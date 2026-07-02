@@ -22,7 +22,7 @@ Read the campaign prep (`synopsis.md`, `scenarios/`, `prep/`, `fronts.md`, `conf
 6. **Links & setting tree** (warning) — the `[[links]]` scenario→setting (canon/ and mj/) resolve; no setting data duplicated on the campaign side; `index.md` up to date.
 7. **Config conformity** (note) — the prep's tone/pace/chaos consistent with `config.yaml`.
 8. **Game system** (blocking) — no mechanic invented outside the game system references.
-9. **Preparatory information arbitrated** (warning) — every piece of prep has an explicit status: durable truths **promoted** to a fiction `mj/` (campaign or universe), session scaffolding **kept** as named prep, obsolete content **deleted**. Flag any **durable truth left stuck in a working file** (an NPC/place/fact that the campaign needs but lives only in `prep/`) and any prep file being treated as canon. Ref: `../../references/jdr-layout.md › Arbitrage des informations préparatoires (rpg)`.
+9. **Preparatory information arbitrated** (warning) — every piece of prep has an explicit status: durable truths **promoted** to a fiction `mj/` (campaign or universe), session scaffolding **kept** as named prep, obsolete content **deleted**. Flag any **durable truth left stuck in a working file** (an NPC/place/fact that the campaign needs but lives only in `prep/`) and any prep file being treated as canon. Ref: `../../references/jdr-layout.md › Arbitrage des informations préparatoires (campaign)`.
 
 ## Test
 
