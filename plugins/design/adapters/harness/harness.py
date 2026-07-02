@@ -327,7 +327,7 @@ def main():
     html = (TEMPLATE
             .replace("%%TITLE%%", args.title)
             .replace("%%PAGE_OPTIONS%%", build_options(pages))
-            .replace("%%PAGE_FUNCTIONS%%", build_page_functions(pages))
+            .replace("%%PAGE_FUNCTIONS%%", build_functions(pages))
             .replace("%%PAGE_REGISTRY%%", build_registry(pages))
             .replace("%%FIRST_PAGE_KEY%%", pages[0]["key"]))
 
