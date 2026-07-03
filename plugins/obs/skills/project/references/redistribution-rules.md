@@ -20,9 +20,9 @@ C'est le contrat de routage de `distill` : chaque information survivante (après
 | Nature de l'information | Fichier | Section |
 |---|---|---|
 | **Fonctionnement / technique** du projet (contexte, stack, architecture, décision technique) | `projet.md` | `## Contexte` / `## Stack` / `## Journal` |
-| **Gestion de projet** : devis / facture | `commercial.md` | `## Historique devis` / `## Facturation` |
-| **Gestion de projet** : compte-rendu de réunion | `commercial.md` (commercial) · `communication.md` (open-source) · `projet.md` (personnel) | `## CR Réunions` / `## Journal` |
-| **Gestion de projet** : accès / identifiants | `commercial.md` | `## Accès` (référence `→ BW:` uniquement, jamais le secret) |
+| **Gestion de projet** : devis / facture | `commercial.md` | `## Devis` / `## Facturation` |
+| **Gestion de projet** : compte-rendu de réunion | `commercial.md` (commercial) · `communication.md` (open-source) · `projet.md` (personnel) | `## CR Réunions & échanges importants` / `## Journal` |
+| **Gestion de projet** : accès / identifiants | `projet.md` | `## Accès` (référence `→ BW:` uniquement, jamais le secret) |
 | **Tâche à planifier** pour le futur | `backlog.md` | `## En attente` |
 | **Décision durable** / à ne pas réexpliquer | `memory.md` | `## Décisions` |
 | **Communication publique** (open-source) | `communication.md` | `## Journal` |
@@ -31,7 +31,7 @@ C'est le contrat de routage de `distill` : chaque information survivante (après
 
 ## Invariants
 
-- **Jamais de secret en clair** dans un `.md` : la section `## Accès` n'utilise que `→ BW: <coffre> > <chemin>` (coffre Bitwarden > chemin, jamais le secret).
+- **Jamais de secret en clair** dans un `.md` : la section `## Accès` (dans `projet.md`) n'utilise que `→ BW: <coffre> > <chemin>` (coffre Bitwarden > chemin, jamais le secret).
 - **Validation avant écriture** dans un fichier structurel (la classification est une proposition).
 - **Date conservée dans le document** même quand il change de répertoire (frontmatter ou en-tête daté) — on perd le répertoire daté, pas la date.
 - Une information vit dans **un seul** fichier ; les autres y référencent.

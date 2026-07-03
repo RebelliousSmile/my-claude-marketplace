@@ -2,6 +2,16 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.35.0] — 2026-07-03
+
+### Added (`mail`) — action `reply` : rédaction de réponses en Markdown
+- Nouvelle action `06-reply` : `mail` fait désormais les **deux sens** — triage (communication → information) ET rédaction (information → communication). `reply <source> [intention]` lit le thread, compose une réponse **assistée**, et écrit un brouillon au format email dans `Thunderbird/_drafts/` — **jamais envoyé**, source jamais mutée, validation avant écriture. `_drafts/` exclu du scan. Scaffold behave dédié `mail-reply-scenarios.md` (9 scénarios). Défauts documentés dans `SKILL.md › Reply drafting` (ajustables).
+
+### Fixed — backlog post-agnosticisation
+- **`extract-pdf/scripts/extract-pdf.py`** : `discover_domain_root` remontait vers un marqueur `_savoir/` obsolète (retiré en 0.18.0) → aligné sur les marqueurs `_campagnes/`/`_univers/`/`_pjs/` et les chemins `R/_univers/`, `R/_systeme/`.
+- **`brief`** : 2 contradictions de spec tranchées par autorité du contrat `writing:brief-model` — front-matter **YAML** (skeleton `01-assemble` corrigé) et **personas ≥3** enforced par `check` (`02-check`). Suite behave : S14 sort du N/A (devient un vrai GO).
+- **`project`** : templates `commercial.md`/`communication.md` réalignés sur la structure réelle (Facturation · Accord commercial · Devis · Client · CR Réunions & échanges importants) ; **`## Accès` repositionné dans `projet.md`** (pas commercial.md) — propagé à `redistribution-rules`, `add-invoice` (`## Devis`), `log-meeting`, `distill`, suite behave.
+
 ## [0.34.1] — 2026-07-03
 
 ### Removed — action orpheline `extract-pdf/05-run.md`

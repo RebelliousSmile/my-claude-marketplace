@@ -364,14 +364,16 @@ Context from progress.md:
 def discover_domain_root(start: Path) -> Path | None:
     """
     Discover the JDR domain root R by walking up from `start` until a
-    directory containing the marker `_savoir/` is found.
+    directory containing one of the markers `_campagnes/`, `_univers/` or
+    `_pjs/` is found.
 
     No global path, no per-machine config: R is found locally relative to
     the reference directory. See references/domain-layout.md (§ JDR profile).
     """
     start = start.resolve()
+    markers = ('_campagnes', '_univers', '_pjs')
     for p in [start, *start.parents]:
-        if (p / '_savoir').is_dir():
+        if any((p / m).is_dir() for m in markers):
             return p
     return None
 
@@ -381,8 +383,8 @@ def resolve_by_game_paths(progress: dict) -> dict:
     Resolve by-game paths from the local domain root R.
 
     R is discovered by walking up from the progress file's location (the
-    extraction lives under the project dir, itself under R) until the
-    `_savoir/` marker is found — no global vault path.
+    extraction lives under the project dir, itself under R) until a
+    `_campagnes/`/`_univers/`/`_pjs/` marker is found — no global vault path.
     progress['univers'] gives the target universe slug.
     Returns dict with 'R', 'univers_root', 'systeme_root', 'project_root'.
     """
@@ -395,11 +397,11 @@ def resolve_by_game_paths(progress: dict) -> dict:
 
     R = discover_domain_root(ref)
     if R is None:
-        print(f"[WARN] Could not discover domain root R (no '_savoir/' marker found from {ref})")
+        print(f"[WARN] Could not discover domain root R (no _campagnes/_univers/_pjs marker found from {ref})")
         return {'R': None, 'univers_root': None, 'systeme_root': None, 'project_root': None}
 
-    univers_root = R / '_savoir' / 'univers' / univers if univers else None
-    systeme_root = R / '_savoir' / 'systeme'
+    univers_root = R / '_univers' / univers if univers else None
+    systeme_root = R / '_systeme'
     # project_root: the writing-project dir, relative to R when known.
     project_root = (R / project_str) if project_str else ref
 

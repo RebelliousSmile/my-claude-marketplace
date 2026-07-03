@@ -19,7 +19,7 @@ Turn a project's dated communication into structured information: **reduce** wit
 3. **Reduce (filler).** For each month directory, invoke `obs:filler`: `survey` → `synthesize`/`digest` (emails & communications) → `condense`/`clean` (verbose docs, noise). Filler's contract applies (dry-run + confirmation before any destructive step; digest never on human messages; no silent overwrite; non-recursive). Note: a `YYYY/MM/` may hold documents that are **not emails** — filler reduces those too.
 4. **Classify (project).** Read each surviving information item and route it per `references/redistribution-rules.md`:
    - **fonctionnement / technique** → `projet.md`
-   - **gestion** (devis/facture → `## Historique devis`/`## Facturation`; CR → `## CR Réunions`; accès → `## Accès` as `→ BW:`) → `commercial.md` (or `communication.md`/`projet.md` per type for CR)
+   - **gestion** (devis/facture → `commercial.md › ## Devis`/`## Facturation`; CR → `commercial.md › ## CR Réunions & échanges importants`, or `communication.md › ## Journal`/`projet.md › ## Journal` per type; accès → `projet.md › ## Accès` as `→ BW:`)
    - **tâche à planifier** → `backlog.md` (`## En attente`)
    - **décision durable** → `memory.md` (`## Décisions`)
    - **still-current, non-structural** → keep as a document, **moved to the current month**, date preserved inside it

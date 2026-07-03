@@ -22,6 +22,7 @@ List all `.md` files in the scope, exclude already-processed files, detect speci
 2. **Delegate to a sub-agent (`model: haiku`)** with the mission to:
    - Recursively list all `.md` files in the target directory
    - Exclude files in `.archive/`
+   - Exclude files in `_drafts/` (reply working area — never triaged)
    - Exclude `mail-sessions.log.md`
    - For each file, read only the `processed:` line of the frontmatter
    - If `processed: true` AND `--reprocess` flag absent → exclude from `file_list`
@@ -81,7 +82,7 @@ phishing_brands: []
 ## Test
 
 - `file_list` contains no files with `processed: true` (unless `--reprocess`).
-- `file_list` contains no files in `.archive/` nor `mail-sessions.log.md`.
+- `file_list` contains no files in `.archive/`, `_drafts/`, nor `mail-sessions.log.md`.
 - `prelim_report` lists the ATrier/ and epoch files if present.
 - `config` contains the keys `preserve`, `suppress`, `exceptions`, and optionally `prune`, `merge_by_domain`, `phishing_brands`.
 - No email content appeared in the main chat.

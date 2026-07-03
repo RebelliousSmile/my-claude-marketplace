@@ -9,7 +9,7 @@ Add an invoice or quote entry to `commercial.md`.
 
 ## Outputs
 
-Updated `commercial.md` with a new row in `## Historique devis` and, if applicable, an updated `## Facturation` section.
+Updated `commercial.md` with a new row in `## Devis` and, if applicable, an updated `## Facturation` section.
 
 ## Process
 
@@ -19,9 +19,9 @@ Updated `commercial.md` with a new row in `## Historique devis` and, if applicab
    - Subject / description
    - Amount excluding tax (HT)
    - Status: `émise` | `payée` | `en attente` | `annulée`
-3. Add a row in the `## Historique devis` table of `Projets/<name>/commercial.md`.
+3. Add a row in the `## Devis` table of `Projets/<name>/commercial.md`.
 4. Update `## Facturation` if the last-invoice date or next-due date needs to change.
 
 ## Test
 
-Read `commercial.md`: `## Historique devis` contains a new row with today's date and the stated amount.
+Read `commercial.md`: `## Devis` contains a new row with today's date and the stated amount.

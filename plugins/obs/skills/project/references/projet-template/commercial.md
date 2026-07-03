@@ -1,19 +1,22 @@
 # Commercial — [Projet]
 
-## Historique devis
-| Date | Objet | Montant HT | Statut |
-|------|-------|-----------:|--------|
-| YYYY-MM-DD | <objet> | 0 | émise |
-
 ## Facturation
 - Dernière facture : 
 - Prochaine échéance : 
 
-## CR Réunions
-### YYYY-MM-DD
+## Accord commercial
+- 
+
+## Devis
+| Date | Objet | Montant HT | Statut |
+|------|-------|-----------:|--------|
+| YYYY-MM-DD | <objet> | 0 | émis |
+
+## Client
+- 
+
+## CR Réunions & échanges importants
+### YYYY-MM-DD — <sujet>
 - Présents : 
 - Décisions : 
 - Suites à donner : 
-
-## Accès
-- <Service> → BW: <coffre> > <chemin>

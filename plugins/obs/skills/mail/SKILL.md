@@ -2,11 +2,14 @@
 name: mail
 description: >-
   Sorts, summarizes, merges, and files emails exported as Markdown in
-  C:/Users/fxgui/Public/Notes/Thunderbird/. Scans a scope (all of
-  Thunderbird/ or a sub-branch), applies the rules in mail-config.yaml,
-  proposes validatable action batches, then executes classify / delete /
-  merge / summarize / flag-phishing. Detects duplicates, applies prune
-  rules, identifies phishing, and logs each session.
+  C:/Users/fxgui/Public/Notes/Thunderbird/, AND drafts replies to them.
+  Triage direction: scans a scope (all of Thunderbird/ or a sub-branch),
+  applies the rules in mail-config.yaml, proposes validatable action
+  batches, then executes classify / delete / merge / summarize /
+  flag-phishing; detects duplicates, applies prune rules, identifies
+  phishing, logs each session. Reply direction: /obs:mail reply <source>
+  composes an assisted Markdown reply draft (email frontmatter, Re: subject)
+  in _drafts/ — prepared, never sent.
   Use when the user invokes /obs:mail. Do NOT use for project management —
   use obs:project instead.
 disable-model-invocation: true
@@ -15,9 +18,13 @@ model: sonnet
 
 # Mail
 
-Processes emails exported as Markdown in `C:/Users/fxgui/Public/Notes/Thunderbird/`.
-Scans the scope, analyzes each file, proposes validatable action batches
-batch by batch, executes them, and produces a final report.
+Processes emails exported as Markdown in `C:/Users/fxgui/Public/Notes/Thunderbird/`
+in **both directions**:
+
+- **communication → information** (triage): scans the scope, analyzes each file,
+  proposes validatable action batches, executes them, and produces a final report.
+- **information → communication** (reply): composes an assisted reply draft to an
+  email/thread, in the same email format, in `_drafts/` — prepared, never sent.
 
 ## Available actions
 
@@ -28,17 +35,37 @@ batch by batch, executes them, and produces a final report.
 | 03  | `propose`   | Group decisions into batches and wait for validation             | list of decisions           |
 | 04  | `execute`   | Apply a validated batch (classify/delete/merge/summarize/intact/flag-phishing) | validated batch |
 | 05  | `report`    | Produce the final processing report                              | accumulated results         |
+| 06  | `reply`     | Compose an assisted Markdown reply draft in `_drafts/` (never sends)            | source email/thread + intent |
 
 ## Default flow
 
-Internal pipeline — the user never picks an action directly.
-The flow is always:
+Internal pipeline — the user never picks a **triage** action directly.
+The triage flow is always:
 
 ```
 01-scan → 02-analyze → 03-propose → [04-execute → 03-propose]* → 05-report
 ```
 
-The invocation `/obs:mail [branche]` always triggers the full pipeline.
+The invocation `/obs:mail [branche]` always triggers the full triage pipeline.
+
+## Reply flow
+
+`reply` is **independent** of the triage pipeline. It is entered directly:
+
+```
+/obs:mail reply <source> [intention]   →   06-reply
+```
+
+It may also be **offered** after `05-report` (or a `03-propose` batch) on the emails
+that remain after reduction — "voulez-vous préparer une réponse à … ?" — but it is
+never chained automatically; the user opts in.
+
+## Trigger mapping
+
+- Triage verbs (trier, ranger, résumer, fusionner, nettoyer, "traiter mes mails")
+  → the triage pipeline (`01-scan` …).
+- Reply verbs (**répondre, rédiger une réponse, préparer une réponse, draft reply,
+  brouillon de réponse**) + a source email/thread → `06-reply`.
 
 ## Transversal rules
 
@@ -48,6 +75,8 @@ The invocation `/obs:mail [branche]` always triggers the full pipeline.
 - Config: `<root>/mail-config.yaml`
 - Archive: `<root>/.archive/YYYY-MM-DD/`
 - Log: `<root>/mail-sessions.log.md`
+- Drafts (reply working area): `<root>/_drafts/` — `_`-prefixed working dir,
+  **excluded from the triage scope** by `01-scan` (like `.archive/`).
 
 ### Email file format
 
@@ -63,6 +92,30 @@ attachments: []
 ```
 Body in Markdown (HTML artifacts possible).
 Naming: `email_YYYY-MM-DD_<exp>_<sujet>_to_<dest>[_N].md`
+
+### Reply drafting (`06-reply`)
+
+The reply direction reuses the email format above, oriented outbound. Design defaults
+(best-judgment — adjust here if the workflow changes):
+
+1. **Draft location** — a single `_drafts/` working dir at the `Thunderbird/` root
+   (not next to the source, not a per-thread branch). File name reuses the inbound
+   convention with `exp = moi`, `sujet = Re-<sujet normalisé>`, `dest = original
+   sender`: `email_<date>_moi_Re-<sujet-slug>_to_<exp-orig-slug>.md`.
+2. **Assisted composition** — the body is *written* from the thread (already Markdown)
+   + the user's intent, not merely scaffolded. Best-judgment assumptions on open
+   points are flagged inline as `> [à confirmer] …`.
+3. **Sending is out of scope** — `reply` *prepares*; it never sends. Re-import into
+   Thunderbird or an outbound bridge is a later, separate step.
+4. **Frontmatter** — `from` = vault owner (the source's `to`), `to` = original sender
+   (the source's `from`), `subject` = `Re: <normalized subject>` (single `Re:`),
+   `date` = today, `in_reply_to` = source `subject_hash` if present, `draft: true`.
+   **No `processed: true`** on a draft.
+5. **Interaction** — independent action `/obs:mail reply <source>`; may also be
+   offered (opt-in) after `propose`/`report` on the remaining emails.
+
+Invariants: never send · never mutate the source email/thread · validate the draft
+with the user before writing. See `actions/06-reply.md`.
 
 ### Two-pass decision rule
 

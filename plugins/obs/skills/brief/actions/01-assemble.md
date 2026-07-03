@@ -19,12 +19,14 @@ Create the `<projet>/_brief/` working directory and consolidate the gathered inp
   output-styles/
 ```
 
-`summary.md` skeleton:
+`summary.md` skeleton — **opens with a YAML front-matter** (machine-checkable `type` + `language`, both mandatory), then the body:
 ```markdown
-# Brief : <titre>
+---
+type: <technical-doc | cheat-sheet | rpg-scenario | novel | guide | …>
+language: <fr par défaut>
+---
 
-**Type :** <technical-doc | cheat-sheet | rpg-scenario | novel | guide | …>
-**Langue :** <français par défaut>
+# Brief : <titre>
 
 ## Intention
 <ce qu'on produit, pour qui, dans quel but — en 3-5 lignes>
@@ -55,4 +57,4 @@ Create the `<projet>/_brief/` working directory and consolidate the gathered inp
 
 ## Test
 
-After `assemble <projet> --resources <R>`, verify that `<projet>/_brief/summary.md` exists with non-empty **Type**, **Langue**, and **Contexte consolidé** (the latter inlining the relevant R globals, with no path pointing back to `R`), and that `<projet>/_brief/personas/` and `<projet>/_brief/output-styles/` directories exist. Confirm nothing was written outside `<projet>/`.
+After `assemble <projet> --resources <R>`, verify that `<projet>/_brief/summary.md` exists with a YAML front-matter carrying non-empty `type` + `language`, and a non-empty **Contexte consolidé** (the latter inlining the relevant R globals, with no path pointing back to `R`), and that `<projet>/_brief/personas/` and `<projet>/_brief/output-styles/` directories exist. Confirm nothing was written outside `<projet>/`.

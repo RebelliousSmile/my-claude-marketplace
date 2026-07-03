@@ -51,7 +51,7 @@ Router — dispatches based on user intent:
 - **Delegate content lifecycle to `obs:filler`.** `fill`, `reorganize`, `export-rag` and `distill` invoke filler (survey / synthesize / digest / condense / clean) for reduction rather than re-implementing it — filler keeps its contract (dry-run before destructive, digest never on human messages, no silent overwrite, non-recursive by default).
 - Ask for the project name if not supplied via `$ARGUMENTS`.
 - Date format: `YYYY-MM-DD` throughout all files.
-- Never write credentials, tokens, or passwords to any `.md` file — the `## Accès` section uses `→ BW: <coffre> > <chemin>` references only (Bitwarden vault > path, never the secret itself).
+- Never write credentials, tokens, or passwords to any `.md` file — the `## Accès` section (in `projet.md`) uses `→ BW: <coffre> > <chemin>` references only (Bitwarden vault > path, never the secret itself).
 - **Link integrity on move.** Never move, rename, or delete a file in a way that leaves a broken link. When a document changes directory (e.g. `distill` bringing an item forward to the current month, or `reorganize` redistributing content), update every wikilink (`[[…]]`), embed (`![[…]]`), and relative attachment path (images, PDFs, other assets) that points to it or that it references — co-moving assets when needed — and verify no dangling reference remains afterwards.
 
 ## External data

@@ -21,7 +21,7 @@ New meeting report entry in the correct target file, respecting its existing for
    - Decisions made
    - Follow-up actions
 3. Determine the target file based on project type:
-   - `commercial`  → `commercial.md` (section CR Réunions)
+   - `commercial`  → `commercial.md` (section CR Réunions & échanges importants)
    - `open-source` → `communication.md` (section Journal)
    - `personnel`   → `projet.md` (section Journal)
 4. Add the entry using the file's existing format, with the date as the section header.

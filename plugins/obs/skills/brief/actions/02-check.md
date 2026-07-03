@@ -29,7 +29,7 @@ Verify that `<projet>/_brief/` is **self-contained and ready** for the `writing`
 
 ## Readiness for writing
 - ≥ 1 output-style        : [OK] / [NONE — run writing:tone-finder]
-- Personas (optional)     : N present
+- ≥ 3 personas            : [OK] / [INCOMPLETE — N < 3, run writing:persona]
 - Verdict                 : READY / NOT READY
 
 ## Diagnosis
@@ -45,7 +45,7 @@ Verify that `<projet>/_brief/` is **self-contained and ready** for the `writing`
 2. Check the structure: `summary.md`, `personas/`, `output-styles/` presence and (for files) non-emptiness.
 3. **Self-sufficiency of `summary.md`**: confirm Type, Language, Intention, and a substantive **Contexte consolidé** are present. Flag a thin or missing context.
 4. **External-path leak check** (key invariant): scan `summary.md` for references that point outside `_brief/` (absolute paths, `../`, paths back into the domain `R`, vault-style paths, `~/…`). Any such reference is a defect — `writing` must run on `_brief/` alone. List every leak.
-5. **Readiness**: at least one file in `output-styles/` (else recommend `writing:tone-finder`). Personas are optional.
+5. **Readiness**: at least one file in `output-styles/` (else recommend `writing:tone-finder`), **and at least 3 distinct files in `personas/`** (else flag incomplete and recommend `writing:persona`). Either gate failing → **NOT READY** (contract: `writing:references/brief-model.md` "Au moins 3 personas distincts"; SKILL.md rule 6).
 6. Produce the report with a READY / NOT READY verdict and exact remediation commands. **Do not write any files.**
 
 ## Test
