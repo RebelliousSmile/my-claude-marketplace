@@ -1,15 +1,15 @@
 ---
 name: extract-setup
 description: Setup PDF extraction workspace — Phase A
-argument-hint: <project-dir> <source-pdf> <univers>
+argument-hint: <project-dir> <source-pdf> <target>
 ---
 
 # Extract PDF — Setup (Phase A)
 
-Arguments reçus : `<project_dir> <source_pdf> <univers>`
+Arguments reçus : `<project_dir> <source_pdf> <target>`
 
-> **Rôle** : prépare l'espace de travail pour l'extraction. Les sources de référence seront écrites dans `<univers-root>/sources/` et `<systeme-root>/sources/` lors de la phase Distribute. Jamais dans `canon/`.
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention des chemins.
+> **Rôle** : prépare l'espace de travail pour l'extraction. Les sources de référence brutes seront écrites sous `<target>/sources/` lors de la phase Distribute (profil JDR : `<univers-root>/sources/` + `<systeme-root>/sources/`). Jamais dans la couche synthétisée (`reference/` en générique, `canon/`/`mj/` en profil JDR).
+> Voir `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` pour la convention générique des chemins (et `references/jdr-layout.md` pour le profil JDR).
 
 ---
 
@@ -21,20 +21,30 @@ Valider l'environnement, découper le PDF en chunks, écrire `progress.md`. Ne p
 
 ## Step 0: Validate Environment
 
-### 0.1 Discover R (domain root)
+### 0.1 Discover R (domain root) & detect profile
 
-Partir du répertoire de référence (`<project_dir>` ou CWD) et remonter les parents jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/` :
+`R` = une **sous-catégorie** `(Perso|Pro)/<Catégorie>/<Sous-catégorie>/`. Partir du répertoire de référence (`<project_dir>` ou CWD). **Générique** : remonter jusqu'à un segment `Perso`/`Pro`, le niveau sous-catégorie est `R` (ancre `obs:tree`). **Raccourci profil JDR** : remonter jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`.
 
 ```bash
 python -c "
 from pathlib import Path
 ref = Path('<project_dir>').resolve()
+# Raccourci profil JDR : premier parent contenant un marqueur JDR
 R = next((p for p in [ref, *ref.parents] if any((p / m).is_dir() for m in ['_campagnes', '_univers', '_pjs'])), None)
-print('[OK] R =', R) if R else print('[MISSING] aucun marqueur JDR trouvé en remontant')
+# Fallback générique : ancre Perso/Pro → niveau sous-catégorie
+if R is None:
+    for p in [ref, *ref.parents]:
+        if p.parent.parent.name in ('Perso', 'Pro'):
+            R = p; break
+if R is None:
+    print('[MISSING] ni ancre Perso/Pro ni marqueur JDR en remontant')
+else:
+    profile = 'jdr' if any((R / m).is_dir() for m in ['_univers', '_systeme']) else 'generic'
+    print(f'[OK] R = {R} · profile = {profile}')
 "
 ```
 
-If missing → STOP: "Cible hors d'un domaine JDR initialisé (pas de marqueur JDR en remontant). Initialiser `R` d'abord (création de `_univers/`)."
+If missing → STOP: "Cible hors d'un domaine initialisé (ni ancre `Perso`/`Pro`, ni marqueur JDR en remontant). Initialiser `R` d'abord."
 
 ### 0.2 Check extraction tools
 
@@ -76,9 +86,9 @@ else:
 
 ---
 
-## Step 1: Determine Univers & Source Name
+## Step 1: Determine Target & Source Name
 
-- `<univers>` = argument reçu (slug `kebab-case`) ; si absent, demander à l'utilisateur. Cible : `<univers-root> = R/_univers/<univers>/`.
+- `<target>` = argument reçu (slug `kebab-case`) ; si absent, demander à l'utilisateur. Enregistré dans le champ `Univers` de `progress.md`. **Profil JDR** : univers cible → `<univers-root> = R/_univers/<target>/`. **Générique** : bucket/scope cible → `<target>/sources/`.
 - `<source-name>` = `<source_pdf>` filename without extension
 
 ---
@@ -124,7 +134,7 @@ Create `docs/extraction/<source-name>/progress.md` with exact format below.
 
 **Source:** <source_pdf>
 **Project:** <project_dir>
-**Univers:** <univers>
+**Univers:** <target>
 **Total chunks:** N
 **Date started:** YYYY-MM-DD
 

@@ -4,9 +4,9 @@ Session 1 of the PDF extraction pipeline: validate the environment, split the PD
 
 ## Inputs
 
-- `project_dir` (required) — the writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under an `R` domain. This is the reference directory; `R` is discovered from it by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`.
+- `project_dir` (required) — the work-unit / writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under an `R` domain. This is the reference directory; `R` is discovered from it (generic: walk up to a `Perso`/`Pro` segment, the subcategory level is `R`; JDR profile shortcut: walk up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`).
 - `source_document` (required) — path to the source PDF
-- `univers` (required) — slug of the target universe (`kebab-case`); determines `<univers-root> = R/_univers/<univers>/`. Ask the user if not provided.
+- `target` (required) — slug (`kebab-case`) of the destination where the sources will land. **JDR profile**: the target universe → `<univers-root> = R/_univers/<univers>/`. **Generic core**: the target bucket/scope → `<target>/sources/`. Recorded as the `Univers` field of `progress.md`. Ask the user if not provided.
 
 ## Outputs
 
@@ -27,7 +27,7 @@ docs/extraction/<source-name>/
 
 **Source:** <source_document>
 **Project:** <project_dir>
-**Univers:** <univers>
+**Univers:** <target>
 **Total chunks:** N
 **Date started:** YYYY-MM-DD
 
@@ -41,11 +41,18 @@ docs/extraction/<source-name>/
 
 > Valid statuses: **`pending`** / **`done`** / **`failed`**. Never `TODO` or `DONE`.
 > `Chunk` column = the ACTUAL file name produced by `split-pdf.py`: `<source>_part<NN>_p<début>-<fin>.pdf`. The `<chunk_id>` (argument of `process-chunk`) is the zero-padded `<NN>`.
+> `Univers` field = the destination slug (`<target>`): the universe slug under the JDR profile, the target bucket/scope slug in the generic core.
 
 ## Process
 
-1. **Discover `R`**: start from the reference directory (`<project_dir>` or CWD), walk up the parents to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`. That folder is `R`. If no marker is found → STOP: "Cible hors d'un domaine JDR initialisé (pas de marqueur JDR en remontant). Initialiser `R` d'abord (création de `_univers/`)." See `references/jdr-layout.md`.
-2. Determine the target universe: `<univers>` argument (`kebab-case` slug); if absent, ask the user. Verify or plan `<univers-root> = R/_univers/<univers>/`.
+1. **Discover `R`** and **detect the profile**: start from the reference directory (`<project_dir>` or CWD).
+   - **Generic core**: walk up to a `Perso`/`Pro` segment; the **subcategory** level is `R` (the `obs:tree` anchor). No marker required.
+   - **JDR profile shortcut**: walk up the parents to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`; that folder is `R`.
+   - **Profile**: JDR if `R/bank.yml` declares `profile: jdr` or `R` contains `_univers/`/`_systeme/`; otherwise generic core.
+   - If no `R` can be resolved at all (no `Perso`/`Pro` anchor and no JDR marker) → STOP: "Cible hors d'un domaine initialisé (ni ancre `Perso`/`Pro`, ni marqueur JDR en remontant). Initialiser `R` d'abord." See `references/domain-layout.md` (JDR: `references/jdr-layout.md`).
+2. Determine the target `<target>` (`kebab-case` slug); if absent, ask the user.
+   - **JDR profile**: `<target>` = universe slug → verify or plan `<univers-root> = R/_univers/<target>/`.
+   - **Generic core**: `<target>` = destination bucket/scope → verify or plan `<target>/sources/`.
 3. Verify that `<source_document>` exists and is readable (`%PDF-` header).
 4. `<source-name>` = the file name without extension.
 5. Check the available tools: `pdftotext`, `tesseract`, `pdfplumber`, `pypdf`. Verify that the scripts exist:

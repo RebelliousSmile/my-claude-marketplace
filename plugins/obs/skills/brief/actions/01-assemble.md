@@ -2,13 +2,13 @@
 
 Create the `<projet>/_brief/` working directory and consolidate the gathered inputs — project sources **and** the domain's global/durable resources — into a **self-contained `summary.md`**, plus the `personas/` and `output-styles/` sub-directories.
 
-> Local paths only. `<projet>` is the project (work-unit) dir: the argument if given, else the CWD. `R` is the **domain** holding global resources (via `--resources`, e.g. `R/_univers/`, `R/_systeme/`…). Everything is created **inside `<projet>/_brief/`** — never outside. The result is portable (movable without breaking `writing`, and without reaching back into `R`).
+> Local paths only. `<projet>` is the project (work-unit) dir: the argument if given, else the CWD. `R` is the **domain** holding durable resources (via `--resources`) in working-dir buckets `R/_<bucket>/` catalogued by `R/bank.yml` (whatever the buckets are named; JDR profile: `_univers`/`_systeme`…). Everything is created **inside `<projet>/_brief/`** — never outside. The result is portable (movable without breaking `writing`, and without reaching back into `R`).
 
 ## Inputs
 
 - `<projet>` (optional, positional) — the writing project (work-unit) directory, where `_brief/` is created. Default: current working directory. Typically `R/<Year>/<Month>/mon-projet`.
-- `--resources <R>` (optional) — the domain dir holding global/durable resources. `brief` reads its `R/bank.yml` manifest (see `${CLAUDE_PLUGIN_ROOT}/references/bank-yml.md`) to discover what is available; falls back to scanning `R/_univers/`, `R/_systeme/`, etc. if no manifest.
-- source files (optional) — local paths to project-specific concept/lore/rules/notes (e.g. a `writing:forge` overview, `ttrpg:lore-extract` canon files, a `ttrpg:rules-keeper` cheatsheet, raw notes).
+- `--resources <R>` (optional) — the domain dir holding durable resources. `brief` reads its `R/bank.yml` manifest (see `${CLAUDE_PLUGIN_ROOT}/references/bank-yml.md`) to discover what is available; falls back to scanning its working-dir buckets `R/_<bucket>/` if no manifest.
+- source files (optional) — local paths to project-specific concept/data/notes (e.g. a `writing:forge` overview, an `obs:research` report, raw notes; when the domain is JDR, also `ttrpg:lore-extract` canon files or a `ttrpg:rules-keeper` cheatsheet).
 
 ## Outputs
 
@@ -46,7 +46,7 @@ Create the `<projet>/_brief/` working directory and consolidate the gathered inp
 1. Resolve `<projet>` (argument or CWD). If `<projet>/_brief/` already exists → switch to update mode: never overwrite silently, propose changes for existing files.
 2. Collect inputs:
    - project-specific source files passed as arguments (local paths);
-   - **global/durable resources** from `R` if `--resources` is given: read `R/bank.yml` (the manifest), use each entry's `summary` to **select the relevant subset** for this project (do not dump everything), then read those files. If no `R/bank.yml`, fall back to scanning `R/_univers/`, `R/_systeme/`, `R/_subsystems/`, etc.
+   - **durable resources** from `R` if `--resources` is given: read `R/bank.yml` (the manifest), use each entry's `summary` to **select the relevant subset** for this project (do not dump everything), then read those files. If no `R/bank.yml`, fall back to scanning its working-dir buckets `R/_<bucket>/` (whatever their names; JDR profile: `_univers`/`_systeme`/`_subsystems`).
    Identify the **type** of work unit and the **language** (ask if not deducible).
 3. **Consolidate into `summary.md`** — distill all sources into the skeleton above. The **Contexte consolidé** section must inline every fact `writing` will need (lore, rules, data), **including the relevant slice of R's globals**; do not link out, not even to `R`. If a needed input is absent, list it under a `## Manques` heading rather than pointing at an external path.
 4. Present the assembled `summary.md` to the user for validation. Iterate until accepted.

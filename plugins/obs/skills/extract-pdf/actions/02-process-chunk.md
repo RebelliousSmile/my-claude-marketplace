@@ -4,7 +4,7 @@ Sessions 2-N: extract the text of a PDF chunk, classify the content into `classi
 
 ## Inputs
 
-- `project_dir` (required) — the writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under the `R` domain. `R` discovered by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`.
+- `project_dir` (required) — the work-unit / writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under the `R` domain. `R` discovered locally (generic: walk up to a `Perso`/`Pro` segment, subcategory = `R`; JDR profile shortcut: walk up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`).
 - `source_name` (required) — name of the source PDF without extension (e.g. `engrenages-regles`). Visible in `docs/extraction/` or in `progress.md#Source`.
 - `chunk_id` (required) — chunk number (e.g. `01`, `02`)
 

@@ -50,4 +50,4 @@ Verify that `<projet>/_brief/` is **self-contained and ready** for the `writing`
 
 ## Test
 
-Run `check <projet>` on a `_brief/` whose `summary.md` references an external path (e.g. `../../_univers/mon-univers/canon/lore.md` back in `R`); confirm it is flagged under **External path leaks** and the verdict is NOT READY, and that no files were created.
+Run `check <projet>` on a `_brief/` whose `summary.md` references an external path (e.g. `../../_<bucket>/…/reference.md` back in a domain `R` bucket — in the JDR profile that would look like `../../_univers/mon-univers/canon/lore.md`); confirm it is flagged under **External path leaks** and the verdict is NOT READY, and that no files were created.

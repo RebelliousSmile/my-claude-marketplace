@@ -44,7 +44,7 @@ except: print('[MISSING] PyPDF2')
 ### 1.2 Git Status
 
 ```bash
-# Un seul dépôt = R (découvert par remontée jusqu'à l'un des marqueurs _campagnes/, _univers/ ou _pjs/)
+# Un seul dépôt = R (découvert par remontée : générique = ancre Perso/Pro, niveau sous-catégorie ; raccourci profil JDR = marqueur _campagnes/ _univers/ ou _pjs/)
 git -C "<R>" status --short
 ```
 

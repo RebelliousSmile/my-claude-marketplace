@@ -1,5 +1,7 @@
 # JDR Layout — convention locale d'un domaine de jeu
 
+> **Profil JDR du modèle générique `references/domain-layout.md`.** Ce fichier ne décrit qu'une *instance* (le domaine de jeu de rôle) du modèle générique : `R` = sous-catégorie, buckets `R/_<bucket>`, `bank.yml`. Les skills `obs` de contenu (`brief`/`research`/`extract-pdf`) opèrent sur le modèle générique et n'appliquent ce profil (noms de buckets `_univers`/`_systeme`, split `canon/`+`mj/`, portée `campagne`, feeders `ttrpg:*`) que lorsque le domaine est JDR (clé `profile: jdr` dans `bank.yml`, ou présence de `_univers/`/`_systeme/`).
+>
 > Dupliquée dans `ttrpg/references/jdr-layout.md` (extraction du plugin `ttrpg`) — les deux copies doivent rester synchronisées manuellement.
 
 Référence unique de l'arborescence d'un **domaine JDR** (`R = <jeu>`) et de la façon dont les skills JDR s'y repèrent. Pointée par les skills de `ttrpg` (`pc`, `campaign`, `solo-mc`, `lore-extract`, `rules-keeper`), par les skills de `obs` qui produisent du contenu JDR (`extract-pdf`, `research`), et par `writing:forge` (référence cross-plugin, pas de copie locale).

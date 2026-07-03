@@ -6,8 +6,8 @@ argument-hint: <progress-file>
 
 # Distribute Extracted Content
 
-> **Frontière** : `extract-pdf` écrit uniquement dans `sources/` (jamais dans `canon/` ni `mj/`).
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention complète.
+> **Frontière** : `extract-pdf` écrit uniquement dans `sources/` (jamais dans la couche synthétisée — `reference/` en générique, `canon/`/`mj/` en profil JDR).
+> Voir `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` pour la convention générique (et `references/jdr-layout.md` pour le profil JDR).
 
 ## Context
 
@@ -28,12 +28,13 @@ Merge all classified content, distribute to `sources/` reference destinations, w
 1. Parse progress file:
    - `Source` → original PDF path
    - `Project` → project dir (`R/<AAAA>/<MM>/<projet>/`)
-   - `Univers` → universe slug
+   - `Univers` → target slug (`<target>`)
 
-2. Resolve paths localement (aucun chemin global) :
-   - **Découvrir `R`** : partir du répertoire de référence (champ `Project` ou CWD), remonter jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`. C'est `R`.
-   - `<univers-root>` = `R/_univers/<univers>/`
-   - `<systeme-root>` = `R/_systeme/`
+2. Resolve paths localement (aucun chemin global) et détecter le profil :
+   - **Découvrir `R`** : partir du répertoire de référence (champ `Project` ou CWD). Générique : remonter jusqu'à un segment `Perso`/`Pro`, le niveau sous-catégorie est `R`. Raccourci profil JDR : remonter jusqu'au premier dossier contenant l'un des marqueurs `_campagnes/`, `_univers/` ou `_pjs/`.
+   - **Profil** : JDR si `R/bank.yml` déclare `profile: jdr` ou si `R` contient `_univers/`/`_systeme/` ; sinon cœur générique.
+   - **Générique** : `<target-root>` = `R/_<target>/` (ou le répertoire de work-unit) → sources sous `<target-root>/sources/`.
+   - **Profil JDR** : `<univers-root>` = `R/_univers/<target>/`, `<systeme-root>` = `R/_systeme/`.
 
 3. Verify ALL chunks have status `done`
    - IF any `pending` → STOP, list missing chunks
@@ -85,6 +86,20 @@ Store stash state for potential rollback.
 
 For each category with content:
 
+**Cœur générique** — tout atterrit sous le `<target-root>/sources/<source-name>/` unique :
+
+| Classified | Destination | Action |
+|------------|-------------|--------|
+| `raw/chunk_*.txt` (assemblés) | `<target-root>/sources/<source-name>/fulltext.md` | create — brut intégral, **ne jamais jeter** |
+| `lore*.md` | `<target-root>/sources/<source-name>/lore.md` | create/append |
+| `terminology*.md` | `<target-root>/sources/<source-name>/terminology.md` | create/merge |
+| `rules*.md` | `<target-root>/sources/<source-name>/rules.md` | create/append |
+| `style*.md` | `<target-root>/.output-styles/<target>-<source-name>.md` | create |
+| `structure*.md` | `<project_dir>/.toc/INDEX.md` | create/update |
+| `templates*.md` | `<target-root>/.templates/latex-patterns.md` | append |
+
+**Profil JDR** — split par provenance (lore → univers, règles → système) :
+
 | Classified | Destination | Action |
 |------------|-------------|--------|
 | `raw/chunk_*.txt` (assemblés) | `<univers-root>/sources/<source-name>/fulltext.md` (+ `<systeme-root>/…` si règles) | create — brut intégral, **ne jamais jeter** |
@@ -95,10 +110,9 @@ For each category with content:
 | `structure*.md` | `<project_dir>/.toc/INDEX.md` | create/update |
 | `templates*.md` | `<univers-root>/.templates/latex-patterns.md` | append |
 
-> Lore et terminologie → `<univers-root>/sources/<source-name>/` (référence univers).
-> Règles → `<systeme-root>/sources/<source-name>/` (référence système).
-> Style et templates → artefacts de commodité sous `<univers-root>`.
-> Ne jamais écrire dans `<univers-root>/canon/` ni `<systeme-root>/canon/` depuis ce prompt.
+> **Générique** : tous les bundles → `<target-root>/sources/<source-name>/`.
+> **Profil JDR** : lore et terminologie → `<univers-root>/sources/<source-name>/` (référence univers) ; règles → `<systeme-root>/sources/<source-name>/` (référence système).
+> Ne jamais écrire dans la couche synthétisée (`reference/` en générique, `<univers-root>/canon/` ni `<systeme-root>/canon/` en profil JDR) depuis ce prompt.
 
 **For each distribution:**
 
@@ -145,7 +159,9 @@ For each approved distribution:
 ### IF `Y` (validate):
 
 ```bash
-# Un seul dépôt R — chemins relatifs à R
+# Un seul dépôt R — stage les destinations du profil actif.
+# Générique : "_<target>/sources/<source-name>/" (+ .output-styles/.templates) et "<project_dir>/.toc/".
+# Profil JDR (exemple ci-dessous) : split univers + système.
 git -C "<R>" add \
   "_univers/<univers>/sources/<source-name>/" \
   "_univers/<univers>/.output-styles/" \
@@ -186,11 +202,14 @@ git -C "<R>" diff
 
 - Source: [original PDF path]
 - Project: [project path]
-- Univers: [universe name]
+- Target (Univers): [target slug]
+- Profile: [generic | jdr]
 - Chunks processed: [N]
 - Total characters: [X]
 
-## Distribution (sources de référence)
+## Distribution (sources de référence brutes)
+
+> Destinations montrées pour le **profil JDR** ; en **générique**, tout va sous `<target-root>/sources/<source-name>/`.
 
 | Category | Sections | Chars | Destination | Action |
 |----------|----------|-------|-------------|--------|
@@ -219,8 +238,11 @@ git -C "<R>" diff
 
 ## Prochaines étapes
 
+La ventilation vers la couche synthétisée est une étape **aval** (`extract-pdf` ne la fait jamais). En **profil JDR** :
 - Lore → `ttrpg:lore-extract <univers-root>/sources/<source-name>/lore.md` pour ventiler vers `<univers-root>/canon/`
 - Règles → `ttrpg:rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md` pour ventiler vers `<systeme-root>/canon/`
+
+En **générique** : les bundles sous `<target-root>/sources/<source-name>/` attendent la ventilation vers `<target-root>/reference/` par le skill aval adéquat.
 ```
 
 ---
@@ -230,12 +252,15 @@ git -C "<R>" diff
 **D'abord, préserver le texte brut** (assembler `raw/chunk_*.txt` en `fulltext.md` dans chaque `sources/<source-name>/` peuplé) :
 
 ```bash
+# `roots` = les sources/<source-name>/ peuplés du profil actif.
+# Générique : ['<target-root>/sources/<source-name>'].
+# Profil JDR (exemple) : univers + système (système seulement si des règles ont été extraites).
 python -c "
 from pathlib import Path
 base = Path('docs/extraction/<source-name>/raw')
 chunks = sorted(base.glob('chunk_*.txt'))
 full = '\n\n'.join(p.read_text(encoding='utf-8') for p in chunks)
-header = '# <source-name> — TEXTE BRUT INTÉGRAL\n\n> Contenu d\'extraction brut (normalisé). Matériau de référence ; la synthèse est dans canon/ (via ttrpg:lore-extract/ttrpg:rules-keeper).\n\n---\n\n'
+header = '# <source-name> — TEXTE BRUT INTÉGRAL\n\n> Contenu d\'extraction brut (normalisé). Matériau de référence ; la synthèse vit dans la couche synthétisée (reference/ en générique, canon/ via ttrpg:lore-extract/ttrpg:rules-keeper en profil JDR).\n\n---\n\n'
 for root in ['<univers-root>/sources/<source-name>', '<systeme-root>/sources/<source-name>']:
     d = Path(root)
     if d.exists():
@@ -274,9 +299,11 @@ Commit :
 
 Archive: docs/extraction/<source-name>/DONE-YYYY-MM-DD.md
 
-Prochaines étapes :
+Prochaines étapes (aval — ventilation vers la couche synthétisée) :
+  # Profil JDR :
   ttrpg:lore-extract <univers-root>/sources/<source-name>/lore.md
   ttrpg:rules-keeper restructure <systeme-root>/sources/<source-name>/rules.md
+  # Générique : ventiler <target-root>/sources/<source-name>/ vers <target-root>/reference/
 
 Pour supprimer l'archive:
   python -c "import shutil; shutil.rmtree('docs/extraction/<source-name>')"

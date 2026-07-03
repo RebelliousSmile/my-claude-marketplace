@@ -6,8 +6,8 @@ argument-hint: <progress-file> [chunk-number]
 
 # Extract Single Chunk
 
-> **Rôle** : extrait et classe le contenu d'un chunk dans `classified/`. Ces fichiers classifiés seront versés dans `<univers-root>/sources/<source>/` et `<systeme-root>/sources/<source>/` lors de la phase Distribute — jamais dans `canon/`.
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` pour la convention des chemins.
+> **Rôle** : extrait et classe le contenu d'un chunk dans `classified/`. Ces fichiers classifiés seront versés sous `<target>/sources/<source>/` lors de la phase Distribute (profil JDR : `<univers-root>/sources/<source>/` + `<systeme-root>/sources/<source>/`) — jamais dans la couche synthétisée (`reference/` en générique, `canon/`/`mj/` en profil JDR).
+> Voir `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` pour la convention générique (et `references/jdr-layout.md` pour le profil JDR).
 
 ## Context
 
@@ -26,7 +26,7 @@ Extract and classify content from chunk $CHUNK (or next pending chunk).
 ## Step 0: Load Context
 
 1. Parse progress file header:
-   - `Univers` → classification destinations
+   - `Univers` → target slug (`<target>`) — destination des sources (univers sous profil JDR, bucket/scope en générique)
    - `Project` → for reference
    - `Tools Available` → extraction method
 

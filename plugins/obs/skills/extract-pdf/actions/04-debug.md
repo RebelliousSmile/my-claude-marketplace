@@ -4,7 +4,7 @@ Diagnose the extraction pipeline anomalies: missing chunks, garbled text, classi
 
 ## Inputs
 
-- `project_dir` (required) — the writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under the `R` domain. `R` discovered by walking up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`.
+- `project_dir` (required) — the work-unit / writing project directory (`R/<AAAA>/<MM>/<projet>/`), or any directory under the `R` domain. `R` discovered locally (generic: walk up to a `Perso`/`Pro` segment, subcategory = `R`; JDR profile shortcut: walk up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`).
 - `source_name` (required) — name of the source PDF without extension (e.g. `engrenages-regles`). If several extractions exist in `docs/extraction/`, list the available folders and ask the user.
 - `chunk_id` (optional) — specific chunk to debug (e.g. `03`); if omitted, full audit
 
@@ -48,7 +48,7 @@ Diagnose the extraction pipeline anomalies: missing chunks, garbled text, classi
 ## Process
 
 1. Check the available tools (pdftotext, tesseract, pdfplumber, pypdf).
-2. Discover `R` (walk up from the reference directory to one of the markers `_campagnes/`, `_univers/` or `_pjs/`); read `<univers>` in `progress.md#Univers` → build `<univers-root>` = `R/_univers/<univers>/` and `<systeme-root>` = `R/_systeme/`. Everything lives under the same `R` repository (a single `git -C "<R>"`).
+2. Discover `R` (generic: walk up from the reference directory to a `Perso`/`Pro` segment, subcategory = `R`; JDR profile shortcut: walk up to one of the markers `_campagnes/`, `_univers/` or `_pjs/`) and detect the profile (JDR if `R/bank.yml` has `profile: jdr` or `R` contains `_univers/`/`_systeme/`); read `<target>` in `progress.md#Univers`. Generic core: `<target-root>` = `R/_<target>/` (or the work-unit dir), sources under `<target-root>/sources/`. JDR profile: `<univers-root>` = `R/_univers/<target>/`, `<systeme-root>` = `R/_systeme/`. Everything lives under the same `R` repository (a single `git -C "<R>"`).
 3. Read `docs/extraction/<source-name>/progress.md`. Parse the table: `pending/done/failed` statuses, dates.
 4. Check for suspect git stashes (single repository = `R`):
    ```bash
