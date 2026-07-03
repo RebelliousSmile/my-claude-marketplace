@@ -2,6 +2,24 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.32.0] — 2026-07-03
+
+### Changed (`project`) — rework « communication → information »
+- Le contenu daté d'un projet (`Pro/Projets/<name>/YYYY/MM/`) est désormais traité comme de la **communication transitoire** (emails + docs) ; les fichiers structurels (`projet.md`/`commercial.md`/`backlog.md`/`memory.md`) sont l'**information distillée durable**. Nouvelle action **`distill`** : réduction déléguée à `obs:filler` → classification (`references/redistribution-rules.md`) → **décroissance temporelle** (info actuelle ramenée au mois courant, **date conservée dans le document** ; obsolète archivée/supprimée). Balayage à la demande.
+- **Chemins ancrés** via l'ancre `tree` — fin du chemin mort `C:/Users/fxgui/Public/Notes/…` (le vrai coffre est sous `Documents/`). **Templates + règles de redistribution** recréés, **auto-contenus** dans `references/projet-template/` et `references/redistribution-rules.md` (plus de dépendance au coffre). Couplage `obs:filler` dans `fill`/`reorganize`/`export-rag`/`distill`. Garde template vide/corrompu dans `01-create` (signaler le corps manquant, ne jamais inventer).
+- Suite behave `project` re-scaffoldée sur le spec réécrit ; run dry-run post-rework **26/26**.
+
+### Added — invariant « intégrité des liens au déplacement » (`project`, `tree`, `filler`)
+- Aucun move/rename/suppression ne doit laisser un wikilink `[[…]]`, un embed `![[…]]` ou une pièce jointe cassé : mettre à jour les chemins / co-déplacer les assets, puis **vérifier l'absence de référence pendante**. Une action destructive (`digest`/`synthesize`/`clean`, `judge`) doit rediriger ou signaler les références vers une source supprimée. Porté en règle transversale dans les trois skills + NO-GO behave (`project` DN5, `tree` S18, `filler` S16/S17).
+
+### Tests — baselines behave dry-run (2026-07-03)
+- Runs des suites saines : `mail` 19/19, `filler` 18/18, `tree` 19/19 (fixtures synthétiques peuplés, juge lecture seule).
+
+## [0.31.0] — 2026-07-02
+
+### Tests — suites comportementales behave pour les 7 skills
+- Scaffold → review → correctifs (via `overcode:behave`) d'une suite de scénarios par skill (`project`, `mail`, `brief`, `extract-pdf`, `filler`, `research`, `tree`) : ~107 scénarios GO/NO-GO/boundary aux critères **write-scoped**, Results logs vides (scaffold pur). Correctifs post-review : faux-FAIL désamorcés (`filler` S3, `brief` S2/S3), miroirs NO-GO de discriminance (phishing, age-gate, narrow→inline, merge/index, résumer/fusionner, I2/I4), fixtures étendus. Contradictions de spec des skills consignées en Finding notes / clauses N/A.
+
 ## [0.30.0] — 2026-07-02
 
 ### Fixed (`filler`) — `digest` ne s'applique plus aux messages humains
