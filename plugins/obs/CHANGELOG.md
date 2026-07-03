@@ -2,6 +2,11 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.34.1] — 2026-07-03
+
+### Removed — action orpheline `extract-pdf/05-run.md`
+- Suppression de l'orphelin `actions/05-run.md` (absent de la table d'actions 01–04, vocabulaire divergent `TODO`/`DONE`/`SKIP` + chemin `.docs/extraction/` — résidu relevé par le run behave). Le scénario S7 est reformulé en test d'adhérence au vocabulaire normalisé `pending/done/failed` + `docs/extraction/`, sans dépendre du fichier supprimé.
+
 ## [0.34.0] — 2026-07-03
 
 ### Removed — copie orpheline de `jdr-layout.md` dans `obs` (Phase 2 de l'agnosticisation)
