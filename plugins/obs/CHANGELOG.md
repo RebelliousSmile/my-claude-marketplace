@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.36.1] — 2026-07-03
+
+### Changed — invariants opérationnalisés dans les étapes d'action (spec-hardening)
+- **Intégrité des liens au déplacement** : sous-étape concrète ajoutée là où un fichier bouge/est supprimé — `tree` (`fix` step 6, `sort` step 5, `judge` Phase 3 Avancer/Fusionner) et `filler` (`sort` step 6 ; `digest` step 9 : rediriger/signaler les références `[[…]]` vers une source supprimée). La règle vivait uniquement en transversale (relevée par les runs behave) ; elle est désormais explicite dans les steps.
+- **`mail`** : confidentialité de `reply` réconciliée dans le SKILL (« Sub-agent principle ») — la lecture de la source/thread par `reply` passe aussi par un sous-agent (seuls le brief compact + le draft remontent), pour qu'un futur edit du SKILL n'affaiblisse pas silencieusement la garantie.
+
 ## [0.36.0] — 2026-07-03
 
 ### Changed (`tree`) — scope strict de `check`/`fix`

@@ -49,7 +49,7 @@ Schéma libre décrit en langage naturel. Inférer la logique depuis la descript
 3. Construire la carte de déplacement : `source → destination` pour chaque fichier.
 4. Détecter les conflits (deux fichiers vers la même destination, champ manquant, etc.).
 5. Afficher le plan complet et attendre confirmation.
-6. Créer les répertoires cibles et exécuter les déplacements.
+6. Créer les répertoires cibles et exécuter les déplacements. **Intégrité des liens** : après chaque déplacement, co-déplacer les assets référencés, mettre à jour les wikilinks `[[…]]` et embeds `![[…]]` entrants, puis vérifier qu'aucune référence pendante ne subsiste (règle 11 de SKILL.md).
 7. Si scheme `entity` : afficher le tableau de triage par entité.
 8. Rapport : nb déplacés, nb ignorés (conflit), structure résultante.
 

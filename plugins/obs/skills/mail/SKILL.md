@@ -241,6 +241,12 @@ The `scan` and `analyze` actions delegate via `Agent()`.
 Email content never appears in the main chat.
 Only file names and proposed decisions bubble up.
 
+`reply` (`06-reply`) is bound by the same principle: it reads the source email/thread
+**via a sub-agent** too. The source thread is read via a sub-agent; only the compact
+brief and the user-authored draft surface in the main chat — the raw source body never
+bubbles up. A future edit of `reply` must preserve this: the source read stays delegated,
+its body does not surface in the main chat.
+
 ### Safety and archiving
 
 - Never delete, merge, rewrite, or move without explicit batch validation.

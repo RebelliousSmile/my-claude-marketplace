@@ -40,7 +40,7 @@ Decide where loose items belong and place them — **by arbitration**. `tree` pr
    - **Ambiguous / multiple candidates** → present the ranked options and **ask the user to choose** (this is the arbitration step). Never guess silently on a real ambiguity.
    - **No domain fits** → propose creating a new `subcategory` (and confirm category), or leave the item unsorted with a note.
 4. **Confirm the full plan** (`item → destination`) before any move.
-5. **Move** approved items (collision → skip + flag; never overwrite; never delete). Prefer `git mv` in a repo.
+5. **Move** approved items (collision → skip + flag; never overwrite; never delete). Prefer `git mv` in a repo. **Link-integrity pass**: after each move/rename, rewrite the incoming `[[…]]` wikilinks, co-move or repath the `![[…]]` embeds and attachments (images/PDF), then verify that no dangling reference remains (cf. SKILL › Link integrity on move).
 6. Re-run `index` to refresh the cache; report placements, arbitrations made, and anything left unsorted.
 
 ## Rules

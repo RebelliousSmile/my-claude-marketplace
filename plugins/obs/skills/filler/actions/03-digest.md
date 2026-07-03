@@ -27,7 +27,7 @@ Utiliser quand un groupe de fichiers sont des instances répétitives du même �
    - Corps : tableau markdown avec une ligne par fichier source
 7. Afficher un aperçu (5 premières lignes + total) et le chemin de sortie prévu.
 8. Demander confirmation finale : "Écrire `<chemin>` et supprimer les `N` fichiers sources ?"
-9. Exécuter uniquement après confirmation : écrire le fichier, supprimer les sources.
+9. Exécuter uniquement après confirmation : écrire le fichier, supprimer les sources. Rediriger ou signaler toute référence `[[…]]` entrante vers une source supprimée — jamais la laisser pendante (règle 11 de SKILL.md).
 10. Rapport : nb lignes extraites, nb fichiers supprimés, chemin du fichier produit.
 
 ## Test

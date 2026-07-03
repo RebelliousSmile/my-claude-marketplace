@@ -38,7 +38,7 @@ Apply **safe** corrections for the anomalies and drift surfaced by `check`. Rena
    - Destination already exists → **skip and flag the collision** (never overwrite/merge silently).
    - Operation is a rename/move only — **never `rm`/delete** user content.
    - Prefer `git mv` when the subtree is a git repo; else plain move.
-6. Execute the approved operations. Re-run `index` to refresh the cache.
+6. Execute the approved operations. **Link-integrity pass**: after each move/rename, rewrite the incoming `[[…]]` wikilinks, co-move or repath the `![[…]]` embeds and attachments (images/PDF), then verify that no dangling reference remains (cf. SKILL › Link integrity on move). Re-run `index` to refresh the cache.
 7. Report what was done, what was skipped (with reasons), and what drift was left untouched.
 
 ## Rules

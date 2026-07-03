@@ -129,6 +129,7 @@ Applies only to a **group of ≥ 2 files**.
    merged_at: <YYYY-MM-DD>
    ```
 5. Move remaining source files to `R/_trash/` (collision → append timestamp suffix).
+6. **Link-integrity pass**: repoint any incoming `[[…]]` wikilink or `![[…]]` embed that referenced a merged-away source onto the primary file, then verify that no dangling reference remains (cf. SKILL › Link integrity on move).
 
 #### Garder + Avancer
 The node being advanced can be a **project unit** (directory) or a **loose file** — handled differently:
@@ -138,13 +139,15 @@ The node being advanced can be a **project unit** (directory) or a **loose file*
 2. Safety check: if the unit contains a `.git/` directory or any dotfile at root, it cannot be moved as individual items — the whole directory move carries them. Note this in the verdict card.
 3. Check for collision: if target exists → **skip and flag** (never overwrite).
 4. Move the whole directory. Prefer `git mv` if inside a git repo.
+5. **Link-integrity pass**: after the move, rewrite the incoming `[[…]]` wikilinks, co-move or repath the `![[…]]` embeds and attachments (images/PDF), then verify that no dangling reference remains (cf. SKILL › Link integrity on move).
 
 **Node is a loose file:**
 1. Target: `R/<AAAA-courant>/<MM-courant>/<filename>`.
 2. Create the month directory if absent.
 3. Check for collision: if target exists → **skip and flag** (never overwrite).
 4. Move the file. Prefer `git mv` if inside a git repo.
-5. If the original parent directory is now empty (and non-`_`), note it as a candidate for cleanup (do not auto-delete it).
+5. **Link-integrity pass**: after the move, rewrite the incoming `[[…]]` wikilinks, co-move or repath the `![[…]]` embeds and attachments (images/PDF), then verify that no dangling reference remains (cf. SKILL › Link integrity on move).
+6. If the original parent directory is now empty (and non-`_`), note it as a candidate for cleanup (do not auto-delete it).
 
 ## Rules
 
