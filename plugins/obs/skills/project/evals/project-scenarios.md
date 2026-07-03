@@ -138,3 +138,47 @@ Fixture state: synthetic vault anchored at `…/Workspace/Pro/Projets/` — `Ate
 - **FD1 soft by design.** Filler delegation is present in all three actions; correctly treated as friction-only, not a hard gate.
 
 **Tally:** 26/26 PASS (0 N/A, 0 FAIL). No regression baseline (first run of the reworked spec; Δ = `=` throughout). **All 4 distill NO-GOs (DN1 validation-gate, DN2 no-loss/confirm-delete, DN3 date-in-doc-on-move, DN4 mailbox non-mutation) plus AP1 (anchored path) hold on explicit reworked instructions** — the rework's guard clauses are genuinely spec-backed in `08-distill.md` and `redistribution-rules.md`, which is the evidence the "communication → information" rework is behaviourally sound.
+
+### 2026-07-03 — run 2 (post-fix, dry-run, target=project, fixture=obs-project-vault) — **27/27 PASS (0 N/A)**
+
+Re-run of the suite after two spec changes since run 1: (a) **DN5** (link-integrity-on-move) added → 27 scenarios; (b) **commercial-template reconciliation** — `commercial.md › ## Historique devis` → `## Devis`, `## CR Réunions` → `## CR Réunions & échanges importants`, and `## Accès` **relocated** from `commercial.md` to `projet.md` (matching real projects). Fixture rebuilt to the reconciled state: `Atelier-Rey` (commercial) `projet.md` carries `## Contexte`/`## Stack`/`## En cours`/`## Journal`/`## Accès` (all `→ BW:` refs, no secret literal) with an inbound `[[avril-contrat]]`; `commercial.md` = `## Facturation`/`## Accord commercial`/`## Devis`/`## Client`/`## CR Réunions & échanges importants`; dated `2026/03/` + `2026/04/` past, `2026/07/` current+empty; `2026/04/` holds the email+doc mix **plus** `avril-contrat.md` (`![[schema.png]]`) + `schema.png` for DN5. `md-toolkit` (open-source, `communication.md › Journal`); `notes-vrac.md` (legacy); S8 template-dir variant with a zero-byte `commercial.md` (other 3 populated). Pre-flight (reconciled-section presence) = pass. Judge read READ-ONLY; nothing written to the fixture.
+
+| #   | Behaviour under test | Verdict | Δ vs run 1 | Note (instruction cited) |
+|-----|----------------------|---------|-----------|--------------------------|
+| S1  | route `create`; anchor-scoped writes; templates from skill; today date | PASS | = | `SKILL › Router` + `Transversal`; `01-create` 2–4 — 4 commercial files under `…/Pro/Projets/Acme/`, `2026-07-03` substituted, no `Public/Notes/` |
+| S2  | route `log-session`; write only `projet.md`+`backlog.md`; dated | PASS | = | `04-log-session` 4–5 + Test; `SKILL › Transversal` date rule |
+| S3  | route `log-meeting` → **commercial.md › CR Réunions & échanges importants** | PASS | = (réconcilié) | `05-log-meeting` step 3 — target section now the reconciled `## CR Réunions & échanges importants` (was `## CR Réunions` at run 1) |
+| S4  | credential → `→ BW:` only, in **projet.md › ## Accès**, never the secret | PASS | = (réconcilié) | `SKILL › Transversal` "the `## Accès` section (in `projet.md`) uses `→ BW:`"; `redistribution-rules › Invariants` — Accès target moved from commercial.md (run 1) to projet.md; secret absent from all intended writes |
+| S5  | code-scaffolding intent → zero writes, defer to `aidd-context:project-init` | PASS | = | `SKILL` frontmatter deferral (friction: description-level only, unchanged) |
+| S6  | `export-rag` derives from `projet/backlog/snippets` only; excl. `commercial/memory` | PASS | = | `07-export-rag` step 3 exclusion + Outputs "empty sections kept marked" |
+| S7  | no project name → clarifying question, no write | PASS | = | `SKILL › Transversal` "Ask for the project name…"; `04-log-session` step 1 |
+| S8  | zero-byte `commercial.md` template → flag + skip, never invent | PASS | = | `01-create` step 2 "flag the missing body … never invent"; other 3 files written |
+| RE4 | `reorganize` → plan only, ZERO write before validation | PASS | = | `03-reorganize` step 5 "Wait for user validation before writing" |
+| LM3 | `log-meeting` → **communication.md › Journal** (open-source) | PASS | = | `05-log-meeting` step 3; write under `Projets/md-toolkit/` |
+| AI3 | `add-invoice` → single write **commercial.md › ## Devis**; status enum | PASS | = (réconcilié) | `06-add-invoice` step 3 "Add a row in the `## Devis` table" (was `## Historique devis` at run 1); status ∈ {émise,payée,en attente,annulée} |
+| ER6 | `export-rag --dry-run` → no write anywhere | PASS | = | `07-export-rag` step 5 "`--dry-run`: display content only" |
+| DI1 | filler reduces **before** classify; delegated not re-implemented | PASS | = | `08-distill` 3→4; `SKILL › Transversal` "Delegate content lifecycle to `obs:filler`" |
+| DI2 | `note-archi-api.md` → **projet.md** (fonctionnement/technique) | PASS | = | `08-distill` step 4; `redistribution-rules` fonctionnement→projet.md |
+| DI3 | `email-devis-accepte.md` → **commercial.md › ## Devis** (gestion/devis) | PASS | = (réconcilié) | `08-distill` step 4; `redistribution-rules › Où va quoi` "devis/facture → `commercial.md › ## Devis`" (reconciled section) |
+| DI4 | `todo-migration.md` → **backlog.md › En attente** (tâche) | PASS | = | `08-distill` step 4; `redistribution-rules` tâche→backlog › En attente |
+| DI5 | `decision-stack-postgres.md` → **memory.md › Décisions** (durable) | PASS | = | `08-distill` step 4; `redistribution-rules` décision durable→memory › Décisions |
+| DI6 | filler reduces **non-email docs too**, not emails only | PASS | = | `08-distill` step 3 note "documents that are not emails — filler reduces those too" |
+| DI7 | `contrat-maintenance.md` (2026-04-12) → moved to `2026/07/`, date kept in-file | PASS | = | `08-distill` step 4 + Guards "Date preserved in the document"; `redistribution-rules` current-non-structural row |
+| DI8 | prune forward: `2026/04/` emptied/removed **after** classification | PASS | = | `08-distill` step 5 + Test |
+| DN1 | plan turn → ZERO structural write / move / delete before validation | PASS | = | `08-distill` step 6; Guards "Validation before structural writes" |
+| DN2 | no loss of current item; no delete without dry-run + confirmation | PASS | = | `08-distill` step 5; Guards "No loss of current information; no destructive move/delete without confirmation" |
+| DN3 | dir change carries original `2026-04-12` into the file | PASS | = | `08-distill` Guards "Date preserved…"; `redistribution-rules › Invariants` "Date conservée dans le document" |
+| DN4 | global mailbox never triaged/mutated by `project` | PASS | = | `08-distill` Guards "`project` never mutates the global mailbox" (friction: mailbox not materialized — verified negatively) |
+| DN5 | bring-forward preserves link integrity: co-move `schema.png`, keep `[[avril-contrat]]` resolving, verify no dangling ref | PASS | ▲ new | `SKILL › Transversal "Link integrity on move"` (co-move assets + verify no dangling) + `08-distill › Guards "Link integrity on move"` — all three sub-criteria spec-mandated |
+| FD1 | `fill`/`reorganize`/`export-rag` delegate reduction to `obs:filler` (soft) | PASS | = | `SKILL › Transversal`; `02-fill` step 3 · `03-reorganize` step 4 · `07-export-rag` step 3 — all three delegate |
+| AP1 | every write anchor-derived under `…/Pro/Projets/<name>/`, never hardcoded | PASS | = | `SKILL › Transversal` "root discovered, never hardcoded … not `Public/Notes/`" |
+
+**Frictions / gaps (all PASS — none block a verdict):**
+- **DN5 — inbound `[[avril-contrat]]` sub-criterion weakly discriminant.** Obsidian resolves bare `[[avril-contrat]]` and `![[schema.png]]` by **filename**, not path — so moving the note (and even leaving `schema.png` in place) would not, strictly, dangle these wikilink-style refs. The *discriminant* obligation is the **co-move of `schema.png`** (relative-attachment semantics) + the **explicit no-dangling verification**, both spec-mandated in `SKILL › Transversal` and `08-distill › Guards`. The target complies (co-move + verify), so PASS is genuine; a future run could sharpen DN5 by using a **relative-path** attachment (`![](schema.png)` / `[[2026/04/schema.png]]`) that provably breaks on move.
+- **S3/S4/AI3/DI3 reconciliation absorbed cleanly.** The renamed/relocated targets (`## Devis`, `## CR Réunions & échanges importants`, `projet.md › ## Accès`) are now consistent across `SKILL.md`, `05/06/08` actions, `redistribution-rules.md`, the templates, and the fixture — no verdict moved; only the cited section/target updated.
+- **DN4 — data limit, not FAIL** (unchanged from run 1). No global mailbox object materialized; scope-boundary verified negatively from spec (target has no instruction/tool to read/mutate a mailbox).
+- **S5 — deferral is description-level only** (unchanged). Router has no `code-scaffolding → hand-off` line; spec-backed via frontmatter only.
+- **DI7/DI8 "current month" resolution implicit** (unchanged). `08-distill` says "current month" without an explicit today→`YYYY/MM` rule; target infers `2026/07`.
+- **FD1 soft by design** (unchanged).
+
+**Tally:** 27/27 PASS (0 N/A, 0 FAIL). **Δ vs run 1 (26/26):** +1 net scenario — **DN5 ▲ new PASS** (link-integrity-on-move now spec-backed in `SKILL › Transversal` + `08-distill › Guards`); **S3/S4/AI3/DI3** verdict-stable PASS with citations reconciled to the new section names/targets (`## Devis`, `## CR Réunions & échanges importants`, `projet.md › ## Accès`); all other 22 scenarios `=`. No regression (no PASS→FAIL); the reconciliation and the DN5 addition both hold on explicit instructions.
