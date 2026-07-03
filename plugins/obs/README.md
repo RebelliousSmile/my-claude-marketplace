@@ -23,7 +23,7 @@ Plugin personnel orienté coffre Obsidian (chemins et conventions propres à l'a
 | `research` | `/obs:research` | Recherche documentaire cross-référencée ; extraction de terminologie |
 | `extract-pdf` | `/obs:extract-pdf` | Pipeline multi-sessions d'extraction de gros PDF vers les sources |
 
-> **JDR solo** : tout l'outillage JDR (`pc`, `campaign`, `solo-mc`, `lore-extract`, `rules-keeper`) a été extrait dans le plugin `ttrpg`. `obs` reste en amont sur le même domaine de jeu `R` : `extract-pdf` y dépose les sources brutes, `research` y ajoute des rapports de recherche — voir `references/jdr-layout.md`.
+> **JDR solo** : tout l'outillage JDR (`pc`, `campaign`, `solo-mc`, `lore-extract`, `rules-keeper`) a été extrait dans le plugin `ttrpg`. `obs` reste en amont sur le même domaine `R` : `extract-pdf` y dépose les sources brutes, `research` y ajoute des rapports de recherche. Les 3 skills de contenu (`brief`/`research`/`extract-pdf`) opèrent sur le modèle générique `references/domain-layout.md` (le profil JDR y est résumé ; le layout de jeu complet est possédé par le plugin `ttrpg`).
 
 ## Licence
 

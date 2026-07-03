@@ -7,7 +7,7 @@ argument-hint: <progress-file> [chunk-number]
 # Extract Single Chunk
 
 > **Rôle** : extrait et classe le contenu d'un chunk dans `classified/`. Ces fichiers classifiés seront versés sous `<target>/sources/<source>/` lors de la phase Distribute (profil JDR : `<univers-root>/sources/<source>/` + `<systeme-root>/sources/<source>/`) — jamais dans la couche synthétisée (`reference/` en générique, `canon/`/`mj/` en profil JDR).
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` pour la convention générique (et `references/jdr-layout.md` pour le profil JDR).
+> Voir `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` pour la convention générique (§ profil JDR pour les spécificités JDR).
 
 ## Context
 

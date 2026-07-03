@@ -9,7 +9,7 @@ argument-hint: <project-dir> <source-pdf> <target>
 Arguments reçus : `<project_dir> <source_pdf> <target>`
 
 > **Rôle** : prépare l'espace de travail pour l'extraction. Les sources de référence brutes seront écrites sous `<target>/sources/` lors de la phase Distribute (profil JDR : `<univers-root>/sources/` + `<systeme-root>/sources/`). Jamais dans la couche synthétisée (`reference/` en générique, `canon/`/`mj/` en profil JDR).
-> Voir `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` pour la convention générique des chemins (et `references/jdr-layout.md` pour le profil JDR).
+> Voir `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` pour la convention générique des chemins (§ profil JDR pour les spécificités JDR).
 
 ---
 

@@ -49,7 +49,7 @@ docs/extraction/<source-name>/
    - **Generic core**: walk up to a `Perso`/`Pro` segment; the **subcategory** level is `R` (the `obs:tree` anchor). No marker required.
    - **JDR profile shortcut**: walk up the parents to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`; that folder is `R`.
    - **Profile**: JDR if `R/bank.yml` declares `profile: jdr` or `R` contains `_univers/`/`_systeme/`; otherwise generic core.
-   - If no `R` can be resolved at all (no `Perso`/`Pro` anchor and no JDR marker) → STOP: "Cible hors d'un domaine initialisé (ni ancre `Perso`/`Pro`, ni marqueur JDR en remontant). Initialiser `R` d'abord." See `references/domain-layout.md` (JDR: `references/jdr-layout.md`).
+   - If no `R` can be resolved at all (no `Perso`/`Pro` anchor and no JDR marker) → STOP: "Cible hors d'un domaine initialisé (ni ancre `Perso`/`Pro`, ni marqueur JDR en remontant). Initialiser `R` d'abord." See `references/domain-layout.md` (§ JDR profile for the JDR marker rules).
 2. Determine the target `<target>` (`kebab-case` slug); if absent, ask the user.
    - **JDR profile**: `<target>` = universe slug → verify or plan `<univers-root> = R/_univers/<target>/`.
    - **Generic core**: `<target>` = destination bucket/scope → verify or plan `<target>/sources/`.

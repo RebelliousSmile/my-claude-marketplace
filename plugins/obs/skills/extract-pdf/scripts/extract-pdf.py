@@ -367,7 +367,7 @@ def discover_domain_root(start: Path) -> Path | None:
     directory containing the marker `_savoir/` is found.
 
     No global path, no per-machine config: R is found locally relative to
-    the reference directory. See references/jdr-layout.md.
+    the reference directory. See references/domain-layout.md (§ JDR profile).
     """
     start = start.resolve()
     for p in [start, *start.parents]:

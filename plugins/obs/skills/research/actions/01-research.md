@@ -2,7 +2,7 @@
 
 Perform structured cross-referenced web research on a topic and compare findings with the chosen scope's existing documentation.
 
-> Path variables & domain resolution: primary `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md`; JDR profile `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
+> Path variables & domain resolution: primary `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` (JDR profile in its § JDR profile).
 > The domain `R` is **discovered locally** via the `obs:tree` anchor (walk up from the argument/CWD to a `Perso`/`Pro` segment; the subcategory below is `R`) — no global vault, no per-machine config. *(JDR profile: marker-based shortcut — walk up to the first folder containing `_campagnes/`, `_univers/` or `_pjs/`.)*
 > `research` IS a reference producer: cross-verified findings go to the chosen scope's `reference/` (JDR profile: `canon/`).
 > The working report (in-progress) is saved under the chosen scope's `research/` folder (`shared` or `project` — JDR profile adds `campagne`).

@@ -4,7 +4,7 @@ Final session: pour the classified content into the **raw reference sources** (`
 
 > **Boundary**: `extract-pdf` writes only into `sources/` — never into the synthesized layer (`reference/` generically, `canon/`/`mj/` under the JDR profile).
 > The ventilation into the synthesized layer is a downstream role — under the JDR profile: `ttrpg:lore-extract` (lore) and `ttrpg:rules-keeper` (rules) produce `canon/`.
-> See `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` for the generic convention (and `references/jdr-layout.md` for the JDR profile).
+> See `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` for the generic convention (§ JDR profile for the JDR routing; full JDR game layout: the `ttrpg` plugin's `references/jdr-layout.md`).
 
 ## Inputs
 

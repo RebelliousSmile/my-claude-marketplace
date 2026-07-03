@@ -1,6 +1,6 @@
 # Domain layout — generic working-directory convention
 
-The generic model the `obs` content skills (`brief`, `research`, `extract-pdf`) operate on. It is **domain-agnostic**: a JDR game domain (`references/jdr-layout.md`) is one **profile** of this model, not the base. A novel, a technical-doc knowledge base, or any other subject area is just as valid a domain.
+The generic model the `obs` content skills (`brief`, `research`, `extract-pdf`) operate on. It is **domain-agnostic**: a JDR game domain (the `ttrpg` plugin's `references/jdr-layout.md`) is one **profile** of this model, not the base. A novel, a technical-doc knowledge base, or any other subject area is just as valid a domain.
 
 > **Local paths, discovered anchor — no global hardcoding.** A domain is a self-contained directory in `Documents/`; everything it needs lives beneath it in **relative** paths. Move it anywhere and the skills still work.
 
@@ -40,9 +40,9 @@ A domain uses a **profile** when:
 1. `R/bank.yml` declares `profile: <name>` — **explicit and authoritative**; or
 2. (fallback, zero-config) `R` contains the profile's signature buckets — for JDR, `_univers/` or `_systeme/`.
 
-Without a profile, the **generic core** applies (`sources/` + `reference/`, scopes `shared`/`project`). The JDR profile is defined in `references/jdr-layout.md` (bucket names, `canon/`+`mj/` split, `campagne` scope, marker shortcut, the `ttrpg:lore-extract`/`ttrpg:rules-keeper` canon pipeline).
+Without a profile, the **generic core** applies (`sources/` + `reference/`, scopes `shared`/`project`). The JDR profile is **summarized below**; its full game layout is owned by the `ttrpg` plugin (its `references/jdr-layout.md`): bucket names, `canon/`+`mj/` split, `campagne` scope, marker shortcut, the `ttrpg:lore-extract`/`ttrpg:rules-keeper` canon pipeline.
 
 ## Generic vs profile — summary
 
 - **Generic (this file):** `R` = subcategory · `R/_<bucket>` working dirs · `bank.yml` · `sources/` (raw) + `reference/` (synthesized) · scopes `shared`/`project` · discovery via `tree` anchor.
-- **JDR profile (`jdr-layout.md`):** bucket names `_univers`/`_systeme`/`_subsystems`/`_pjs`/`_campagnes` · `canon/`+`mj/` provenance split · `campagne` scope · marker-based shortcut · feeders `ttrpg:lore-extract`/`ttrpg:rules-keeper` · the canon pipeline.
+- **JDR profile (the `ttrpg` plugin's `jdr-layout.md`):** bucket names `_univers`/`_systeme`/`_subsystems`/`_pjs`/`_campagnes` · `canon/`+`mj/` provenance split · `campagne` scope · marker-based shortcut · feeders `ttrpg:lore-extract`/`ttrpg:rules-keeper` · the canon pipeline.

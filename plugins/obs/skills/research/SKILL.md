@@ -6,7 +6,7 @@ description: Performs cross-referenced documentary research for content projects
 
 # Research
 
-Two documentary tools that operate on the **generic domain model** (`${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md`): **research** performs structured web research (minimum 3 searches, cross-referenced sources, comparison with existing docs, contradiction flagging) and saves a report under the **target scope's** `research/` folder; **extract-terminology** distills terminology, proper nouns, and world-building elements from a domain's source documents into a canonical `terminologie.md`. A JDR game domain is one **profile** of this model (`${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`), applied conditionally — see *Profile detection*.
+Two documentary tools that operate on the **generic domain model** (`${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md`): **research** performs structured web research (minimum 3 searches, cross-referenced sources, comparison with existing docs, contradiction flagging) and saves a report under the **target scope's** `research/` folder; **extract-terminology** distills terminology, proper nouns, and world-building elements from a domain's source documents into a canonical `terminologie.md`. A JDR game domain is one **profile** of this model (documented in `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` § JDR profile), applied conditionally — see *Profile detection*.
 
 ## Available actions
 
@@ -23,7 +23,7 @@ Trigger-to-action mapping:
 
 ## Transversal rules
 
-- **Domain `R` resolution (local, never global).** `research` operates relative to the passed argument, otherwise to the CWD; when it needs the domain level `R`, it **discovers** it via the `obs:tree` anchor — walk up the parents to a `Perso`/`Pro` segment; the subcategory level below is `R`. No domain marker is required, no absolute path, no per-machine config. Primary reference: `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md`. *(JDR profile: a marker-based shortcut is available — walk up to the first folder containing `_campagnes/`, `_univers/` or `_pjs/`; see `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.)*
+- **Domain `R` resolution (local, never global).** `research` operates relative to the passed argument, otherwise to the CWD; when it needs the domain level `R`, it **discovers** it via the `obs:tree` anchor — walk up the parents to a `Perso`/`Pro` segment; the subcategory level below is `R`. No domain marker is required, no absolute path, no per-machine config. Primary reference: `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md`. *(JDR profile: a marker-based shortcut is available — walk up to the first folder containing `_campagnes/`, `_univers/` or `_pjs/`; see `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` § JDR profile.)*
 - **`research` scope (determine BEFORE writing — never default).** Every research effort targets an explicit **scope**: **`shared`** (R-level knowledge, **durable, reused across work units**) or **`project`** (knowledge **specific to a single work unit**). Ask/infer the scope; list the domain `R`'s shared buckets and its work units. Paths — source of truth `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md`:
   - **`shared`**: verified findings → `<scope-root>/reference/<topic>.md` (they become **durable knowledge, reused across work units**); working report → `<scope-root>/research/<slug>-<date>.md`.
   - **`project`**: report → `<projet-root>/research/<slug>-<date>.md`; verified findings → the unit's governing `reference/` (e.g. the project's shared universe).
@@ -35,4 +35,4 @@ Trigger-to-action mapping:
 - If web search is unavailable, state clearly and suggest manual research fallback.
 - **Profile detection.** A domain applies the **JDR profile** (`canon/`+`mj/` provenance split, `campagne` scope, marker-based `R` shortcut, `ttrpg:*` feeders) when `R/bank.yml` declares `profile: jdr` **or** `R` contains the signature buckets `_univers/`/`_systeme/`. Otherwise the **generic core** applies (`reference/` for synthesized knowledge, scopes `shared`/`project`).
 
-> Path variables: primary `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md`; JDR profile `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`.
+> Path variables: primary `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` (JDR profile documented in its § JDR profile).

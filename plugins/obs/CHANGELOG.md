@@ -2,6 +2,20 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.34.0] — 2026-07-03
+
+### Removed — copie orpheline de `jdr-layout.md` dans `obs` (Phase 2 de l'agnosticisation)
+- Les 3 skills de contenu agnosticisés en 0.33.0 ne référencent plus la copie obs de `jdr-layout.md` : ils s'appuient sur `references/domain-layout.md` (qui résume le profil JDR), le **layout de jeu complet restant possédé par le plugin `ttrpg`** (sa propre `references/jdr-layout.md`).
+- Suppression des orphelins `obs/references/jdr-layout.md` + `jdr-layout-checks.py` — fin de la duplication obs↔ttrpg (les deux copies avaient dérivé). `writing:forge` pointait déjà vers la copie `ttrpg` (inchangé).
+
+## [0.33.0] — 2026-07-03
+
+### Changed (`brief`/`research`/`extract-pdf`) — agnosticisation (découplage du modèle JDR)
+- Les 3 skills de contenu étaient couplés au modèle JDR (buckets `_univers`/`_systeme`, split `canon/mj`, feeders `ttrpg:*`) alors que leur mécanique est générique. Découplés : ils opèrent sur un **modèle générique**, le JDR devenant un **profil conditionnel** (`profile: jdr` dans `bank.yml`, ou présence de buckets).
+- Nouveau `references/domain-layout.md` : `R` = sous-catégorie + `R/_<bucket>` + `bank.yml` ; `sources/` (brut) + `reference/` (synthétisé) ; scopes `shared`/`project` ; détection de profil.
+- extract-pdf : sortie `<target>/sources/`, split univers/systeme en profil. research : scopes shared/project, `campagne` réintroduite par le profil ; cibles `reference/` / `canon/`. brief : consolide « ce que `bank.yml` catalogue » (buckets aux noms libres) ; contrat `writing` intact.
+- 3 suites behave re-scaffoldées : cœur générique (fixture non-JDR) + variante profil-JDR + détection de profil testée dans les deux sens.
+
 ## [0.32.0] — 2026-07-03
 
 ### Changed (`project`) — rework « communication → information »

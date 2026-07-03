@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Four-phase pipeline for large PDF extraction across multiple Claude Code sessions.
 
-> **Generic model, conditional profile.** `extract-pdf` operates on the **generic** working-directory convention `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` (`R` = subcategory, working-dir buckets `R/_<bucket>/`, `bank.yml`, raw `sources/` + synthesized `reference/`, scopes `shared`/`project`). A **JDR game domain is one profile** of that model: the JDR profile (`${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md`) is applied **only when the domain is JDR** (see *Profile detection* below).
+> **Generic model, conditional profile.** `extract-pdf` operates on the **generic** working-directory convention `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` (`R` = subcategory, working-dir buckets `R/_<bucket>/`, `bank.yml`, raw `sources/` + synthesized `reference/`, scopes `shared`/`project`). A **JDR game domain is one profile** of that model: the JDR profile (documented in `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` § JDR profile) is applied **only when the domain is JDR** (see *Profile detection* below).
 
 > **Role in the pipeline**: `extract-pdf` produces **raw reference sources** under `<target>/sources/<source>/`. It **never** ventilates into the synthesized layer — `reference/` generically, or `canon/`/`mj/` under the JDR profile. Ventilation is a downstream role (under the JDR profile: `ttrpg:lore-extract` for lore, `ttrpg:rules-keeper` for rules).
 
@@ -76,7 +76,7 @@ python scripts/extract-pdf.py --status docs/extraction/<source>/progress.md
 - `R` (the domain root = a **subcategory** `(Perso|Pro)/<Category>/<Subcategory>/`) is **discovered locally**, never hardcoded:
   - **Generic core**: start from the reference directory (argument or CWD) and walk up to a `Perso`/`Pro` segment; the **subcategory** level is `R` (the `obs:tree` anchor mechanism). No domain marker required.
   - **JDR profile shortcut**: walk up the parents to the first folder containing one of the markers `_campagnes/`, `_univers/` or `_pjs/`; that folder is `R`. This is the JDR profile's fast path.
-  No global path, no per-machine config. See `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` (and `references/jdr-layout.md` for the JDR profile).
+  No global path, no per-machine config. See `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` (§ JDR profile for the JDR-specific rules).
 - The extracted reference sources land under **`<target>/sources/<source>/`** — never in the synthesized layer (`reference/` generically; `canon/`/`mj/` under the JDR profile):
   - **Generic core**: a single resolved `<target>` (a working-dir bucket `R/_<bucket>/` or the work-unit directory) → `<target>/sources/<source>/`.
   - **JDR profile**: split by provenance — lore/terminology → `<univers-root>/sources/<source>/` (`<univers-root> = R/_univers/<univers>/`), rules → `<systeme-root>/sources/<source>/` (`<systeme-root> = R/_systeme/`).
@@ -93,7 +93,7 @@ python scripts/extract-pdf.py --status docs/extraction/<source>/progress.md
 ## References
 
 - `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` — **primary** generic convention of an `R` domain: `R` = subcategory (discovered via the `obs:tree` anchor), working-dir buckets `R/_<bucket>/`, `bank.yml`, raw `sources/` + synthesized `reference/`, scopes `shared`/`project`, profile detection.
-- `${CLAUDE_PLUGIN_ROOT}/references/jdr-layout.md` — the **JDR profile** applied when the domain is JDR: bucket names `_univers`/`_systeme`, `canon/`+`mj/` provenance split, marker-based `R` shortcut, the `extract-pdf` / `ttrpg:lore-extract` / `ttrpg:rules-keeper` canon pipeline.
+- **JDR profile** (documented in `${CLAUDE_PLUGIN_ROOT}/references/domain-layout.md` § JDR profile) — applied when the domain is JDR: bucket names `_univers`/`_systeme`, `canon/`+`mj/` provenance split, marker-based `R` shortcut, the `extract-pdf` / `ttrpg:lore-extract` / `ttrpg:rules-keeper` canon pipeline. (Full JDR game layout: the `ttrpg` plugin's `references/jdr-layout.md`.)
 
 ## External data
 
