@@ -31,7 +31,7 @@ C'est le contrat de routage de `distill` : chaque information survivante (après
 
 ## Invariants
 
-- **Jamais de secret en clair** dans un `.md` : la section `## Accès` n'utilise que `→ BW: [Description]`.
+- **Jamais de secret en clair** dans un `.md` : la section `## Accès` n'utilise que `→ BW: <coffre> > <chemin>` (coffre Bitwarden > chemin, jamais le secret).
 - **Validation avant écriture** dans un fichier structurel (la classification est une proposition).
 - **Date conservée dans le document** même quand il change de répertoire (frontmatter ou en-tête daté) — on perd le répertoire daté, pas la date.
 - Une information vit dans **un seul** fichier ; les autres y référencent.

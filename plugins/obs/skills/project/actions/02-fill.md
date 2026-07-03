@@ -24,4 +24,4 @@ Updated `.md` files in `Pro/Projets/<name>/` with no empty placeholders in criti
 
 ## Test
 
-After execution, read `projet.md`: no critical section (Contexte, Stack) is empty and no placeholder such as `[à compléter]` remains.
+After execution, read `projet.md`: the `## Contexte` section (stack included, in-paragraph) is not empty and no placeholder such as `[à compléter]` remains.

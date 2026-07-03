@@ -16,4 +16,4 @@
 - Suites à donner : 
 
 ## Accès
-- <Service> → BW: [Description de l'entrée Bitwarden]
+- <Service> → BW: <coffre> > <chemin>

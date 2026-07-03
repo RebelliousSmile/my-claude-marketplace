@@ -1,8 +1,14 @@
 # Objectifs — [Projet]
 
-## Objectifs
-- [ ] 
+## Motivations
+<à compléter>
 
-## Journal
-### YYYY-MM-DD
+## Objectifs
+- Court terme : 
+- Long terme : 
+
+## Critères de succès
+- 
+
+## Apprentissages visés
 - 

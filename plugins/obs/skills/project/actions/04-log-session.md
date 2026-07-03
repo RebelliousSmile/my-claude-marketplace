@@ -22,7 +22,7 @@ Update a project's notes after a work session.
    - What is in progress (to update "En cours" in `projet.md`)
    - New tasks or bugs discovered (to add to `backlog.md`)
    - Technical decisions made (to add to `projet.md`)
-4. Update `projet.md`: add a dated entry in the Journal section; update "En cours".
+4. Update `projet.md`: add a dated entry in the Journal section; update "En cours"; record any technical decision as a row in the `## Décisions techniques` table (Date | Décision | Pourquoi).
 5. Update `backlog.md`: check off completed tasks, move them to "Livré", add new tasks to "En attente".
 
 ## Test

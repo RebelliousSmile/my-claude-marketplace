@@ -1,10 +1,7 @@
 # Mémoire — [Projet]
 
-> Décisions durables et contexte long terme — ce qui ne doit pas être réexpliqué.
-> Exclu de l'export RAG.
+## Statut projet
+<!-- Export aidd-docs/memory/ collé ici -->
 
 ## Décisions
-- 
-
-## À retenir
-- 
+<!-- Export aidd-docs/decisions/ collé ici -->
