@@ -1,6 +1,6 @@
 # 03 - Reorganize
 
-Redistribute existing project content to the standard structure defined in CLAUDE.md.
+Redistribute existing project content to the standard structure.
 
 ## Inputs
 
@@ -9,16 +9,17 @@ Redistribute existing project content to the standard structure defined in CLAUD
 
 ## Outputs
 
-Restructured files in `Projets/<name>/` matching the standard layout for the given type.
+Restructured files in `Pro/Projets/<name>/` matching the standard layout for the given type.
 
 ## Process
 
 1. Ask for `name` and `type` if not provided via `$ARGUMENTS`.
-2. Read all existing files in `Projets/<name>/` (or a single `.md` file if not yet a folder).
-3. Apply redistribution rules from `C:/Users/fxgui/Public/Notes/CLAUDE.md` (section "Règles de redistribution").
-4. Present a redistribution plan: which content moves to which file. Wait for user validation before writing.
-5. After validation, create missing files from templates at `C:/Users/fxgui/Public/Notes/Patterns/projet-template/`.
-6. Write the redistributed content. Flag any content that could not be classified automatically.
+2. Read all existing files in `Pro/Projets/<name>/` (or a single `.md` file if not yet a folder). Anchor resolved as `obs:tree` does.
+3. Apply the classification contract from `references/redistribution-rules.md` (which content goes into which file/section).
+4. For verbose or noisy content, delegate reduction to `obs:filler` (`condense`/`synthesize`) before redistributing.
+5. Present a redistribution plan: which content moves to which file. **Wait for user validation before writing.**
+6. After validation, create missing files from templates at `references/projet-template/`.
+7. Write the redistributed content. Flag any content that could not be classified automatically.
 
 ## Test
 

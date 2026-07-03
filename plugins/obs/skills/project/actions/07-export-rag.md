@@ -10,13 +10,13 @@ Generate a RAG context file from the Obsidian project notes.
 
 ## Outputs
 
-File `Projets/<name>/project-notes.md` with 5 sections (unless `--dry-run`):
+File `Pro/Projets/<name>/project-notes.md` with 5 sections (unless `--dry-run`):
 
 ```markdown
 ---
 name: project-notes
 description: Contexte projet issu des notes Obsidian — généré par /export-rag
-source: C:/Users/fxgui/Public/Notes/Pro/Projets/<name>/
+source: Pro/Projets/<name>/
 date: <yyyy-mm-dd>
 ---
 
@@ -33,7 +33,7 @@ Empty sections are kept and marked `> ⚠️ Section vide — à compléter`.
 
 ## Process
 
-1. Resolve `name` from `$ARGUMENTS` or current folder; ask if ambiguous.
+1. Resolve `name` from `$ARGUMENTS` or current folder (anchor resolved as `obs:tree` does); ask if ambiguous.
 2. If `--challenge`: analyse source files against these criteria and present a report before generating:
    - **Complétude** — critical sections filled? Empty placeholders reducing RAG value?
    - **Signal vs bruit** — redundant info across files? Overly generic content?
@@ -45,9 +45,10 @@ Empty sections are kept and marked `> ⚠️ Section vide — à compléter`.
    - `backlog.md` — task status
    - `snippets.md` — project-specific code memos
    Excluded: `memory.md`, `project-notes.md`, `commercial.md`.
+   For overly verbose sources, delegate reduction to `obs:filler` (`condense`) so the RAG context stays signal-dense.
 4. Build the output using the structure above.
-5. `--dry-run`: display content only. Otherwise write to `Projets/<name>/project-notes.md` and confirm the path.
+5. `--dry-run`: display content only. Otherwise write to `Pro/Projets/<name>/project-notes.md` and confirm the path.
 
 ## Test
 
-`C:/Users/fxgui/Public/Notes/Pro/Projets/<name>/project-notes.md` exists on disk (unless `--dry-run`) and contains all 5 section headers.
+`Pro/Projets/<name>/project-notes.md` exists on disk (unless `--dry-run`) and contains all 5 section headers.

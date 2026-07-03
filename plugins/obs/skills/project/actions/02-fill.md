@@ -8,15 +8,16 @@ Fill project files by exploiting external sources before asking questions.
 
 ## Outputs
 
-Updated `.md` files in `Projets/<name>/` with no empty placeholders in critical sections.
+Updated `.md` files in `Pro/Projets/<name>/` with no empty placeholders in critical sections.
 
 ## Process
 
 1. Ask for `name` if not provided via `$ARGUMENTS`.
-2. Read all `.md` files in `C:/Users/fxgui/Public/Notes/Pro/Projets/<name>/`.
-3. Before asking questions, exploit available external sources:
+2. Read all `.md` files in `Pro/Projets/<name>/` (anchor resolved as `obs:tree` does).
+3. Before asking questions, exploit available sources:
    - GitHub repo URL present → read repo structure, README, `pyproject.toml`/`package.json` to infer stack; list open issues to populate the backlog.
    - Website URL present → fetch it to retrieve project context and description.
+   - If the project has dated communication under `YYYY/MM/`, run `distill` first (or delegate reduction to `obs:filler`) so filling draws on already-distilled information rather than raw communication.
 4. Present a draft of what was deduced automatically.
 5. Ask only for what remains empty or ambiguous, grouped by file.
 6. Update each file with the information gathered. Preserve existing format (tables, lists, sections).

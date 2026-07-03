@@ -9,7 +9,7 @@ Create a new project folder with the appropriate template files.
 
 ## Outputs
 
-Folder `Projets/<name>/` containing:
+Folder `Pro/Projets/<name>/` containing:
 
 ```
 commercial  → projet.md + memory.md + backlog.md + commercial.md
@@ -20,11 +20,12 @@ personnel   → projet.md + memory.md + backlog.md + objectifs.md
 ## Process
 
 1. Ask for `name` and `type` if not provided via `$ARGUMENTS`.
-2. Read template files from `C:/Users/fxgui/Public/Notes/Patterns/projet-template/` for the chosen type.
-3. Create folder `C:/Users/fxgui/Public/Notes/Pro/Projets/<name>/`.
+2. Read template files from `references/projet-template/` for the chosen type.
+   - **If a template file reads empty or unreadable, flag the missing body and do not write that file — never invent content.**
+3. Resolve the `Pro/` anchor (as `obs:tree` does) and create folder `Pro/Projets/<name>/`.
 4. Write each file, replacing `[Projet]` with `name` and example dates with today's date (`YYYY-MM-DD`).
 5. Confirm the files created and remind the user that `projet.md` expects a 3-line context summary.
 
 ## Test
 
-`C:/Users/fxgui/Public/Notes/Pro/Projets/<name>/projet.md` exists on disk and does not contain the literal string `[Projet]`.
+`Pro/Projets/<name>/projet.md` exists on disk and does not contain the literal string `[Projet]`. No file is written from an empty/corrupt template (the missing body is flagged instead).
