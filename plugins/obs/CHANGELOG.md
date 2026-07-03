@@ -2,6 +2,15 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.36.0] — 2026-07-03
+
+### Changed (`tree`) — scope strict de `check`/`fix`
+- `check`/`fix` bornent leur report/plan au `<target>` seul : résoudre l'ancre localise le cache partagé (convention, cohérence cross-domaine) mais n'élargit pas l'action aux domaines frères sous l'ancre. Pour agir sur tout l'ancre, passer l'ancre comme `<target>`.
+
+### Tests — baselines behave « intégrité des liens » (runs 2)
+- `tree` 20/20 (S18 : move préserve wikilinks/embeds/PJ), `filler` 20/20 (S16 : `sort` co-déplace l'asset + met à jour le wikilink entrant ; S17 : `digest` redirige/signale la référence vers la source supprimée). Aucune régression.
+- Note : la règle « intégrité des liens » vit en transversale (tree Transversal, filler T11) mais n'est pas encore opérationnalisée dans les étapes d'action (`fix`/`sort`/`judge`, `sort`/`digest`) — à renvoyer depuis les steps concernés.
+
 ## [0.35.0] — 2026-07-03
 
 ### Added (`mail`) — action `reply` : rédaction de réponses en Markdown

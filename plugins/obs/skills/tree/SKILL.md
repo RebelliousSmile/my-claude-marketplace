@@ -42,6 +42,7 @@ Trigger-to-action mapping:
 ## Transversal rules
 
 - **Discovered anchor only**: resolve the anchor by walking up to `Perso`/`Pro`. No hardcoded absolute path. No anchor found → report it and offer to treat the target as a managed root.
+- **Target scope is strict, not anchor-wide**: `check`/`fix` bound their report/plan to `<target>` only. Resolving the anchor locates the shared `_tree/cache.json` (for convention lookup and cross-domain consistency) — it does not widen what gets reported or fixed to sibling domains elsewhere under the anchor. To act on the whole anchor, pass the anchor itself as `<target>`.
 - **Cache is regenerable**: it accelerates navigation; the disk is the source of truth. Never trust the cache over the actual files — re-scan on doubt.
 - **Invariants vs drift**: enforce I1–I4 (see reference); treat everything else as soft drift judged against the domain's learned convention.
 - **Never destructive** (`fix`/`sort`): only rename/move, always after a dry-run preview and explicit confirmation. Never delete user content; never overwrite an existing destination — flag the collision instead. (See `delete-safety`.)

@@ -7,6 +7,7 @@ Apply **safe** corrections for the anomalies and drift surfaced by `check`. Rena
 ## Inputs
 
 - `<target>` (optional, positional) — subtree to fix. Default: current working directory.
+- **Scope is strict.** Only anomalies/drift whose path is inside `<target>` go into the plan — never sibling domains elsewhere under the anchor, even if the shared cache lists anomalies there too. To fix the whole anchor, pass the anchor itself as `<target>`.
 
 ## Outputs
 
@@ -28,7 +29,7 @@ Apply **safe** corrections for the anomalies and drift surfaced by `check`. Rena
 ## Process
 
 1. Resolve the anchor; load/refresh the cache (run `index` if missing/stale).
-2. Run the `check` logic to collect anomalies (hard) and drift (soft) with their suggested corrections.
+2. Run the `check` logic to collect anomalies (hard) and drift (soft) with their suggested corrections, **filtered to `<target>`** — discard cache entries outside it.
 3. **Build a dry-run plan** — an ordered list of `mv`/rename operations, each as `from → to`, grouped:
    - **Invariant fixes** (default ON): add `_` prefix to working dirs, kebab-case free slugs, zero-pad/repair dates, un-prefix wrongly-prefixed content.
    - **Drift fixes** (default OFF — propose, the user opts in): relocate a unit onto its domain's dated axis, move durable knowledge out of a dated unit into `_univers/`, `_systeme/`, etc.

@@ -7,6 +7,7 @@ Verify the tree against the **invariants** and against each domain's **learned c
 ## Inputs
 
 - `<target>` (optional, positional) — subtree to check. Default: current working directory.
+- **Scope is strict.** `<target>` bounds the report: only anomalies/drift/unsorted items whose path is inside `<target>` are surfaced, even though the anchor's cache (and its learned conventions) may cover sibling domains too. Resolving the anchor is for locating/refreshing the shared cache — it does not widen what gets reported. To audit the whole anchor, pass the anchor itself as `<target>`.
 
 ## Outputs
 
@@ -36,13 +37,14 @@ CLEAN / DRIFT (N soft) / ANOMALIES (N hard) — run `tree fix` to correct.
 
 1. Resolve the anchor (walk up to `Perso`/`Pro`). No anchor → report and stop.
 2. Load `<anchor>/_tree/cache.json`. If missing or **stale** (target changed since `scanned_at`), run `index` first to refresh it.
-3. **Invariant check (hard)** — flag every violation of I1–I4:
+3. **Filter to `<target>`** — keep only cache entries (domains, anomalies, unsorted) whose path falls under `<target>`. The rest of the cache stays available as context (e.g. to resolve a domain's learned convention) but never appears in the report.
+4. **Invariant check (hard)** — flag every violation of I1–I4, within `<target>` only:
    - I1 working dir without `_` prefix · I2 prefixed content inside a working dir · I3 non-portable slug (space/accent/uppercase in a free segment) · I4 malformed year/month.
    - **Exception `pro-projet`:** inside `_code/`, I2 and I3 are skipped (code repos have their own conventions).
-4. **Drift check (soft)** — compare against the domain's learned `convention` in the cache: units off the dated axis, unexpected extra levels, durable knowledge mixed into a dated unit, etc. Report as *drift*, not violation.
+5. **Drift check (soft)** — compare against the domain's learned `convention` in the cache: units off the dated axis, unexpected extra levels, durable knowledge mixed into a dated unit, etc. Report as *drift*, not violation.
    - **Exception `pro-projet`:** the following are never reported as drift or anomaly — absence of INDEX.md at any level; presence of `_code/`; months (`<AAAA>/<MM>/`) without `_brief/` or `_output/`; no central index file. A subdirectory inside `<projet>/` that is neither `_code/` nor a well-formed `<AAAA>/<MM>/` is reported as soft drift (unknown structure).
-5. **Unsorted** — list loose items outside any domain pattern (candidates for `sort`).
-6. Produce the report. **Do not modify user content.**
+6. **Unsorted** — list loose items outside any domain pattern (candidates for `sort`), within `<target>` only.
+7. Produce the report. **Do not modify user content.**
 
 ## Rules
 
