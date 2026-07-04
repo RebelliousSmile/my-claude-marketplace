@@ -2,6 +2,11 @@
 
 > Fusion de `doc-writer` (v0.1.0) et `rpg-writer` (v0.10.0). Historique détaillé : `git log -- plugins/writing plugins/doc-writer plugins/rpg-writer`.
 
+## [1.4.1] — 2026-07-04
+
+### Fixed
+- **`tune`** : invariant « ping-pong » explicité — chaque tour doit se terminer soit par le texte corrigé ressoumis en entier, soit par une avancée explicite vers le chunk suivant ; jamais un correctif laissé en suspens sans l'un des deux.
+
 ## [1.4.0] — 2026-07-04
 
 ### Added — couverture behave complète (11 skills)
