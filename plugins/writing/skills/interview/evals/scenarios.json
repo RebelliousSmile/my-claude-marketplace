@@ -1,0 +1,11 @@
+[
+  { "prompt": "interview me about why remote work is killing company culture", "expect_action": "mikado" },
+  { "prompt": "explore how to structure a piece on universal basic income", "expect_action": "mikado" },
+  { "prompt": "apply Mikado to this essay subject: the ethics of AI-generated art", "expect_action": "mikado" },
+  { "prompt": "build the progression for an article about why standups don't work", "expect_action": "mikado" },
+  { "prompt": "what needs to be established before I can write about quantum computing for a general audience", "expect_action": "mikado" },
+  { "prompt": "interviewe-moi sur pourquoi le télétravail tue la culture d'entreprise", "expect_action": "mikado" },
+  { "prompt": "challenge my novel's overview and validate the structure", "expect_action": null },
+  { "prompt": "generate the TOC from my validated brief", "expect_action": null },
+  { "prompt": "write chapter 3 following the TOC", "expect_action": null }
+]

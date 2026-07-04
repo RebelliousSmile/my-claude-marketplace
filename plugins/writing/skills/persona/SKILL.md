@@ -28,6 +28,7 @@ Trigger-to-action mapping:
 - Persona IDs are kebab-case slugs: `gm-practitioner`, `casual-reader`, `fan-wot`.
 - Personas are always written to `<brief>/personas/<id>.yaml`.
 - Scoring criterion weights MUST sum to 1.0.
+- Every persona declares `scope`/`weight_class` (`project` / `universe` / `global`, default `project`) — `review:comment`'s weighted consensus (project ×1.0, universe ×0.8, global ×0.5, cf. `review-loop.md`) depends on it; `generate` MUST set it, never leave it out.
 - `train` reads only `<output>/review/chapter-<NN>-<persona>.md` files; never invent patterns.
 - **When `train` fires**: only when a persona proves **unreliable** — it caps (≤11/20) repeatedly (**≥3 chapters**) on chapters the *other* personas and the craft checklist judge sound (**uncorroborated** verdict = the persona drifted). A persona capping on a *corroborated* real defect is doing its job — fix the text/style, never retrain it (that would silence a valid critic). Trigger defined in `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`.
 - After training, increment the persona version comment in the YAML header.

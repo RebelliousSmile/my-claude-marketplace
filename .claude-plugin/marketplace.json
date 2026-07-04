@@ -23,9 +23,9 @@
     },
     {
       "name": "writing",
-      "version": "1.2.0",
+      "version": "1.4.0",
       "source": "./plugins/writing",
-      "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (forge, toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, données) est délégué à obs ; le lore/règles de jeu à ttrpg. Fusion de doc-writer + rpg-writer.",
+      "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (forge, interview, toc, write, tune, tone-finder, persona, review, storyboard, upgrade). interview/tune opèrent en mode document libre, sans brief/output. L'assemblage des intrants (brief, données) est délégué à obs ; le lore/règles de jeu à ttrpg. Fusion de doc-writer + rpg-writer.",
       "recommended": false
     },
     {

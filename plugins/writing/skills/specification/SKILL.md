@@ -19,7 +19,7 @@ Turns a need into a structured, contractable specification (cahier des charges).
 |---|--------|------|-------|
 | 01 | `elicit` | Gather objectives, stakeholders, scope, constraints, budget/timeline | the need / brief |
 | 02 | `draft` | Write the specification from the structure | elicited context |
-| 03 | `challenge` | Adversarial pass — testability, atomicity, scope, contradictions | a draft spec |
+| 03 | `challenge` | Adversarial pass — testability, atomicity, scope, contradictions | a draft spec (+ elicited context, if available, for the fidelity check) |
 
 ## Default flow
 

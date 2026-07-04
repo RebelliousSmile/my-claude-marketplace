@@ -1,6 +1,8 @@
 ---
 name: <style-name>
 description: <action-oriented description of the style>
+version: <integer, starts at 1 — bumped by `improve` (X.Y+1 minor / X+1.0 major); `analyze --extend` preserves it, never resets to 1>
+applies_to: <novel | rules | scenario>
 ---
 
 # Style: <Nom du Style>

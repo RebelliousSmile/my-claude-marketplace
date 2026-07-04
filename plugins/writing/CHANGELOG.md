@@ -2,6 +2,32 @@
 
 > Fusion de `doc-writer` (v0.1.0) et `rpg-writer` (v0.10.0). Historique détaillé : `git log -- plugins/writing plugins/doc-writer plugins/rpg-writer`.
 
+## [1.4.0] — 2026-07-04
+
+### Added — couverture behave complète (11 skills)
+- Suite `evals/<skill>-scenarios.md` pour `forge`, `toc`, `write`, `tone-finder`, `persona`, `review`, `storyboard`, `upgrade`, `specification`, `user-guide`, `technical-document` — chaque suite reproduit un défaut réel sur fixture peuplée (run pré-fix en FAIL) puis confirme le correctif (run post-fix, 0 FAIL).
+
+### Fixed — gaps réels fermés par la couche de test comportementale
+- **`persona`** : schéma YAML de `generate` réaligné en **plat** (`scope`/`weight_class` requis) — l'ancien schéma imbriqué ne fournissait pas la classification que la pondération de consensus de `review:comment` (project ×1.0 / universe ×0.8 / global ×0.5) exige. `train` gagne une **garde de corroboration** (≥3 chapitres non corroborés) avant tout réglage, pour ne jamais faire taire une persona qui détecte un vrai défaut.
+- **`review`** : la craft checklist (NOVEL N1-N6 / RULES R1-R5 / SCENARIO S1-S5) citée par `comment` step 5c mais jamais définie est désormais inline et répondable. Le garde-fou de routing de `doctor` (step 11) ne testait que la branche « ≥2 personas plafonnées » — ajout de la branche indépendante « consensus ≤10/20 », alignée sur `review-loop.md`.
+- **`forge`** : résolution du `type` de document rendue déterministe (ordre a/b/c) et persistée en frontmatter.
+- **`toc`** : ajout d'une passe de confirmation avant d'écraser un `INDEX.md` existant.
+- **`write`** : gestion du cas « TOC existe mais pas d'entrée pour le chapitre `<NN>` » ; le `type` en frontmatter devient prioritaire sur les formulations ambiguës du déclencheur.
+- **`tone-finder`** : `improve` vérifie désormais le seuil systémique (`SYSTEMIC_CHAPTERS = 3`) avant d'agir ; `output-style.md` gagne des champs `version`/`applies_to`.
+- **`upgrade`** : garde sur fichier manquant à l'étape 1 ; garde anti-remplissage-de-quota à l'étape 5.
+- **`storyboard`** : mode description directe exige `--chapter <NN>` ; règle anti-invention généralisée à chaque élément (pas seulement aux NPC).
+- **`specification`** : nouvelle règle « fidélité à la source » (step 9 de `challenge`) pour éviter la dérive par rapport au contexte élicité.
+- **`user-guide`** : dérivation des `tasks` restreinte aux cas où le sujet porte assez de matière ; `review` croise désormais les hypothèses non confirmées de l'outline.
+- **`technical-document`** : `verify` exige qu'une citation `file:line`/`file:symbol` corresponde réellement à ce qu'elle prétend vérifier (pas seulement au bon fichier).
+
+## [1.3.0] — 2026-07-04
+
+### Added — `interview`, `tune` + mode document libre
+- **`interview`** : équivalent narratif d'`overcode:decompose` — applique la méthode Mikado à un sujet nu (Q&A DFS, subtree Mermaid après chaque itération, YAML seulement après validation) pour faire émerger la progression d'un texte (arguments/beats + prérequis) avant toute rédaction. Artefact **autonome** : écrit dans `interview/<sujet>/`, jamais dans `<brief>/<output>`. `forge`/`toc`/`write` peuvent ensuite s'appuyer sur son graphe, mais `interview` ne rédige jamais lui-même.
+- **`tune`** : parcourt un document chunk par chunk (section ou paragraphe) **avec l'utilisateur** — présente le chunk, recueille ses remarques (style/forme/fond), corrige, resoumet, et répète jusqu'à validation avant de passer au suivant. Pilotage entièrement par l'utilisateur : `tune` ne propose jamais de correction de sa propre initiative. Prend n'importe quel fichier `.md`, projet ou non ; `--brief` optionnel, comme simple contexte de fond (voix, lore), jamais comme déclencheur.
+- **Mode document libre formalisé** (`references/brief-model.md`) : trois familles de skills désormais explicites — craft narratif sur brief (dépendance structurelle à `<brief>/<output>`), documentation professionnelle autonome (déjà sans brief), et utilitaires document-libre (`interview`, `tune`, `upgrade`) qui n'exigent aucune structure de projet.
+- Références croisées ajoutées dans `review`, `upgrade` (clauses « do NOT use ») pour éviter le chevauchement avec `interview`/`tune`.
+
 ## [1.2.0] — 2026-07-02
 
 ### Added — `forge` rapatrié depuis `obs`

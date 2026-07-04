@@ -28,7 +28,7 @@ Lire dans cet ordre :
 2. Charger les fichiers depuis `<brief>/output-styles/` si présents → extraire les éléments visuels (palette, ambiance, références artistiques)
 3. Vérifier que `<output>/chapters/chapter-<NN>.md` existe → ABORT si absent, signaler à l'utilisateur
 
-Si `<brief>/summary.md` ne contient pas de descriptions de personnages ou de lieux : poursuivre sans contexte visuel canonique ; signaler dans l'output que les descriptions seront déduites du texte uniquement.
+Si `<brief>/summary.md` ne contient pas de descriptions de personnages ou de lieux — globalement, ou pour un élément précis rencontré dans le chapitre (ex. un personnage listé sans aucun trait physique) : poursuivre sans contexte visuel canonique pour cet élément ; signaler dans l'output que sa description sera déduite du texte uniquement. Ne jamais combler l'absence en présentant un trait inventé comme canonique.
 
 ### 2. Lecture du chapitre
 

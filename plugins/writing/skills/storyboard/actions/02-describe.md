@@ -7,6 +7,7 @@ Génère un brief visuel détaillé pour un moment ciblé — cohérent avec le 
 - `moment` (required) — ID depuis `<output>/storyboard/chapter-<NN>.md` (ex. `ch03-02`), ou description directe du moment si pas d'extract préalable
 - `--brief <brief>` (required) — le répertoire de brief (lecture seule), pour accéder au contexte univers
 - `--out <output>` (required) — le répertoire de sortie (pour lire le fichier moments et écrire le brief)
+- `--chapter <NN>` (required si `moment` est une description directe, ignoré si `moment` est un ID) — détermine le fichier de sortie `<output>/storyboard/chapter-<NN>.md` dans lequel le brief sera proposé à l'écriture
 - `--format artist|ai` (optional, défaut : `artist`) — format du brief de sortie
 - `--lang fr|en` (optional, défaut : langue du projet selon `<brief>/summary.md`) — langue du brief
 
@@ -22,10 +23,10 @@ Génère un brief visuel détaillé pour un moment ciblé — cohérent avec le 
 ### 1. Chargement du contexte
 
 1. Résoudre `moment`, `--brief <brief>`, `--out <output>` depuis `$ARGUMENTS`.
-2. Si `moment` est un ID (format `ch<NN>-<MM>`) : lire `<output>/storyboard/chapter-<NN>.md` et charger le bloc du moment concerné.
+2. Si `moment` est un ID (format `ch<NN>-<MM>`) : lire `<output>/storyboard/chapter-<NN>.md` et charger le bloc du moment concerné. Sinon (description directe, pas d'extract préalable) : `--chapter <NN>` est requis pour déterminer le fichier de sortie — si absent, demander à l'utilisateur de préciser le chapitre concerné avant de poursuivre. Attribuer alors un nouvel ID séquentiel `ch<NN>-<MM>` (MM = dernier moment existant + 1, ou `01` si `<output>/storyboard/chapter-<NN>.md` n'existe pas encore) qui sera utilisé à l'écriture (étape 5).
 3. Lire `<brief>/summary.md` → extraire les descriptions de personnages, de lieux, et la langue du projet.
 4. Charger les fichiers depuis `<brief>/output-styles/` si présents → extraire le ton visuel, la palette, les références esthétiques.
-5. Si `[VISUAL-INTRO]` est tagué sur ce moment : la description physique doit être intégralement issue de `<brief>/summary.md` — jamais inventée.
+5. Si `[VISUAL-INTRO]` est tagué sur ce moment : la description physique (personnage ou élément de lore) doit être intégralement issue de `<brief>/summary.md` — jamais inventée. Si `<brief>/summary.md` ne fournit aucune description canonique pour cet élément précis : le signaler explicitement dans le brief (ex. « aucune description canonique disponible — traits déduits du texte du chapitre uniquement ») plutôt que d'inventer un trait présenté comme canonique.
 
 ### 2. Identification des contraintes visuelles
 

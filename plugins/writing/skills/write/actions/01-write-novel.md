@@ -44,7 +44,7 @@ Elements: Locations [list], Characters [list], Terminology [list]
 1. Resolve `<brief>`, `<output>`, `<NN>` from `$ARGUMENTS`. If `<brief>/summary.md` is missing → ABORT and report the brief is incomplete.
 2. Load `<brief>/summary.md` — language, type, synopsis, characters, locations, terminology, and any mechanics/lore. This is the sole context source.
 3. Load the output-style from `<brief>/output-styles/` (the file named in the TOC entry, or the only one present).
-4. Load the chapter spec: `<output>/toc/chapter-<NN>.md`; if missing, use the chapter entry in `<output>/toc/INDEX.md`. **If there is no `toc/` at all (short-form)**: derive synopsis and key points directly from `summary.md`.
+4. Load the chapter spec: `<output>/toc/chapter-<NN>.md`; if missing, use the chapter entry in `<output>/toc/INDEX.md`. **If there is no `toc/` at all (short-form)**: derive synopsis and key points directly from `summary.md`. **If `toc/` exists but has no entry for `<NN>`** (neither a `chapter-<NN>.md` spec nor a matching section in `INDEX.md`): do not invent a chapter — report the TOC as incomplete for that chapter number and stop.
 5. **If `--feedback`**: load the persona feedback file from `<output>/review/`. **Do NOT read the existing chapter.** Extract writing constraints:
    - 5a. Structural constraints: for each persona capped at ≤11/20 by must-haves, extract missing must-haves as structural directives.
    - 5b. Tone directives: extract systemic patterns and convert to writing rules.

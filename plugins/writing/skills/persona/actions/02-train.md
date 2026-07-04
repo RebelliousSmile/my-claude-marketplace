@@ -27,7 +27,7 @@ Training report: fan-wot
 Feedback files analyzed: N
 Patterns found: M
 Changes:
-  must_have: added [list]
+  must_haves: added [list]
   deal_breakers: confirmed [list], added [list]
   criteria weights: engagement 0.25 → 0.30 (engagement was most-limiting factor)
 Version: 1.0 → 1.1
@@ -37,14 +37,17 @@ Version: 1.0 → 1.1
 
 1. Locate the persona YAML at `<brief>/personas/<persona_id>.yaml`. If absent, abort and instruct the user to run `generate` first.
 2. List all feedback files under `<output>/review/` matching `chapter-*-<persona_id>.md`. Load each file. Parse for: scores per criterion, must-have failures, deal-breaker triggers, recurring weakness patterns.
-3. Build a frequency table: for each issue or pattern, count occurrences across feedback files.
-4. **Promote to must-have**: any pattern absent from current must-haves that appears in ≥3 feedback files as a blocking issue.
-5. **Confirm/add deal-breakers**: any pattern that triggered the deal-breaker cap (≤8/20) across ≥2 feedback files.
-6. **Adjust criterion weights**: identify which criterion most often had the lowest score and limited the total. Increase its weight by 0.05, decrease the least-limiting criterion by 0.05. Verify weights still sum to 1.0.
-7. **Update patience profile** if present: any trigger that repeatedly caused score caps → add to `triggers_impatience`.
+3. **Guard check (mandatory, before any refinement) — per `SKILL.md` "When train fires" and `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`**: this action must ABORT (report the reason, recommend `write --feedback` / `doctor` instead, write nothing) unless **both** hold:
+   - **Chapter volume**: the persona caps (≤11/20) on **≥3 distinct chapters**. Fewer chapters (or fewer capped chapters) than that → ABORT: "insufficient signal — only N chapter(s) available, need ≥3."
+   - **Uncorroborated**: for each of those capping chapters, cross-check the *other* personas' feedback files (`chapter-<NN>-<other-persona>.md`) and the craft checklist result for that chapter (`review/actions/01-comment.md` step 5c). If the same issue is also flagged by another persona, or is verifiable directly in the chapter text itself (e.g. the exact must-have violation is literally present in `<output>/chapters/chapter-<NN>.md`), the cap is **corroborated** — a real defect, not persona drift → ABORT: "corroborated by [persona/checklist/text] — this is a text defect, not persona drift; route to write --feedback / doctor instead."
+   - Only when a persona caps repeatedly (≥3 chapters) while the other personas/checklist judge those same chapters sound does the signal count as **uncorroborated**, and refinement may proceed.
+4. Build a frequency table: for each issue or pattern, count occurrences across feedback files.
+5. **Promote to must-have**: any pattern absent from the persona's current `must_haves` that appears in ≥3 feedback files as a blocking issue.
+6. **Confirm/add deal-breakers**: any pattern that triggered the deal-breaker cap (≤8/20) across ≥2 feedback files.
+7. **Adjust criterion weights**: identify which criterion most often had the lowest score and limited the total. Increase its weight by 0.05, decrease the least-limiting criterion by 0.05. Verify weights still sum to 1.0.
 8. Present the changes to the user with the training report. Ask for validation before writing.
 9. Write the updated YAML to `<brief>/personas/<persona_id>.yaml`. Increment the version comment (1.0 → 1.1 for minor adjustments, 2.0 for structural rework).
 
 ## Test
 
-After `train <brief> --out <output> fan-wot` on a project with ≥3 feedback files under `<output>/review/`, verify that `<brief>/personas/fan-wot.yaml` has an incremented version comment and at least one change (added must-have, updated weight, or new deal-breaker).
+After `train <brief> --out <output> fan-wot` on a project with ≥3 chapters showing an **uncorroborated** cap for `fan-wot` (guard check in step 3 passes), verify that `<brief>/personas/fan-wot.yaml` has an incremented version comment and at least one change (added must-have, updated weight, or new deal-breaker). Separately, verify that on a project with <3 capped chapters, or where the cap is corroborated by another persona/the craft checklist/the chapter text itself, the action ABORTs at step 3 and writes nothing.

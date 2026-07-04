@@ -13,6 +13,11 @@ Challenge and iterate on a writing project's overview until all required narrati
 Updated overview file at `<projet>/_brief/overview.md` (working dir `_brief/`, content not prefixed):
 
 ```markdown
+---
+type: <novel|scenario|roleplaying|guide>
+language: <fr|en|...>
+---
+
 # [Project Title]
 
 ## Pitch
@@ -39,7 +44,7 @@ Plus optional detail files for projects with 3+ distinct parts, under `<projet>/
 
 ## Process
 
-1. Locate `<projet>/_brief/overview.md`. If `_brief/` is absent, create it (or suggest `obs:brief assemble <projet>` to set up the working dir first). Read the project `type` from the overview frontmatter (default: "scenario"); ask if unset.
+1. Locate `<projet>/_brief/overview.md`. If `_brief/` is absent, create it (or suggest `obs:brief assemble <projet>` to set up the working dir first). Resolve the project `type`, in order: (a) `overview.md`'s own frontmatter; (b) if absent or unset, and `_brief/summary.md` already exists with a declared `type`, reuse it silently; (c) otherwise **ask** the user — never silently default to "scenario" or any other type. Once resolved, write/update the `type`/`language` pair in `overview.md`'s frontmatter (creating the block if the file predates this convention) so later iterations don't re-ask.
 2. If the project belongs to a JDR domain, load the relevant universe docs for consistency: resolve `R` locally (walk up to `_campagnes/`, `_univers/` or `_pjs/`), then read `R/_univers/<univers>/canon/` (official lore) and `R/_univers/<univers>/mj/` (MJ additions). For a non-JDR project, skip this step.
 3. Check overview state:
    - No overview file → prompt for a minimal description (concept, genre/tone, protagonists). Create a typed template from user responses.

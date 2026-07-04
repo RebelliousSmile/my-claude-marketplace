@@ -23,6 +23,10 @@ Contrat partagé par tous les skills narratifs : [`references/brief-model.md`](r
 - **Écriture courte** : pas de TOC (`toc/` absent), un seul `chapters/chapter-01.md`.
 - Aucun `bank.yml`, aucun couplage au vault JDR : tout le contexte vient de `summary.md`.
 
+### Mode document libre
+
+`interview` et `tune` (comme `upgrade`, dont `--brief` est optionnel) n'exigent **aucune** structure `<brief>/<output>` : `interview` part d'un sujet nu et écrit un artefact autonome (`interview/<sujet>/`), `tune` prend n'importe quel fichier `.md` et le parcourt chunk par chunk avec l'utilisateur, l'éditant en place selon ses remarques. Détail de la frontière entre les trois familles de skills (craft narratif sur brief / documentation autonome / utilitaires document-libre) : `references/brief-model.md`.
+
 ## Philosophie
 
 - **Lecteur d'abord** : on nomme le lecteur et son objectif avant d'écrire une ligne.
@@ -45,9 +49,11 @@ Principes partagés (documentation) : `references/doc-principles.md`.
 
 | Skill | Description |
 |---|---|
+| `interview` | Applique la méthode Mikado à un sujet nu : Q&A itérative pour faire émerger la progression du texte, graphe YAML autonome (`interview/<sujet>/`), sans `<brief>/<output>` |
 | `forge` | Développe et challenge le concept / l'overview narratif jusqu'à validation de la structure, avant TOC |
 | `toc` | Génère la table des matières depuis un document source / un brief |
 | `write` | Rédige des chapitres narratifs (roman ou JDR) en Markdown, selon la TOC et l'output-style |
+| `tune` | Parcourt un document chunk par chunk avec l'utilisateur (section ou paragraphe) : présente, recueille ses remarques, corrige, resoumet — jusqu'à validation, puis passe au suivant. N'importe quel `.md`, avec ou sans brief |
 | `upgrade` | Améliore itérativement un texte ou un prompt d'atelier par critique structurée |
 | `review` | Pipeline de relecture qualitative basée sur persona (analyse, audit, nœuds) |
 | `persona` | Crée et affine des fichiers YAML de persona lecteur pour le pipeline de relecture |
@@ -64,8 +70,10 @@ Principes partagés (documentation) : `references/doc-principles.md`.
 | Doc pour les gens qui *construisent/opèrent* | `technical-document` |
 | Document de besoins/exigences (cahier des charges) | `specification` |
 | README de dépôt | `overcode:readme` |
+| Faire émerger la progression d'un texte à partir d'un sujet nu | `interview` |
 | Forger le concept / brief narratif | `forge` |
 | Rédaction narrative à partir d'un brief | `toc` → `write` → `review` |
+| Relire un texte chunk par chunk en pilotant soi-même les corrections | `tune` |
 | Assembler le brief / données | plugin `obs` (`brief`, `research`) |
 | Assembler le lore / les règles de jeu (JDR) | plugin `ttrpg` (`lore-extract`, `rules-keeper`) |
 

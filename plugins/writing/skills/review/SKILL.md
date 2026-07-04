@@ -1,7 +1,7 @@
 ---
 name: review
 model: opus
-description: Quality review pipeline for writing chapters — persona-based qualitative analysis (comment) and technical correction (doctor). Use when evaluating a written chapter through reader personas, applying grammar/typography/terminology corrections, or preparing triage decisions (rewrite vs patch). Do NOT use for code review — use `aidd-dev:review` instead; do NOT use for rewriting chapters — use `write --feedback` instead.
+description: Quality review pipeline for writing chapters — persona-based qualitative analysis (comment) and technical correction (doctor). Use when evaluating a written chapter through reader personas, applying grammar/typography/terminology corrections, or preparing triage decisions (rewrite vs patch). Do NOT use for code review — use `aidd-dev:review` instead; do NOT use for rewriting chapters — use `write --feedback` instead; do NOT use for a user-directed, chunk-by-chunk correction walkthrough of a whole document — use `tune` instead.
 ---
 
 # Review
@@ -37,7 +37,7 @@ Trigger-to-action mapping:
 - `doctor`: preserve original meaning and narrative voice; never use personas (that is `comment`'s role); log ALL corrections to `<output>/review/chapter-<NN>-changelog.md`.
 - Corrections priority: 🔴 Critical (grammar, orthography, terminology) → 🟡 Important (typography, Markdown format) → 🟢 Optional (style, flow).
 - Doctor applies ALL priority levels by default; the priorities appear in the report, not as filters.
-- Routing from `comment` to rewrite: if ≥2 personas scored ≤11/20 on structural must-haves → `write --feedback`. Full triage table (incl. systemic-pattern → `tone-finder:improve` over ≥3 chapters, and same-persona-capped → `persona:train` over ≥3 chapters) in `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`.
+- Routing from `comment` to rewrite: consensus ≤10/20 **or** ≥2 personas scored ≤11/20 on structural must-haves → `write --feedback`. Full triage table (incl. systemic-pattern → `tone-finder:improve` over ≥3 chapters, and same-persona-capped → `persona:train` over ≥3 chapters) in `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md`.
 - `comment` maintains the score-history artifact `<output>/review/chapter-<NN>-scores.md` (one row per iteration: consensus, `Δ`, verdict, route) and never declares `PLATEAU` while `Δ ≥ 1.0`.
 
 ## External data

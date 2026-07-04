@@ -68,3 +68,15 @@ Chaque skill prend `<brief>` en **argument positionnel** et `<output>` via **`--
 | `tone-finder` | sources de style | `<brief>/output-styles/<nom>.md` |
 | `storyboard` | `<output>/chapters/chapter-<NN>.md` | `<output>/storyboard/chapter-<NN>.md` |
 | `upgrade` | un texte (`<output>/chapters/…` ou prompt) | version améliorée |
+| `interview` | rien (sujet nu) | `interview/<sujet>/` — graphe Mikado autonome |
+| `tune` | un texte (`<output>/chapters/…` ou tout `.md`) | le texte, édité en place chunk par chunk sur remarques de l'utilisateur |
+
+## Mode document libre — hors `<brief>/<output>`
+
+Tous les skills `writing` ne dépendent pas de ce modèle. Trois familles coexistent :
+
+1. **Craft narratif sur brief** — `forge`, `toc`, `write`, `tone-finder`, `persona`, `review`, `storyboard` : dépendent structurellement de `<brief>/<output>` (personas ≥3, output-styles ≥3, TOC) parce que leur mécanisme qualité (triangulation, scoring, convergence) l'exige. Ne pas les alléger : c'est ce qui les rend fiables.
+2. **Documentation professionnelle autonome** — `specification`, `user-guide`, `technical-document` : n'ont jamais utilisé `<brief>/<output>` ; un seul document, produit directement.
+3. **Utilitaires document-libre** — `interview` et `tune` (ainsi que `upgrade`, dont `--brief` est déjà optionnel) : conçus pour opérer **sans aucune structure de projet**. `interview` part d'un sujet nu et écrit un artefact autonome (`interview/<sujet>/`, jamais dans `<brief>/`) ; `tune` prend n'importe quel chemin de fichier `.md`, le parcourt chunk par chunk avec l'utilisateur, et l'édite en place selon ses remarques (`--brief` optionnel, comme simple contexte de fond).
+
+**Écriture courte** (rappel) : même à l'intérieur du modèle brief → output, `toc/` reste **optionnel** — un texte court n'a pas de TOC, il tient dans un seul `chapters/chapter-01.md` écrit directement par `write` depuis `summary.md` (ou depuis les feuilles d'un graphe `interview`, le cas échéant).

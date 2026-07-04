@@ -12,10 +12,16 @@ Create a new output-style file for a project from source documents (source mode)
 ## Outputs
 
 ```markdown
+---
+name: <style-name>
+description: <action-oriented description of the style>
+version: 1
+applies_to: <novel | rules | scenario>
+---
+
 # Output Style: [Project] — [Type]
 
 **Source:** [analyzed documents OR "Questionnaire"]
-**Version:** 1.0
 
 ---
 
@@ -68,7 +74,7 @@ Saved to: `<brief>/output-styles/<name>-<type>.md`
 
 ## Process
 
-1. Read `<brief>/summary.md` for project context (name, type, language, tone cues). Check for existing styles in `<brief>/output-styles/`. List them. If `--extend`, load the existing file before proceeding.
+1. Read `<brief>/summary.md` for project context (name, type, language, tone cues). Check for existing styles in `<brief>/output-styles/`. List them. If `--extend`, load the existing file before proceeding — carry over its `version:` frontmatter unchanged into the enriched file (extending is not a revision cycle; only `improve` bumps `version:`).
 2. **Detect mode**:
    - Complete source files provided → MODE SOURCE (steps 2a–2c).
    - No source files → MODE QUESTIONNAIRE (step 3).

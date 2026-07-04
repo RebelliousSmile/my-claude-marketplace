@@ -19,9 +19,11 @@ Reads the **brief model**: `${CLAUDE_PLUGIN_ROOT}/references/brief-model.md`. Al
 
 ## Default flow
 
-Mode is chosen from `summary.md > type` (roman → `write-novel`, JDR/roleplaying → `write-roleplaying`). Trigger-to-action mapping:
+Mode is chosen from `summary.md > type` (roman → `write-novel`, JDR/roleplaying → `write-roleplaying`) — `type` is authoritative. Trigger-to-action mapping:
 - "write chapter", "write novel chapter", "écrire le chapitre" → `write-novel`
 - "write roleplaying chapter", "write scenario", "écrire le livret" → `write-roleplaying`
+
+The mapping above is a convenience for the common case where the user's phrasing agrees with `type`; it never overrides `type`. If the user's wording names the action that conflicts with `summary.md > type` (e.g. "write the roleplaying chapter" against a `type: novel` brief), flag the mismatch and ask before proceeding — do not silently pick either mode.
 
 Both actions follow the same internal steps: Load → Analyze → Draft → Brainstorm & Refine → Write → Validate → Save.
 

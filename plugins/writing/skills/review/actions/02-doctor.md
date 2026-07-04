@@ -60,7 +60,7 @@ Apply technical corrections to a chapter: French grammar, typography, terminolog
    - Any added content MUST be sourced from `summary.md` or `--remarks`; never invent content.
 9. **If `--dry-run`**: display correction list only. No file writes.
 10. **Else**: apply corrections to the chapter file. Create `<output>/review/` if absent. Append corrections to `<output>/review/chapter-<NN>-changelog.md` (cumulative; do NOT create `.bak` backup files). Output the Doctor Report.
-11. Routing guidance: if ≥2 personas were capped at ≤11/20 (from the last `comment` run) → recommend `write --feedback` instead of iterating doctor.
+11. Routing guidance: if the last `comment` run's consensus was ≤10/20 **or** ≥2 personas were capped at ≤11/20 → recommend `write --feedback` instead of iterating doctor (full condition: `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md` › Routes de triage — the consensus-alone branch fires even with only 1 persona evaluated).
 
 ## Test
 

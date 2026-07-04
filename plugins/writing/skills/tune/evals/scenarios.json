@@ -1,0 +1,12 @@
+[
+  { "prompt": "relisons ce texte ensemble section par section, je te dirai quoi corriger", "expect_action": "tune" },
+  { "prompt": "let's go through this chapter section by section, I'll flag what to fix", "expect_action": "tune" },
+  { "prompt": "walk me through this draft chunk by chunk so I can correct it as we go", "expect_action": "tune" },
+  { "prompt": "on reprend la lecture a la section 4, je continue a te donner mes remarques", "expect_action": "tune" },
+  { "prompt": "tune this document with me, section by section", "expect_action": "tune" },
+  { "prompt": "presente-moi ce chapitre paragraphe par paragraphe pour que je te corrige au fur et a mesure", "expect_action": "tune" },
+  { "prompt": "score this chapter with reader personas", "expect_action": null },
+  { "prompt": "fix the grammar and typography of this chapter", "expect_action": null },
+  { "prompt": "rewrite this whole draft from scratch with structured feedback", "expect_action": null },
+  { "prompt": "define a new output style from these source texts", "expect_action": null }
+]

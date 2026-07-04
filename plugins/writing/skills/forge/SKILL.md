@@ -1,7 +1,7 @@
 ---
 name: forge
 model: sonnet
-description: Iterates on a narrative writing project's overview — challenges concepts, proposes alternatives, and validates structure until the project is ready for TOC generation. Use when developing a novel, RPG scenario, or guide concept; when the overview is empty or needs challenging; when stuck on narrative structure. Do NOT use for software or code brainstorming — use aidd-refine:brainstorm instead; do NOT use once the overview is complete and validated — use `toc` instead.
+description: Iterates on a narrative writing project's overview — challenges concepts, proposes alternatives, and validates structure until the project is ready for TOC generation. Use when developing a novel, RPG scenario, or guide concept; when the overview is empty or needs challenging; when stuck on narrative structure. Do NOT use for software or code brainstorming — use aidd-refine:brainstorm instead; do NOT use once the overview is complete and validated — use `toc` instead; do NOT use to build a text's progression from a bare subject via Mikado-style Q&A — use `interview` instead.
 ---
 
 # Forge

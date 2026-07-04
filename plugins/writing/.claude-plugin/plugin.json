@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "writing",
-  "version": "1.2.0",
-  "description": "Production éditoriale à partir d'un brief — documentation pro (specification, technical-document, user-guide) et craft narratif (forge, toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, données) est délégué à obs (brief, research, extract-pdf) ; le lore et les règles de jeu à ttrpg (lore-extract, rules-keeper). Fusion de doc-writer + rpg-writer.",
+  "version": "1.4.0",
+  "description": "Production éditoriale à partir d'un brief — documentation pro (specification, technical-document, user-guide) et craft narratif (forge, interview, toc, write, tune, tone-finder, persona, review, storyboard, upgrade). interview (Mikado sur sujet nu) et tune (parcours chunk par chunk piloté par l'utilisateur) opèrent en mode document libre, sans <brief>/<output>. L'assemblage des intrants (brief, données) est délégué à obs (brief, research, extract-pdf) ; le lore et les règles de jeu à ttrpg (lore-extract, rules-keeper). Fusion de doc-writer + rpg-writer.",
   "author": {
     "name": "François-Xavier Guillois"
   }

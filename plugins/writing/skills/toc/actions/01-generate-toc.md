@@ -53,13 +53,14 @@ Analyze the brief's `summary.md` and generate `<output>/toc/INDEX.md` — a comp
 4. If `summary.md` describes a **short-form** piece (single text, no chapter structure) → tell the user no TOC is needed and suggest `write <brief> --out <output>` directly. Stop.
 5. Parse the brief: identify acts/parts/chapters/scenes structure.
 6. **Propose the chapter breakdown to the user**: list proposed chapters with titles. Ask: "Does this structure work? Should any chapters be merged, split, or reordered?" Wait for confirmation before continuing.
-7. Create `<output>/toc/` if it does not exist.
-8. Generate `<output>/toc/INDEX.md`:
+7. If `<output>/toc/INDEX.md` **already exists**, this is a regeneration, not a first pass. Structure confirmation (step 6) is not consent to lose prior content: tell the user an `INDEX.md` is already present and ask explicitly whether to (a) overwrite it entirely, or (b) revise it in place, preserving the persona/output-style assignments and `[INTRO]`/`[REF]` tags of chapters the user isn't asking to change. Wait for this choice before writing anything.
+8. Create `<output>/toc/` if it does not exist.
+9. Generate `<output>/toc/INDEX.md`:
    - For each chapter: write `**Personas:**` (filenames from `<brief>/personas/`, if any), `**Output-style:**` (a filename from `<brief>/output-styles/`), `**Synopsis:**` (2–3 sentences), `**Points clés:**` (3–7 bullets).
    - Tag first appearances: `[INTRO]` for characters, concepts, and mechanics; `[REF ChXX]` in subsequent chapters.
    - Enrich key points with the constraints gathered in step 2 (mechanics/terms named in `summary.md` must surface in the relevant chapter).
-9. Ask: "Would you like detailed spec files for any chapters? (`toc/chapter-<NN>.md` format)". If yes: delegate to `write-toc-chapter` for each requested chapter.
-10. Report all created files and suggest: `write <brief> --out <output> --chapter 01` as next step.
+10. Ask: "Would you like detailed spec files for any chapters? (`toc/chapter-<NN>.md` format)". If yes: delegate to `write-toc-chapter` for each requested chapter.
+11. Report all created files and suggest: `write <brief> --out <output> --chapter 01` as next step.
 
 ## Test
 

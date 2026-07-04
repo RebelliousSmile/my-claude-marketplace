@@ -6,7 +6,7 @@ Clarify the product, audience and tasks, then build a task-based table of conten
 
 - `subject` (required, from `$ARGUMENTS`) — the product, feature or area to document, given up front (name + access to it: app, docs, the codebase/UI, or a description). If absent, ask for it once before proceeding.
 - `audience` — who the readers are and their starting knowledge (ask if unknown).
-- `tasks` — the goals users need to accomplish (derive from the subject if not given).
+- `tasks` — the goals users need to accomplish. Derive a first list from the subject only when it already carries enough material to do so (access to the app/docs/UI, or a detailed description); a bare subject name alone is not enough to derive from — ask instead, per step 1.
 
 ## Process
 
