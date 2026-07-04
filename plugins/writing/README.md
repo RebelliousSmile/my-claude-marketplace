@@ -55,7 +55,7 @@ Principes partagés (documentation) : `references/doc-principles.md`.
 | `write` | Rédige des chapitres narratifs (roman ou JDR) en Markdown, selon la TOC et l'output-style |
 | `tune` | Parcourt un document chunk par chunk avec l'utilisateur (section ou paragraphe) : présente, recueille ses remarques, corrige, resoumet — jusqu'à validation, puis passe au suivant. N'importe quel `.md`, avec ou sans brief |
 | `upgrade` | Améliore itérativement un texte ou un prompt d'atelier par critique structurée |
-| `review` | Pipeline de relecture qualitative basée sur persona (analyse, audit, nœuds) |
+| `review` | Pipeline de relecture en deux temps : `comment` (analyse par personas, scores /20, routing) puis `doctor` (corrections techniques : grammaire, typographie, terminologie) |
 | `persona` | Crée et affine des fichiers YAML de persona lecteur pour le pipeline de relecture |
 | `tone-finder` | Génère ou met à jour un output-style pour un univers éditorial (depuis des textes sources) |
 | `storyboard` | Identifie les moments visuels clés d'un chapitre et génère des briefs d'illustration |
