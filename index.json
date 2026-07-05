@@ -10,7 +10,7 @@
       "id": "design",
       "name": "design",
       "description": "Design system funnel — 5 verbs: define · destructure · adjust (freeze 3-layer contract) · enforce (portable linter + sc-* pivot + 3 gates) · diffuse (elements under gate + sc-* pivot). Adds copycat (per-page mockup→contract reconciliation agent + Python fidelity oracle: machine CLOSED/OPEN verdict, structural completeness scan, coverage guard, deviation-ledger with id + registry validation, ledger-unused detection, active-frame isolation, check_text per-target P7+P11, collections LCS-diff P8+P12, Windows stdout P10, collection-level ack P13, visual-diff companion P14). Adds config-gen.py (P15): auto-derive oracle config from contract — components.json BEM selectors + tokens.json prop groups → targets+props+breakpoints. Breaking: replaces 9 legacy skills.",
-      "version": "1.9.1"
+      "version": "1.16.0"
     },
     {
       "id": "game-writer",
