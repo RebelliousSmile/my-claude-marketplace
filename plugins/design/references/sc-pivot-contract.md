@@ -21,6 +21,7 @@ Le design garde le **QUOI** (le contrat : tokens + manifeste = autorité). Les `
 
 Source: design/tokens.json + design/components.json
 Version: <$version du manifest>
+Themes: [liste plate des thèmes nommés déclarés sous `tokens.json` § `themes`, ex. default, dark, grimoire — vide si aucun `themes` overlay]
 
 ### Valid class sets
 Base classes: [liste des .base]
@@ -42,6 +43,7 @@ Réalise un linter natif idiomatique pour <techno> qui vérifie :
 1. Toute classe appartenant au design system utilise un nom déclaré dans valid class sets.
 2. Les références de tokens CSS (var(--...)) pointent vers un path existant.
 3. Les composants déclarant .a11y.requires portent les attributs requis.
+4. Si Themes n'est pas vide, le linter natif reste theme-agnostique (§ A2 : les thèmes re-déclarent les mêmes noms de `--var` dans leur bloc de sélecteur — aucune règle par thème à générer côté vocabulaire).
 
 Retourne : le linter installé dans le projet + les instructions de câblage dans l'outillage natif.
 ```
@@ -57,6 +59,7 @@ Retourne : le linter installé dans le projet + les instructions de câblage dan
 
 Source: design/tokens.json + design/components.json
 Version: <$version du manifest>
+Themes: [liste plate des thèmes nommés déclarés sous `tokens.json` § `themes`, ex. default, dark, grimoire — vide si aucun `themes` overlay]
 
 ### Component to render
 Name: <canonical-name>
@@ -78,6 +81,7 @@ Produit le composant en code idiomatique <techno> :
 - N'utilise que les classes et tokens du manifeste.
 - Consomme design/adapters/tokens.css pour les valeurs.
 - Satisfait les attributs .a11y.requires.
+- Si Themes n'est pas vide, le composant natif doit rester compatible avec les blocs `.dark`/`[data-theme="…"]` émis par l'adaptateur (aucune valeur en dur qui court-circuiterait la cascade thème).
 - Passe le gate enforce (lint-core.mjs sur la sortie générée = exit 0).
 
 Retourne : le fichier composant + les instructions d'intégration dans le projet.

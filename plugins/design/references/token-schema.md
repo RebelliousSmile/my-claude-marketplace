@@ -29,7 +29,7 @@ A complete design system MUST define these groups. Mark anything genuinely inapp
 
 ### The core trio (decide first, fast)
 
-Before fleshing out every group, settle the three decisions that define the look — and get them approved in one quick pass:
+Before fleshing out every group, settle the three decisions that define the look — and present them in one quick pass (continue unless the user objects) before expanding the full scale:
 
 1. **Palette anchor** — the brand primary + neutral temperature (the ramps follow).
 2. **Type** — the family or pairing (the scale follows).
@@ -75,12 +75,89 @@ Before fleshing out every group, settle the three decisions that define the look
 }
 ```
 
+## Modes / themes
+
+`tokens.json` can encode more than one value per token across named modes/themes — a light/dark mode, a second thematic territory ("Grimoire"), or any combination a project needs — without turning every token into a multi-value structure. This section defines the **`themes` overlay**: a project convention layered on top of the DTCG format above, not a DTCG primitive itself (DTCG has no native mode/theme primitive as of this writing).
+
+### Overlay syntax
+
+A top-level `themes` object sits alongside the base token tree (`color`, `font`, `space`, …). Each key under `themes` is a **theme name**; its value is a **sparse tree** that mirrors the shape of the base tree but only re-declares the paths it overrides:
+
+```json
+{
+  "color": { "…": "base tree — mono-value, DTCG-valid on its own" },
+  "themes": {
+    "<theme-name>": {
+      "…": { "$value": "<override, same path shape as the base tree>" }
+    }
+  }
+}
+```
+
+- **Themes are a flat, named list on a single axis** — e.g. `default`, `dark`, `grimoire`, `grimoire-dark` — not a 2-D matrix of `mode × theme`. If a project genuinely needs the cross-product (every theme in both light and dark), model each combination as its own flat name (`grimoire-dark`) and document the pairing as prose in `design-system.md`; do not introduce a second axis into the overlay shape.
+- `default` is never written as a `themes` entry — it **is** the base tree. `themes` only ever lists deviations from it.
+- An overlay token object carries only `$value` — never `$type`. The type is always inherited from the base token at the same path; an overlay changes a token's value, never its type. This is a deliberate departure from strict per-token DTCG shape (which allows `$type` at any level) — it keeps overlays sparse and unambiguous: one type per path, many values.
+- Unspecified tokens (any path not re-declared in a theme's block) inherit the base value unchanged.
+
+### Invariant
+
+**A theme overlay MAY override any path that exists in the base tree; it MUST NOT introduce a path absent from the base tree.** Concretely: for every `themes.<name>.<path>`, `<path>` must resolve inside the non-`themes` part of `tokens.json`. `adjust/02-freeze.md` audits this at freeze time; a dangling overlay path is a blocking error, not a warning. This keeps the base tree the single source of truth for *which* tokens exist — themes only ever narrow *which value* applies.
+
+### Backward compatibility
+
+A `tokens.json` with no `themes` key is a perfectly valid, mono-value, DTCG-standard file — nothing above changes for a project with a single visual theme. `themes` is additive: existing single-theme contracts need no migration.
+
+### Worked example — default + dark + grimoire
+
+```json
+{
+  "color": {
+    "brand":   { "primary": { "$type": "color", "$value": "#1f6feb" } },
+    "neutral": {
+      "50":  { "$type": "color", "$value": "#f7f8fa" },
+      "900": { "$type": "color", "$value": "#11151c" }
+    },
+    "semantic": {
+      "background": { "$type": "color", "$value": "{color.neutral.50}" },
+      "text":       { "$type": "color", "$value": "{color.neutral.900}" }
+    }
+  },
+  "themes": {
+    "dark": {
+      "color": {
+        "semantic": {
+          "background": { "$value": "{color.neutral.900}" },
+          "text":       { "$value": "{color.neutral.50}" }
+        }
+      }
+    },
+    "grimoire": {
+      "color": {
+        "brand": { "primary": { "$value": "#7c3aed" } }
+      }
+    }
+  }
+}
+```
+
+Resolution per theme (aliases resolved **in the theme they belong to**):
+
+| Path | `default` | `dark` | `grimoire` |
+|---|---|---|---|
+| `color.brand.primary` | `#1f6feb` | `#1f6feb` (inherited) | `#7c3aed` (overridden) |
+| `color.semantic.background` | `{color.neutral.50}` → `#f7f8fa` | `{color.neutral.900}` → `#11151c` (overridden alias, resolved in `dark`) | `#f7f8fa` (inherited from `default`) |
+| `color.semantic.text` | `{color.neutral.900}` → `#11151c` | `{color.neutral.50}` → `#f7f8fa` (overridden alias, resolved in `dark`) | `#11151c` (inherited) |
+
+Every path named above (`color.brand.primary`, `color.semantic.background`, `color.semantic.text`) exists in the base tree — the invariant holds. `grimoire-dark`, if a project needs it, would be its own flat theme name combining both deltas explicitly (never a computed intersection of `grimoire` and `dark`).
+
 ## Adapter: `design/adapters/tokens.css`
 
-Flatten every token path to a CSS custom property named `--<group>-<…>-<name>` (kebab-case, `.` → `-`). Resolve `{alias}` references to their target `var(--…)`. Emit under `:root`.
+Flatten every token path to a CSS custom property named `--<group>-<…>-<name>`: prefix `--`, replace every `.` with `-`, **do not re-case any segment** (e.g. `font.lineHeight.base` → `--font-lineHeight-base`, `zIndex.modal` → `--zIndex-modal` — the segment keeps its literal spelling; some groups are deliberately camelCase to mirror the `getComputedStyle` DOM property name they measure against, per `adapters/measure/config-gen.py`). Resolve `{alias}` references to their target `var(--…)`. Emit under `:root`.
+
+This is a mechanical, lossless transform — the only rule is `.` → `-`. `lint-core.mjs` derives its valid-var set the same way (path → var, never var → path); any generator or hand-written adapter must match it exactly, or the gate rejects valid tokens.
 
 ```css
-/* GENERATED from design/tokens.json — do not edit by hand. Regenerate via /design:from-reference or /design:from-brief. */
+/* GENERATED from design/tokens.json — do not edit by hand. Regenerate via /design:define. */
 :root {
   --color-brand-primary: #1f6feb;
   --color-neutral-50: #f7f8fa;
@@ -92,6 +169,38 @@ Flatten every token path to a CSS custom property named `--<group>-<…>-<name>`
 
 - Shadow composite tokens → a single `box-shadow` string per step.
 - Breakpoints stay as custom properties for reference, but media queries cannot use `var()` in their conditions — so the breakpoint **px values are also written as literals** in any generated CSS `@media` rule, with a comment naming the token.
+
+### Theme-scoped emission
+
+When `tokens.json` has a `themes` overlay (§ Modes / themes), the adapter emits `:root` for the base tree as above, then **one additional selector block per theme**, each re-declaring only the vars that theme overrides — same var names as the base emission (no suffix, per the linter-neutral convention documented in `lint-core.mjs`), scoped by CSS selector instead:
+
+- The `dark` theme emits under a `.dark` class selector (toggled on `<html>`/`<body>` by the consuming app).
+- Any other named theme emits under a `[data-theme="<name>"]` attribute selector — including combined names like `grimoire-dark` → `[data-theme="grimoire-dark"]`.
+- `default` needs no block of its own — it *is* `:root`.
+
+```css
+/* GENERATED from design/tokens.json — do not edit by hand. Regenerate via /design:define. */
+:root {
+  --color-brand-primary: #1f6feb;
+  --color-neutral-50: #f7f8fa;
+  --color-neutral-900: #11151c;
+  --color-semantic-background: var(--color-neutral-50);
+  --color-semantic-text: var(--color-neutral-900);
+}
+
+.dark {
+  --color-semantic-background: var(--color-neutral-900);
+  --color-semantic-text: var(--color-neutral-50);
+}
+
+[data-theme="grimoire"] {
+  --color-brand-primary: #7c3aed;
+}
+```
+
+- Aliases in an overlay resolve **within the theme they belong to** at generation time — `{color.neutral.900}` inside the `dark` overlay still emits as `var(--color-neutral-900)`, the ramp token declared once under `:root` (themes never re-declare ramp/neutral tokens unless the ramp itself changes per theme).
+- Only overridden vars appear in a theme's block — the cascade (`:root` → `.dark`/`[data-theme]`) supplies everything else, mirroring the overlay's sparseness in `tokens.json`.
+- Because every block re-declares the **same** `--var` name, no downstream consumer (including `lint-core.mjs`) needs to know which theme is active to validate a `var(--…)` reference.
 
 ## Adapter: `design/adapters/theme.css`
 
@@ -106,6 +215,10 @@ Tailwind v4 `@theme` block mapping tokens to Tailwind's expected namespaces (`--
   --breakpoint-md: 768px;
 }
 ```
+
+### Themes in Tailwind targets
+
+Theme overlays (§ Modes / themes) must be emittable from this adapter in **both** Tailwind targets: the v4 `@theme` block above, and the v3 `tailwind.config.js` `theme.extend` fallback. This reference states the requirement only — the concrete v3 emission shape (mapping `themes.*` overlays into `tailwind.config.js`, e.g. via the `darkMode` strategy or a `data-theme` variant plugin) is out of scope here and is specified in Part 3 of the master plan (#6).
 
 ## Liaison tokens canoniques ↔ manifeste composants
 

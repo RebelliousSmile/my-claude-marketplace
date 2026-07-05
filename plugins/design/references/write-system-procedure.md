@@ -1,6 +1,6 @@
 # Write-system procedure (shared)
 
-Shared by `from-reference/03-write-system` and `from-brief/03-write-system`. Writes the canonical design-system artifacts from a finalized token set. Read alongside `design-system-contract.md` (layout + sections) and `token-schema.md` (token shapes + adapter rules).
+Followed by `define/04-write-material` (in draft mode). Writes the canonical design-system artifacts from a finalized token set. Read alongside `design-system-contract.md` (layout + sections) and `token-schema.md` (token shapes + adapter rules).
 
 ## Inputs
 
@@ -31,7 +31,7 @@ Shared by `from-reference/03-write-system` and `from-brief/03-write-system`. Wri
 - List every written/regenerated path.
 - State the version and a one-line provenance.
 - Surface unresolved Open questions for the user to close.
-- Suggest next step: `/design:wireframe <user story>` or `/design:component <name>`.
+- Suggest next step: `/design:destructure` (challenge the direction) or `/design:adjust` (freeze the contract).
 
 ## Test
 

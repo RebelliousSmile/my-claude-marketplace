@@ -7,10 +7,13 @@
 import { readFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 
-const [,, htmlFile, contractDirArg] = process.argv;
+const rawArgs = process.argv.slice(2);
+const strict = rawArgs.includes('--strict');
+const args = rawArgs.filter((a) => a !== '--strict');
+const [htmlFile, contractDirArg] = args;
 
 if (!htmlFile) {
-  console.error('Usage: node lint-core.mjs <html-file> [<contract-dir>]');
+  console.error('Usage: node lint-core.mjs <html-file> [<contract-dir>] [--strict]');
   process.exit(2);
 }
 
@@ -54,6 +57,7 @@ const html = readFileSync(htmlPath, 'utf8');
 const components = manifest.components || {};
 const validClasses = new Set();
 const knownBases = new Set();
+const utilityPrefixes = manifest.$utilityPrefixes || [];
 
 for (const comp of Object.values(components)) {
   validClasses.add(comp.base);
@@ -76,26 +80,52 @@ function flattenTokenPaths(obj, prefix) {
   return paths;
 }
 
-const tokenPaths = flattenTokenPaths(tokens, '');
+const { themes: _themes, ...baseTokens } = tokens;
+const tokenPaths = flattenTokenPaths(baseTokens, '');
 
-// CSS custom property name → token path  (--color-brand-primary → color.brand.primary)
-function cssVarToTokenPath(varName) {
-  return varName.replace(/^--/, '').replace(/-/g, '.');
-}
+// Forward-map each token path to the CSS custom property the generator emits
+// (`--` + path with `.` → `-`). This direction is lossless; reversing var → path
+// is ambiguous whenever a path segment already contains a hyphen (e.g. `text-muted`,
+// `semantic-grimoire`), which produced false "unknown token" errors. Must mirror the
+// generator rule in references/token-schema.md ("Flatten … `--<group>-<…>-<name>`, `.` → `-`").
+//
+// Themes (tokens.json § "Modes / themes"): a theme overlay re-declares the SAME
+// `--var` name inside its own CSS selector block (`.dark`, `[data-theme="grimoire"]`,
+// …) — never a suffixed name (A2 decision, 2026-07-05). Rule 2 below already matches
+// `var(--x)` anywhere in the HTML regardless of which selector block declares `--x`
+// in the generated CSS, so themed references need no code change here. The overlay
+// only ever overrides a path that already exists in the base tree (schema invariant),
+// so its var names are already covered by `tokenPaths` above — the top-level
+// `themes` key itself is excluded from the flatten so no unreferenced synthetic
+// path (e.g. `--themes-dark-color-semantic-background`) is added to `validVars`.
+const validVars = new Set([...tokenPaths].map((p) => '--' + p.replace(/\./g, '-')));
 
 const errors = [];
 const warnings = [];
 
 // Rule 1: class vocabulary check (ERROR)
 // Only flags classes whose block part is a known component base — skips utility classes.
-for (const match of html.matchAll(/class\s*=\s*["']([^"']+)["']/g)) {
+// Matches literal `class="…"` (HTML/Vue/Svelte/Astro) and `className="…"` (JSX/TSX).
+// Static string literals only — dynamic bindings (`:class`, `{expr}`) are an accepted gap,
+// documented at sc-js:design-bridge / sc-php:design-bridge.
+for (const match of html.matchAll(/class(?:Name)?\s*=\s*["']([^"']+)["']/g)) {
   for (const cls of match[1].trim().split(/\s+/)) {
     if (!cls) continue;
     const blockPart = cls.split('__')[0].split('--')[0];
-    if (!knownBases.has(blockPart)) continue; // utility or unknown — not our scope
-    if (!validClasses.has(cls)) {
-      errors.push(`Unknown design-system class "${cls}" (block "${blockPart}" is declared but this element/modifier is not)`);
+    if (knownBases.has(blockPart)) {
+      if (!validClasses.has(cls)) {
+        errors.push(`Unknown design-system class "${cls}" (block "${blockPart}" is declared but this element/modifier is not)`);
+      }
+      continue;
     }
+    // blockPart not declared — utility class, UNLESS --strict and it's BEM-shaped
+    // (contains __ or --), which signals a typo'd or undeclared component base
+    // rather than a genuine utility class (e.g. "heor__title", "crad--featured").
+    if (!strict) continue;
+    const isBemShaped = cls.includes('__') || cls.includes('--');
+    if (!isBemShaped) continue;
+    if (utilityPrefixes.some((p) => cls.startsWith(p))) continue;
+    warnings.push(`BEM-shaped class "${cls}" has no declared block "${blockPart}" — typo, or add "${blockPart}" to components.json / $utilityPrefixes`);
   }
 }
 
@@ -103,9 +133,8 @@ for (const match of html.matchAll(/class\s*=\s*["']([^"']+)["']/g)) {
 // Catches var(--token-name) references to non-existent tokens.
 for (const match of html.matchAll(/var\((--[\w-]+)\)/g)) {
   const varName = match[1];
-  const tokenPath = cssVarToTokenPath(varName);
-  if (!tokenPaths.has(tokenPath)) {
-    errors.push(`Unknown token reference var(${varName}) — no token at path "${tokenPath}" in tokens.json`);
+  if (!validVars.has(varName)) {
+    errors.push(`Unknown token reference var(${varName}) — no matching token in tokens.json`);
   }
 }
 

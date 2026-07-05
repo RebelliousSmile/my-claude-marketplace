@@ -28,7 +28,14 @@ Identifier les tokens avec des valeurs identiques sur des chemins différents. R
 
 Tous les `{token.path}` dans `$value` doivent pointer vers un chemin existant dans le même fichier. Aucun alias circulaire.
 
-### 1d. Écrire le fichier
+### 1d. Auditer les overlays de thème (si `themes` est présent)
+
+Pour chaque thème sous `themes.<nom>` (§ Modes / themes de `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md`) et chaque chemin qu'il re-déclare :
+- Vérifier que le chemin existe dans l'arbre de base (hors `themes`) de `tokens.json`. Un chemin d'overlay absent de l'arbre de base est une **erreur bloquante** (jamais un warning) — corriger le chemin, ou l'ajouter d'abord à l'arbre de base s'il doit exister pour tous les thèmes.
+- Vérifier qu'une entrée d'overlay ne porte que `$value` (jamais `$type` — le type est toujours hérité du chemin de base). Une entrée avec `$type` est non conforme au schéma.
+- `default` n'est jamais une entrée de `themes` — c'est l'arbre de base lui-même ; signaler toute clé `themes.default` comme erreur.
+
+### 1e. Écrire le fichier
 
 Réécrire `design/tokens.json` avec les tokens canonisés. Conserver le format W3C DTCG (chaque token = `{ "$type": "...", "$value": "..." }`).
 
@@ -72,7 +79,9 @@ Construire le manifeste à partir des composants résolus dans le brief d'arbitr
 | Changement | Bump |
 |------------|------|
 | Ajout de composant, d'élément, de variante, de fond | **minor** |
+| Ajout d'un thème (`themes.<nom>`) ou d'un token surchargé dans un thème existant | **minor** |
 | Renommage de `base`, suppression d'entrée ou de variante | **major** |
+| Suppression d'un thème ou d'un chemin d'overlay | **major** |
 | Premier figeage (fichier inexistant) | **1.0.0** |
 
 ## Étape 3 — Marquer `design-system.md` comme figé
@@ -117,4 +126,5 @@ Avant d'annoncer la complétion, vérifier mentalement :
 - [ ] Tous les chemins `.backgrounds` existent dans `tokens.json`
 - [ ] Tous les composants de l'inventaire prose ont une entrée dans `components.json`
 - [ ] Aucun token en doublon (valeurs identiques sur chemins différents sans alias)
+- [ ] Tous les chemins de `themes.*` (si présent) existent dans l'arbre de base ; aucune entrée d'overlay ne porte `$type` ; aucune clé `themes.default`
 - [ ] `design-system.md status:` == `figé`

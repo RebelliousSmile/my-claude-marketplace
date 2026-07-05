@@ -39,9 +39,17 @@ Domaine: couleur primaire
 → 3 options en compétition
 ```
 
-### Étape 3 — Appliquer la règle du motif dominant
+### Étape 3 — Trancher les conflits
 
-Pour chaque conflit, compter les occurrences d'utilisation effective de chaque option dans les sources (pas le nombre de fois qu'une option est mentionnée, mais le nombre de maquettes/éléments qui l'utilisent réellement) :
+**Cas « direction unique » (défaut le plus courant).** Quand il n'y a **qu'une seule direction** — un `define` unique + des pistes `destructure` (ou un re-figeage delta) — il n'y a rien à faire voter : la matière de base fait foi, les pistes acceptées s'appliquent comme deltas, et **seules les vraies valeurs en compétition** (une piste qui remplace une valeur existante) passent au gate humain de l'étape 4. **Sauter la cérémonie de comptage** — elle n'a de sens qu'avec plusieurs sources concurrentes. Documenter simplement :
+
+```
+✓ palette anchor → #2563eb  [define, direction unique]
+✓ piste "plus corporate" acceptée → color.brand.secondary #1e3a8a  [delta destructure]
+⚠ radius.base : define=4px vs piste "moderne"=8px → gate humain (étape 4)
+```
+
+**Cas multi-sources (maquettes concurrentes).** Seulement quand plusieurs sources indépendantes se disputent la même valeur (N maquettes, brief + maquette divergents) : appliquer la règle du motif dominant. Compter les occurrences d'utilisation effective de chaque option dans les sources (pas le nombre de fois qu'une option est mentionnée, mais le nombre de maquettes/éléments qui l'utilisent réellement) :
 
 - **Motif dominant (≥ 2/3 des sources)** → gagne automatiquement, aucune question posée.
 - **Split sans dominant** → flaguer pour gate humain (étape 4).

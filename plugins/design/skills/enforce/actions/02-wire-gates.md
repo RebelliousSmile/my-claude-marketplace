@@ -2,7 +2,7 @@
 
 ## Rôle
 
-Câbler les 3 gates du linter dans le projet : rules de génération, success_condition des plans, hook pre-commit auto-armé. Voir `${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md` pour la spécification complète de chaque gate.
+Câbler les 4 gates du linter dans le projet : import `tokens.css`, rules de génération, success_condition des plans, hook pre-commit auto-armé. Voir `${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md` pour la spécification complète de chaque gate.
 
 ## Prérequis
 
@@ -19,7 +19,11 @@ Déterminer quels fichiers et templates sont concernés par le design system dan
 
 Documenter la liste dans le compte-rendu (utilisée par les gates 2 et 3).
 
-### Étape 2 — Câbler Gate 1 (Rules de génération)
+### Étape 2 — Vérifier/câbler Gate 0 (Import `tokens.css`)
+
+Vérifier que `design/adapters/tokens.css` (et `theme.css`/l'extend Tailwind si présent) est bien importé comme **premier** stylesheet de l'app, sans `:root` concurrent. Si `adjust/02-freeze` l'a déjà câblé, ne rien refaire — juste confirmer. Sinon, câbler maintenant selon la stack (cf. `gate-wiring.md § Gate 0`) et signaler l'absence de câblage préexistant comme un finding si l'app avait ses propres variables ad hoc.
+
+### Étape 3 — Câbler Gate 1 (Rules de génération)
 
 Selon le contexte du projet :
 
@@ -36,7 +40,7 @@ Avant de générer du HTML ou des classes CSS :
 
 **Projet sans rules Claude Code** : noter l'instruction dans le SKILL.md de `diffuse` (partie `requires:`).
 
-### Étape 3 — Câbler Gate 2 (success_condition)
+### Étape 4 — Câbler Gate 2 (success_condition)
 
 Pour chaque plan aidd-dev actif ou à créer qui touche du HTML, ajouter dans son frontmatter :
 
@@ -53,7 +57,7 @@ success_condition: >
   AND node design/lint/lint-core.mjs design/wireframes/contact.html exits 0
 ```
 
-### Étape 4 — Câbler Gate 3 (pre-commit)
+### Étape 5 — Câbler Gate 3 (pre-commit)
 
 Créer `scripts/hooks/pre-commit` avec le contenu de `${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md § Gate 3`.
 
@@ -66,7 +70,7 @@ Ajouter le `postinstall` dans `package.json` pour l'auto-armement.
 
 Valider : modifier un fichier HTML avec une violation et vérifier que `git commit` est bloqué.
 
-### Étape 5 — Versionner et documenter
+### Étape 6 — Versionner et documenter
 
 1. Committer `scripts/hooks/pre-commit` et la mise à jour de `package.json`.
 2. Documenter dans `design-system.md § Provenance` : "Gates enforce câblés le [date]".
@@ -74,6 +78,7 @@ Valider : modifier un fichier HTML avec une violation et vérifier que `git comm
 ## Sortie attendue
 
 > Gates câblés :
+> - Gate 0 (import `tokens.css`) : déjà câblé par `adjust` / câblé maintenant — `:root` concurrents supprimés
 > - Gate 1 (rules) : `.claude/rules/08-design/01-enforce.md` créé
 > - Gate 2 (success_condition) : N plans mis à jour
 > - Gate 3 (pre-commit) : `scripts/hooks/pre-commit` créé, `postinstall` ajouté

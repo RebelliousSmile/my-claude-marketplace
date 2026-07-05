@@ -1,5 +1,68 @@
 # Changelog — design
 
+## [1.11.0] — 2026-07-05
+
+Minor — **dimension thème/mode dans les tokens** — le contrat ne pouvait modéliser qu'un seul thème visuel ; un projet avec un mode sombre par classe **et** un second territoire thématique ("Grimoire") ne pouvait pas être contractualisé (le mode sombre finissait en Open question sans support de contrat). 1.11.0 ajoute un axe thème/mode additif et rétrocompatible, avec émission theme-aware des deux adaptateurs et un gate exécutable qui valide les références de tokens thémés.
+
+### Ajouté — `references/token-schema.md`
+
+- Nouvelle section **"Modes / themes"** : overlay top-level `themes` qui ne re-déclare que les tokens surchargés par thème/mode — l'arbre de base reste mono-valeur et DTCG-valide (rétrocompatible, aucune migration requise pour un contrat existant sans `themes`). Liste plate de thèmes nommés sur un seul axe (`default`, `dark`, `grimoire`, `grimoire-dark`), pas de matrice 2-D mode × thème. Invariant : un overlay ne peut surcharger qu'un chemin existant dans l'arbre de base, jamais en introduire un nouveau. Exemple travaillé `default` + `dark` + `grimoire` résolvant les alias par thème.
+- § Adapter `tokens.css` : sous-section **"Theme-scoped emission"** — `:root` (base) + un bloc `.dark` / `[data-theme="…"]` par thème, ne re-déclarant que les vars surchargées, mêmes noms de `--var` qu'en base (pas de suffixe).
+- § Adapter `theme.css` : note que les overlays de thème doivent être émissibles côté Tailwind v3 (`tailwind.config.js`) et v4 (`@theme`) — détail de l'artefact v3 hors scope, renvoyé à une part ultérieure du plan.
+
+### Ajouté — `skills/enforce/fixtures/themed/`, `skills/enforce/fixtures/themed-{clean,dirty}.html`
+
+- Fixture `tokens.json` avec overlay `themes.dark` (2 tokens surchargés) + `themes.grimoire` (1 token surchargé) sur une base de 3 tokens de couleur, et `components.json` minimal référençant un fond thémable (`surface`).
+- `themed-clean.html` (référence uniquement des vars valides, y compris thémées → exit 0) et `themed-dirty.html` (référence un var thémé inexistant → exit 1, garde de non-régression).
+
+### Modifié — `skills/enforce/adapters/lint-core.mjs`
+
+- Commentaire ajouté près de `validVars` documentant la décision A2 (thèmes re-déclarent les mêmes noms de `--var` par bloc de sélecteur, jamais de suffixe) — **aucun changement de logique** : la Règle 2 valide déjà `var(--x)` indépendamment du bloc CSS où `--x` est déclaré.
+
+### Modifié — `references/sc-pivot-contract.md`
+
+- Les specs d'enforcement et de rendu portent désormais un champ `Themes:` (liste plate des thèmes nommés) pour que les pivots `sc-<techno>` émettent nativement les mêmes blocs theme-scoped (`.dark`/`[data-theme]`) et restent compatibles avec la cascade thème.
+
+### Modifié — `skills/adjust/actions/02-freeze.md`
+
+- Nouvelle étape d'audit (1d) : chaque chemin d'overlay `themes.*` doit exister dans l'arbre de base (erreur bloquante sinon) ; une entrée d'overlay ne porte que `$value` (jamais `$type`) ; `themes.default` est interdit.
+- Table de bump version : ajout d'un thème ou d'un token surchargé → **minor** ; suppression d'un thème ou d'un chemin d'overlay → **major**.
+
+### Modifié — `skills/adjust/references/manifest-schema.md`
+
+- Nouvel invariant (6) : le contraste WCAG AA d'une variante sombre (`.backgrounds`) est vérifié contre la valeur **résolue dans le thème du variant**, jamais contre la valeur `default` par défaut.
+
+## [1.10.0] — 2026-07-05
+
+Minor — **durcissement du gate d'enforcement + résorption de dérive documentaire** — deux audits indépendants (dont un run réel sur un projet tiers, "choix-narratifs") ont remonté un bug de mapping token→var silencieusement faussé, une dérive documentaire sur les verbes remplacés, une étape d'arbitrage inutilement cérémonieuse, et un angle mort de câblage (`tokens.css` jamais importé dans l'app réelle). 1.10.0 ferme ces points en additif/rétrocompatible et ajoute un mode `--strict` optionnel pour distinguer les typos BEM des classes utilitaires.
+
+### Corrigé — `skills/enforce/adapters/lint-core.mjs`
+
+- **Bug critique** : la Règle 2 (référence `var(--token)`) reconstruisait le chemin de token en inversant `-`→`.`, ambigu dès qu'un segment de chemin contient déjà un tiret (`text-muted`, `semantic-grimoire`) → faux positifs "unknown token" (jusqu'à ~290 sur un run réel). Remplacé par un mapping direct chemin→var (`.`→`-`, jamais l'inverse), seule direction sans perte.
+- Règle 1 (vocabulaire de classes) ne matchait que `class="…"` — étendue à `className="…"` pour couvrir JSX/TSX.
+
+### Ajouté — `skills/enforce/adapters/lint-core.mjs` + `skills/adjust/references/manifest-schema.md`
+
+- Mode `--strict` (opt-in, rétrocompatible) : toute classe de forme BEM (`__`/`--`) dont le bloc n'est pas déclaré devient un `warning` de typo potentielle, sauf si elle matche un préfixe du nouveau champ optionnel `$utilityPrefixes` du manifeste. Comportement par défaut inchangé (classes non déclarées = utilitaires, ignorées silencieusement).
+
+### Corrigé — `references/token-schema.md`, `references/write-system-procedure.md`
+
+- Dérive documentaire : références mortes à `/design:from-reference` / `/design:from-brief` (verbes remplacés par `define` depuis la fusion) corrigées vers `/design:define` / `04-write-material`.
+- Formulation du "core trio" alignée sur son comportement réel (présentation non bloquante, pas une approbation attendue).
+- Règle kebab/camelCase de l'adaptateur `tokens.css` clarifiée : transform mécanique `.`→`-` uniquement, aucun re-cassage de segment — évite une contradiction avec le camelCase intentionnel de certains groupes (miroir des noms de propriété DOM `getComputedStyle`, cf. `config-gen.py`).
+
+### Modifié — `skills/adjust/actions/01-arbitrate.md`, `skills/define/SKILL.md`
+
+- Étape d'arbitrage : la cérémonie de vote "motif dominant" ne se déclenche plus que pour des sources réellement concurrentes (maquettes divergentes) — le cas à direction unique (le plus fréquent) saute directement à la synthèse.
+- Checkpoint "core trio" reformulé pour ne plus prétendre attendre une approbation qui n'est en réalité jamais bloquante.
+
+### Ajouté — `skills/enforce/references/gate-wiring.md` (Gate 0)
+
+- Nouveau point de câblage (le 4e) : import de `design/adapters/tokens.css` comme source unique dans l'app consommatrice, avant toute autre feuille de style — sans quoi l'app peut garder des `:root` concurrents qui dérivent silencieusement, un angle mort qu'aucun des 3 gates précédents ne couvrait.
+- Hook pre-commit étendu au-delà du `.html` seul : `.astro`, `.vue`, `.jsx`, `.tsx`, `.svelte`.
+- `skills/enforce/actions/02-wire-gates.md` : nouvelle étape de câblage/vérification de Gate 0.
+- Terminologie "3 gates/points de câblage" → "4" propagée dans `SKILL.md`, `README.md`, `.claude-plugin/plugin.json`.
+
 ## [1.9.0] — 2026-06-16
 
 Minor — **pont manifest → config oracle** — le config oracle (`measure.py`) était construit de zéro à chaque page, source de friction et d'oublis. `components.json` contient déjà les sélecteurs WP (classes BEM) et `tokens.json` les propriétés CSS à mesurer. 1.9.0 ferme ce gap.

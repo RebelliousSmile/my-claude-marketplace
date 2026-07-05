@@ -1,0 +1,15 @@
+{
+  "$schema": "design/references/manifest-schema#",
+  "$version": "1.0.0",
+  "components": {
+    "surface": {
+      "base": "surface",
+      "elements": {
+        "body": "surface__body"
+      },
+      "modifiers": {},
+      "backgrounds": ["color.semantic.background", "color.brand.primary"],
+      "a11y": { "role": "region", "requires": [] }
+    }
+  }
+}
