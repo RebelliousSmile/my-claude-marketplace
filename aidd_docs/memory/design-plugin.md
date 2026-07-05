@@ -2,8 +2,8 @@
 
 | Champ | Valeur |
 |---|---|
-| Version courante | 1.2.0 |
-| Dernière release | 2026-06-15 |
+| Version courante | 1.16.0 |
+| Dernière release | 2026-07-05 |
 
 ## Architecture — entonnoir 5 verbes
 
@@ -54,3 +54,11 @@ Réplication fidèle d'une maquette arbitraire vers le contrat, **sans nouveau v
 - **Templates** `references/` : correspondence-table, deviation-ledger, copycat-checklist (résumable, mi-intégration). **Responsive** : ask-or-derive ; tablette = cas derive canonique.
 
 > Invocation native `subagent_type: design:copycat` : **validée** (reload 1.1.0, smoke test OK). Oracle Python exécuté en réel sur `mentions-legales` (Mode B, headless) — OD-1 confirmé hors spike. ⚠ Après une édition de l'agent, réinstall + `/reload-plugins` requis pour que la session recharge le registry.
+
+## Mode utility-first + thème/mode + adapter v3 (1.2.0 → 1.16.0, 2026-07-05)
+
+Mode `utility-first` de 1ʳᵉ classe dans `lint-core.mjs` (vocabulaire fermé = namespaces d'usage de tokens, pas des noms de classe BEM), dimension thème/mode dans les tokens, adaptateur Tailwind v3, factorisation en deux tracks (BEM vs utility-first), réconciliation retrofit au figeage (`adjust/02-freeze`), persistance de la critique destructure, statut preview non intégrée de `diffuse`.
+
+- **Fixtures par mode, pas un dossier unique** : `fixtures/` = contrat de base (`clean.html`/`dirty.html`, `tokens.json`+`components.json` directement dedans) ; `fixtures/themed/`, `fixtures/utility/`, `fixtures/retrofit/` = un manifeste par mode. `lint-core.mjs <file> <dir>` exige le bon dossier par paire de fixture — s'y tromper échoue bruyamment pour certaines paires et donne un résultat silencieusement faux pour d'autres (pas d'erreur visible).
+- **Rule 4 (namespaces de couleur, mode utility-first) — trade-off assumé** : les préfixes Tailwind (`text`, `border`, `ring`...) sont à double usage (`text-lg`, `border-2`, `ring-offset-2` ne portent aucune couleur). La règle ne déclenche que sur la forme `<namespace>-<shade numérique 2-3 chiffres>` (ex. `bg-brand-500`) — seul signal fiable. Conséquence acceptée : un mot-clé de couleur nu sans shade (`bg-white`, `border-black`) hors contrat n'est plus détecté.
+- Revue de code indépendante post-implémentation a trouvé 1 critique (le point Rule 4 ci-dessus, corrigé avant commit) + 2 mineurs (collision de libellé "Étape 2bis" dans `adjust/02-freeze.md` ; `$EXT_PATTERN` non assigné dans le snippet pre-commit de `sc-js/01-realize-lint.md`, corrigé avec garde-fou explicite).
