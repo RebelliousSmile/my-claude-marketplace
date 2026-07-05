@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Fixture retrofit clean</title></head>
+<body>
+  <!-- Markup pré-existant (retrofit) : ce fichier a été écrit avant le figeage du contrat.
+       Chaque classe qu'il porte est couverte par le manifeste "retrofit" tout juste figé —
+       la réconciliation Étape 2bis (code → manifeste) ne trouve aucune divergence. -->
+  <article class="card">
+    <div class="card__media"></div>
+    <div class="card__body">
+      <h2 class="card__title">Titre de la carte</h2>
+      <button class="btn btn--primary" type="button">
+        <span class="btn__icon" aria-hidden="true"></span>
+        <span class="btn__label">Action principale</span>
+      </button>
+    </div>
+  </article>
+
+  <article class="card card--featured">
+    <div class="card__body">
+      <h2 class="card__title">Carte mise en avant</h2>
+      <button class="btn btn--secondary" type="button">
+        <span class="btn__label">Action secondaire</span>
+      </button>
+    </div>
+  </article>
+
+  <!-- Le composant de menu supérieur (voir components.json) est déclaré dans le manifeste
+       retrofit mais n'est pas encore utilisé ici : c'est la direction manifeste → code (A10.3),
+       un warning non-bloquant (cf. --report-unused), jamais une raison de faire échouer cette
+       fixture "clean". -->
+</body>
+</html>

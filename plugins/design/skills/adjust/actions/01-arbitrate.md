@@ -9,7 +9,7 @@ Trancher les incohérences entre sources de matière malléable (maquettes multi
 | Source | Exemple de signal |
 |--------|-------------------|
 | Sortie de `define` (matière malléable) | `design/design-system.md` (status: brouillon) + `design/tokens.json` (travail) |
-| Pistes de `destructure` | Section "Pistes et inspirations" du rapport de challenge |
+| Pistes de `destructure` | Section "Pistes et inspirations" du rapport de challenge courant, ou rapport persisté sous `design/critique/` (optionnel, non-bloquant) |
 | Maquettes multiples | "J'ai 3 directions issues des maquettes Figma" |
 | Re-figeage delta | "On a décidé de changer la palette secondaire suite au destructure" |
 
@@ -27,6 +27,8 @@ Identifier et lire toutes les sources présentes :
 
 En mode re-figeage : lire aussi `design/components.json` existant pour n'opérer que sur le delta.
 
+**Entrée optionnelle — critique persistée.** Si `design/critique/` existe, lire le rapport le plus récent (nom de fichier daté `<yyyy_mm_dd>-<cible>.md` — trier par date, prendre le dernier) comme entrée additionnelle au même titre que les pistes de la conversation courante ; reprendre chaque piste retenue avec son étiquette de coût contrat (`rentre dans le contrat` / `demande un re-figeage`) telle qu'émise par `destructure`. Absence de fichier : non-bloquant, poursuivre sans.
+
 ### Étape 2 — Inventaire des conflits
 
 Pour chaque domaine du design system (palette, typographie, espacement, composants, variantes, fonds), identifier les valeurs en compétition entre sources :
@@ -39,9 +41,17 @@ Domaine: couleur primaire
 → 3 options en compétition
 ```
 
-### Étape 3 — Appliquer la règle du motif dominant
+### Étape 3 — Trancher les conflits
 
-Pour chaque conflit, compter les occurrences d'utilisation effective de chaque option dans les sources (pas le nombre de fois qu'une option est mentionnée, mais le nombre de maquettes/éléments qui l'utilisent réellement) :
+**Cas « direction unique » (défaut le plus courant).** Quand il n'y a **qu'une seule direction** — un `define` unique + des pistes `destructure` (ou un re-figeage delta) — il n'y a rien à faire voter : la matière de base fait foi, les pistes acceptées s'appliquent comme deltas, et **seules les vraies valeurs en compétition** (une piste qui remplace une valeur existante) passent au gate humain de l'étape 4. **Sauter la cérémonie de comptage** — elle n'a de sens qu'avec plusieurs sources concurrentes. Documenter simplement :
+
+```
+✓ palette anchor → #2563eb  [define, direction unique]
+✓ piste "plus corporate" acceptée → color.brand.secondary #1e3a8a  [delta destructure]
+⚠ radius.base : define=4px vs piste "moderne"=8px → gate humain (étape 4)
+```
+
+**Cas multi-sources (maquettes concurrentes).** Seulement quand plusieurs sources indépendantes se disputent la même valeur (N maquettes, brief + maquette divergents) : appliquer la règle du motif dominant. Compter les occurrences d'utilisation effective de chaque option dans les sources (pas le nombre de fois qu'une option est mentionnée, mais le nombre de maquettes/éléments qui l'utilisent réellement) :
 
 - **Motif dominant (≥ 2/3 des sources)** → gagne automatiquement, aucune question posée.
 - **Split sans dominant** → flaguer pour gate humain (étape 4).

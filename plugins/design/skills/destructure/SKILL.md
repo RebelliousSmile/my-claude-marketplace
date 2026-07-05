@@ -9,7 +9,8 @@ description: >-
   accessibilité (contrastes WCAG, états d'interaction, navigation clavier), tendances, divergence d'inspiration,
   états comportementaux UX (états composants manquants, affordance, flux), lisibilité & hiérarchie de lecture.
   Double usage : (1) dans l'entonnoir, sur la sortie de define ; (2) STANDALONE sur un élément existant isolé.
-  Lecture seule — produit un rapport structuré (critique + pistes actionnables + score), n'applique RIEN.
+  Lecture seule sur le contrat gelé et le code source — produit un rapport structuré (critique + pistes
+  actionnables + score), persisté par défaut sous `design/critique/`, n'applique RIEN au contrat.
   Absorbe l'ancien diagnose. Ne pose pas la matière — c'est define ; ne fige pas — c'est adjust.
 ---
 
@@ -22,7 +23,7 @@ Deux usages, une seule mécanique :
 - **Mode entonnoir** — sur la sortie de `define` (matière malléable encore non figée). On critique la direction avant de la figer.
 - **Mode standalone** — sur un élément existant isolé (un composant, une page, un token set déjà en place). « Comment cet élément pourrait-il évoluer ? » Sur un projet déjà figé, l'action LIT le manifeste et la charte en vigueur pour situer ses pistes contre le vocabulaire fermé existant.
 
-**Lecture seule.** `destructure` ne propose que des pistes ; il n'écrit jamais dans `design/`. L'application d'une piste est le travail d'`adjust` (ou d'un nouveau cycle `define`).
+**Lecture seule sur le contrat.** `destructure` ne propose que des pistes et n'édite jamais `tokens.json`, `components.json` ni `design-system.md` — mais il persiste par défaut son propre rapport de critique sous `design/critique/` (chemin non-contractuel, opt-out `--no-write`). L'application d'une piste reste le travail d'`adjust` (ou d'un nouveau cycle `define`).
 
 ## Available actions
 
@@ -42,7 +43,7 @@ Trigger-to-action mapping :
 
 ## Transversal rules
 
-- **Lecture seule absolue.** Ne jamais éditer `design/` ni le code source. La sortie est un rapport.
+- **Lecture seule sur le contrat gelé et le code source.** `destructure` n'édite jamais `tokens.json`, `components.json`, `design-system.md` ni le code source — mais il persiste par défaut son propre rapport de critique sous `design/critique/<yyyy_mm_dd>-<cible>.md` (chemin non-contractuel ; opt-out `--no-write` / "ne sauvegarde pas" pour rester conversationnel). Le principe de lecture seule ne s'applique qu'au contrat gelé et au code source — jamais au rapport de critique lui-même.
 - Chaque piste doit être **actionnable** et concrète — jamais « améliore le contraste » ou « rends-le plus moderne ». Utiliser les lentilles de `references/critique-lenses.md` pour forcer la précision.
 - En mode standalone sur un projet figé, **lire d'abord** `design/components.json` (manifeste) et `design/design-system.md` (charte) s'ils existent, pour situer chaque piste contre le vocabulaire fermé en vigueur — distinguer ce qui rentre dans le contrat actuel de ce qui demanderait un re-figeage par `adjust`.
 - **Diverger, pas trancher** : proposer 2–4 pistes contrastées par axe critiqué, pas une seule "bonne" réponse. L'arbitrage est le rôle d'`adjust`.
@@ -52,6 +53,7 @@ Trigger-to-action mapping :
 ## References
 
 - `${CLAUDE_PLUGIN_ROOT}/skills/destructure/references/critique-lenses.md` — les lentilles de critique (générique vs distinctif, cohérence, accessibilité, tendances, divergence d'inspiration)
+- `${CLAUDE_PLUGIN_ROOT}/skills/destructure/references/critique-report-template.md` — le squelette canonique du rapport persisté
 - `${CLAUDE_PLUGIN_ROOT}/references/design-system-contract.md` — pour situer les pistes contre les artefacts du contrat
 - `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md` — les groupes de tokens contre lesquels juger la matière
 

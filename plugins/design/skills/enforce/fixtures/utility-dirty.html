@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Fixture utility dirty</title></head>
+<body>
+  <!-- ERROR: hex brut inline, interdit par usage.rawHexForbidden -->
+  <div class="flex items-center gap-4" style="background-color: #ff00aa">
+    <!-- ERROR: bg-red-500 hors namespace déclaré (color.brand / color.neutral / color.semantic uniquement) -->
+    <span class="bg-red-500 text-neutral-50 rounded px-4 py-2">Alerte</span>
+  </div>
+  <!-- OK (non-régression F-1) : préfixes Tailwind à double usage, aucune couleur ici -->
+  <p class="text-lg text-center border-2 border-t ring-2 ring-offset-2">Texte utilitaire non-couleur</p>
+</body>
+</html>

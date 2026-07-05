@@ -50,7 +50,7 @@ Si la source est ambiguë (un brief mentionnant un visuel sans le fournir), `int
 - Lire le contrat AVANT d'écrire : `${CLAUDE_PLUGIN_ROOT}/references/design-system-contract.md` et `${CLAUDE_PLUGIN_ROOT}/references/token-schema.md`.
 - **Ne JAMAIS écrire de manifeste** (`design/components.json`). Le manifeste est le vocabulaire fermé produit par `adjust`. Ici, l'inventaire de composants est écrit en **prose candidate** dans la section "Component inventory" de `design-system.md` — explicitement malléable et distinct du manifeste JSON figé.
 - La charte produite porte la mention **"brouillon / non figé"** : `define` n'arbitre pas et ne canonise pas.
-- Identifier le **core trio d'abord, vite** — ancre de palette · type · jeu d'icônes — et le présenter pour une approbation rapide avant le token set complet.
+- Identifier le **core trio d'abord, vite** — ancre de palette · type · jeu d'icônes — et le **présenter avant** de dériver le token set complet. Ce n'est pas un arrêt bloquant : poursuivre sauf objection, mais l'annoncer explicitement (« je pars sur X/Y/Z, dis-moi si ça cloche ») pour que la correction reste bon marché tant que la matière est malléable. Ne pas prétendre attendre une approbation qu'on n'attend pas.
 - Référencer, ne pas inventer : chaque token trace à une observation (extraction) ou à un attribut du brief (construction). Tout le reste va en § Open questions.
 - Un seul jeu d'icônes (`icon.library`/`icon.style`) ; jamais d'emoji comme iconographie.
 - **Profil mobile-first OPTIONNEL** : `references/profile-mobile-first.md` rassemble la philosophie mobile-first / enrichissement progressif / a11y / no-emoji. L'injecter seulement si l'utilisateur le demande ou si le projet l'exige — il n'est plus imposé d'office.

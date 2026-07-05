@@ -1,6 +1,21 @@
-# Gate wiring — les 3 points de câblage
+# Gate wiring — les 4 points de câblage
 
-`enforce` câble le linter à 3 endroits dans le projet. Chaque point est indépendant ; il est possible de n'en câbler qu'un sous-ensemble selon le workflow du projet.
+`enforce` câble le linter à 4 endroits dans le projet. Chaque point est indépendant ; il est possible de n'en câbler qu'un sous-ensemble selon le workflow du projet.
+
+---
+
+## Gate 0 — Import de `tokens.css` dans l'app réelle
+
+**Quand** : une fois, dès qu'`adjust` a figé le contrat et que `design/adapters/tokens.css` existe.
+
+**Problème résolu** : sans ce point, `tokens.css` reste un artefact orphelin — l'app garde ses propres `:root` inline ou ses variables ad hoc, qui dérivent silencieusement de `tokens.json`. Aucun des gates 1-3 ne détecte cette dérive : ils lintent l'usage des classes/tokens *dans le HTML produit*, pas la présence de la source unique dans l'app.
+
+**Câblage** : importer `design/adapters/tokens.css` (et `theme.css`/l'extend Tailwind si présent) comme **premier** stylesheet chargé par l'app — avant toute feuille de style applicative — et supprimer toute déclaration `:root` concurrente. Selon la stack :
+- Statique/vanilla : `<link rel="stylesheet" href="design/adapters/tokens.css">` en tête de `<head>`.
+- Build tool (Vite/Nuxt/Next…) : import au point d'entrée CSS global (ex. `main.css` avec `@import`).
+- WordPress : enqueue en dépendance de tout autre style du thème (cf. `sc-php:design-bridge`).
+
+**Qui pose ce câblage** : `adjust/02-freeze` (à la première écriture du contrat) ou `enforce/01-build-linter` (si le contrat existe déjà sans que l'import soit câblé) — signaler l'absence de câblage comme un finding si l'app a son propre `:root`/variables concurrentes.
 
 ---
 
@@ -59,15 +74,15 @@ Créer `scripts/hooks/pre-commit` à la racine du projet :
 # Lint design system — gate pre-commit
 # Abort commit if any design violation found.
 
-CHANGED_HTML=$(git diff --cached --name-only --diff-filter=ACM | grep '\.html$')
+CHANGED_MARKUP=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(html|astro|vue|jsx|tsx|svelte)$')
 
-if [ -z "$CHANGED_HTML" ]; then
+if [ -z "$CHANGED_MARKUP" ]; then
   exit 0
 fi
 
-echo "[design lint] Checking staged HTML files..."
+echo "[design lint] Checking staged component files..."
 FAIL=0
-for f in $CHANGED_HTML; do
+for f in $CHANGED_MARKUP; do
   node design/lint/lint-core.mjs "$f" || FAIL=1
 done
 
@@ -111,6 +126,7 @@ Ainsi, tout contributeur qui installe les dépendances arme automatiquement le h
 
 | Gate | Artefact | Emplacement |
 |------|----------|-------------|
+| 0 — Import | `<link>`/`@import`/enqueue de `tokens.css` en tête, `:root` concurrents supprimés | App consommatrice |
 | 1 — Rules | Instruction dans `.claude/rules/08-design/` ou `diffuse/SKILL.md` | Projet consommateur |
 | 2 — success_condition | Frontmatter des plans concernés | Plans aidd-dev |
 | 3 — pre-commit | `scripts/hooks/pre-commit` | Racine projet (versionné) |

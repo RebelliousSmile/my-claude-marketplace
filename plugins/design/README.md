@@ -15,7 +15,7 @@ poser      challenger     figer    verrou    produire
 - **define** — pose, écoute, construit la matière : tokens de travail, inventaire composants candidat, charte brouillon. Depuis une référence (screenshot, Figma, URL) ou un brief. Peut injecter le profil mobile-first/a11y optionnel.
 - **destructure** — challenge la direction avant de la figer : critique des angles (a11y, cohérence, mobilité…), pistes alternatives. Pendant design de `aidd-refine:challenge`.
 - **adjust** — arbitre les maquettes divergentes (motif dominant gagne ; gate humain sur les cas non tranchables) et **fige le contrat 3 couches**.
-- **enforce** — dérive un linter portable (`lint-core.mjs`) du contrat figé, câble 3 gates (règles de génération, success_condition des plans, pre-commit). Pivot vers `sc-php:design-bridge` ou `sc-js:design-bridge` pour une réalisation native idiomatique. **Depuis 1.1.0 : un 2ᵉ gate de *fidélité*** (`05-fidelity-gate`) mesure le rendu vs la maquette résolue (voir copycat).
+- **enforce** — dérive un linter portable (`lint-core.mjs`) du contrat figé, câble 4 gates (import `tokens.css`, règles de génération, success_condition des plans, pre-commit). Pivot vers `sc-php:design-bridge` ou `sc-js:design-bridge` pour une réalisation native idiomatique. **Depuis 1.1.0 : un 2ᵉ gate de *fidélité*** (`05-fidelity-gate`) mesure le rendu vs la maquette résolue (voir copycat).
 - **diffuse** — produit des éléments répétables (spec neutre + baseline HTML/CSS ou pivot sc-*). **Refus absolu de livrer si lint exit 1.**
 
 ## Contrat 3 couches (figé à `adjust`)
@@ -35,7 +35,7 @@ poser      challenger     figer    verrou    produire
 | `define` | `/design:define` | Extraction depuis références/brief → tokens + inventaire + charte brouillon. Profil mobile-first optionnel. |
 | `destructure` | `/design:destructure` | Challenge la direction design — critique multi-angles + pistes alternatives. |
 | `adjust` | `/design:adjust` | Arbitrage maquettes + figeage du contrat 3 couches (tokens.json · components.json · design-system.md). |
-| `enforce` | `/design:enforce` | Linter portable dérivé du contrat · 3 gates · pivot sc-php/sc-js · lint instances/DB. |
+| `enforce` | `/design:enforce` | Linter portable dérivé du contrat · 4 gates · pivot sc-php/sc-js · lint instances/DB. |
 | `diffuse` | `/design:diffuse` | Éléments répétables sous gate lint · baseline HTML/CSS · pivot sc-php/sc-js. |
 | `harness` | `/design:harness` | Génère le harness HTML autonome (`setPage`/`setViewport`) piloté par l'oracle de fidélité et le fan-out `copycat`. |
 
@@ -78,7 +78,7 @@ design/
 /design:define          # poser le contrat depuis brief ou référence
 /design:destructure     # challenger avant de figer (optionnel mais recommandé)
 /design:adjust          # arbitrer + figer le contrat 3 couches
-/design:enforce         # câbler le linter + les 3 gates
+/design:enforce         # câbler le linter + les 4 gates
 /design:diffuse <comp>  # produire sous gate
 ```
 

@@ -1,5 +1,12 @@
 # 05-fidelity-gate
 
+Track: WP-maquette (profil pleine forme — l'oracle mesure un rendu contre une maquette résolue,
+par nature un scénario maquette-vs-rendu). Note app-JS-modern / from-code courte : l'oracle
+**s'applique identiquement, quelle que soit la stack**, dès qu'une maquette de référence externe
+existe (SPA incluse) — il n'est WP-flavoured que dans ses exemples. **Sans maquette externe**
+(construction depuis un brief, `define/03-construct`), l'oracle ne s'applique pas *par nature* —
+voir `## Chemin construction-depuis-brief — pas de gate de fidélité` plus bas.
+
 ## Rôle
 
 Vérifier la **fidélité du rendu** à la référence visuelle résolue (l'intention design figée
@@ -107,6 +114,29 @@ Le gate de fidélité s'arme **à côté** du lint vocabulaire (cf. `${CLAUDE_PL
   un config désynchronisé après une modif de markup). Le résoudre avant de clore — jamais le lire
   comme « rien à corriger ».
 - Ne jamais revendiquer une clôture sur la foi d'une édition non re-mesurée (cf. étape 6).
+
+## Chemin construction-depuis-brief — pas de gate de fidélité
+
+**Limite assumée et nommée (2nd-audit #3 / A9), pas un gap silencieux.** Ce gate mesure la
+fidélité d'un rendu à une **référence visuelle externe** (une maquette résolue par `adjust`).
+Un projet construit **depuis un brief** (`${CLAUDE_PLUGIN_ROOT}/skills/define/actions/03-construct.md` —
+pas de visuel, un système de tokens dérivé de l'intention écrite) n'a, par construction, **aucune
+référence externe à comparer** : il n'y a rien à mesurer, donc l'oracle de fidélité **ne
+s'applique pas par nature** à ce chemin.
+
+- **Profil de gate pour ce cas** : vocabulaire seul (`lint-core.mjs`, Gates 1-3) + bonnes
+  pratiques visuelles (contraste WCAG, réduction mobile, cohérence des échelles — jugées en
+  revue humaine, pas par un oracle automatisable). Pas de second gate mesuré.
+- Ceci n'est **pas** un oubli du contrat : c'est la même règle que la note app-JS-modern
+  ci-dessus, vue de l'autre côté — *la fidélité exige une référence ; un projet brief-only n'en
+  a aucune*. Dès qu'une référence apparaît ultérieurement (ex. une maquette est produite après
+  coup pour valider le résultat du brief), ce gate redevient applicable normalement.
+- **Option de suivi non construite ici** (A9, option 2) : un gate de substitution/auto-cohérence
+  (checklist de bonnes pratiques formalisée : paires de contraste, réductions responsive,
+  couverture d'états) pourrait servir de proxy de fidélité *soft* pour ce chemin — non implémenté
+  dans cette part, noté comme piste possible seulement.
+- Renvoi croisé : `${CLAUDE_PLUGIN_ROOT}/skills/define/actions/03-construct.md` porte la note
+  réciproque en aval.
 
 ## Sortie attendue
 

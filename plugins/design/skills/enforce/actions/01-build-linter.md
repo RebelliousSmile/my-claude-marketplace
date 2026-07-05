@@ -36,6 +36,12 @@ Si le projet gère déjà Node avec un `package.json`, ajouter un script :
 
 ## Étape 3 — Créer `.lintrc.json`
 
+`design/lint/.lintrc.json` n'est pas consommé directement par `lint-core.mjs` (qui lit ses règles depuis `components.json`/`tokens.json`, jamais depuis un fichier de config séparé) — c'est un **fichier de référence projet**, documentant pour les humains/CI quelles cibles linter et comment calibrer les sévérités du wiring (hook pre-commit, script CI). Il n'existe pas de `.lintrc.json` canonique dans ce plugin ; ce qui suit est le gabarit à créer dans le projet consommateur.
+
+Deux profils selon le mode du contrat (`components.json § mode`, cf. `adjust/references/manifest-schema.md`) :
+
+**Profil `bem`** (wireframes HTML, templates WP FSE) :
+
 ```json
 {
   "contractDir": "design",
@@ -49,9 +55,24 @@ Si le projet gère déjà Node avec un `package.json`, ajouter un script :
 }
 ```
 
+**Profil `utility-first`** (Tailwind/Vue/React — aucune classe BEM dans le code, `usage` déclaré dans `components.json`) :
+
+```json
+{
+  "contractDir": "design",
+  "targets": ["src/**/*.{vue,jsx,tsx,html}"],
+  "severity": {
+    "unknownToken": "error",
+    "rawHexForbidden": "error",
+    "colorNamespace": "error",
+    "stateColourIcon": "pivot-only"
+  }
+}
+```
+
 - `contractDir` : chemin vers le répertoire contenant `tokens.json` + `components.json` (relatif à la racine projet).
-- `targets` : globs HTML à linter par défaut (utilisés par le hook pre-commit et la CI).
-- `severity` : calibrage optionnel des sévérités.
+- `targets` : globs à linter par défaut (utilisés par le hook pre-commit et la CI). En mode `bem`, le HTML de wireframe suffit généralement ; en mode `utility-first`, les cibles doivent couvrir **tous** les fichiers composants du projet — `**/*.{vue,jsx,tsx,html}` — pas seulement le HTML, sans quoi la majorité du code (composants Vue/React) échappe au gate.
+- `severity` : calibrage optionnel des sévérités. `rawHexForbidden`/`colorNamespace` sont des `error` de la baseline (§ Rules 3/4 de `lint-core.mjs`) ; `stateColourIcon` reste `pivot-only` — elle est déclarée dans `usage.rules[]` mais `lint-core.mjs` ne l'enforce jamais lui-même (co-occurrence sémantique hors de portée d'un string-scanner, cf. `references/sc-pivot-contract.md`).
 
 ## Étape 4 — Vérification de fonctionnement
 
@@ -67,8 +88,14 @@ Si exit 0 → installation OK. Si exit 1 → des violations existent avant même
 Si aucun wireframe n'existe encore, utiliser les fixtures du plugin comme smoke test :
 
 ```bash
+# Profil bem
 node plugins/design/skills/enforce/adapters/lint-core.mjs \
   plugins/design/skills/enforce/fixtures/clean.html
+
+# Profil utility-first
+node plugins/design/skills/enforce/adapters/lint-core.mjs \
+  plugins/design/skills/enforce/fixtures/utility-clean.html \
+  plugins/design/skills/enforce/fixtures/utility
 ```
 
 ## Sortie attendue

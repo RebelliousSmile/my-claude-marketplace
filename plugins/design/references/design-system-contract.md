@@ -31,7 +31,11 @@ design/
     theme.css               # generated — Tailwind v4 @theme block
   wireframes/
     <story-slug>.html       # living HTML preview, mobile-first, links ../adapters/tokens.css
+  critique/
+    <yyyy_mm_dd>-<cible>.md # non-contractuel — rapport destructure persisté par défaut (historique, jamais versionné)
 ```
+
+`design/critique/` n'est **pas** une couche du contrat : c'est un artefact informationnel, non versionné avec `$version`, produit par `destructure` (voir Consumption rules ci-dessous). L'ancien chemin `design/destructure-report.md` reste un alias accepté en lecture pour compatibilité.
 
 - If a project already nests UI under a sub-package (monorepo), prefer that package root; record the chosen home at the top of `design-system.md`.
 - Never scatter tokens across multiple sources. `tokens.json` is canonical; `adapters/*` are **generated** and must never be hand-edited (a header banner says so).
@@ -56,7 +60,7 @@ Voir `adjust/references/manifest-schema.md` pour la structure complète et les e
 ## Consumption rules
 
 - `define` écrit une matière malléable (tokens de travail + inventaire prose candidat). Elle N'ÉCRIT PAS `components.json`.
-- `destructure` est lecture seule. En mode standalone sur projet figé : lit `components.json` + `design-system.md` pour situer les pistes par rapport au contrat existant.
+- `destructure` est lecture seule sur le contrat et le code source : il n'édite jamais `tokens.json`, `components.json` ni `design-system.md`. Il persiste par défaut son propre rapport sous `design/critique/` (non-contractuel — voir Project layout). En mode standalone sur projet figé : lit `components.json` + `design-system.md` pour situer les pistes par rapport au contrat existant.
 - `adjust` est le seul verbe qui écrit `components.json`. Il canonise aussi `tokens.json` et marque `design-system.md` comme figé.
 - `enforce` dérive ses règles de lint depuis `tokens.json` (valeurs) + `components.json` (vocabulaire). Il ne les invente pas.
 - `diffuse` produit des éléments répétables sous le gate `enforce`. Tout élément produit doit n'utiliser que les classes et valeurs déclarées dans le manifeste.
