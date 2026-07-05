@@ -22,13 +22,6 @@
       "recommended": false
     },
     {
-      "name": "writing",
-      "version": "1.4.0",
-      "source": "./plugins/writing",
-      "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (forge, interview, toc, write, tune, tone-finder, persona, review, storyboard, upgrade). interview/tune opèrent en mode document libre, sans brief/output. L'assemblage des intrants (brief, données) est délégué à obs ; le lore/règles de jeu à ttrpg. Fusion de doc-writer + rpg-writer.",
-      "recommended": false
-    },
-    {
       "name": "game-writer",
       "version": "1.0.0",
       "source": "./plugins/game-writer",
@@ -86,16 +79,9 @@
     },
     {
       "name": "obs",
-      "version": "0.30.0",
+      "version": "0.37.0",
       "source": "./plugins/obs",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser tree (cache-based: index, check, fix, sort, judge, destinations), and brief/data assembly for writing: brief (builds the portable _brief/ working dir), research (data), extract-pdf (raw source ingestion, also feeds the ttrpg plugin). All solo TTRPG domain tooling — pc, campaign, solo-mc, lore-extract, rules-keeper — moved to the ttrpg plugin; concept development (forge) moved to the writing plugin.",
-      "recommended": false
-    },
-    {
-      "name": "ttrpg",
-      "version": "0.2.0",
-      "source": "./plugins/ttrpg",
-      "description": "Solo tabletop RPG toolkit on autonomous local game domains (R): pc (player-character sheets), campaign (GM prep — scenarios, fronts, NPCs, factions; ex-obs:rpg), solo-mc (live play under Claude Code) with its narrateur and oracle agents, plus lore-extract and rules-keeper (canon/mj ventilation). Extracted from obs across two rounds; obs remains upstream via extract-pdf and research.",
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser tree (cache-based: index, check, fix, sort, judge, destinations), research (documentary research and terminology extraction), extract-pdf (raw source ingestion).",
       "recommended": false
     }
   ]

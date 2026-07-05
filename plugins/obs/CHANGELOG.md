@@ -2,6 +2,12 @@
 
 > Baseline établie le 2026-05-29 à partir de l'état courant ; transitions récentes reprises de l'historique git. Détail antérieur : `git log -- plugins/obs`.
 
+## [0.37.0] — 2026-07-05
+
+### Removed — skill `brief` (plugins `writing`/`ttrpg` supprimés)
+- Suppression du skill `brief` : son unique consommateur (`writing`) est retiré du marketplace, avec `ttrpg`. Références directes corrigées en conséquence : `plugin.json`, `README.md`, `tree/SKILL.md` (description + invariants `bank.yml`), `references/domain-layout.md` (manifeste, profil JDR), `references/bank-yml.md` (réécrit — seul consommateur restant de `bank.yml` : `research`, pour la détection de profil `jdr`).
+- **Non traité** : `research` et `extract-pdf` conservent une logique conditionnelle « profil JDR » substantielle qui référence encore `ttrpg:lore-extract`/`ttrpg:rules-keeper` (skills disparus) — décision différée sur la purge de ce profil.
+
 ## [0.36.1] — 2026-07-03
 
 ### Changed — invariants opérationnalisés dans les étapes d'action (spec-hardening)

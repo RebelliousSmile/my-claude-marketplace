@@ -1,6 +1,6 @@
 ---
 name: tree
-description: Keeps the Documents/ tree navigable as it evolves — maintains a cache (map of the real arborescence), verifies it against a small set of portability invariants, fixes drift safely, and helps sort loose items into place by arbitration. Use to check whether a directory is well-organised, to tidy it, or to decide where something belongs. Do NOT use to build a writing brief — use `obs:brief`; do NOT use to produce content — use the `writing` plugin.
+description: Keeps the Documents/ tree navigable as it evolves — maintains a cache (map of the real arborescence), verifies it against a small set of portability invariants, fixes drift safely, and helps sort loose items into place by arbitration. Use to check whether a directory is well-organised, to tidy it, or to decide where something belongs.
 ---
 
 # Tree
@@ -53,11 +53,11 @@ Trigger-to-action mapping:
 - **Learn, don't impose**: when a domain diverges from the default pattern, record its effective convention in the cache rather than forcing it back.
 - `index` and `check` never modify user content; `index` only writes derived caches (`_tree/cache.json` and per-domain `R/bank.yml`).
 - `judge` manages `R/_trash/` (a working dir, `_` prefix — I1 compliant) as the destination for content marked for deletion. The user empties `_trash/` manually. `judge` never performs a real `rm`.
-- **`R/bank.yml` is a cache, not curation.** `index` derives `id`/`kind`/`path` from scanning `R/_univers/`, `R/_systeme/`, `R/_subsystems/` and other `_`-prefixed working dirs, and a best-effort `summary` from each file's heading. It is **merge, not clobber**: existing curated `summary` text is preserved; new resources are added; vanished ones are flagged. It is consumed by `obs:brief`, never by `writing`.
+- **`R/bank.yml` is a cache, not curation.** `index` derives `id`/`kind`/`path` from scanning `R/_univers/`, `R/_systeme/`, `R/_subsystems/` and other `_`-prefixed working dirs, and a best-effort `summary` from each file's heading. It is **merge, not clobber**: existing curated `summary` text is preserved; new resources are added; vanished ones are flagged.
 
 ## External data
 
 - `${CLAUDE_PLUGIN_ROOT}/references/tree-convention.md` — invariants, default pattern, cache format, anchor resolution.
 - `${CLAUDE_PLUGIN_ROOT}/references/destinations-template.md` — `destinations.txt` format + fillable template for the `email-to-markdown` router; how to derive it from a scanned tree.
 - `<anchor>/_tree/cache.json` — the navigation cache `tree` maintains.
-- `R/bank.yml` — per-domain resource manifest `tree` maintains; format in `${CLAUDE_PLUGIN_ROOT}/references/bank-yml.md`. Consumed by `brief`.
+- `R/bank.yml` — per-domain resource manifest `tree` maintains; format in `${CLAUDE_PLUGIN_ROOT}/references/bank-yml.md`.

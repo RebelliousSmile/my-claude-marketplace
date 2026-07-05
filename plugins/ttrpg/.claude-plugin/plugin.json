@@ -1,7 +1,0 @@
-{
-  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "ttrpg",
-  "version": "0.2.0",
-  "description": "Solo tabletop RPG toolkit on autonomous local game domains (R): pc (player-character sheets — new, fill, reorganize, log-session, show, companion), campaign (GM prep — synopsis, fronts/clocks, NPCs, factions, session prep; ex-obs:rpg), solo-mc (live play under Claude Code — play, scene, oracle, roll, setup, journal-pdf) with its narrateur and oracle agents, plus lore-extract and rules-keeper (canon/mj ventilation from raw sources). Extracted from obs across two rounds (0.26.0, then 0.28.0 for lore-extract/rules-keeper); obs remains upstream on the same game domain via extract-pdf (raw sources) and research (reports).",
-  "author": { "name": "fxgui" }
-}

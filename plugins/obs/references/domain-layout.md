@@ -1,6 +1,6 @@
 # Domain layout — generic working-directory convention
 
-The generic model the `obs` content skills (`brief`, `research`, `extract-pdf`) operate on. It is **domain-agnostic**: a JDR game domain (the `ttrpg` plugin's `references/jdr-layout.md`) is one **profile** of this model, not the base. A novel, a technical-doc knowledge base, or any other subject area is just as valid a domain.
+The generic model the `obs` content skills (`research`, `extract-pdf`) operate on. It is **domain-agnostic**: a JDR game domain (previously a **profile** of this model, documented in the now-removed `ttrpg` plugin's `references/jdr-layout.md`) is not the base. A novel, a technical-doc knowledge base, or any other subject area is just as valid a domain.
 
 > **Local paths, discovered anchor — no global hardcoding.** A domain is a self-contained directory in `Documents/`; everything it needs lives beneath it in **relative** paths. Move it anywhere and the skills still work.
 
@@ -14,7 +14,7 @@ Inside `R`, durable resources live in **working-dir buckets** `R/_<bucket>/` (th
 
 ## Manifest
 
-`R/bank.yml` = the generic manifest (cache) of `R`'s durable resources, **maintained by `obs:tree`**, read by `obs:brief` at assembly. An optional top-level **`profile:`** key declares a layout profile (e.g. `profile: jdr`).
+`R/bank.yml` = the generic manifest (cache) of `R`'s durable resources, **maintained by `obs:tree`**. An optional top-level **`profile:`** key declares a layout profile (e.g. `profile: jdr`).
 
 ## Path variables (all relative to `R`)
 

@@ -1,9 +1,0 @@
-[
-  { "prompt": "Generate the TOC from my overview.md", "expect_action": "generate-toc" },
-  { "prompt": "Create the table of contents for my scenario from synopsis.md", "expect_action": "generate-toc" },
-  { "prompt": "Plan the chapters of my novel from the overview", "expect_action": "generate-toc" },
-  { "prompt": "Write a detailed spec for chapter 3", "expect_action": "write-toc-chapter" },
-  { "prompt": "Create toc-chapter03.md for my project", "expect_action": "write-toc-chapter" },
-  { "prompt": "Write chapter 3 of my novel", "expect_action": null },
-  { "prompt": "Brainstorm my novel concept", "expect_action": null }
-]

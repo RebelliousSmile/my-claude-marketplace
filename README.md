@@ -10,7 +10,6 @@ Le **détail des skills de chaque plugin vit dans son propre README** — ce tab
 |---|---|---|---|
 | [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
 | [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Design system en entonnoir : define → destructure → adjust → enforce → diffuse |
-| [`writing`](plugins/writing/README.md) | [README](plugins/writing/README.md) · [CHANGELOG](plugins/writing/CHANGELOG.md) | — | Rédaction pro et narrative : documentation (guides, technique, cahier des charges) et craft narratif |
 | [`game-writer`](plugins/game-writer/README.md) | [README](plugins/game-writer/README.md) · [CHANGELOG](plugins/game-writer/CHANGELOG.md) | — | Écriture narrative de jeu vidéo (8-MINE) : timelines Dialogic, bank d'assets |
 | [`sc-godot`](plugins/sc-godot/README.md) | [README](plugins/sc-godot/README.md) · [CHANGELOG](plugins/sc-godot/CHANGELOG.md) | — | Stack Godot / GDScript : sniff, audit, improve, legacy, teach |
 | [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
@@ -18,8 +17,7 @@ Le **détail des skills de chaque plugin vit dans son propre README** — ce tab
 | [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) · [CHANGELOG](plugins/sc-python/CHANGELOG.md) | — | Stack Python : Django / FastAPI / Flask / Celery |
 | [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) · [CHANGELOG](plugins/sc-rust/CHANGELOG.md) | — | Stack Rust : Axum / Actix-web |
 | [`sc-tiers`](plugins/sc-tiers/README.md) | [README](plugins/sc-tiers/README.md) · [CHANGELOG](plugins/sc-tiers/CHANGELOG.md) | — | SaaS tiers : Firebase, Klaviyo, GTM, Clarity, PSI |
-| [`obs`](plugins/obs/README.md) | [README](plugins/obs/README.md) · [CHANGELOG](plugins/obs/CHANGELOG.md) | — | Notes Obsidian — projets Pro, tri d'emails, assemblage d'intrants pour `writing` et `ttrpg` |
-| [`ttrpg`](plugins/ttrpg/README.md) | [README](plugins/ttrpg/README.md) · [CHANGELOG](plugins/ttrpg/CHANGELOG.md) | — | JDR solo sur domaines de jeu autonomes : fiches de personnage, prépa MJ, jeu en direct sous Claude Code |
+| [`obs`](plugins/obs/README.md) | [README](plugins/obs/README.md) · [CHANGELOG](plugins/obs/CHANGELOG.md) | — | Notes Obsidian — projets Pro, tri d'emails, organisation de l'arborescence, recherche documentaire |
 
 ## Installation
 
@@ -66,7 +64,6 @@ Par projet — `.claude/settings.json` du projet, ou via commande :
 |---|---|
 | Socle (tous projets) | `overcode` |
 | Design system / UI mobile-first | `design` |
-| Documentation ou rédaction narrative | `writing` |
 | Web JavaScript / Nuxt / Vue | `sc-js` |
 | Web PHP | `sc-php` |
 | Web Python | `sc-python` |
@@ -75,7 +72,6 @@ Par projet — `.claude/settings.json` du projet, ou via commande :
 | Jeu vidéo (contenu narratif) | `game-writer` |
 | Jeu vidéo (code Godot) | `sc-godot` |
 | Notes Obsidian | `obs` |
-| JDR solo | `ttrpg` |
 
 ## Licence
 

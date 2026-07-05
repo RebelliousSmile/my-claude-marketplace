@@ -13,12 +13,6 @@
       "version": "1.9.1"
     },
     {
-      "id": "writing",
-      "name": "writing",
-      "description": "Production éditoriale à partir d'un brief — documentation (specification, technical-document, user-guide) et craft narratif (forge, toc, write, tone-finder, persona, review, storyboard, upgrade). L'assemblage des intrants (brief, données) est délégué à obs ; le lore/règles de jeu à ttrpg. Fusion de doc-writer + rpg-writer.",
-      "version": "1.2.0"
-    },
-    {
       "id": "game-writer",
       "name": "game-writer",
       "description": "Écriture de contenu narratif pour le jeu vidéo (8-MINE) : bank d'assets, timelines Dialogic (dialogic-draft, dialogic-review). Pendant technique : sc-godot. (ex-gamedesign)",
@@ -69,14 +63,8 @@
     {
       "id": "obs",
       "name": "obs",
-      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser (tree, cache-based), filler (content reduction), and brief/data assembly for writing: brief (portable _brief/), research (data), extract-pdf (raw source ingestion, also feeds the ttrpg plugin).",
-      "version": "0.30.0"
-    },
-    {
-      "id": "ttrpg",
-      "name": "ttrpg",
-      "description": "Solo tabletop RPG toolkit on autonomous local game domains (R): pc (player-character sheets), campaign (GM prep), solo-mc (live play under Claude Code) with narrateur/oracle agents, plus lore-extract and rules-keeper (canon/mj ventilation).",
-      "version": "0.2.0"
+      "description": "Personal Obsidian notes management — Pro project lifecycle, email triage (mail), the Documents/ organiser (tree, cache-based), filler (content reduction), research (documentary research), extract-pdf (raw source ingestion).",
+      "version": "0.37.0"
     }
   ]
 }
