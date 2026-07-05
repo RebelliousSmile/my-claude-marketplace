@@ -178,6 +178,14 @@ Signaler que pour Biome, la règle native n'est pas disponible ; lint-core.mjs f
 # EXT_PATTERN dérivé des `targets` du spec d'enforcement — ne pas coder en dur.
 # Exemple si targets = [jsx, vue] (pas de vanilla) : EXT_PATTERN='\.(jsx|vue)$'
 # Exemple si targets inclut vanilla (archétype B) : EXT_PATTERN='\.(jsx|vue|js)$'
+EXT_PATTERN='\.(jsx|vue)$'  # ← remplacer par le pattern réellement dérivé des targets ci-dessus avant d'insérer ce bloc
+
+# Garde-fou : un pattern vide ferait matcher `grep -E ""` sur toutes les lignes (tous les fichiers
+# stagés lintés, faux positifs massifs) — échouer bruyamment plutôt que de silencieusement tout scanner.
+if [ -z "$EXT_PATTERN" ]; then
+  echo "[design lint js] EXT_PATTERN non défini — wiring incomplet, corriger le hook avant de committer." >&2
+  exit 1
+fi
 
 CHANGED_JS=$(git diff --cached --name-only --diff-filter=ACM | grep -E "$EXT_PATTERN")
 if [ -n "$CHANGED_JS" ]; then

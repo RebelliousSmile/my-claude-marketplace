@@ -202,9 +202,13 @@ When `tokens.json` has a `themes` overlay (§ Modes / themes), the adapter emits
 - Only overridden vars appear in a theme's block — the cascade (`:root` → `.dark`/`[data-theme]`) supplies everything else, mirroring the overlay's sparseness in `tokens.json`.
 - Because every block re-declares the **same** `--var` name, no downstream consumer (including `lint-core.mjs`) needs to know which theme is active to validate a `var(--…)` reference.
 
-## Adapter: `design/adapters/theme.css`
+## Adapter: Tailwind (`theme.css` v4 / `tailwind-tokens.cjs` v3)
 
-Tailwind v4 `@theme` block mapping tokens to Tailwind's expected namespaces (`--color-*`, `--font-*`, `--text-*`, `--spacing-*`, `--radius-*`, `--shadow-*`, `--breakpoint-*`). For projects on Tailwind v3, emit a `tailwind.config.js` `theme.extend` object instead and note the choice in `design-system.md`.
+Tailwind consumes the token contract through one of two artifacts, chosen by the project's Tailwind major version — the emission mechanism differs (a CSS `@theme` at-rule vs a JS/CommonJS partial), but both carry the same token groups and the same theme overlays from § Modes / themes. Record the choice in `design-system.md`.
+
+### Tailwind v4 — `design/adapters/theme.css`
+
+`@theme` block mapping tokens to Tailwind's expected namespaces (`--color-*`, `--font-*`, `--text-*`, `--spacing-*`, `--radius-*`, `--shadow-*`, `--breakpoint-*`). Auto-consumed by Tailwind v4 once imported — no manual wiring step.
 
 ```css
 /* GENERATED from design/tokens.json — do not edit by hand. */
@@ -216,9 +220,79 @@ Tailwind v4 `@theme` block mapping tokens to Tailwind's expected namespaces (`--
 }
 ```
 
-### Themes in Tailwind targets
+Theme overlays (§ Modes / themes) follow the same `.dark`/`[data-theme="…"]`-scoped block convention documented for `adapters/tokens.css` (§ Theme-scoped emission) — one additional block per named theme, re-declaring only the overridden vars.
 
-Theme overlays (§ Modes / themes) must be emittable from this adapter in **both** Tailwind targets: the v4 `@theme` block above, and the v3 `tailwind.config.js` `theme.extend` fallback. This reference states the requirement only — the concrete v3 emission shape (mapping `themes.*` overlays into `tailwind.config.js`, e.g. via the `darkMode` strategy or a `data-theme` variant plugin) is out of scope here and is specified in Part 3 of the master plan (#6).
+### Tailwind v3 — `design/adapters/tailwind-tokens.cjs`
+
+Tailwind v3 has no `@theme` at-rule, so the contract defines a **named, canonical artifact** for it: `design/adapters/tailwind-tokens.cjs`. This is a **partial** — a CommonJS module exporting only a `theme.extend`-shaped object — never a complete `tailwind.config.cjs` (a full drop-in config would collide with the consuming project's own `content` globs and `plugins` array). It is never named `theme.css` (that name is reserved for the v4 artifact above), and it is **never auto-consumed by Tailwind** — every v3 project must wire it in explicitly, per the two cases below.
+
+```js
+// GENERATED from design/tokens.json — do not edit by hand.
+module.exports = {
+  colors: {
+    brand: { primary: '#1f6feb' },
+    neutral: { 50: '#f7f8fa', 900: '#11151c' },
+  },
+  fontSize: {
+    body: 'clamp(1rem, 0.95rem + 0.25vw, 1.125rem)',
+  },
+  spacing: {
+    4: '1rem',
+  },
+  screens: {
+    md: '768px',
+  },
+  // Theme overlays (§ Modes / themes) re-exported under a dedicated key —
+  // same theme names as the v4 adapter, sourced from the same `themes.*`
+  // overlay in tokens.json. Emission mechanism differs; the theme set does not.
+  themes: {
+    dark: {
+      colors: {
+        semantic: { background: '#11151c', text: '#f7f8fa' },
+      },
+    },
+    grimoire: {
+      colors: {
+        brand: { primary: '#7c3aed' },
+      },
+    },
+  },
+};
+```
+
+#### Wiring
+
+- **Greenfield** (no pre-existing Tailwind config) — assign the partial directly as `theme.extend`:
+
+  ```js
+  // tailwind.config.cjs
+  module.exports = {
+    theme: { extend: require('./design/adapters/tailwind-tokens.cjs') },
+  };
+  ```
+
+- **Existing config** (e.g. Nuxt's `tailwind.config.ts`) — a **manual merge step is required**. The adapter is not auto-consumed, so it must be spread into the project's own `theme.extend` alongside whatever the project already declares:
+
+  ```ts
+  // tailwind.config.ts
+  export default {
+    theme: {
+      extend: {
+        ...require('./design/adapters/tailwind-tokens.cjs'),
+        // …the project's own pre-existing extend entries, if any
+      },
+    },
+  };
+  ```
+
+  Treat this merge as a mandatory step of any v3 diffuse/pivot flow, not an optional nicety — a partial left un-wired produces utility classes that resolve to nothing.
+
+#### Theme overlays in v3
+
+Part 1's theme overlays (§ Modes / themes) are carried by this same `.cjs` partial, under the dedicated `themes` key shown above — the v3 artifact re-exports the same theme names as the v4 adapter (`dark`, `grimoire`, …), sourced from the identical `themes.*` overlay in `tokens.json`. Only the **emission mechanism** differs between the two Tailwind targets:
+
+- Wire `darkMode: 'class'` (or `'selector'`) in the project's Tailwind config, then consume `themes.dark` (and any other named theme) via the same `.dark`/`[data-theme="…"]` CSS block convention used by `adapters/tokens.css` (§ Theme-scoped emission) — either a small static CSS partial matching the theme keys, or a Tailwind plugin that reads `themes.<name>` off this `.cjs` export and emits the scoped block at build time.
+- Non-`dark` themes (e.g. `grimoire`) keep the `[data-theme="<name>"]` selector convention, identical to v4/`tokens.css` — no v3-specific naming scheme.
 
 ## Liaison tokens canoniques ↔ manifeste composants
 

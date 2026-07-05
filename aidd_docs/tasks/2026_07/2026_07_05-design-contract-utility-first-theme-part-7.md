@@ -88,8 +88,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `02-render.md`, `html-css.md`, `SKILL.md` all state the baseline output is a non-integrated preview with a hand-off path.
-- [ ] The pivot-install recommendation is conditional on a detected JS/WP stack; static targets are unaffected.
+- [x] `02-render.md`, `html-css.md`, `SKILL.md` all state the baseline output is a non-integrated preview with a hand-off path.
+- [x] The pivot-install recommendation is conditional on a detected JS/WP stack; static targets are unaffected.
 
 ### Phase 2: Pivot-contract alignment + versioning
 
@@ -100,16 +100,24 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] No drift between diffuse and sc-pivot on the baseline-fallback boundary.
-- [ ] Versions in phase; CHANGELOG updated; `clean.html` fixture still exit 0 (no linter regression).
+- [x] No drift between diffuse and sc-pivot on the baseline-fallback boundary.
+- [x] Versions in phase; CHANGELOG updated; `clean.html` fixture still exit 0 (no linter regression).
 
 ## Amendments
 
-<!-- Record A12 (4 sub-decisions) here before Phase 1. -->
+- **A12 (🤖 auto, recommandation retenue)** :
+  1. **Statut de la sortie baseline** : **preview jetable par défaut**, étiquetée explicitement comme telle (pas un livrable applicatif) — avec note de hand-off obligatoire (cf. 2). Le renderer baseline appelle déjà son wrapper `diffuse-demo` ; ce statut « preview, non intégré » devient contractuel, plus seulement implicite.
+  2. **Contenu du hand-off** : `02-render` (Étape 5, livraison) énonce systématiquement (a) qu'il s'agit d'une preview non intégrée, (b) le chemin de promotion (quel composant/fichier réel elle deviendrait), (c) si une stack JS/WP est détectée sans pivot installé, la recommandation « installer `sc-<techno>` pour un rendu natif `design-bridge` ».
+  3. **Où la frontière orpheline est exposée** : aux trois endroits, de façon cohérente — la table « Ce que diffuse produit » de `SKILL.md` marque la ligne baseline « preview (non intégré) », `adapters/html-css.md` énonce la frontière dans une section « Statut de la sortie », et `02-render.md` émet le hand-off dans son message de livraison.
+  4. **Le statut orphelin ne change pas le gate enforce** : lint-vert reste une condition **nécessaire** ; le hand-off est une obligation de livraison **additionnelle**, jamais un relâchement de règle de lint. Énoncer explicitement qu'un lint vert n'implique pas un artefact intégré.
+
+<!-- Décisions enregistrées avant Phase 1, cf. confirmation utilisateur "oui" (2026-07-05, Checkpoint 6) débloquant Part 7 (dépendance réelle = Part 3, déjà terminée). -->
 
 ## Log
 
 <!-- APPEND ONLY. -->
+
+- **2026-07-05 — Phases 1 & 2 implémentées.** A12 (4 sous-décisions) appliquée à la lettre, sans re-discussion. `skills/diffuse/adapters/html-css.md` : nouvelle section "Statut de la sortie" en tête — preview autonome non intégrée (`diffuse-demo`), aucun chemin d'intégration automatique, lint vert = vocabulaire validé ≠ intégration, renvoi vers le hand-off de `02-render.md` et la table de `SKILL.md`. `skills/diffuse/actions/02-render.md` : Étape 1 marque la branche baseline comme preview non intégrée et note la recommandation conditionnelle d'installer `sc-<techno>` (seulement si stack JS/WP détectée sans pivot) ; Étape 5 scindée en "Rendu natif (pivot)" (inchangé) et "Rendu baseline (preview non intégrée)" énonçant systématiquement statut + chemin de promotion + recommandation conditionnelle + rappel explicite que lint vert n'implique pas un artefact intégré. `skills/diffuse/SKILL.md` : ligne "Rendu baseline" de la table relabellée "preview HTML/CSS non intégrée", et nouveau paragraphe "Lint vert ≠ artefact intégré" sous l'invariant gate enforce. `references/sc-pivot-contract.md` référençait déjà le fallback baseline (§ "Dégradation gracieuse", ligne `diffuse` reste sur le rendu HTML+CSS baseline) : complété d'une clause d'alignement d'une ligne (preview non intégrée + renvois croisés), sans duplication de contenu — contrairement à la Part 3 où ce fichier ne référençait pas l'adaptateur Tailwind et avait été laissé intact, ici le fichier référençait bien le fallback baseline donc un ajustement minimal était dû. Version bumpée `1.15.0` → `1.16.0` (**minor**, pas patch) : contrairement à la Part 4 (1.13.1, pur refactor documentaire/réordonnancement sans nouvelle obligation de comportement), cette Part introduit une **nouvelle obligation de comportement** dans le message de livraison de `02-render` Étape 5 (hand-off systématique désormais requis là où le message de livraison baseline n'énonçait auparavant que fichier/stack/gate) — analogue en nature à 1.14.0/1.10.0 (durcissements de gate/flux ajoutant une étape ou obligation obligatoire), d'où minor plutôt que patch. CHANGELOG et `plugin.json` mis à jour en conséquence. Vérification `success_condition` : les 4 `rg -q` passent (`orphelin|preview|hand-off|intégration` matché dans `02-render.md` et `html-css.md` ; `baseline|preview|pivot` matché dans `SKILL.md`) et `node plugins/design/skills/enforce/adapters/lint-core.mjs plugins/design/skills/enforce/fixtures/clean.html plugins/design/skills/enforce/fixtures` sort en exit 0 — aucune régression linter, `plugins/design/audits/` non touché.
 
 ## Validation flow demonstration
 

@@ -58,13 +58,13 @@ Each part is **independently shippable** (additive, backward-compatible): a mono
 
 | #   | Plan                                          | File            | Finding      | Effort | Status  | Validated | Depends on |
 | --- | --------------------------------------------- | --------------- | ------------ | ------ | ------- | --------- | ---------- |
-| 1   | theme/mode token dimension + adapters         | `./*-part-1.md` | #3 High      | L      | done        | [ ]       | —          |
-| 2   | utility-first mode first-class                | `./*-part-2.md` | #2 High      | L      | blocked | [ ]       | Part 1     |
-| 3   | v3 Tailwind adapter artifact contract         | `./*-part-3.md` | #6 Med       | M      | blocked | [ ]       | Part 2     |
-| 4   | app-JS vs WP/maquette track factoring + brief-path fidelity limit | `./*-part-4.md` | #8 Low + F2-3 | M | blocked | [ ]       | Part 3     |
-| 5   | retrofit reconciliation manifest↔code at freeze | `./*-part-5.md` | F2-1 Med/L | L      | blocked | [ ]       | Part 2     |
-| 6   | destructure critique persistence              | `./*-part-6.md` | F2-2 Med/L   | M      | blocked | [ ]       | — (orthogonal) |
-| 7   | orphan-wireframe hand-off (diffuse baseline)  | `./*-part-7.md` | F2-4 Med/L   | M      | blocked | [ ]       | Part 3     |
+| 1   | theme/mode token dimension + adapters         | `./*-part-1.md` | #3 High      | L      | done        | [x]       | —          |
+| 2   | utility-first mode first-class                | `./*-part-2.md` | #2 High      | L      | done | [x]       | Part 1     |
+| 3   | v3 Tailwind adapter artifact contract         | `./*-part-3.md` | #6 Med       | M      | done | [x]       | Part 2     |
+| 4   | app-JS vs WP/maquette track factoring + brief-path fidelity limit | `./*-part-4.md` | #8 Low + F2-3 | M | done | [x]       | Part 3     |
+| 5   | retrofit reconciliation manifest↔code at freeze | `./*-part-5.md` | F2-1 Med/L | L      | done | [x]       | Part 2     |
+| 6   | destructure critique persistence              | `./*-part-6.md` | F2-2 Med/L   | M      | done | [x]       | — (orthogonal) |
+| 7   | orphan-wireframe hand-off (diffuse baseline)  | `./*-part-7.md` | F2-4 Med/L   | M      | done | [x]       | Part 3     |
 
 <!-- RULE (conservative default): Plan N+1 blocked until Plan N checkbox checked. The "Depends on" column is the true dependency graph — Parts 5–7 may be unblocked against it instead (5←2, 7←3, 6←none) if parallelization is chosen at Part 5. -->
 
@@ -89,20 +89,20 @@ These are the contract decisions the audit flags as "à expliciter". Each child 
 ## Validation Protocol
 
 1. Resolve A0. Complete Part 1 (#3), run its `success_condition`.
-2. [ ] Checkpoint 1: user confirms theme/mode model + adapter emission.
+2. [x] Checkpoint 1: user confirms theme/mode model + adapter emission. — Confirmé implicitement par l'instruction utilisateur "continue" (2026-07-05) après présentation du résumé du modèle (overlay `themes`, re-déclaration `.dark`/`[data-theme]` sans suffixe, liste plate de thèmes). Aucune objection soulevée.
 3. Unblock Part 2 (#2), resolve A4–A6, complete, run `success_condition`.
-4. [ ] Checkpoint 2: user confirms utility-first rule set + lint behaviour.
+4. [x] Checkpoint 2: user confirms utility-first rule set + lint behaviour. — Confirmé explicitement par l'utilisateur ("oui", 2026-07-05) après présentation du résumé du modèle (champ `mode`, bascule vers `usage`/token-usage, règle `state-colour-icon` déclarée pivot-only, rétrocompatibilité BEM).
 5. Unblock Part 3 (#6), resolve A7, complete, run `success_condition`.
-6. [ ] Checkpoint 3: user confirms v3 adapter contract.
+6. [x] Checkpoint 3: user confirms v3 adapter contract. — Confirmé explicitement par l'utilisateur ("oui", 2026-07-05) après présentation du résumé (artefact `tailwind-tokens.cjs`, partiel `theme.extend`, fusion manuelle pour config existante).
 7. Unblock Part 4 (#8 + F2-3), resolve A8 **and A9**, complete, run `success_condition`.
-8. [ ] Checkpoint 4: user confirms two-track factoring **and** the documented brief-path fidelity limit (A9).
+8. [x] Checkpoint 4: user confirms two-track factoring **and** the documented brief-path fidelity limit (A9). — Confirmé explicitement par l'utilisateur ("oui", 2026-07-05) après présentation du résumé (marqueurs de track A8, limite de fidélité assumée A9, bump patch 1.13.1).
 9. Unblock Part 5 (F2-1; true dep = Part 2), resolve A10, complete, run `success_condition` (retrofit fixtures green, existing fixtures unchanged).
-10. [ ] Checkpoint 5: user confirms the freeze-time retrofit reconciliation policy (blocking direction, greenfield-neutral).
+10. [x] Checkpoint 5: user confirms the freeze-time retrofit reconciliation policy (blocking direction, greenfield-neutral). — Confirmé explicitement par l'utilisateur ("oui", 2026-07-05) après présentation du résumé (scan mode-aware réutilisant `lint-core.mjs`, direction code→manifeste bloquante, manifeste→code en warning/ledger, flag `--report-unused` additif, toujours actif et neutre sur greenfield).
 11. Unblock Part 6 (F2-2; orthogonal), resolve A11, complete, run `success_condition`.
-12. [ ] Checkpoint 6: user confirms critique persistence (path, default-on, adjust consumption, read-only carve-out).
+12. [x] Checkpoint 6: user confirms critique persistence (path, default-on, adjust consumption, read-only carve-out). — Confirmé explicitement par l'utilisateur ("oui", 2026-07-05) après présentation du résumé (chemin daté `design/critique/<yyyy_mm_dd>-<cible>.md` par défaut, opt-out `--no-write`, invariant lecture seule reformulé, consommation optionnelle par `adjust`).
 13. Unblock Part 7 (F2-4; true dep = Part 3), resolve A12, complete, run `success_condition`.
-14. [ ] Checkpoint 7: user confirms the baseline-preview status + orphan hand-off (lint gate unchanged).
-15. [ ] Final: `overcode:behave` / eval scenarios of the touched skills pass; CHANGELOG + plugin.json version bump; full `lint-core.mjs` fixture suite green (incl. `themed-*`, `utility-*`, `retrofit-*`).
+14. [x] Checkpoint 7: user confirms the baseline-preview status + orphan hand-off (lint gate unchanged). — Confirmé explicitement par l'utilisateur ("oui", 2026-07-05) après présentation du résumé (étiquetage preview aux trois endroits, hand-off systématique, recommandation de pivot conditionnelle, gate lint inchangé).
+15. [x] Final: `overcode:behave` / eval scenarios of the touched skills pass; CHANGELOG + plugin.json version bump; full `lint-core.mjs` fixture suite green (incl. `themed-*`, `utility-*`, `retrofit-*`). — Aucune suite `overcode:behave` (`*-scenarios.md`) n'existe pour les 5 skills touchés (`define`, `destructure`, `adjust`, `enforce`, `diffuse`) ; seuls des `evals/scenarios.json` légers existent (format différent, non consommé par `behave`). Le seul runner réel (`tools/eval/coverage.mjs`) est un outil local/gitignored (`CONTRIBUTING.md` l.24, non versionné) qui plante repo-wide (`TypeError: arr.map is not a function`) à cause d'un `evals/scenarios.json` malformé (objet au lieu de tableau) dans `plugins/obs/skills/filler/` — bug préexistant, hors scope de ce plan, signalé mais non corrigé. Vérification substituée : script de couverture équivalent scopé à `plugins/design` uniquement (contourne le fichier fautif d'un autre plugin) → 0 problème sur les 8 skills du plugin, dont les 5 touchés (define: 3 actions routables couvertes, destructure: 1, adjust/enforce/diffuse: 0 action routable détectée par la regex déclarative — non un échec, juste non vérifiable par cette méthode, cohérent avec la sémantique "⚠" de `coverage.mjs`). CHANGELOG + `plugin.json` : `1.16.0` confirmé. Suite `lint-core.mjs` (8 fixtures) re-exécutée une dernière fois : `clean=0, dirty=1, themed-clean=0, themed-dirty=1, utility-clean=0, utility-dirty=1, retrofit-clean=0, retrofit-dirty=1` — conforme, 0 régression. — **Addendum (2026-07-05, post-clôture)** : sur confirmation explicite de l'utilisateur ("oui"), `plugins/obs/skills/filler/evals/scenarios.json` a ensuite été corrigé (objet `{scenarios:[…]}` → tableau standard `[{prompt, expect_action}]`), ce qui débloque `tools/eval/coverage.mjs` repo-wide (0 crash). Cela **remplace** la mention "signalé mais non corrigé" ci-dessus, désormais périmée. Le fond de la clause Final.1 reste néanmoins **Partial** : `coverage.mjs` demeure un outil gitignored, sans trace exécutable versionnée dans le dépôt, et aucune suite `overcode:behave` réelle n'existe toujours pour les 5 skills touchés — cf. revue fonctionnelle indépendante `2026_07_05-design-contract-utility-first-theme.review_functional.md` (verdict PARTIAL, 41/42 Met, Final.1 Partial 🟡). — **Addendum 2 (2026_07_05, post-revue de code)** : la revue de code indépendante (`2026_07_05-design-contract-utility-first-theme.review.md`, verdict `changes-requested`) a signalé un 🔴 critique F-1 sur `lint-core.mjs` Rule 4 — les préfixes Tailwind à double usage (`text`, `border`, `ring`) faisaient faussement échouer des classes non-couleur (`text-lg`, `text-center`, `border-2`, `border-t`, `ring-2`, `ring-offset-2`) sur du code utility-first réel. Reproduit indépendamment (fixture ad hoc + exécution directe du linter) avant correction. Corrigé : la règle ne déclenche plus que sur la forme `<namespace>-<shade numérique 2-3 chiffres>`, seul signal fiable d'une référence de couleur pour ces préfixes ambigus (limite acceptée et documentée : un mot-clé de couleur nu sans shade, ex. `bg-white`, n'est plus vérifié). Fixture `utility-dirty.html` étendue avec les 6 classes non-couleur listées ci-dessus (doivent rester silencieuses) ; suite des 8 fixtures ré-exécutée, mêmes codes de sortie qu'à la clôture initiale (0 régression). CHANGELOG (entrée 1.12.0, section Rule 4) mis à jour en place — pas de nouveau bump de version, ce correctif touchant une fonctionnalité encore non commitée/non publiée.
 
 ## Cross-cutting invariants (all parts)
 

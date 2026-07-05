@@ -9,7 +9,7 @@ Trancher les incohérences entre sources de matière malléable (maquettes multi
 | Source | Exemple de signal |
 |--------|-------------------|
 | Sortie de `define` (matière malléable) | `design/design-system.md` (status: brouillon) + `design/tokens.json` (travail) |
-| Pistes de `destructure` | Section "Pistes et inspirations" du rapport de challenge |
+| Pistes de `destructure` | Section "Pistes et inspirations" du rapport de challenge courant, ou rapport persisté sous `design/critique/` (optionnel, non-bloquant) |
 | Maquettes multiples | "J'ai 3 directions issues des maquettes Figma" |
 | Re-figeage delta | "On a décidé de changer la palette secondaire suite au destructure" |
 
@@ -26,6 +26,8 @@ Identifier et lire toutes les sources présentes :
 - Maquettes ou références additionnelles mentionnées en contexte
 
 En mode re-figeage : lire aussi `design/components.json` existant pour n'opérer que sur le delta.
+
+**Entrée optionnelle — critique persistée.** Si `design/critique/` existe, lire le rapport le plus récent (nom de fichier daté `<yyyy_mm_dd>-<cible>.md` — trier par date, prendre le dernier) comme entrée additionnelle au même titre que les pistes de la conversation courante ; reprendre chaque piste retenue avec son étiquette de coût contrat (`rentre dans le contrat` / `demande un re-figeage`) telle qu'émise par `destructure`. Absence de fichier : non-bloquant, poursuivre sans.
 
 ### Étape 2 — Inventaire des conflits
 

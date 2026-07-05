@@ -1,5 +1,10 @@
 # WordPress FSE — pièges partagés
 
+Track: WP-maquette exclusivement. Référencé uniquement depuis le track WP de `enforce` (§ Track:
+WP-maquette de `enforce/actions/03-lint-instances.md`) et de `diffuse`. Un projet app-JS-modern
+n'a jamais besoin d'ouvrir ce fichier — ces pièges sont spécifiques à WordPress FSE et n'ont pas
+d'équivalent SPA/from-code.
+
 Référence partagée entre `enforce` et `diffuse`. Ces pièges s'appliquent à tout projet WordPress FSE utilisant le design system.
 
 ---

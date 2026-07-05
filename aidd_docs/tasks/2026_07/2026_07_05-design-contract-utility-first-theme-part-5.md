@@ -95,8 +95,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `02-freeze.md` documents an Étape 2bis reconciling the manifest against real code, mode-aware, with the A10 policy.
-- [ ] The freeze is stated as invalid while a blocking divergence stands; greenfield behaviour (empty scan → proceed) is documented.
+- [x] `02-freeze.md` documents an Étape 2bis reconciling the manifest against real code, mode-aware, with the A10 policy.
+- [x] The freeze is stated as invalid while a blocking divergence stands; greenfield behaviour (empty scan → proceed) is documented.
 
 ### Phase 2: Scanner reuse + fixtures
 
@@ -110,8 +110,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `retrofit-clean.html` → exit 0; `retrofit-dirty.html` → exit 1.
-- [ ] All pre-existing fixtures still pass; `--report-unused` (if added) defaults off and does not affect them.
+- [x] `retrofit-clean.html` → exit 0; `retrofit-dirty.html` → exit 1.
+- [x] All pre-existing fixtures still pass; `--report-unused` (if added) defaults off and does not affect them.
 
 ### Phase 3: Schema note + versioning + changelog
 
@@ -122,16 +122,24 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `manifest-schema.md` states the layer-2 ↔ code concordance as a freeze precondition (mode-aware).
-- [ ] Versions in phase; CHANGELOG updated.
+- [x] `manifest-schema.md` states the layer-2 ↔ code concordance as a freeze precondition (mode-aware).
+- [x] Versions in phase; CHANGELOG updated.
 
 ## Amendments
 
-<!-- Record A10 (4 sub-decisions) here before Phase 1. -->
+- **A10 (🤖 auto, recommandation retenue — 4 sous-décisions)** :
+  1. **Scan du code consommateur** : **oui** — ajout d'une sous-étape de réconciliation à `02-freeze`, réutilisant `lint-core.mjs` comme oracle de scan (pas de nouveau scanner écrit).
+  2. **Portée du scan** : dérivée du `mode` du contrat (Part 2), jamais une liste codée en dur. Mode `bem` → scan des attributs de classe dans `**/*.{html,vue,jsx,tsx}` vs vocabulaire `components`/`elements`/`modifiers` ; mode `utility-first` → scan des utilitaires couleur / hex bruts vs les namespaces `usage` déclarés.
+  3. **Politique de divergence** : direction **code→manifeste** (classe/utility en code réel absente du manifeste figé) = **bloquante** (interdit le figeage). Direction **manifeste→code** (entrée manifeste jamais utilisée en code réel) = **warning + entrée de ledger optionnelle**, jamais bloquante (un composant peut légitimement être déclaré avant son premier usage). Aucune auto-mutation silencieuse du manifeste dans les deux sens.
+  4. **Détection retrofit** : **toujours actif** (always-on), auto-neutralisant sur greenfield (scan vide → aucune divergence → figeage procède) — pas de flag à retenir/oublier.
+
+<!-- Décisions enregistrées avant Phase 1, cf. confirmation utilisateur "oui" (2026-07-05, Checkpoint 4) débloquant Part 5 : recommandations du plan retenues telles quelles, cohérent avec le traitement des Parts 1-4. -->
 
 ## Log
 
 <!-- APPEND ONLY. -->
+
+- **2026-07-05** — Part 5 implémentée (Phases 1-3, sans commit/push). `02-freeze.md` : nouvelle étape top-level "Étape 2bis — Réconciliation avec le code réel (retrofit)" (mode-aware, deux directions de divergence, interdiction de figer sur divergence bloquante, always-on/greenfield-neutral) + ligne ajoutée au "Test de validité". `lint-core.mjs` : commentaire de réutilisation par le figeage + mode additif `--report-unused` (defaut off, direction manifeste→code, jamais bloquant). Fixtures créées : `enforce/fixtures/retrofit/{tokens,components}.json`, `enforce/fixtures/retrofit-{clean,dirty}.html`. `manifest-schema.md` : nouvel Invariant 7 (concordance couche 2 ↔ code réel). `plugin.json` 1.13.1 → 1.14.0 (minor) + entrée CHANGELOG. `success_condition` vérifié : `rg` OK, `retrofit-clean.html` exit 0, `retrofit-dirty.html` exit 1 ; non-régression confirmée sur les 6 fixtures pré-existantes (clean/dirty/themed-clean/themed-dirty/utility-clean/utility-dirty).
 
 ## Validation flow demonstration
 

@@ -82,8 +82,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] token-schema.md names a v3 adapter artifact that is not `theme.css`.
-- [ ] v4 `@theme`/`theme.css` path preserved.
+- [x] token-schema.md names a v3 adapter artifact that is not `theme.css`.
+- [x] v4 `@theme`/`theme.css` path preserved.
 
 ### Phase 2: Wiring + merge step + theme overlays
 
@@ -95,8 +95,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] A merge step for existing configs is documented with an example.
-- [ ] diffuse + sc-pivot reference the same artifact name (no drift).
+- [x] A merge step for existing configs is documented with an example.
+- [x] diffuse + sc-pivot reference the same artifact name (no drift) — verified by grep that none of the three files reference the Tailwind adapter at all (they reference `adapters/tokens.css` only), so left untouched; no drift possible.
 
 ### Phase 3: Versioning + changelog
 
@@ -106,15 +106,22 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] Versions in phase; CHANGELOG updated; `clean.html` fixture still exit 0 (no linter regression).
+- [x] Versions in phase; CHANGELOG updated; `clean.html` fixture still exit 0 (no linter regression).
 
 ## Amendments
 
-<!-- Record A7 here before Phase 1. -->
+- **A7 (🤖 auto, recommandation retenue)** :
+  1. **Nom canonique** : `design/adapters/tailwind-tokens.cjs` — un **partiel** exportant un objet `theme.extend` (pas un `tailwind.config.cjs` complet, qui entrerait en collision avec le `content`/`plugins` propre au projet consommateur). Jamais nommé `theme.css` (réservé à l'artefact v4).
+  2. **Câblage** : greenfield → le partiel est directement assigné à `theme.extend` de la config Tailwind du projet. Config existante (Nuxt) → **étape de fusion manuelle obligatoire** : `theme: { extend: { ...require('./design/adapters/tailwind-tokens.cjs') } }` dans `tailwind.config.ts` — l'adaptateur n'est jamais auto-consommé par Tailwind, documenté explicitement comme non automatique.
+  3. **Overlays de thème (Part 1)** : en v3, `darkMode: 'class'` (ou `'selector'`) dans la config + le même mécanisme de bloc CSS `.dark`/`[data-theme="…"]` que v4, réexporté par le partiel sous une clé dédiée (ex. `darkTheme`/`themes` selon la structure retenue) — le contrat v3 porte les mêmes thèmes que v4, seul le mécanisme d'émission (JS export vs `@theme` CSS) diffère.
+
+<!-- Décisions enregistrées avant Phase 1, cf. confirmation utilisateur "oui" (2026-07-05, Checkpoint 2) débloquant Part 3 : recommandations du plan retenues telles quelles, cohérent avec le traitement de Part 1/Part 2. -->
 
 ## Log
 
 <!-- APPEND ONLY. -->
+
+- 2026-07-05 : Part 3 implémentée (Phases 1-3). `token-schema.md` § adapters restructurée en v4 (`theme.css`, inchangé) / v3 (`tailwind-tokens.cjs`, nouveau, nommé per A7 — partiel `theme.extend`, jamais auto-consommé), câblage greenfield + fusion manuelle obligatoire (exemple `tailwind.config.ts`) et overlays de thème Part 1 portés via clé `themes` dédiée documentés. Grep de contrôle sur `diffuse/adapters/html-css.md`, `diffuse/SKILL.md`, `references/sc-pivot-contract.md` : aucun ne référence l'adaptateur Tailwind (seulement `adapters/tokens.css`) → laissés intacts, aucune dérive à corriger. `plugin.json` 1.12.0 → 1.13.0 (minor), entrée CHANGELOG ajoutée. `success_condition` vérifié : les trois vérifications passent (named v3 artifact + merge step présents, `theme.css` toujours documenté, `clean.html` exit 0).
 
 ## Validation flow demonstration
 

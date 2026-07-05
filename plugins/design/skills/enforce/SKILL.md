@@ -56,6 +56,19 @@ enforce
 
 Le **design garde le QUOI** (contrat = autorité) ; le **sc-<techno> fait le COMMENT** (linter réel, wiring natif).
 
+## Routage à deux tracks
+
+Le contrat est stack-agnostique, mais la **réalisation** de `03-lint-instances` et `05-fidelity-gate`
+diverge selon la stack du projet consommateur. Deux tracks, à identifier avant de dérouler le flux :
+
+| Track | Terrain | Ce qui s'applique |
+|-------|---------|---------------------|
+| **app-JS-modern** (SPA / from-code) | Vue/React/Tailwind, code source versionné, pas de contenu en DB | 01/02/04 (track-agnostiques) · 03 § Track: app-JS-modern (file-lint) · 05 *seulement si* une maquette de référence externe existe — sinon vocabulaire + bonnes pratiques seules (cf. `05-fidelity-gate.md § Chemin construction-depuis-brief`) |
+| **WP/maquette** | WordPress FSE, contenu en DB, réconciliation depuis une maquette | 01/02/04 (track-agnostiques) · 03 § Track: WP-maquette (`wp post get`) · 05 pleine forme (oracle de fidélité) · `agents/copycat.md` |
+
+01, 02 et 04 sont communs aux deux tracks (baseline du linter, câblage des gates, pivot langage).
+Seuls 03 et 05 ont un contenu track-spécifique — voir leurs sections `## Track: …` respectives.
+
 ## Flux d'exécution
 
 ```
@@ -78,6 +91,20 @@ Le **design garde le QUOI** (contrat = autorité) ; le **sc-<techno> fait le COM
 | **pre-commit** | git commit | commit refusé |
 
 Voir `${CLAUDE_PLUGIN_ROOT}/skills/enforce/references/gate-wiring.md` pour le câblage détaillé.
+
+## Deux modes d'enforcement de vocabulaire : BEM et utility-first
+
+Le lint vocabulaire (les 4 gates) n'a pas une seule forme. `components.json § mode` (`bem` | `utility-first`, cf. `adjust/references/manifest-schema.md`) détermine ce que `lint-core.mjs` vérifie réellement, **et ce n'est pas un mode dégradé du pivot** — les deux sont de première classe dans le baseline :
+
+| | Mode `bem` (défaut/détecté) | Mode `utility-first` |
+|---|---|---|
+| Vocabulaire fermé porte sur | noms de classe BEM (`.base`/`.elements`/`.modifiers`) | usage de tokens (namespaces de couleur autorisés, raw-hex interdit — bloc `usage` du manifeste) |
+| Cible typique | wireframes HTML, templates WP FSE | Tailwind/Vue/React (aucune classe BEM dans le code) |
+| Rule class-vocab | s'exécute | **jamais exécutée** (gate explicite — évite le faux "0 hit" vacuité, finding #2) |
+| Rules raw-hex / namespace | inertes (`usage` absent en général) | s'exécutent si `usage` déclaré |
+| Règle `state = couleur + icône` | — | **déclarée** dans `usage.rules[]`, enforcement `pivot-only` (AST/ESLint côté `sc-js:design-bridge`) |
+
+Un projet ne choisit pas entre les deux modes en abandonnant le baseline pour le pivot : le baseline enforce déjà ce qu'un string-scanner peut vérifier sans faux positif dans **les deux** modes ; seule la règle sémantique `state = couleur + icône` (co-occurrence, hors de portée d'un scanner sans AST) est pivot-only, et sa spec voyage jusqu'au pivot via `references/sc-pivot-contract.md` au lieu d'être réinventée côté `sc-js`.
 
 ## Deux natures de gate : vocabulaire + fidélité
 

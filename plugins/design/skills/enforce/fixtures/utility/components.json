@@ -1,0 +1,16 @@
+{
+  "$schema": "design/references/manifest-schema#",
+  "$version": "1.0.0",
+  "mode": "utility-first",
+  "usage": {
+    "rawHexForbidden": true,
+    "colorUtilityPrefixes": ["bg", "text", "border", "ring"],
+    "rules": [
+      {
+        "id": "state-colour-icon",
+        "description": "Un badge d'état (success/warning/error/info) doit porter à la fois un token couleur ET une icône — jamais la couleur seule. Co-occurrence sémantique non vérifiable par un string-scanner : enforcement pivot-only (ESLint/AST côté sc-js:design-bridge).",
+        "enforcement": "pivot-only"
+      }
+    ]
+  }
+}

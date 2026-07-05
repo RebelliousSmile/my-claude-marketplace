@@ -90,8 +90,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `01-challenge.md` writes the report by default to a canonical path, with an opt-out documented.
-- [ ] `SKILL.md` reconciles "lecture seule" with the critique-report carve-out (contract/source still never edited).
+- [x] `01-challenge.md` writes the report by default to a canonical path, with an opt-out documented.
+- [x] `SKILL.md` reconciles "lecture seule" with the critique-report carve-out (contract/source still never edited).
 
 ### Phase 2: Consumption by adjust + registration + versioning
 
@@ -105,16 +105,24 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `adjust/01-arbitrate.md` reads the persisted critique as optional (non-blocking) input.
-- [ ] Critique path registered as non-contract; versions in phase; CHANGELOG updated.
+- [x] `adjust/01-arbitrate.md` reads the persisted critique as optional (non-blocking) input.
+- [x] Critique path registered as non-contract; versions in phase; CHANGELOG updated.
 
 ## Amendments
 
-<!-- Record A11 (4 sub-decisions) here before Phase 1. -->
+- **A11 (🤖 auto, recommandation retenue)** :
+  1. **Emplacement + nommage canonique** : `design/critique/<yyyy_mm_dd>-<cible>.md` (historique daté, un fichier par exécution) — l'historique est la valeur : une critique est une divergence figée dans le temps, l'écraser détruirait la trace même que le finding cherche à préserver. L'ancien chemin `design/destructure-report.md` reste un **alias accepté** pour rétrocompatibilité.
+  2. **Défaut vs opt-in** : **défaut = écriture systématique** (l'étape terminale du process écrit le rapport par défaut) ; un opt-out explicite (`--no-write` / "ne sauvegarde pas") désactive l'écriture. L'ancien comportement (`si demandé`) est inversé car le finding constate justement que le défaut éphémère perd l'artefact.
+  3. **Réconciliation lecture seule** : « lecture seule absolue » est reformulé pour signifier *destructure n'édite jamais le contrat gelé (`tokens.json`, `components.json`, `design-system.md`) ni le code source* — mais **peut** écrire son propre rapport de critique sous un chemin dédié, non-contractuel. Carve-out explicite dans `SKILL.md` et dans les Outputs/Test de `01-challenge.md`.
+  4. **Consommation par adjust** : `adjust/01-arbitrate` lit la critique la plus récente (si présente) comme **entrée optionnelle et non-bloquante** du brief d'arbitrage ; chaque piste retenue est reprise avec son étiquette de coût contrat ("rentre dans le contrat" / "demande un re-figeage") déjà émise par destructure. Absence de critique = non-bloquant.
+
+<!-- Décisions enregistrées avant Phase 1, cf. confirmation utilisateur "oui" (2026-07-05, Checkpoint 5) débloquant Part 6 (dépendance orthogonale — aucune Part antérieure n'était structurellement requise, mais la séquence Checkpoint reste respectée). -->
 
 ## Log
 
 <!-- APPEND ONLY. -->
+
+- **2026-07-05** — Part 6 implémentée (Phases 1-2, sans commit/push), A11 (4 sous-décisions) appliquées telles que tranchées dans Amendments. Créé `skills/destructure/references/critique-report-template.md` (squelette : score de distinction, cible & mode, mesures, critique par lentille, pistes avec coût contrat, verdict). `01-challenge.md` : étape 7 « écrire le rapport (par défaut) » ajoutée au Process, Outputs reformulés — écriture par défaut sous `design/critique/<yyyy_mm_dd>-<cible>.md` (historique, jamais d'écrasement), `design/destructure-report.md` redevenu alias de lecture rétrocompatible, opt-out explicite (`--no-write` / "ne sauvegarde pas") documenté, Test étendu. `SKILL.md` : description + bullet "lecture seule" reformulés — l'invariant ne porte que sur le contrat gelé (`tokens.json`/`components.json`/`design-system.md`) et le code source, jamais sur le rapport de critique lui-même ; référence au template ajoutée. `adjust/01-arbitrate.md` : Étape 1 augmentée d'une entrée optionnelle et non-bloquante — lecture du rapport de critique persisté le plus récent sous `design/critique/`, reprise des pistes retenues avec leur étiquette de coût contrat ; absence de fichier non-bloquante. `references/design-system-contract.md` : `design/critique/` ajouté au Project layout et déclaré explicitement non-contractuel (informationnel, non versionné) ; Consumption rules de `destructure` reformulées en cohérence. `plugin.json` 1.14.0 → 1.15.0 (minor) + entrée CHANGELOG. `success_condition` vérifié : les 4 `rg -q` du frontmatter passent (destructure-report|critique dans 01-challenge.md et 01-arbitrate.md, par défaut|default dans 01-challenge.md, lecture seule dans SKILL.md).
 
 ## Validation flow demonstration
 

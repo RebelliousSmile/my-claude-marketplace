@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Fixture retrofit dirty</title></head>
+<body>
+  <!-- Markup pré-existant (retrofit) : ce fichier a été écrit avant le figeage du contrat, et
+       porte une classe legacy que le manifeste "retrofit" tout juste figé n'a jamais capturée —
+       le drift code → manifeste que l'Étape 2bis doit bloquer. -->
+  <article class="card">
+    <div class="card__body">
+      <h2 class="card__title">Titre de la carte</h2>
+      <!-- ERROR: card__legacy-note n'existe pas dans le manifeste figé (drift code→manifeste,
+           bloquant par politique A10.3) -->
+      <p class="card__legacy-note">Note historique non déclarée au figeage</p>
+    </div>
+  </article>
+</body>
+</html>

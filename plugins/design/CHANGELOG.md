@@ -1,5 +1,160 @@
 # Changelog — design
 
+## [1.16.0] — 2026-07-05
+
+Minor — **le rendu baseline de `diffuse` est contractuellement une preview non intégrée, jamais un livrable implicite** — quand aucun pivot `sc-*:design-bridge` n'est détecté, `02-render` retombait sur l'adaptateur HTML/CSS baseline sans jamais énoncer que ce rendu est un artefact isolé, sans chemin d'intégration vers le vrai composant applicatif (Vue/React/WP) — un lint vert le faisait passer pour « livré » alors que personne ne le rebranchait dans l'app, 2nd-audit #4 (Med/Large). 1.16.0 rend ce statut et son hand-off **obligatoires** dans le message de livraison, sans jamais relâcher le gate enforce.
+
+### Modifié — `skills/diffuse/adapters/html-css.md`
+
+- Nouvelle section **"Statut de la sortie"** en tête : le rendu de cet adaptateur est une **preview autonome, non intégrée** (wrapper `diffuse-demo`), pas un composant applicatif ; aucun chemin d'intégration automatique vers le code réel ; un lint vert valide le vocabulaire, jamais l'intégration ; renvoi vers le hand-off de `02-render.md` Étape 5 et vers la table de `SKILL.md`.
+
+### Modifié — `skills/diffuse/actions/02-render.md`
+
+- **Étape 1** : quand la branche baseline est retenue, le rendu est explicitement marqué **preview non intégrée** ; si une stack JS/WP est détectée sans le `sc-<techno>` correspondant installé, recommandation conditionnelle notée dès cette étape (« installer `sc-<techno>` pour un rendu natif ») ; sur cible statique/stack non identifiée, pas de recommandation de pivot.
+- **Étape 5 (Livraison)** scindée en deux messages : **Rendu natif (pivot)** (inchangé) et **Rendu baseline (preview non intégrée)** — énonce systématiquement (a) le statut preview non intégrée, (b) le chemin de promotion (quel composant/fichier réel elle deviendrait), (c) la recommandation conditionnelle d'installer `sc-<techno>` si une stack JS/WP est détectée sans pivot, et rappelle explicitement qu'un **lint vert n'implique pas un artefact intégré** — le hand-off est une obligation additionnelle, jamais un relâchement du gate.
+
+### Modifié — `skills/diffuse/SKILL.md`
+
+- Table "Ce que diffuse produit" : ligne **Rendu baseline** relabellée **"preview HTML/CSS non intégrée"**, renvoi vers `adapters/html-css.md § Statut de la sortie`.
+- Section "Invariant critique : gate enforce" : nouveau paragraphe **"Lint vert ≠ artefact intégré"** — le rendu baseline reste une preview non intégrée même en gate vert ; le hand-off de `02-render` Étape 5 est une obligation de livraison additionnelle, jamais une relaxation du gate.
+
+### Modifié — `references/sc-pivot-contract.md`
+
+- Section "Dégradation gracieuse" : la ligne existante sur le fallback baseline de `diffuse` est complétée d'une clause d'alignement (preview non intégrée, renvoi vers `02-render.md § Étape 5` et `adapters/html-css.md § Statut de la sortie`) — pas de duplication du contenu, seulement la frontière.
+
+## [1.15.0] — 2026-07-05
+
+Minor — **persistance par défaut de la critique `destructure`** — `destructure/SKILL.md` et `actions/01-challenge.md` faisaient de la persistance du rapport un cas opt-in (« si demandé ») : à la fin de session ou après compaction de contexte, la critique multi-lentille et ses pistes contrastées disparaissaient sans laisser de trace exploitable par un `adjust` ultérieur — 2nd-audit #2 (Med/Large). 1.15.0 rend l'écriture **par défaut**, sous un chemin historique daté, sans jamais toucher au contrat gelé ni au code source, et branche la lecture optionnelle côté `adjust`.
+
+### Ajouté — `skills/destructure/references/critique-report-template.md`
+
+- Squelette canonique du rapport (score de distinction, cible & mode, mesures, critique par lentille, pistes avec coût contrat, verdict), pour que toute critique persistée soit structurée uniformément et repérable par `adjust`.
+
+### Modifié — `skills/destructure/actions/01-challenge.md`
+
+- Process : nouvelle étape terminale « Écrire le rapport (par défaut) » sous `design/critique/<yyyy_mm_dd>-<cible>.md`.
+- Outputs : écriture **par défaut** sur le chemin canonique daté (historique, jamais d'écrasement), `<cible>` en slug ; `design/destructure-report.md` redevient un alias accepté en lecture, plus le chemin d'écriture ; opt-out explicite documenté (`--no-write` / « ne sauvegarde pas ») ; rappel que cette écriture ne contrevient pas à la lecture seule sur le contrat.
+- Test : vérifie l'écriture par défaut (ou l'absence d'écriture sur opt-out) en plus des critères déjà en place.
+
+### Modifié — `skills/destructure/SKILL.md`
+
+- Description et corps reformulés : « lecture seule » s'entend désormais explicitement comme *n'édite jamais le contrat gelé (`tokens.json`/`components.json`/`design-system.md`) ni le code source* — carve-out explicite pour la persistance de son propre rapport sous `design/critique/`.
+- Référence ajoutée vers `critique-report-template.md`.
+
+### Modifié — `skills/adjust/actions/01-arbitrate.md`
+
+- Étape 1 : nouvelle entrée optionnelle et non-bloquante — lit le rapport de critique persisté le plus récent sous `design/critique/` (absence de fichier : non-bloquant) et reprend chaque piste retenue avec son étiquette de coût contrat (`rentre dans le contrat` / `demande un re-figeage`).
+
+### Modifié — `references/design-system-contract.md`
+
+- `design/critique/` ajouté au Project layout et déclaré explicitement **non-contractuel** (informationnel, jamais versionné avec `$version`) ; Consumption rules reformulées pour `destructure` (lecture seule sur le contrat et le code, persistance de son propre rapport).
+
+## [1.14.0] — 2026-07-05
+
+Minor — **réconciliation manifeste ↔ code réel au figeage (cas retrofit)** — `adjust/02-freeze.md` réconciliait `components.json` contre la prose de `design-system.md` (couche 2 ↔ couche 3) mais jamais contre les classes/utilitaires **réellement présents** dans le code déjà écrit d'un projet retrofit : un manifeste cohérent avec la charte pouvait diverger du code réel sans que rien ne le signale avant `enforce/03-lint-instances`, bien après le figeage — 2nd-audit #1 (Med/Large). 1.14.0 ajoute une étape de réconciliation mode-aware au figeage, réutilisant `lint-core.mjs` comme oracle unique de scan (aucun nouveau scanner écrit), avec une politique de divergence asymétrique par direction (A10) : additif, aucune régression sur les fixtures existantes.
+
+### Ajouté — `skills/adjust/actions/02-freeze.md`
+
+- Nouvelle étape top-level **"Étape 2bis — Réconciliation avec le code réel (retrofit)"**, entre l'écriture du manifeste (Étape 2) et le figeage (Étape 3) : scan mode-aware (glob + jeu de règles dérivés de `mode`, jamais codés en dur — `bem` → vocabulaire de classes ; `utility-first` → namespaces `usage`), réutilisation de `lint-core.mjs` comme oracle, classification des divergences par direction (code→manifeste = bloquant ; manifeste→code = warning + ledger optionnel, jamais bloquant), interdiction de figer tant qu'une divergence bloquante subsiste, comportement always-on/neutre en greenfield documenté (A10).
+- Ligne de réconciliation ajoutée à la checklist **"Test de validité"**.
+
+### Ajouté — `skills/enforce/adapters/lint-core.mjs`
+
+- Commentaire d'en-tête documentant que ce même scanner est invoqué tel quel par l'étape de réconciliation du figeage (`adjust/02-freeze.md § Étape 2bis`) — source unique de vérité "code vs contrat", aucune duplication de scanner.
+- Mode additif `--report-unused` (flag, défaut off) : liste les entrées du manifeste (`components.*.base`/`.elements`/`.modifiers`) sans occurrence littérale dans le fichier scanné — réalise la direction **manifeste→code** de la réconciliation (A10.3). Purement informatif (sortie `UNUSED …`), n'ajoute jamais à `errors`/`warnings`, n'affecte jamais le code de sortie ; heuristique bornée aux occurrences de chaînes littérales (une classe assemblée dynamiquement en code — `` `btn--${variant}` ``, `:class="…"` — donne un faux "inutilisé" documenté, raison pour laquelle cette direction reste warning/ledger et jamais bloquante).
+
+### Ajouté — `skills/enforce/fixtures/retrofit/`, `skills/enforce/fixtures/retrofit-{clean,dirty}.html`
+
+- Fixture `tokens.json` + `components.json` (mode `bem`) représentant un manifeste tout juste figé pour un projet qui a déjà du markup (composants `btn`/`card` utilisés par le code existant ; `nav` déclaré en avance de son premier usage — cas manifeste→code non bloquant, démontré par `--report-unused`).
+- `retrofit-clean.html` (markup préexistant dont chaque classe ∈ le manifeste figé → exit 0) et `retrofit-dirty.html` (markup préexistant portant une classe `card__legacy-note` absente du manifeste → exit 1, drift code→manifeste bloquant).
+
+### Modifié — `skills/adjust/references/manifest-schema.md`
+
+- Nouvel **Invariant 7 — "Concordance couche 2 ↔ code réel (retrofit)"**, en complément de l'Invariant 3 (couche 2 ↔ couche 3) : précondition de figeage mode-aware, portée par `adjust/02-freeze.md § Étape 2bis`, always-on/neutre en greenfield, politique de divergence par direction identique à celle documentée dans `02-freeze.md`.
+
+## [1.13.1] — 2026-07-05
+
+Patch — **factorisation en deux tracks (app-JS-modern vs WP/maquette) + limite de fidélité brief-path documentée** — l'ADN WordPress/maquette (`wp post get`, oracle `measure.py` par breakpoint, copycat, BEM) dominait la surface de `enforce`/`copycat`/`wordpress-pitfalls`, masquant le chemin SPA/from-code bien qu'il fût correctement contournable (#8) ; par ailleurs, l'absence de gate de fidélité sur le chemin `define/03-construct` (construction depuis un brief, aucun visuel de référence) n'était nommée nulle part comme une limite assumée (2nd-audit #3). 1.13.1 est un pur refactor documentaire/architectural — aucun changement de comportement, `lint-core.mjs` inchangé : marqueurs de track par action, in-place (A8, option 1 — pas de `references/tracks/*.md`), et sous-section explicite de la limite brief-path dans `05-fidelity-gate.md` (A9, option 1).
+
+### Modifié — `skills/enforce/SKILL.md`
+
+- Nouvelle section "Routage à deux tracks" en tête du flux d'exécution : tableau `app-JS-modern` vs `WP/maquette`, quelles actions (01/02/04 communes, 03/05 track-spécifiques) s'appliquent à chaque track.
+
+### Modifié — `skills/enforce/actions/03-lint-instances.md`
+
+- Préambule de routage ajouté en tête ("Track: app-JS-modern" / "Track: WP-maquette").
+- Section "Approche selon la stack" scindée en deux titres `## Track: …` : `## Track: app-JS-modern` (flux file-lint — utility-first + autres stacks non-WP, servi en premier/first-class) et `## Track: WP-maquette` (flux DB-lint `wp post get`, anciennement en tête). Aucun contenu supprimé, seulement réordonné et titré.
+
+### Modifié — `skills/enforce/actions/05-fidelity-gate.md`
+
+- Préambule de routage : scope à la track WP/maquette (oracle maquette-vs-rendu par nature) + note app-JS-modern (l'oracle s'applique identiquement dès qu'une maquette externe existe, quelle que soit la stack).
+- Nouvelle sous-section **"Chemin construction-depuis-brief — pas de gate de fidélité"** (A9, 2nd-audit #3) : déclare que sans rendu de référence externe (chemin `define/03-construct`), l'oracle ne s'applique pas *par nature* ; profil de gate = vocabulaire (`lint-core.mjs`) + bonnes pratiques visuelles uniquement ; limite assumée et nommée, pas un gap silencieux ; renvoi croisé vers `define/actions/03-construct.md` ; option de gate de substitution (A9 option 2) notée comme piste de suivi non construite.
+
+### Modifié — `skills/define/actions/03-construct.md`
+
+- Nouvelle section "En aval" (une ligne) : une construction depuis brief n'a pas de visuel de référence, donc pas de gate de fidélité en aval (vocabulaire + bonnes pratiques seulement) ; renvoi vers `05-fidelity-gate.md § Chemin construction-depuis-brief`.
+
+### Modifié — `agents/copycat.md`
+
+- Nouvelle section "Track boundary" : copycat est l'opérateur de la track WP/maquette (par nature — il reconcilie une page **contre une maquette**), s'applique à toute stack qui a une maquette de référence, mais pas à une extraction SPA pure depuis code ni à une construction depuis brief (aucune maquette à mesurer).
+
+### Modifié — `references/wordpress-pitfalls.md`
+
+- En-tête de scope de track : fichier explicitement WP-track-exclusif, référencé uniquement depuis le track WP de `enforce`/`diffuse` — un projet app-JS-modern n'a jamais besoin de l'ouvrir.
+
+## [1.13.0] — 2026-07-05
+
+Minor — **artefact adapter Tailwind v3 nommé explicitement dans le contrat** — `token-schema.md` était biaisé v4 (`@theme`) ; v3 n'obtenait qu'une vague instruction "émettre un `theme.extend`" sans nom d'artefact, ce qui a conduit un auditeur à inventer hors-contrat `adapters/tailwind-theme.js`, sans étape de fusion documentée pour une config existante (Nuxt) — finding #6 (Medium). 1.13.0 nomme l'artefact v3 canonique, documente son câblage (greenfield vs fusion manuelle obligatoire) et la manière dont les overlays de thème (Part 1) y sont portés, additif et rétrocompatible : l'artefact v4 `theme.css` est inchangé.
+
+### Ajouté — `references/token-schema.md`
+
+- Section `## Adapter: Tailwind (theme.css v4 / tailwind-tokens.cjs v3)` restructurée en deux sous-sections : **v4** (`design/adapters/theme.css`, bloc `@theme`, inchangé, auto-consommé par Tailwind) et **v3** (`design/adapters/tailwind-tokens.cjs`, nouveau, artefact **nommé et canonique** — cf. Amendment A7 de la Part 3).
+- v3 documenté comme un **partiel** exportant un objet `theme.extend` (jamais un `tailwind.config.cjs` complet — collision avec `content`/`plugins` du projet consommateur), jamais nommé `theme.css`, jamais auto-consommé par Tailwind. Exemple d'export JS concret avec `themes` (overlays Part 1).
+- **Câblage** documenté pour les deux cas : greenfield (le partiel assigné directement à `theme.extend`) et config existante (Nuxt) — **étape de fusion manuelle obligatoire** avec exemple concret `theme: { extend: { ...require('./design/adapters/tailwind-tokens.cjs') } }` dans `tailwind.config.ts`.
+- Overlays de thème (Part 1) en v3 : réexportés par le partiel sous une clé `themes` dédiée, mêmes noms de thème que v4, seul le mécanisme d'émission diffère (`darkMode: 'class'`/`'selector'` + bloc CSS `.dark`/`[data-theme="…"]`, identique à `adapters/tokens.css` § Theme-scoped emission).
+- Ancienne sous-section "Themes in Tailwind targets" (renvoi hors-scope vers une part ultérieure) supprimée — son contenu est désormais spécifié inline dans chacune des deux sous-sections v3/v4.
+
+### Vérifié — `skills/diffuse/adapters/html-css.md`, `skills/diffuse/SKILL.md`, `references/sc-pivot-contract.md`
+
+- Grep de contrôle : aucun des trois fichiers ne référence l'adaptateur Tailwind (`theme.css`/`tailwind-tokens.cjs`) — ils référencent uniquement `adapters/tokens.css` (l'adaptateur custom-properties, hors périmètre de ce finding). Laissés intacts, aucune dérive à corriger.
+
+## [1.12.0] — 2026-07-05
+
+Minor — **mode utility-first de première classe dans le baseline d'enforcement** — sur un projet Tailwind/Vue/React, le manifeste BEM (`components.json`) ne correspond à aucune classe réellement présente dans le code : la Règle 1 (`class-vocab`) de `lint-core.mjs` tournait sans jamais rien trouver à signaler — un gate vert qui ne vérifiait rien (finding #2, 0 hit mesuré sur du code réel avant qu'un pivot ad-hoc ne soit bricolé pour compenser). 1.12.0 donne au contrat une place pour déclarer des règles de **token-usage** (namespaces de couleur autorisés, raw-hex interdit) et les fait enforcer par le baseline lui-même, additif et rétrocompatible avec tout manifeste BEM existant.
+
+### Ajouté — `skills/adjust/references/manifest-schema.md`
+
+- Champ `mode: "bem" | "utility-first"` (explicite, défaulté par auto-détection : `components` vide/absent ⇒ `utility-first`). Nouvelle section **"Mode utility-first"** documentant l'invariant qui bascule : en `utility-first` le vocabulaire fermé porte sur l'usage des tokens, pas les noms de classe BEM, et la map `components` devient optionnelle (additive avec `usage`, jamais exclusive).
+- Bloc `usage` (additif dans `components.json`) : `usage.rawHexForbidden` (bool), `usage.colorUtilityPrefixes` (liste de préfixes utilitaires porteurs de couleur, contrat-déclarée, jamais codée en dur dans le linter), `usage.rules[]` (règles déclarées avec `enforcement: "baseline" | "pivot-only"` — ex. `state-colour-icon`, co-occurrence sémantique hors de portée d'un string-scanner). Namespaces de couleur autorisés dérivés à l'exécution des clés top-level de `tokens.json § color.*`.
+- Exemple de manifeste utility-first travaillé ; rétrocompatibilité explicite (manifeste BEM existant inchangé, mode par défaut = bem/détecté).
+
+### Ajouté — `skills/enforce/adapters/lint-core.mjs`
+
+- **Rule 3 — raw-hex forbidden** : si `usage.rawHexForbidden`, toute couleur hexadécimale brute dans un `style="…"` ou un bloc `<style>` inline est une erreur. Scopé à ces deux contextes CSS-value non ambigus pour éviter tout faux positif (ex. `href="#cafe"`).
+- **Rule 4 — allowed colour namespaces** : en mode `utility-first`, pour chaque préfixe de `usage.colorUtilityPrefixes`, le segment de couleur d'une classe utilitaire (`bg-…`, `text-…`, …) doit résoudre à un groupe top-level de `tokens.json § color.*` — sinon erreur. Ensemble dérivé du contrat à l'exécution, aucune liste Tailwind codée en dur.
+- Correctif (revue de code, avant tout commit) : ces mêmes préfixes sont à double usage en Tailwind réel (`text-lg`/`text-center`, `border-2`/`border-t`, `ring-2`/`ring-offset-2` ne portent aucune couleur) — la règle ne déclenche désormais que sur la forme `<namespace>-<NN|NNN>` (shade numérique 2-3 chiffres), seul signal fiable d'une référence de couleur pour ces préfixes ambigus. Limite connue et acceptée : un mot-clé de couleur nu sans shade (`bg-white`, `border-black`) n'est plus détecté s'il est hors contrat. Fixture `utility-dirty.html` étendue (`text-lg`, `border-2`, `border-t`, `ring-2`, `ring-offset-2` — doivent rester silencieux).
+- **Gate de mode (A6)** : Rule 1 (`class-vocab`, BEM) ne s'exécute plus jamais quand `mode === "utility-first"` — élimine le faux-positif "0 hit" du finding #2. Mode dérivé de `manifest.mode` ou auto-détecté (`components` vide/absent ⇒ `utility-first`). Rules 3/4 restent inertes tant que `usage` est absent — zéro régression sur les manifestes BEM existants.
+
+### Ajouté — `skills/enforce/fixtures/utility/`, `skills/enforce/fixtures/utility-{clean,dirty}.html`
+
+- Fixture `tokens.json` + `components.json` (`mode: "utility-first"`, `components` absent, `usage` avec `rawHexForbidden` + `colorUtilityPrefixes` + règle `state-colour-icon` déclarée `pivot-only`).
+- `utility-clean.html` (classes Tailwind-style dans les namespaces `brand`/`neutral`/`semantic` déclarés, aucun hex brut → exit 0) et `utility-dirty.html` (un hex brut inline `#ff00aa` + une classe `bg-red-500` hors namespace → exit 1).
+
+### Modifié — `skills/enforce/SKILL.md`, `skills/enforce/actions/01-build-linter.md`, `skills/enforce/actions/03-lint-instances.md`
+
+- Documentent les deux modes d'enforcement de vocabulaire (`bem`/`utility-first`) comme fonctionnalité de première classe du **baseline**, pas un mode dégradé du pivot.
+- `01-build-linter.md` : `.lintrc.json` est un gabarit de référence projet (aucun fichier canonique n'existe dans ce plugin) — deux profils documentés (`bem` ciblant le HTML de wireframe, `utility-first` ciblant `**/*.{vue,jsx,tsx,html}`) avec les nouvelles sévérités (`rawHexForbidden`, `colorNamespace`, `stateColourIcon: pivot-only`).
+- `03-lint-instances.md` : nouvelle section "Stack utility-first" — la boucle corriger→propager→re-lint porte sur les violations `usage`, cibles étendues au-delà du HTML.
+
+### Modifié — `references/sc-pivot-contract.md`
+
+- Le spec d'enforcement (`enforce → design-bridge`) porte désormais `Mode`, la section **"Token-usage rules"** (raw hex forbidden, colour utility prefixes, allowed colour namespaces, `usage.rules[]` déclarées avec leur `enforcement`) en plus des class sets/token paths existants, et une consigne dédiée pour que `sc-js:design-bridge` réalise nativement (AST/ESLint) les règles `pivot-only` (ex. `state-colour-icon`) **sans les réinventer** — elles voyagent verbatim depuis le contrat.
+
+### Modifié — `skills/adjust/actions/02-freeze.md`
+
+- Nouvelle étape 2bis : audit du bloc `usage` au figeage (mode écrit explicitement, `colorUtilityPrefixes` aligné sur la stack réelle, `state-colour-icon` déclarée au minimum si le design system a une notion de statut visuel).
+- Table de bump version étendue : ajout/extension de `usage` → **minor** ; suppression d'un namespace ou d'une règle `usage` → **major**. Item de checklist ajouté au test de validité.
+
 ## [1.11.0] — 2026-07-05
 
 Minor — **dimension thème/mode dans les tokens** — le contrat ne pouvait modéliser qu'un seul thème visuel ; un projet avec un mode sombre par classe **et** un second territoire thématique ("Grimoire") ne pouvait pas être contractualisé (le mode sombre finissait en Open question sans support de contrat). 1.11.0 ajoute un axe thème/mode additif et rétrocompatible, avec émission theme-aware des deux adaptateurs et un gate exécutable qui valide les références de tokens thémés.

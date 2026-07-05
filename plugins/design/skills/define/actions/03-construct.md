@@ -38,3 +38,7 @@ Un profil d'attributs + un token set proposé complet (forme schéma) + stratég
 ## Test
 
 Le core trio (palette · type · jeu d'icônes) a été présenté pour approbation avant l'échelle complète ; au plus 3–4 questions en une passe ; chaque driver non répondu a un défaut consigné ; la palette est délibérément liée à la personnalité (pas le look stock) ; un seul jeu d'icônes sans emoji ; les paires de contraste passent la barre ; la stratégie responsive nomme mobile-core / enriched / mobile-only ; l'inventaire est explicitement *candidat*.
+
+## En aval
+
+Ce chemin n'a pas de visuel de référence : aucun gate de fidélité (`enforce/05-fidelity-gate.md`) ne s'applique en aval — seul le gate vocabulaire (`lint-core.mjs`) + les bonnes pratiques visuelles couvrent un projet construit depuis un brief. Voir `${CLAUDE_PLUGIN_ROOT}/skills/enforce/actions/05-fidelity-gate.md § Chemin construction-depuis-brief` pour la limite assumée.

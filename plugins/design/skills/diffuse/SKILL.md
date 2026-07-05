@@ -42,12 +42,14 @@ define → destructure → adjust (figé) → enforce (gate) → diffuse (PRODUC
 | Artefact | Description |
 |----------|-------------|
 | **Spec neutre** | Représentation canonique de l'élément (composant + variantes + slots + a11y) — stack-agnostique, ne référence que le manifeste |
-| **Rendu baseline** | HTML + CSS utilisant uniquement les classes et tokens déclarés |
+| **Rendu baseline** | **preview HTML/CSS non intégrée** (aucun pivot) — pas un livrable applicatif, cf. `adapters/html-css.md § Statut de la sortie` |
 | **Rendu natif** (avec pivot) | Block pattern WP (sc-php), composant Vue/React (sc-js), ou autre stack via sc-* |
 
 ## Invariant critique : gate enforce
 
 **Aucun rendu n'est clôturé si `lint-core.mjs` sort en exit 1.** Si le rendu produit des violations, `02-render` corrige et re-lint avant de livrer. Ce gate est non négociable.
+
+**Lint vert ≠ artefact intégré.** Quand `02-render` retombe sur le rendu baseline (aucun pivot `sc-*:design-bridge` détecté), le fichier produit est une **preview non intégrée** — le lint valide son vocabulaire, il ne prouve jamais qu'elle est branchée dans l'app réelle. Le hand-off vers l'intégration (chemin de promotion + recommandation conditionnelle d'installer `sc-<techno>`) est une obligation de livraison **additionnelle**, émise par `02-render` Étape 5 — jamais un relâchement du gate enforce.
 
 ## Architecture hybride
 

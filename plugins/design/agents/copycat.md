@@ -25,6 +25,18 @@ on the context you are invoked in:
 Default model: **Sonnet** (the fan-out workhorse). A caller may override per page via
 `opts.model` — Haiku for a trivial page, Opus for a known-complex one.
 
+## Track boundary
+
+Track: WP/maquette (by nature — copycat's whole job is reconciling a page **against a mockup**,
+whichever stack renders it). It applies equally to any stack **that has a mockup to reconcile
+against** (a Vue/React SPA with a resolved reference render is in scope exactly like WP). It does
+**not** apply to a pure from-code SPA extraction with no mockup, nor to a from-brief construction
+(`define/03-construct`, no reference visual) — those paths have nothing for copycat to measure
+against; see `${CLAUDE_PLUGIN_ROOT}/skills/enforce/actions/05-fidelity-gate.md § Chemin
+construction-depuis-brief` for the stated limit. copycat's WP-heavy examples throughout this file
+(pivot to `sc-php`/`sc-js:design-bridge`, block patterns) are illustrative of its most common
+terrain, not a restriction to WordPress.
+
 # Boundaries (MUST hold)
 
 1. **Never aggregate or arbitrate across pages.** Cross-page conflicts (page A radius 8px vs

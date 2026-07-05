@@ -97,8 +97,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] manifest-schema.md documents `usage` rules + `mode`, with an example.
-- [ ] Backward compat stated: existing BEM manifests unchanged, default mode = bem/detected.
+- [x] manifest-schema.md documents `usage` rules + `mode`, with an example.
+- [x] Backward compat stated: existing BEM manifests unchanged, default mode = bem/detected.
 
 ### Phase 2: Baseline linter — implement feasible rules
 
@@ -113,8 +113,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `utility-clean.html` → exit 0; `utility-dirty.html` → exit 1 (raw hex + out-of-namespace colour both caught).
-- [ ] class-vocab does not fire on the utility-first fixture; existing fixtures unchanged.
+- [x] `utility-clean.html` → exit 0; `utility-dirty.html` → exit 1 (raw hex + out-of-namespace colour both caught).
+- [x] class-vocab does not fire on the utility-first fixture; existing fixtures unchanged.
 
 ### Phase 3: Enforce docs + pivot spec
 
@@ -128,8 +128,8 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] SKILL/actions describe token-usage enforcement as a baseline feature.
-- [ ] sc-pivot-contract.md enforcement spec lists the usage rules.
+- [x] SKILL/actions describe token-usage enforcement as a baseline feature.
+- [x] sc-pivot-contract.md enforcement spec lists the usage rules.
 
 ### Phase 4: Freeze + versioning + changelog
 
@@ -140,15 +140,24 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] Freeze audits usage; versions in phase; CHANGELOG updated.
+- [x] Freeze audits usage; versions in phase; CHANGELOG updated.
 
 ## Amendments
 
-<!-- Record A4/A5/A6 here before Phase 1. -->
+- **A4 (🤖 auto, recommandation retenue)** : le baseline (`lint-core.mjs`, string-scanner sans AST) implémente uniquement ce qu'un scanner peut faire sans faux positif — `raw-hex forbidden` (regex `#[0-9a-fA-F]{3,8}` hors adaptateurs générés) et `allowed colour namespaces` (segment couleur d'une classe utilitaire Tailwind dérivé des groupes `color.*` du contrat). La règle `state = colour + icon` (co-occurrence sémantique) reste **pivot-only** (ESLint/AST côté `sc-js`) mais est **déclarée** dans layer-2 pour que le pivot ait un spec à réaliser.
+- **A5 (🤖 auto, recommandation retenue)** : bloc `usage` additif dans `components.json` — coexiste avec la map BEM `components` existante (non exclusifs). En mode utility-first, la map BEM est optionnelle.
+- **A6 (🤖 auto, recommandation retenue)** : champ explicite `mode: "utility-first" | "bem"` dans le contrat, défaulté par auto-détection (absence de classes `.base` dans le code / présence d'une config Tailwind). Le linter lit ce champ pour ne jamais appliquer le class-vocab BEM sur un projet utility-first (évite le faux-positif "0 hit" du finding #2).
+
+<!-- Décisions enregistrées avant Phase 1, cf. réponse utilisateur "continue" (2026-07-05) faisant suite à la confirmation du Checkpoint 1 : recommandations du plan retenues telles quelles, cohérent avec le traitement de Part 1. -->
 
 ## Log
 
 <!-- APPEND ONLY. -->
+
+- 2026-07-05 — Phase 1 : `mode`/`usage` schéma ajouté à `adjust/references/manifest-schema.md` (tableau champs, section "Mode utility-first", bloc `usage` détaillé, rétrocompatibilité, exemple travaillé). Acceptance criteria cochées.
+- 2026-07-05 — Phase 2 : `lint-core.mjs` — mode/usage dérivés du manifeste, Rule 1 (class-vocab) gated derrière `mode !== 'utility-first'`, Rule 3 (raw-hex forbidden, scopé `style="…"`/`<style>`) et Rule 4 (allowed colour namespaces, dérivées de `tokens.json § color.*`) ajoutées. Fixtures `fixtures/utility/{tokens,components}.json` + `fixtures/utility-{clean,dirty}.html` créées. `success_condition` du plan vérifié exit 0/exit 1 ; non-régression confirmée sur `clean`/`dirty`/`themed-clean`/`themed-dirty` (exit 0/1/0/1 inchangés). Acceptance criteria cochées.
+- 2026-07-05 — Phase 3 : `enforce/SKILL.md` (section "Deux modes d'enforcement de vocabulaire"), `01-build-linter.md` (profils `.lintrc.json` bem/utility-first, cibles `**/*.{vue,jsx,tsx,html}`), `03-lint-instances.md` (section stack utility-first) mis à jour. `references/sc-pivot-contract.md` : spec d'enforcement étendu au champ `Mode` + section "Token-usage rules" + requête pivot dédiée pour les règles `pivot-only`. Acceptance criteria cochées.
+- 2026-07-05 — Phase 4 : `adjust/actions/02-freeze.md` — étape 2bis d'audit du bloc `usage`, table de bump étendue, item de checklist ajouté. `plugin.json` 1.11.0 → 1.12.0 (minor). `CHANGELOG.md` — entrée `[1.12.0] — 2026-07-05` ajoutée en tête. Acceptance criteria cochées. Part 2 complète, 4/4 phases.
 
 ## Validation flow demonstration
 

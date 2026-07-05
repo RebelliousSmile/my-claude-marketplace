@@ -22,8 +22,9 @@ Le design garde le **QUOI** (le contrat : tokens + manifeste = autorité). Les `
 Source: design/tokens.json + design/components.json
 Version: <$version du manifest>
 Themes: [liste plate des thèmes nommés déclarés sous `tokens.json` § `themes`, ex. default, dark, grimoire — vide si aucun `themes` overlay]
+Mode: <bem | utility-first> (design/components.json § mode, explicite ou auto-détecté)
 
-### Valid class sets
+### Valid class sets (mode bem)
 Base classes: [liste des .base]
 All valid classes: [union de tous .base + .elements.* + .modifiers.*]
 
@@ -34,16 +35,27 @@ All token paths: [liste des chemins de tokens.json aplatis]
 [Par composant avec .a11y.requires non vide]
 - <component>: role=<role>, requires=[<attr>, ...]
 
+### Token-usage rules (mode utility-first — design/components.json § usage)
+Raw hex forbidden: <true|false> (usage.rawHexForbidden)
+Colour utility prefixes: [usage.colorUtilityPrefixes, ex. bg, text, border, ring]
+Allowed colour namespaces: [clés top-level de tokens.json § color.*, ex. brand, neutral, semantic]
+Declared rules:
+[Par entrée de usage.rules[]]
+- <rule.id> (enforcement: <baseline|pivot-only>): <rule.description>
+
 ### Enforcement target
 Language: <php | js | css | html>
-Targets: [globs de fichiers à linter]
+Targets: [globs de fichiers à linter — en mode utility-first, couvrir **/*.{vue,jsx,tsx,html}, pas seulement le HTML]
 
 ### Request
-Réalise un linter natif idiomatique pour <techno> qui vérifie :
-1. Toute classe appartenant au design system utilise un nom déclaré dans valid class sets.
+Réalise un linter natif idiomatique pour <techno> qui vérifie, selon Mode :
+1. (bem) Toute classe appartenant au design system utilise un nom déclaré dans valid class sets.
 2. Les références de tokens CSS (var(--...)) pointent vers un path existant.
-3. Les composants déclarant .a11y.requires portent les attributs requis.
+3. (bem) Les composants déclarant .a11y.requires portent les attributs requis.
 4. Si Themes n'est pas vide, le linter natif reste theme-agnostique (§ A2 : les thèmes re-déclarent les mêmes noms de `--var` dans leur bloc de sélecteur — aucune règle par thème à générer côté vocabulaire).
+5. (utility-first) Toute couleur hexadécimale brute est interdite si Raw hex forbidden = true (le baseline le vérifie déjà dans style="…"/<style> — le pivot peut étendre à d'autres contextes CSS-in-JS idiomatiques au techno, ex. styled-components, template literals `css\`...\``).
+6. (utility-first) Toute classe utilitaire de couleur (préfixe ∈ Colour utility prefixes) résout son namespace dans Allowed colour namespaces.
+7. (utility-first) Pour chaque règle Declared rules à enforcement=pivot-only (ex. state-colour-icon : un statut doit apparier un token couleur ET une icône), réalise-la nativement via AST (ex. règle ESLint custom) — c'est le point d'enforcement que le baseline `lint-core.mjs` (string-scanner) ne peut pas couvrir sans faux positif. Ne réinvente pas la règle : reprends l'id/description ci-dessus tels quels.
 
 Retourne : le linter installé dans le projet + les instructions de câblage dans l'outillage natif.
 ```
@@ -105,7 +117,7 @@ Retourne : le fichier composant + les instructions d'intégration dans le projet
 
 Si aucun `sc-<techno>` ne couvre le langage du projet :
 - `enforce` reste sur la baseline `lint-core.mjs` et le signale clairement.
-- `diffuse` reste sur le rendu HTML+CSS baseline et le signale clairement.
+- `diffuse` reste sur le rendu HTML+CSS baseline et le signale clairement — ce rendu est une **preview non intégrée**, pas un artefact natif ; le hand-off de promotion vit dans `diffuse/actions/02-render.md § Étape 5` (cf. `diffuse/adapters/html-css.md § Statut de la sortie`).
 - Aucune erreur bloquante — le contrat est toujours l'autorité, seule la réalisation idiomatique est absente.
 
 ---

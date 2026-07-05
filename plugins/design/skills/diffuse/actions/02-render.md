@@ -20,6 +20,8 @@ Prendre la spec neutre produite par `01-define-element` et la rendre dans la sta
 Si la stack cible n'a pas été précisée dans `01-define-element`, demander avant de continuer :
 > Stack cible pour ce rendu ? (WordPress FSE / Vue / React / HTML+CSS baseline / autre)
 
+Si la branche **baseline** est retenue (dernière ligne du tableau), le rendu produit est contractuellement une **preview non intégrée** (cf. `adapters/html-css.md § Statut de la sortie`), jamais un livrable applicatif. Si une stack JS ou WP est détectée sans que le `sc-<techno>` correspondant soit installé, noter dès cette étape la recommandation conditionnelle : « installer `sc-<techno>` pour un rendu natif `design-bridge` ». Sur une cible statique ou une stack non identifiée, pas de recommandation de pivot — seule la preview + sa note de promotion sont dues (Étape 5).
+
 ## Étape 2 — Rendre
 
 Appliquer l'adaptateur sélectionné (voir `${CLAUDE_PLUGIN_ROOT}/skills/diffuse/adapters/html-css.md` pour la baseline, `03-pivot.md` pour le pivot). Produire le fichier de rendu.
@@ -60,6 +62,8 @@ Voir `${CLAUDE_PLUGIN_ROOT}/references/wordpress-pitfalls.md § Piège 2 : Block
 
 ## Étape 5 — Livraison
 
+### Rendu natif (pivot)
+
 Annoncer à l'utilisateur :
 
 > Rendu livré : `<fichier>` (<stack>)
@@ -67,6 +71,15 @@ Annoncer à l'utilisateur :
 > Variantes produites : <liste>
 >
 > [Si WP] Propagation nécessaire → relancer `${CLAUDE_PLUGIN_ROOT}/skills/enforce/actions/03-lint-instances` pour mettre à jour les instances en DB.
+
+### Rendu baseline (preview non intégrée)
+
+Le message de livraison énonce systématiquement les trois éléments du hand-off, jamais un sous-ensemble :
+
+> Rendu livré : `<fichier>` — **preview HTML/CSS non intégrée**, pas un composant applicatif.
+> Gate enforce : vert (0 erreur, <N> warning(s)) — **un lint vert n'implique pas un artefact intégré** : ce hand-off est une obligation de livraison additionnelle, pas un relâchement du gate.
+> Chemin de promotion : ce rendu deviendrait `<composant/fichier réel envisagé, ex. components/Card.vue ou template-parts/card.php>` une fois porté dans la stack cible.
+> [Si stack JS/WP détectée sans pivot installé] Installer `sc-<techno>` pour un rendu natif `design-bridge` (composant Vue/React idiomatique ou block pattern WP) au lieu de cette preview.
 
 ## Exemple — rendu baseline d'un `card` (fixture enforce)
 

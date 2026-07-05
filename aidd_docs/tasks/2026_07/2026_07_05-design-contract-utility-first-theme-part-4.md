@@ -92,9 +92,9 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] Each of 03/05/copycat states its track; the app-JS/from-code path is readable without wading through WP idioms.
-- [ ] No behaviour removed — WP flow intact under its track.
-- [ ] `05-fidelity-gate.md` explicitly documents the brief-path (no-reference) fidelity limit as assumed, cross-referencing `define/03-construct`; `define/03-construct.md` carries the reciprocal downstream note.
+- [x] Each of 03/05/copycat states its track; the app-JS/from-code path is readable without wading through WP idioms.
+- [x] No behaviour removed — WP flow intact under its track.
+- [x] `05-fidelity-gate.md` explicitly documents the brief-path (no-reference) fidelity limit as assumed, cross-referencing `define/03-construct`; `define/03-construct.md` carries the reciprocal downstream note.
 
 ### Phase 2: Scope the WP reference + versioning
 
@@ -105,16 +105,21 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] wordpress-pitfalls.md is explicitly WP-track-scoped.
-- [ ] Versions in phase; CHANGELOG updated; `clean.html` fixture still exit 0.
+- [x] wordpress-pitfalls.md is explicitly WP-track-scoped.
+- [x] Versions in phase; CHANGELOG updated; `clean.html` fixture still exit 0.
 
 ## Amendments
 
-<!-- Record A8 and A9 here before Phase 1. -->
+- **A8 (🤖 auto, recommandation retenue, option 1)** : marqueurs de track **par action**, in-place — chaque fichier action reçoit un court préambule de routage ("Track: app-JS-modern" / "Track: WP-maquette") et scinde ses étapes stack-spécifiques sous des titres `## Track: …`. Aucun fichier `references/tracks/*.md` créé (option 2 écartée — indirection et risque de dérive non justifiés). Les références WP restent en place, scopées explicitement (pas de déplacement sous `references/tracks/wp/`).
+- **A9 (🤖 auto, recommandation retenue, option 1)** : limite acceptée et documentée — `05-fidelity-gate.md` déclare explicitement que lorsqu'aucun rendu de référence externe n'existe (projets construits depuis un brief, chemin `define/03-construct`), l'oracle de fidélité ne s'applique pas *par nature* ; le profil de gate pour ce cas est vocabulaire (`lint-core.mjs`) + bonnes pratiques visuelles uniquement. C'est une limite **assumée et nommée**, pas un gap silencieux. L'option 2 (gate de substitution/auto-cohérence) n'est pas construite ici — notée comme piste de suivi possible.
+
+<!-- Décisions enregistrées avant Phase 1, cf. confirmation utilisateur "oui" (2026-07-05, Checkpoint 3) débloquant Part 4 : recommandations du plan retenues telles quelles, cohérent avec le traitement des Parts 1-3. -->
 
 ## Log
 
 <!-- APPEND ONLY. -->
+
+- 2026-07-05 : Part 4 implémentée intégralement (Phase 1 + Phase 2), A8/A9 appliquées telles que tranchées dans Amendments (option 1 des deux, aucun fichier `references/tracks/*.md` créé). Fichiers modifiés : `skills/enforce/SKILL.md` (routage deux tracks), `skills/enforce/actions/03-lint-instances.md` (préambule + `## Track: app-JS-modern` / `## Track: WP-maquette`, app-JS servi en premier), `skills/enforce/actions/05-fidelity-gate.md` (scope WP/maquette + note app-JS + sous-section "Chemin construction-depuis-brief — pas de gate de fidélité"), `skills/define/actions/03-construct.md` (note "En aval"), `agents/copycat.md` (section "Track boundary"), `references/wordpress-pitfalls.md` (en-tête de scope de track). Version bump **patch** `1.13.0` → `1.13.1` (refactor doc pur, aucune nouvelle capacité — cf. rapport de l'implémenteur pour la justification vs minor) + entrée `CHANGELOG.md`. `success_condition` vérifié : 4/4 checks OK, `clean.html` toujours exit 0 (non-régression confirmée, `lint-core.mjs` non touché). Acceptance criteria des deux phases cochées.
 
 ## Validation flow demonstration
 
