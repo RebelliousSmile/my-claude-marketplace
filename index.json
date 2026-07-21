@@ -4,7 +4,7 @@
       "id": "overcode",
       "name": "overcode",
       "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, seo-optimize, behave, status. Alias: rechallenge, endtask, bump-plugin, previously, smarten, skillconf, weeklyemail, gitit, mirror.",
-      "version": "3.1.4"
+      "version": "3.2.0"
     },
     {
       "id": "design",
@@ -34,7 +34,7 @@
       "id": "sc-js",
       "name": "sc-js",
       "description": "JavaScript ecosystem: sniff (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), audit, improve (8 capability pivots), legacy (Vue 2→3/ESM/TS), teach + SvelteKit/Svelte stores/Biome pivots + Prisma/Drizzle/TypeORM/Mongoose/GraphQL/tRPC data pivots. design-bridge: réceptacle pivot design (règle ESLint + composant Vue 3/React).",
-      "version": "0.7.0"
+      "version": "0.9.0"
     },
     {
       "id": "sc-css",
