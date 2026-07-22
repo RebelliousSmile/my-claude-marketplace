@@ -21,7 +21,7 @@ Le plan `2026_07_22-control-strengthen-action.md` déclarait explicitement en ho
 1. **Quatre phases sur un axe unique — l'exposition croissante puis la sédimentation** : `scaffolding`, `hardening`, `production`, `sustaining`. Chaque frontière est définie par une question à réponse binaire, pour être déclarable sans débat.
 2. **« Développement » n'est pas une phase.** Le besoin qu'il décrit — tester le code récent, prouver la non-régression — est le critère **churn** déjà présent dans `04-strengthen`. La phase en module le poids, elle n'introduit aucun mécanisme nouveau pour lui.
 3. **La phase priorise, elle ne classe jamais un tier.** Même frontière que les *Risk signals* du pivot, déjà établie dans `pivot-contract.md`. Un test refusé l'est sur un critère de tier, jamais « parce qu'on est en production ».
-4. **La frontière `hardening` → `production` n'est pas inférable depuis un dépôt.** La phase est donc **déclarée en priorité** ; l'inférence est un repli qui **pose la question** plutôt que de trancher. C'est ce qui donne sa raison d'être à `06-align`.
+4. **La phase n'est jamais déduite par la skill.** Un dépôt porte des traces, il ne porte pas d'utilisateurs : un produit fini mais pas encore ouvert et le même produit servant des clients payants laissent exactement les mêmes traces, alors que c'est précisément cette différence qui décide de ce que la suite doit protéger en premier. La phase vient donc de trois sources et de trois seulement — **paramètre** de l'action, **déclaration** dans les fichiers md du projet, ou **question posée à l'utilisateur avant d'avancer**. Les signaux du dépôt ne servent qu'à nourrir la question, jamais à y répondre ; `undetermined` signifie « question posée, sans réponse », jamais « déduction insuffisante ». C'est ce qui donne sa raison d'être à `06-align` : inscrire la déclaration dans le document du projet est ce qui met fin au questionnement.
 5. **La phase est un attribut du projet**, surchargeable sur un `scope` explicitement demandé. Pas de découpage automatique en zones : aucune source de vérité fiable.
 6. **La phase n'apporte pas de plafond mais un ordre de priorité attendu** entre trois bassins (fondations / code récent / parcours critiques). Aucun pourcentage n'est inventé : `05-stats` compare des **ordres**, pas des chiffres.
 7. **Écriture de `testing.md`** : délégation à `aidd-context:05-learn` si installé, écriture directe en repli, voie annoncée. La règle « `control` n'écrit jamais `testing.md` » devient « `control` n'en décide jamais seul le contenu stratégique ».
@@ -36,6 +36,7 @@ Le plan `2026_07_22-control-strengthen-action.md` déclarait explicitement en ho
 16. **Les fichiers de skill sont rédigés en anglais**, comme tout l'existant de `control` et les titres de champ du pivot ; `README`, `CHANGELOG` et descriptions marketplace restent en français. Les trois `success_condition` greppent des chaînes anglaises.
 17. **La bascule ajoute un motif de retrait, et un seul : l'obsolescence de phase.** Les heuristiques de `02-audit` (doublon, trivial, getter) ne croisent jamais une bascule — un test de forme de modèle écrit en `scaffolding` n'en relève d'aucune — donc s'y limiter rendrait le lot vide par construction. Le motif nouveau est borné par trois exclusions : conséquence, contrat externe, statut de seul filet. Il qualifie un retrait, jamais un tier.
 18. **Trois manifestes de version, pas un.** `plugin.json` d'`overcode` (`3.5.0`), `plugin.json` de `sc-js` (`0.11.0`, son pivot livré étant modifié) et les deux champs `version` correspondants de `.claude-plugin/marketplace.json`, qui sont distincts des premiers.
+19. **La contrainte de nombre devient une densité, calibrée sur le projet.** Un plafond absolu punit un dépôt qui grossit légitimement et ne dit pas *où* est l'excès. La densité — cas de test par point de branchement, référence égale à la médiane du projet — le dit, et se lit dans les deux sens : fichier trop branché → signal de refactoring ; fichier peu branché → tests sans pouvoir de détection. Aucune constante importée, même refus que celui opposé aux pourcentages de couverture. Elle priorise et diagnostique, **elle ne refuse jamais** — un test se refuse sur un critère de tier. Porté par la partie 4.
 
 ## Child Plans
 
@@ -44,21 +45,24 @@ Le plan `2026_07_22-control-strengthen-action.md` déclarait explicitement en ho
 | 1   | La phase comme contexte de lecture      | `./2026_07_22-control-phase-governance-part-1.md` | done    | [x]       |
 | 2   | Action `06-align` et retour au document | `./2026_07_22-control-phase-governance-part-2.md` | pending | [ ]       |
 | 3   | Bascule de phase et lot borné           | `./2026_07_22-control-phase-governance-part-3.md` | blocked | [ ]       |
+| 4   | La densité de test remplace la contrainte de nombre | `./2026_07_22-control-phase-governance-part-4.md` | blocked | [ ]       |
 
 <!-- RULE: Plan N+1 blocked until Plan N checkbox checked -->
 
-**Indépendance** : la partie 1 est livrable seule — la phase est lue, restituée et pondère la priorisation, sans qu'aucune écriture nouvelle ne soit introduite ni aucune garantie levée. La partie 2 est utilisable sans la partie 3. Les artefacts de release (README, CHANGELOG, bump de version, description marketplace) sont portés par la partie 3 pour la totalité de la `3.5.0`.
+**Indépendance** : la partie 1 est livrable seule — la phase est lue, restituée et pondère la priorisation, sans qu'aucune écriture nouvelle ne soit introduite ni aucune garantie levée. La partie 2 est utilisable sans la partie 3. Les artefacts de release (README, CHANGELOG, bump de version, description marketplace) de la `3.5.0` sont portés par la partie 3. La partie 4 est arrivée en cours de route et **porte sa propre release `3.6.0`** : elle ne touche pas à la phase, elle remplace la contrainte de nombre, et rien dans les parties 1 à 3 ne l'attend.
 
 ## Validation Protocol
 
 1. Compléter la partie 1, exécuter son `success_condition` et sa validation réelle
-2. [x] Checkpoint 1 : l'utilisateur confirme que la phase inférée sur les deux projets cibles est plausible et que sa restitution est lisible
+2. [x] Checkpoint 1 : l'utilisateur confirme que la phase retenue sur les deux projets cibles est celle qu'il déclare, et que sa restitution — valeur, provenance, question posée le cas échéant — est lisible
 3. Débloquer la partie 2, idem
 4. [ ] Checkpoint 2 : l'utilisateur confirme que la proposition de `testing.md` sépare bien les faits des décisions, et qu'il a pu refuser le bloc stratégie sans perdre le bloc faits
 5. Débloquer la partie 3, idem
-6. [ ] Final : une bascule de phase complète sur un projet réel produit un solde net cohérent, et le lot proposé est refusable en bloc
+6. [ ] Checkpoint 3 : une bascule de phase complète sur un projet réel produit un solde net cohérent, et le lot proposé est refusable en bloc
+7. Débloquer la partie 4, idem
+8. [ ] Final : sur un dépôt réel, la densité de référence signale une minorité nette de fichiers, chaque valeur aberrante se vérifie à la main, et aucun tier ne change à cause d'elle
 
 ## Estimations
 
 - **Confidence** : 9/10
-- **Duration** : ~5 h 50 au total (2 h 15 / 1 h 45 / 1 h 50, validations réelles incluses)
+- **Duration** : ~8 h au total (2 h 15 / 1 h 45 / 1 h 50 / 2 h 10, validations réelles incluses)

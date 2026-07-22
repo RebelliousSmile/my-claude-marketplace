@@ -29,7 +29,7 @@ No test file is written as part of producing this table.
 
 1. Resolve `project_path` and `scope`. Load the target project's documented test strategy if present, else `@../references/decision-framework.md`. Detect the active language plugin and load its `testing` pivot per `@../references/pivot-contract.md` for **Coverage command**, **Source glob & exclusions**, **Risk signals**, the test runner and the test file glob.
 
-   Resolve the project **phase** per `@../references/phase-framework.md` and state it in the report header with its provenance (declared / inferred / overridden / `undetermined`). The phase re-weights the criteria in step 3; it changes no proposed tier, no exclusion, and neither of the two bounded edge cases below.
+   Resolve the project **phase** per `@../references/phase-framework.md` and state it in the report header with its provenance (`argument` / `declared <path>` / `answered` / `undetermined`). The phase is **never deduced**: when neither the argument nor the project's documentation gives it, **ask before ranking anything** - the answer is what the order is built on, so a table produced first and re-sorted after is a table the user has already read in the wrong order. The phase re-weights the criteria in step 3; it changes no proposed tier, no exclusion, and neither of the two bounded edge cases below.
 
    State which strategy is in force. When the project documents none, say so in the report and state the consequence plainly: `limit` stays `null`, so nothing caps the suite's growth but this action's own restraint. An undocumented project is reported as undocumented, never as implicitly following the default.
 

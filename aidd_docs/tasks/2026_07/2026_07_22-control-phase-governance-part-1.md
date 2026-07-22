@@ -221,6 +221,7 @@ flowchart TD
 - 🤖 **Resserrement annoncé comme résultat légitime.** La validation réelle a buté sur un cas que le format ne prévoyait pas : les signaux excluaient `scaffolding` et `sustaining` sans trancher entre `hardening` et `production`, alors que le bloc `PHASE` imposait une valeur de l'énumération. `phase-framework.md` et `05-stats.md` admettent désormais `undetermined (narrowed to <candidats>)`, plutôt qu'un choix arbitraire pour remplir le champ.
 - 🤖 **Fiabilité du signal de volume ramenée de « Good » à « Medium ».** `moodboard-generator` a montré qu'un volume nul ne distingue pas la maturité de l'abandon : dix jours d'activité puis silence se lisaient `sustaining`. Le signal se lit maintenant contre l'âge total du dépôt.
 - 🤖 **`template-shaped` doit dire lequel des deux cas il désigne.** Le `testing.md` de `multisite-clients` est richement rempli, sans aucun placeholder, mais ne nomme aucun critère de décision — même classe qu'un gabarit vide, correctif opposé. `05-stats.md` exige de distinguer les deux.
+- 🤖 **L'inférence de phase est supprimée, pas assouplie.** Sur demande de l'utilisateur : la phase est soit passée en paramètre de l'action, soit déclarée dans les fichiers md du projet, soit **questionnée avant d'avancer** — ce n'est pas à la skill de la déduire. `phase-framework.md` remplace son ordre de résolution et sa table de signaux par une section « ce que le dépôt sait et ne sait pas dire » dont les observations n'alimentent que la question. Les provenances deviennent `argument | declared | answered | undetermined` dans les cinq actions ; `undetermined` signifie désormais « question posée, sans réponse ». Le resserrement `narrowed to` disparaît avec l'inférence qui le produisait. Décision 4 du master réécrite en conséquence. `success_condition` de la partie 1 rejoué : exit 0.
 
 ## Log
 
@@ -234,7 +235,7 @@ flowchart TD
 ## Validation flow demonstration
 
 1. Ouvrir un terminal sur `/home/tnn/Projets/SmartLockers/multisite-clients`.
-2. Lancer `/overcode:control stats`. Lire le bloc `PHASE` : il annonce une valeur, dit d'où elle vient, et liste les signaux si elle a été inférée.
+2. Lancer `/overcode:control stats`. Lire le bloc `PHASE` : il annonce une valeur et dit d'où elle vient. Sans paramètre ni déclaration dans le projet, il pose la question et attend la réponse avant de produire quoi que ce soit.
 3. Lancer `/overcode:control strengthen` tel quel, noter l'ordre des cinq premières lignes.
 4. Relancer `/overcode:control strengthen` en surchargeant la phase en `production`. Constater que les parcours client et les actes irréversibles sont remontés, et que la colonne `proposed_tier` de chaque gap commun aux deux exécutions est identique.
 5. Vérifier `git status` sur le projet : aucun fichier touché.

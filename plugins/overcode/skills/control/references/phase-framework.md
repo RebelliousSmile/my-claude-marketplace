@@ -38,35 +38,40 @@ One axis: growing exposure, then sedimentation. Each boundary is a question with
 
 ### `undetermined`
 
-Not a fallback dressed up as a value: a first-class answer. When neither a declaration nor a reliable signal settles the phase, `control` says so, states what it looked at, and asks. It never guesses a phase in order to have one.
+Not a fallback dressed up as a value: a first-class answer. It means the question was put to the user and left unanswered - never that a deduction came up short, because none is attempted. `control` says so, states what it asked, and proceeds on the neutral weighting.
 
 ## Resolution order
 
-1. An explicit `phase` argument on the invocation (overrides everything, for this run only).
-2. A phase declared in the project's own test strategy document (conventionally `aidd_docs/memory/testing.md`).
-3. Inference from observable signals — **announced as an inference**, and posed as a question rather than settled.
-4. `undetermined`.
+**The phase is never deduced.** It is declared by a human, and this skill's only job is to know where that declaration came from. Three sources, in order:
 
-A declared phase always wins over an inferred one. When both exist and diverge, the divergence is **reported**, never resolved: a heuristic does not overwrite a human decision. The phase is an attribute of the project, overridable on an explicitly requested `scope` — there is no automatic per-zone split, because no reliable source of truth exists for one.
+1. An explicit `phase` argument on the invocation - the answer for this run only.
+2. A phase **declared in the project's own documentation** - conventionally its test strategy document, `aidd_docs/memory/testing.md`. This is the normal source, and the one worth establishing once.
+3. **Ask the user, and wait.** No action proceeds on an undeclared phase by guessing one. The question is asked before any ranking, any table, any proposal - because the answer changes their order.
 
-## Inference signals
+`undetermined` remains a legitimate value, and it means exactly one thing: the question was asked and not answered. It is never the result of a failed deduction, because no deduction is attempted.
 
-Each signal is read with its reliability stated in the output.
+When the argument and the declaration diverge, the argument wins **for this run** and the divergence is reported - a one-off override does not silently rewrite what the project has written down. The phase is an attribute of the project, overridable on an explicitly requested `scope`; there is no automatic per-zone split, because no reliable source of truth exists for one.
 
-| Signal | Reading | Reliability |
-|---|---|---|
-| Churn on model/schema/entity files | High churn → `scaffolding`; flat → the model is frozen | Good |
-| Presence of data migrations | Migrations exist and are ordered → the model was frozen at some point | Good |
-| Version tags | No tag → likely pre-release; regular tags → released | Medium |
-| Deployment configuration | Present and pointing at a real environment → released | Medium |
-| Commit volume over 90 days | Very low → `sustaining`, **only alongside a long history**: dormancy after a short burst reads as abandoned, not mature | Medium |
-| `fix:` dominating `feat:` | Dominant → `sustaining` | Good |
+**A phase this skill resolved by asking is recorded nowhere by that act alone.** An answer given in conversation is worth one run. `06-align` is what turns it into a declaration, in the project's own document - after which nobody, human or skill, has to answer again.
 
-**The `hardening` → `production` boundary is not reliably inferable from a repository.** A frozen, deployed, tagged project with a full CI pipeline looks exactly the same whether it has ten thousand users or none — and that difference is the whole point of the boundary. Inference must stop here and ask. This is precisely why the phase is worth writing down once, in the project's own document.
+## What the repository can and cannot tell you
 
-`sustaining` is the phase a repository evidences most directly - commit volume and the fix/feat ratio are observations, not proxies - but neither distinguishes a mature product from an abandoned one. Read both against the repository's total age before concluding.
+A repository carries traces. It carries no users.
 
-**Narrowing is a legitimate result.** When the signals exclude some phases without settling on one, report `undetermined` with the surviving candidates named - `undetermined (narrowed to hardening | production)` - rather than picking one to fill the field. The narrowing is the useful part: it turns an open question into a closed one the user answers in a word.
+That distinction is the whole reason the phase is declared rather than measured. A project that is finished but not yet open, and the same project serving thousands of paying clients, leave **exactly the same traces**: a frozen model, regular tags, a wired deployment, a green pipeline. Nothing in the code says whether anyone is on the other side - and that is precisely the difference that decides what the suite must protect first. Where nobody is using it yet, a failure is repaired and forgotten; where real clients are, a failure takes someone's money or cancels their booking, and there is no undo.
+
+So the signals below are **material for the question, never an answer to it**. They are offered alongside the question so the user answers in one word instead of investigating; they never produce a value, and no action may proceed on them alone.
+
+| Observation | What it is worth saying out loud |
+|---|---|
+| Churn on model/schema/entity files | high churn: the domain model is still moving; flat: it has settled |
+| Data migrations, ordered | the model was frozen at some point |
+| Version tags | regular tags suggest something is being released to someone |
+| Deployment configuration | it goes somewhere real, automatically |
+| Commit volume over 90 days, against the repository's total age | near zero on a long history: little new is arriving; near zero on a short one: the project stopped, which is not the same thing |
+| `fix:` outweighing `feat:` | the work has shifted from building to keeping alive |
+
+Present what is relevant, then ask the question these observations do not settle - most often: **are real people using this today?**
 
 ## Risk criteria weighting
 
