@@ -21,7 +21,7 @@ Plugin principal, installé globalement (`recommended`). Il ne cible pas une sta
 | `seo-optimize` | `/seo-optimize` | Audit SEO et GEO (référencement + moteurs génératifs) — indexabilité, title/meta/H1, données structurées, E-E-A-T, CWV → roadmap priorisée + copy prêt à coller |
 | `ap-optimize` | `/ap-optimize` | Audit d'une implémentation ActivityPub (inbox, outbox, signatures HTTP, fan-out, conformance AS2) → roadmap priorisée, stack-aware via pivots `sc-*` |
 | `readme` | `/readme` | Rédige ou met à jour un README.md (write depuis zéro, update par section) |
-| `changelog` | `/changelog` | Génère/met à jour CHANGELOG.md depuis git (format Keep a Changelog) |
+| `changelog` | `/changelog` | Génère/met à jour CHANGELOG.md depuis git (format Keep a Changelog) ; action `curate` : comble les versions non documentées et condense les majeures antérieures (≤ 20 items par résumé) |
 | `decompose` | `/decompose` | Décompose un objectif en graphe de dépendances (méthode Mikado) |
 | `journey` | `/journey` | Exécute un parcours utilisateur depuis une issue GitHub/GitLab (résultats Playwright) |
 | `status` | `/status` | Santé projet — synthèse/export de la mémoire, rapport de santé, snapshot |
