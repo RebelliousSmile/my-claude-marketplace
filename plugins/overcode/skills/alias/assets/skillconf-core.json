@@ -1,0 +1,13 @@
+{
+  "$comment": "Marketplace-wide CORE allowlist for the skillconf action. A skill key here stays auto-trigger (visible in every project's context) unless a project's skillOverrides explicitly says otherwise. Everything NOT listed here defaults to user-invocable-only — still callable via /skill-name, just absent from passive context. Edit this file by hand when a new skill earns core status; skillconf never mutates it.",
+  "core": [
+    "aidd-context:00-onboard",
+    "aidd-context:03-context-generate",
+    "aidd-context:05-learn",
+    "aidd-dev:00-sdlc",
+    "aidd-dev:01-plan",
+    "aidd-dev:05-review",
+    "aidd-refine:02-challenge",
+    "overcode:alias"
+  ]
+}
