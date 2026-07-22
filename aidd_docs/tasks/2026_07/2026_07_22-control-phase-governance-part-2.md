@@ -3,7 +3,7 @@ name: plan
 description: Living implementation plan - frozen objective, phases, and append-only execution Log. Used as input artifact AND as the autonomous-loop tracking file.
 argument-hint: N/A
 objective: "`overcode:control` dispose d'une action `06-align` qui audite l'écart entre le `testing.md` d'un projet et ce que ce projet fait réellement, puis propose sa mise à jour en deux blocs séparés — les faits mesurés sous sa propre autorité, les décisions de stratégie proposées et validées mot à mot — en déléguant l'écriture à `aidd-context:05-learn` quand il est installé et en écrivant directement en repli."
-success_condition: "cd /home/tnn/Projets/my-marketplace && C=plugins/overcode/skills/control && A=$C/actions/06-align.md && test -f $A && grep -q 'aidd-context:05-learn' $A && grep -q 'MEASURED FACTS' $A && grep -q 'PROPOSED STRATEGY' $A && grep -q 'direct write' $A && grep -q 'template-shaped' $A && grep -q 'verbatim' $A && grep -q '06-align' $C/SKILL.md && grep -q 'never decides' $C/SKILL.md && ! grep -q 'never writes the target project' $C/SKILL.md && ! grep -q 'All five actions' $C/SKILL.md && grep -q 'Validation reelle — Pass' aidd_docs/tasks/2026_07/2026_07_22-control-phase-governance-part-2.md"
+success_condition: "cd /home/tnn/Projets/my-marketplace && C=plugins/overcode/skills/control && A=$C/actions/06-align.md && test -f $A && grep -q 'aidd-context:05-learn' $A && grep -q 'MEASURED FACTS' $A && grep -q 'PROPOSED STRATEGY' $A && grep -q 'direct write' $A && grep -q 'template-shaped' $A && grep -q 'verbatim' $A && grep -q '06-align' $C/SKILL.md && grep -q 'never decides' $C/SKILL.md && ! grep -q 'never writes the target project' $C/SKILL.md && ! grep -q 'All five actions' $C/SKILL.md && grep -qE '^- Validation reelle — Pass' aidd_docs/tasks/2026_07/2026_07_22-control-phase-governance-part-2.md"
 iteration: 0
 created_at: "2026-07-22T11:02:26+02:00"
 ---
@@ -118,11 +118,11 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] La règle inversée est écrite, avec la restriction à `06-align` nommée
-- [ ] La table des actions compte six lignes, la table de routage six entrées
-- [ ] Aucun décompte d'actions périmé ne subsiste dans `SKILL.md` (`grep -n 'five\|three' SKILL.md` ne renvoie plus de décompte d'actions)
-- [ ] Le frontmatter `description` annonce l'alignement de stratégie et porte au moins une phrase de déclenchement menant à `06-align`
-- [ ] La propriété du document par `aidd-context` reste mentionnée
+- [x] La règle inversée est écrite, avec la restriction à `06-align` nommée
+- [x] La table des actions compte six lignes, la table de routage six entrées
+- [x] Aucun décompte d'actions périmé ne subsiste dans `SKILL.md` (`grep -n 'five\|three' SKILL.md` ne renvoie plus de décompte d'actions)
+- [x] Le frontmatter `description` annonce l'alignement de stratégie et porte au moins une phrase de déclenchement menant à `06-align`
+- [x] La propriété du document par `aidd-context` reste mentionnée
 
 ### Phase 2 : l'audit d'écart
 
@@ -138,10 +138,10 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] L'action décrit ses entrées, sa sortie et son processus dans le format des cinq actions existantes
-- [ ] L'audit d'écart s'appuie explicitement sur `05-stats` et ne redéfinit aucun de ses calculs
-- [ ] Les trois natures d'écart sont nommées et distinguées
-- [ ] Le cas du document absent est traité, et n'aboutit jamais à une création silencieuse
+- [x] L'action décrit ses entrées, sa sortie et son processus dans le format des cinq actions existantes
+- [x] L'audit d'écart s'appuie explicitement sur `05-stats` et ne redéfinit aucun de ses calculs
+- [x] Les trois natures d'écart sont nommées et distinguées
+- [x] Le cas du document absent est traité, et n'aboutit jamais à une création silencieuse
 
 ### Phase 3 : les deux blocs et la voie d'écriture
 
@@ -160,13 +160,13 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] Les deux blocs sont définis, avec la liste exacte de ce que chacun contient
-- [ ] Le bloc faits ne contient rien qui ne soit mesurable par la skill elle-même
-- [ ] L'inventaire des frontières externes figure dans le bloc faits, avec pour chacune si un test la référence ou non
-- [ ] Le bloc stratégie ne contient rien que la skill applique sans validation
-- [ ] Les deux voies d'écriture sont décrites, avec la voie annoncée dans la sortie
-- [ ] La règle de fidélité est écrite : texte remis comme littéral, relecture après écriture, écart rapporté et jamais corrigé d'office
-- [ ] La règle de non-écrasement est écrite
+- [x] Les deux blocs sont définis, avec la liste exacte de ce que chacun contient
+- [x] Le bloc faits ne contient rien qui ne soit mesurable par la skill elle-même
+- [x] L'inventaire des frontières externes figure dans le bloc faits, avec pour chacune si un test la référence ou non
+- [x] Le bloc stratégie ne contient rien que la skill applique sans validation
+- [x] Les deux voies d'écriture sont décrites, avec la voie annoncée dans la sortie
+- [x] La règle de fidélité est écrite : texte remis comme littéral, relecture après écriture, écart rapporté et jamais corrigé d'office
+- [x] La règle de non-écrasement est écrite
 
 ### Phase 4 : validation réelle
 
@@ -195,9 +195,13 @@ flowchart TD
 
 <!-- AI-initiated changes during implementation. Each entry is prefixed with 🤖. -->
 
+- 🤖 **La phase n'est plus déduite — répercussion sur `06-align`.** Amendement transversal décidé pendant cette partie et appliqué aussi à la partie 1 (voir son propre journal d'amendements). Conséquences propres à `06-align` : la phase sort du bloc `MEASURED FACTS` — la skill n'en mesure plus aucune et n'a donc rien à y écrire ; le bloc `PHASE` restitue la question posée à la place des signaux d'inférence ; et une contrainte est ajoutée, celle qui donne à cette action sa raison d'être — **c'est elle qui met fin au questionnement**, en transformant une réponse valable un seul run en déclaration inscrite dans le document du projet. Quand l'utilisateur refuse de la déclarer, l'action dit explicitement que la question sera reposée au run suivant.
+
 ## Log
 
 <!-- APPEND ONLY. One entry per step attempt. Never rewrite. -->
+
+- Phases 1 a 3 — Pass. `SKILL.md` : regle d'ecriture inversee et restreinte a `06-align`, table d'actions et routage a six entrees, `description` du frontmatter etendue a l'alignement. `actions/06-align.md` cree : audit d'ecart adosse a `05-stats`, trois natures d'ecart, cas du document absent, deux blocs a approbation independante, voie d'ecriture annoncee, regle de fidelite et regle de non-ecrasement.
 
 ## Validation flow demonstration
 
