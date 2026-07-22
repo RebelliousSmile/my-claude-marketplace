@@ -1,5 +1,21 @@
 # Changelog — sc-js
 
+## [0.10.0] — 2026-07-22
+
+### Pivot `testing` — exploitable par `strengthen`
+
+- **`Coverage command`** — sort de la ligne « Test runner(s) » et devient une section à part entière, avec les commandes **vérifiées sur un projet réel** (Vitest 4.1.0 / `@vitest/coverage-v8`, 55 fichiers, 1829 tests) et le chemin du fichier produit (`coverage/coverage-summary.json`, une entrée par fichier avec `{total, covered, skipped, pct}` pour lignes, branches, fonctions et instructions). Trois règles d'usage adossées à des pièges constatés : `--coverage.reportOnFailure` obligatoire (un seul test rouge supprime sinon tout le rapport), code de sortie à ignorer (les seuils sont évalués après l'écriture des rapports), et lecture de `covered`/`total` jamais de `pct` seul.
+- **`Source glob & exclusions`** — définit le code de production classable de la stack (`src/`, `lib/`, et pour Nuxt `composables/`, `stores/`, `server/api/`, `middleware/`…) et ce qui ne l'est jamais (artefacts de build, config, `*.d.ts` et code généré, barrels de réexport, fixtures, stories). C'est ce glob qui définit l'univers classé par `strengthen` : le rapport de coverage ne fait que l'enrichir, un fichier du glob absent du rapport est **non couvert**, pas inexistant.
+- **`Risk signals`** — ce qui est structurellement à forte conséquence en JS (argent, autorisation et règles Firestore, persistance destructrice, entrées externes non maîtrisées, état transverse Pinia, routes Nitro exposées) et ce qui ne mérite structurellement pas de test propre (pass-through de framework, getters triviaux, glue générée). **Priorisent sans jamais classer un tier** — l'autorité de tier reste `Tier thresholds`.
+- **Quatre gotchas d'outillage** ajoutés aux trois axes problème/détection/correctif : rapport de coverage supprimé par un test rouge, fichiers non testés absents du rapport sans `coverage.include` (`coverage.all` ayant été supprimé en Vitest 4), `pct` à 100 % trompeur sur un fichier sans branche, et race `ENOENT coverage/.tmp/` du provider v8 à ne pas confondre avec une absence d'outillage.
+- Titres de section maintenus en anglais, alignés mot pour mot sur les noms de champ du contrat de pivot d'`overcode:control` : aucune liste de correspondance n'est nécessaire côté `sc-js`.
+
+## [0.9.0] — 2026-07-21
+
+### Nouveau pivot — `testing` (gouvernance de tests)
+
+- **`skills/sniff/references/capabilities/tools/testing.md`** — premier pivot du plugin destiné à un **autre plugin** : il n'est lu ni par `/sc-js:audit` ni par le matching par chemin, mais découvert par glob (`**/capabilities/**/testing.md`) par la skill `control` d'`overcode`. Fournit les mécaniques JS de gouvernance des tests : runners Vitest/Jest et Playwright, glob des fichiers de test, commande de comptage, raffinements de tier (générique JS/TS, Nuxt, Firebase) et gotchas d'outillage. Ne décide jamais s'il faut écrire un test — c'est `control` qui décide, le pivot ne fait que raffiner pour la stack.
+
 ## [0.8.0] — 2026-06-24
 
 ### Nouvelle skill — `wp-blocks` (validation de blocs Gutenberg)
