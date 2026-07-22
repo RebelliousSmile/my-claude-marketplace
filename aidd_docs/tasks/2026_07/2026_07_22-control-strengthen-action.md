@@ -319,7 +319,43 @@ Rien n'est committé : le dépôt est encore sur `main` avec ces modifications n
 
 **2026-07-22 — Phase 4bis : Pass.** `05-stats.md` était déjà écrit et enregistré dans `SKILL.md` (table, déclencheurs, description, règles transversales). Vérifié contre ses six critères : action strictement en lecture, autorité nommée par son chemin ou défaut générique déclaré, classement `actionable` / `template-shaped`, `budget` alimenté par une limite en nombre de tests uniquement (tout pourcentage reporté à part en `declared`), chaque flag nommant l'action qui le traite, aucun nom d'action `aidd-context` codé en dur. Reste sa validation d'exécution en phase 6.
 
+**2026-07-22 — Phase 5 : Pass (sauf tâche 6, déportée).** Branche `overcode/control-strengthen-action`, trois commits (`feat(overcode)`, `feat(sc-js)`, `chore: bump`), `git status` propre, `main` intact. CHANGELOG `overcode` : `[Unreleased]` promu en `[3.3.0]`, section `Changed — control` ajoutée (contrat de pivot, `04-strengthen`, règle de solde net), et **entrée `[3.2.0]` créée** — cette version avait été publiée sans entrée. CHANGELOG `sc-js` : entrées `[0.10.0]` et `[0.9.0]` écrites, le trou 0.9.0 est comblé. Bumps 3.2.0 → 3.3.0 et 0.9.0 → 0.10.0 dans les `plugin.json` **et** dans `marketplace.json`, qui avait lui-même dérivé (il annonçait encore 3.1.5 / 0.8.0) et dont la description `overcode` ignorait la skill `control`.
+
+Dette constatée, non traitée : les versions `overcode` 3.1.1 à 3.1.5 n'ont aucune entrée de CHANGELOG. Reconstituer leur contenu depuis git relève d'un autre chantier — signalé plutôt que comblé au jugé.
+
+**Tâche 6 (réinstallation) : bloquée sur une action utilisateur.** Le cache chargé est toujours `overcode/3.1.0` et `sc-js/0.7.0` alors que la source du marketplace est `directory` sur ce dépôt : les versions sont épinglées à l'installation. `/plugin install` est une commande interactive de la CLI, hors de portée d'une exécution outillée. **Sans effet sur la phase 6** : `pivot-contract.md` prévoit explicitement l'exécution depuis la racine source (`plugins/<plugin>/`) quand `control` tourne contre un dépôt marketplace, ce qui est exactement le cas ici. La réinstallation reste requise pour l'usage courant de l'utilisateur, pas pour la validation.
+
 **2026-07-22 — `success_condition` : toutes les clauses de code passent.** Une clause cherchait `suite absente` dans un fichier rédigé en anglais ; corrigée en `no suite at all` + `saturation` (le fichier n'a pas été francisé : `overcode` est un tree anglophone). Seule reste ouverte la clause `Validation reelle — Pass`, que la phase 6 seule peut satisfaire.
+
+**2026-07-22 — Phase 6 : Validation reelle — Pass.** Les sept points passent. Détail :
+
+**1. `04-strengthen` exécutée pour de vrai contre `TARGET_PROJECT` — Pass.** Stratégie en vigueur : `aidd_docs/memory/testing.md`, jugée **actionnable** (critères de décision réels, pas un gabarit) ; `budget: null` (le document ne pose aucune limite en nombre de tests, ses seuils 80 % / 100 % partent en `declared`). Univers : 72 fichiers sous `lib/**/*.js`, soit exactement la population du rapport de coverage. Classement produit :
+
+| # | Fichier | Branches | Conséquence | Autre filet | Tier proposé |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `lib/views/dashboard-comptabilite.js` | 0/85 | Argent (comptabilité) | Aucun spec dédié | `contract` |
+| 2 | `lib/views/dashboard-transactions.js` | 0/76 | Argent | Aucun spec dédié | `contract` |
+| 3 | `lib/url-router.js` | 0/42 | Accès / autorisation, blast radius total | Aucun | `contract` |
+| 4 | `lib/views/profil-view.js` | 0/79 | Données personnelles + persistance | Aucun | `contract` |
+| 5 | `lib/views/dashboard-reservations.js` | 0/61 | Engagement client | `booking.spec.js` (4 tests skippés) | `contract` |
+| 6 | `lib/menu-manager.js` | 0/529 | État transverse | Test existant **non instrumenté** | renforcer l'existant |
+| 7 | `lib/init.js` | 694/1198 | Orchestrateur de boot, churn 135 c. / 72 fix | `boot-reload.spec.js` | `e2e` |
+
+Écartés explicitement : `lib/views/dashboard-machines.js` (0/635 — le plus gros gap du dépôt, mais affichage d'inventaire, conséquence faible) et `lib/views/dashboard/translations-matrix.js` (0/305, déjà netté par `dashboard-translations.spec.js` et `dashboard-bloc-i18n.spec.js`).
+
+**2. Cas discriminant — Pass.** `dashboard-comptabilite.js` (85 branches non couvertes) sort **premier**, devant `dashboard-machines.js` (635) et `translations-matrix.js` (305) qui sortent du `top_n`. Un classement au volume de lignes manquantes aurait produit l'ordre exactement inverse. La pondération « conséquence » pilote bien, le volume ne fait qu'ajuster.
+
+**3. Section des exclusions — Pass.** Produite et motivée cas par cas (voir ci-dessus), pas en catégorie abstraite. Les exclusions structurelles du pivot ont joué en amont : les fichiers `*.d.ts`, barrels et fixtures ne sont jamais entrés dans l'univers des 72.
+
+**4. Repli statique (coverage neutralisée) — Pass, et instructif.** Sans rapport, le classement retombe sur glob source + signaux de risque + churn. L'ordre change : `translations-matrix.js` (11 commits sur 90 j) passe **devant** `dashboard-comptabilite.js` (6) et `dashboard-transactions.js` (5), et `url-router.js` (1 commit) s'effondre alors qu'il a le blast radius le plus large du lot. Le repli produit donc un classement défendable mais mesurablement moins bon — ce qui valide l'obligation, écrite dans l'action, de **s'annoncer comme dégradé** plutôt que de se présenter comme le classement de référence.
+
+**5. Cas limite « aucune suite » sur `EMPTY_SUITE_PROJECT` — Pass.** `moodboard-generator` : zéro fichier de test, aucun runner en `devDependencies` (ni Vitest ni Jest), aucun `aidd_docs/memory/`. L'action produit un constat et renvoie vers la définition d'une stratégie, **sans classer**. Classer l'arbre source entier d'un projet sans filet aurait nié la contrainte de nombre : le cas limite tient.
+
+**6. Non-régression `02-audit` — Pass.** Six des sept lignes proposées portent sur des fichiers sans aucun test : aucune intersection possible avec des tests à retirer. La seule intersection est `menu-manager.test.js`, et la proposition y est de **renforcer** le test existant, pas d'en ajouter un — cohérent avec le solde net, pas contradictoire. Ce test n'est par ailleurs pas un candidat au retrait : il vérifie un contrat réel (DEC-017, `uuid_entreprise`).
+
+**7. `05-stats` — Pass sur les deux cas.** Sur `TARGET_PROJECT` : autorité citée par son chemin, classée `actionable`, `budget: null`, seuils 80 % / 100 % reportés en `declared` sans jamais devenir un objectif ; volume réel 35 fichiers unitaires + 21 specs e2e, outillage Vitest 4.1.0 + `@vitest/coverage-v8` + Playwright, flag sur les 14 tests skippés répartis sur 7 specs. Sur `suddenly-muses` (`testing.md` de 14 lignes, sections présentes mais remplies de « None configured yet » / « N/A ») : classé **`template-shaped`**, mapping par défaut annoncé, et le rapport dit que le projet n'a pas de stratégie plutôt que d'en inventer une.
+
+**Découverte de la validation — un filet invisible à la coverage.** `lib/menu-manager.js` remonte à 0/529 branches alors que `tests/unit/menu-manager.test.js` existe et passe : le test charge le module par `readFileSync` + `vm`, que le provider v8 n'instrumente jamais. C'est la démonstration la plus nette de la décision de conception du plan — **le glob source pilote, le rapport enrichit**. Un classement piloté par la coverage aurait rangé ce fichier en tête d'un gap qui n'en est pas un ; en lisant aussi les filets existants, l'action propose de renforcer plutôt que d'ajouter. Aucun changement de code n'est requis : le comportement observé est celui que l'action prescrit déjà.
 
 ## Validation flow demonstration
 
