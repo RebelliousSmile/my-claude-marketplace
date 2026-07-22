@@ -4,6 +4,17 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [3.2.0] - 2026-07-22
+
+### Added
+
+- **Consommation cross-plugin d'un pivot `sc-*`** (`DEC-004`) — premier cas d'un pivot lu par un plugin **autre** que le sien : `sc-js/tools/testing.md` (0.10.0) est découvert **par glob** et consommé par `overcode:control` (3.3.0), qui détient le contrat (`references/pivot-contract.md`). Champs optionnels à repli documenté, titres de section alignés sur le contrat, et frontière d'autorité explicite — un pivot priorise un classement, il ne décide jamais d'un tier. Tout futur pivot `testing` (`sc-php`, `sc-python`…) s'y conforme sans modifier `control`.
+- La résolution de racine du pivot accepte la **racine source** (`plugins/<plugin>/`) quand le consommateur tourne contre le dépôt marketplace — sans quoi aucun pivot n'est testable avant publication, les versions étant épinglées à l'installation.
+
+### Fixed
+
+- **Dérive de `marketplace.json`** — le manifeste annonçait encore `overcode` 3.1.5 et `sc-js` 0.8.0 alors que les plugins étaient publiés en 3.2.0 / 0.9.0, et la description d'`overcode` ignorait la skill `control`. Version du marketplace réalignée sur ce CHANGELOG (elle indiquait 3.0.0 pour une entrée 3.1.0 existante).
+
 ## [3.1.0] - 2026-06-13
 
 ### Added
