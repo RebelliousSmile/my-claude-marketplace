@@ -3,7 +3,7 @@ name: plan
 description: Living implementation plan - frozen objective, phases, and append-only execution Log. Used as input artifact AND as the autonomous-loop tracking file.
 argument-hint: N/A
 objective: "`overcode:control` remplace la contrainte de nombre absolue par une **densité de test** calibrée sur la distribution du projet lui-même — cas de test par point de branchement, référence égale à la médiane du projet — et lit tout dépassement dans les deux sens que le code autorise : un fichier qui fait trop de choses, ou des tests sans pouvoir de détection. La densité priorise et diagnostique ; elle ne refuse jamais un test, ce qui reste l'affaire du tier."
-success_condition: "cd /home/tnn/Projets/my-marketplace && C=plugins/overcode/skills/control && D=$C/references/test-density.md && test -f $D && grep -q 'median' $D && grep -q 'refactoring' $D && grep -q 'never refuses' $D && grep -q 'test-density.md' $C/SKILL.md && grep -q 'density' $C/actions/01-write.md && grep -q 'density' $C/actions/02-audit.md && grep -q 'density' $C/actions/04-strengthen.md && grep -q 'density' $C/actions/05-stats.md && grep -q 'density' $C/actions/06-align.md && grep -q '\"version\": \"3.6.0\"' plugins/overcode/.claude-plugin/plugin.json && grep -q '\"version\": \"3.6.0\"' .claude-plugin/marketplace.json && grep -q '3.6.0' plugins/overcode/CHANGELOG.md && grep -q 'Validation reelle — Pass' aidd_docs/tasks/2026_07/2026_07_22-control-phase-governance-part-4.md"
+success_condition: "cd /home/tnn/Projets/my-marketplace && C=plugins/overcode/skills/control && D=$C/references/test-density.md && test -f $D && grep -q 'median' $D && grep -q 'refactoring' $D && grep -q 'never refuses' $D && grep -q 'test-density.md' $C/SKILL.md && grep -q 'density' $C/actions/01-write.md && grep -q 'density' $C/actions/02-audit.md && grep -q 'density' $C/actions/04-strengthen.md && grep -q 'density' $C/actions/05-stats.md && grep -q 'density' $C/actions/06-align.md && grep -q '\"version\": \"3.7.0\"' plugins/overcode/.claude-plugin/plugin.json && grep -q '\"version\": \"3.7.0\"' .claude-plugin/marketplace.json && grep -q '3.7.0' plugins/overcode/CHANGELOG.md && grep -qE '^- Validation reelle — Pass' aidd_docs/tasks/2026_07/2026_07_22-control-phase-governance-part-4.md"
 iteration: 0
 created_at: "2026-07-22T14:40:00+02:00"
 ---
@@ -51,7 +51,7 @@ Ce plan est rédigé en français ; **les fichiers de skill produits sont rédig
 - `plugins/overcode/skills/control/actions/04-strengthen.md` - ne pas empiler sur un fichier déjà saturé sans le dire
 - `plugins/overcode/skills/control/actions/05-stats.md` - la ligne `budget` devient une densité de référence + les valeurs aberrantes
 - `plugins/overcode/skills/control/actions/06-align.md` - le bloc stratégie propose une densité, plus un plafond absolu
-- `plugins/overcode/README.md`, `plugins/overcode/CHANGELOG.md`, `plugins/overcode/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` - release `3.6.0`
+- `plugins/overcode/README.md`, `plugins/overcode/CHANGELOG.md`, `plugins/overcode/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` - release `3.7.0`
 
 ### Files to delete
 
@@ -149,19 +149,19 @@ flowchart TD
 - [ ] Aucune action ne refuse quoi que ce soit sur la densité
 - [ ] `05-stats` ne produit plus `budget : null` comme état neutre
 
-### Phase 3 : release `3.6.0`
+### Phase 3 : release `3.7.0`
 
 #### Tasks
 
-1. `plugins/overcode/.claude-plugin/plugin.json` → `3.6.0`.
-2. Champ `version` correspondant dans `.claude-plugin/marketplace.json` → `3.6.0`.
-3. `CHANGELOG.md` d'`overcode` : entrée `3.6.0`, en français.
+1. `plugins/overcode/.claude-plugin/plugin.json` → `3.7.0`.
+2. Champ `version` correspondant dans `.claude-plugin/marketplace.json` → `3.7.0`.
+3. `CHANGELOG.md` d'`overcode` : entrée `3.7.0`, en français.
 4. `README.md` d'`overcode` : la densité dans la description de `control`.
 5. Vérifier qu'aucun autre manifeste n'est concerné — `sc-js` n'est pas touché par cette partie.
 
 #### Acceptance criteria
 
-- [ ] Les trois emplacements de version portent `3.6.0`
+- [ ] Les trois emplacements de version portent `3.7.0`
 - [ ] Le CHANGELOG décrit le remplacement de la contrainte de nombre, pas seulement son ajout
 
 ### Phase 4 : validation réelle

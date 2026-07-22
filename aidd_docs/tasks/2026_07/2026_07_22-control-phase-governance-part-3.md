@@ -3,7 +3,7 @@ name: plan
 description: Living implementation plan - frozen objective, phases, and append-only execution Log. Used as input artifact AND as the autonomous-loop tracking file.
 argument-hint: N/A
 objective: "Une bascule de phase dans `overcode:control` est un acte outillé : `06-align` rapporte le solde net entre ce que la phase sortante rend caduc et ce que la phase entrante réclame, et sait proposer une suppression par lot caractérisée par son critère de sélection — le seul endroit de la skill où la confirmation par item est levée. Le sortant repose sur deux motifs : les heuristiques de valeur de `02-audit`, et l'obsolescence de phase, bornée par trois exclusions."
-success_condition: "cd /home/tnn/Projets/my-marketplace && C=plugins/overcode/skills/control && A=$C/actions/06-align.md && grep -q 'net balance' $A && grep -q 'batch' $A && grep -q 'phase-obsolete' $A && grep -q 'selection criterion' $A && grep -q 'exhaustive list' $A && grep -q 'sustaining' $A && grep -q 'batch' $C/SKILL.md && grep -q '06-align' $C/SKILL.md && grep -q 'align' plugins/overcode/README.md && grep -q '3.5.0' plugins/overcode/CHANGELOG.md && grep -q '\"version\": \"3.5.0\"' plugins/overcode/.claude-plugin/plugin.json && grep -q '\"version\": \"3.5.0\"' .claude-plugin/marketplace.json && grep -q '\"version\": \"0.11.0\"' .claude-plugin/marketplace.json && grep -q '\"version\": \"0.11.0\"' plugins/sc-js/.claude-plugin/plugin.json && grep -q '0.11.0' plugins/sc-js/CHANGELOG.md && grep -q 'Validation reelle — Pass' aidd_docs/tasks/2026_07/2026_07_22-control-phase-governance-part-3.md"
+success_condition: "cd /home/tnn/Projets/my-marketplace && C=plugins/overcode/skills/control && A=$C/actions/06-align.md && grep -q 'net balance' $A && grep -q 'batch' $A && grep -q 'phase-obsolete' $A && grep -q 'selection criterion' $A && grep -q 'exhaustive list' $A && grep -q 'sustaining' $A && grep -q 'batch' $C/SKILL.md && grep -q '06-align' $C/SKILL.md && grep -q '3.6.0' plugins/overcode/CHANGELOG.md && grep -q '\"version\": \"3.6.0\"' plugins/overcode/.claude-plugin/plugin.json && grep -q '\"version\": \"3.6.0\"' .claude-plugin/marketplace.json && grep -qE '^- Validation reelle — Pass' aidd_docs/tasks/2026_07/2026_07_22-control-phase-governance-part-3.md"
 iteration: 0
 created_at: "2026-07-22T11:02:26+02:00"
 ---
@@ -171,25 +171,24 @@ flowchart TD
 - [ ] Les exclusions du lot sont écrites : frontières externes, conséquence, seul filet, et absence de motif qualifiant
 - [ ] Un lot réel sur `TARGET_PROJECT` n'est pas vide par construction — si aucun test ne qualifie, l'action le dit, elle ne présente pas un lot creux
 
-### Phase 4 : artefacts de release
+### Phase 4 : artefacts de release `3.6.0`
 
-> Trois parties, une seule version.
+> La release des parties 1 et 2 est partie sans attendre celle-ci : elle porte donc sa propre version.
 
 #### Tasks
 
-1. Mettre à jour la ligne `control` de `plugins/overcode/README.md` : six actions, avec la formule d'une ligne pour `align`.
-2. Écrire la section `[3.5.0]` du `CHANGELOG.md` d'`overcode`, couvrant les trois parties : la phase de projet et ses quatre valeurs, le critère de frontière externe, `06-align` et le retour au `testing.md`, le solde net et le lot borné. Suivre le style des sections `[3.3.0]` et `[3.4.0]` — `Added — control`, `Changed — control`.
-3. **`sc-js` est bumpé** — la question est tranchée ici, pas à l'exécution : la partie 1 modifie un fichier livré de ce plugin (`skills/sniff/references/capabilities/tools/testing.md`), et sa `0.10.0` documente précisément ce pivot, publiée le même jour. Ajout de contenu sans rupture → `0.11.0`. Écrire la section `[0.11.0]` du `CHANGELOG.md` de `sc-js` dans le style de la `[0.10.0]` — titrée par champ de pivot touché (`Risk signals`, gotchas) — et passer `plugins/sc-js/.claude-plugin/plugin.json` en `0.11.0`.
-4. Passer `plugins/overcode/.claude-plugin/plugin.json` en `3.5.0`.
-5. Mettre à jour `.claude-plugin/marketplace.json` sur **deux** entrées : `overcode` — champ `version` en `3.5.0` **et** description enrichie de la gouvernance par phase — et `sc-js` — champ `version` en `0.11.0`. Le champ `version` du manifeste marketplace est distinct de celui du `plugin.json` : ne bumper que le second laisserait le marketplace annoncer une version périmée.
+1. Passer `plugins/overcode/.claude-plugin/plugin.json` en `3.6.0`.
+2. Mettre à jour le champ `version` de l'entrée `overcode` dans `.claude-plugin/marketplace.json` en `3.6.0` — champ distinct de celui du `plugin.json` : ne bumper que le second laisserait le marketplace annoncer une version périmée.
+3. Écrire la section `[3.6.0]` du `CHANGELOG.md` d'`overcode`, couvrant **cette partie seule** : le solde net d'une bascule, le lot caractérisé par son critère de sélection, le motif d'obsolescence de phase et ses trois exclusions. Style des sections `[3.3.0]` à `[3.5.0]` — `Added — control`, `Changed — control`.
+4. Vérifier que la ligne `control` de `plugins/overcode/README.md` n'a plus besoin de retouche : la `3.5.0` y a déjà porté les six actions. Si la bascule change la formule d'une ligne d'`align`, la mettre à jour ici.
+5. `sc-js` n'est **pas** rebumpé : son pivot n'est pas touché par cette partie, et sa `0.11.0` est partie avec la `3.5.0`.
 
 #### Acceptance criteria
 
-- [ ] `README.md` décrit six actions pour `control`
-- [ ] `CHANGELOG.md` d'`overcode` porte une section `[3.5.0]` couvrant les trois parties
-- [ ] `CHANGELOG.md` de `sc-js` porte une section `[0.11.0]`, et son `plugin.json` est en `0.11.0`
-- [ ] `plugin.json` d'`overcode` est en `3.5.0` et sa description marketplace mentionne la phase
-- [ ] Les deux `version` de `marketplace.json` sont alignées sur les `plugin.json` correspondants (`3.5.0` et `0.11.0`)
+- [ ] `plugin.json` d'`overcode` est en `3.6.0`, et le `version` correspondant de `marketplace.json` aussi
+- [ ] `CHANGELOG.md` d'`overcode` porte une section `[3.6.0]` couvrant cette partie seule
+- [ ] La ligne `control` du `README.md` décrit toujours six actions, et reste exacte après la bascule
+- [ ] Aucune version de `sc-js` n'est modifiée par cette partie
 
 ### Phase 5 : validation réelle
 
@@ -215,6 +214,8 @@ flowchart TD
 ## Amendments
 
 <!-- AI-initiated changes during implementation. Each entry is prefixed with 🤖. -->
+
+- 🤖 **La release ne passe plus par cette partie.** Erreur de séquencement du master : les artefacts de release des parties 1 à 3 étaient portés ici, alors que la **validation réelle de la partie 2 exige un plugin commité et bumpé** — l'utilisateur ne peut pas jouer `06-align` sur une skill non publiée. La `3.5.0` (et la `0.11.0` de `sc-js`) est donc partie en couvrant les parties 1 et 2. Cette partie porte désormais sa propre release `3.6.0`, et la partie 4 glisse en `3.7.0`. Décision 18 du master réécrite.
 
 ## Log
 

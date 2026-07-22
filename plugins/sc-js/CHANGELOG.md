@@ -1,5 +1,12 @@
 # Changelog — sc-js
 
+## [0.11.0] — 2026-07-22
+
+### Pivot `testing` — frontières externes
+
+- **`Risk signals`** — le champ porte désormais les **frontières externes de la stack** : SDK tiers chargés côté client, conteneurs de tags, clients d'API sortants, webhooks. Elles alimentent le critère de dépendance à un contrat externe d'`overcode:control` (3.5.0), qui détient le critère mais pas l'inventaire — quelles intégrations existent dans une stack donnée est une connaissance de stack, et c'est déjà le rôle de ce champ. Aucun champ nouveau : le contrat de pivot est inchangé.
+- **Gotcha** ajouté — une majeure de SDK tiers déplace un contrat externe sans qu'une ligne du dépôt ne bouge : aucun signal interne ne se déclenche, et le test qui couvrait le chemin dégradé continue de passer contre une réalité qui a changé.
+
 ## [0.10.0] — 2026-07-22
 
 ### Pivot `testing` — exploitable par `strengthen`
