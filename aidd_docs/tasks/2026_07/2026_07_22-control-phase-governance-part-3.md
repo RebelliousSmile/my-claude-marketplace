@@ -123,9 +123,9 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] La règle nomme `06-align` comme unique lieu du lot, et la bascule de phase comme unique occasion
-- [ ] La justification par le coût de réécriture est écrite dans la règle
-- [ ] `02-audit.md` reste inchangé sur son régime de confirmation
+- [x] La règle nomme `06-align` comme unique lieu du lot, et la bascule de phase comme unique occasion
+- [x] La justification par le coût de réécriture est écrite dans la règle
+- [x] `02-audit.md` reste inchangé sur son régime de confirmation
 
 ### Phase 2 : le solde net de bascule
 
@@ -145,12 +145,12 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] La bascule est détectée par comparaison, jamais supposée
-- [ ] Le sortant repose sur deux motifs nommés — heuristiques de `02-audit` reprises telles quelles, et obsolescence de phase — et l'entrant réutilise `04-strengthen` sans dupliquer son classement
-- [ ] L'obsolescence de phase porte ses trois exclusions écrites : conséquence, contrat externe, seul filet
-- [ ] Le solde net est rapporté d'un seul tenant, et présenté comme un constat
-- [ ] L'exception `sustaining` sur les frontières externes est écrite
-- [ ] Les entrants passent par `01-write` un à un
+- [x] La bascule est détectée par comparaison, jamais supposée
+- [x] Le sortant repose sur deux motifs nommés — heuristiques de `02-audit` reprises telles quelles, et obsolescence de phase — et l'entrant réutilise `04-strengthen` sans dupliquer son classement
+- [x] L'obsolescence de phase porte ses trois exclusions écrites : conséquence, contrat externe, seul filet
+- [x] Le solde net est rapporté d'un seul tenant, et présenté comme un constat
+- [x] L'exception `sustaining` sur les frontières externes est écrite
+- [x] Les entrants passent par `01-write` un à un
 
 ### Phase 3 : le lot borné
 
@@ -165,11 +165,11 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] Les quatre éléments de composition du lot sont décrits
-- [ ] Le fichier exhaustif est produit avant la confirmation, et son chemin est affiché
-- [ ] Le refus en bloc est décrit et ne déclenche aucun repli
-- [ ] Les exclusions du lot sont écrites : frontières externes, conséquence, seul filet, et absence de motif qualifiant
-- [ ] Un lot réel sur `TARGET_PROJECT` n'est pas vide par construction — si aucun test ne qualifie, l'action le dit, elle ne présente pas un lot creux
+- [x] Les quatre éléments de composition du lot sont décrits
+- [x] Le fichier exhaustif est produit avant la confirmation, et son chemin est affiché
+- [x] Le refus en bloc est décrit et ne déclenche aucun repli
+- [x] Les exclusions du lot sont écrites : frontières externes, conséquence, seul filet, et absence de motif qualifiant
+- [x] Un lot réel sur `TARGET_PROJECT` n'est pas vide par construction — si aucun test ne qualifie, l'action le dit, elle ne présente pas un lot creux
 
 ### Phase 4 : artefacts de release `3.6.0`
 
@@ -185,10 +185,10 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `plugin.json` d'`overcode` est en `3.6.0`, et le `version` correspondant de `marketplace.json` aussi
-- [ ] `CHANGELOG.md` d'`overcode` porte une section `[3.6.0]` couvrant cette partie seule
-- [ ] La ligne `control` du `README.md` décrit toujours six actions, et reste exacte après la bascule
-- [ ] Aucune version de `sc-js` n'est modifiée par cette partie
+- [x] `plugin.json` d'`overcode` est en `3.6.0`, et le `version` correspondant de `marketplace.json` aussi
+- [x] `CHANGELOG.md` d'`overcode` porte une section `[3.6.0]` couvrant cette partie seule
+- [x] La ligne `control` du `README.md` décrit toujours six actions, et reste exacte après la bascule
+- [x] Aucune version de `sc-js` n'est modifiée par cette partie
 
 ### Phase 5 : validation réelle
 
@@ -205,11 +205,11 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] Une bascule réelle produit un solde net cohérent avec l'état du projet
-- [ ] Le fichier exhaustif du lot existe et est consultable avant la confirmation
-- [ ] Le refus en bloc ne supprime rien et ne déclenche aucun repli
-- [ ] Aucun test de frontière externe n'entre dans un lot de suppression
-- [ ] La ligne `Validation reelle — Pass` figure dans le Log, écrite après accord utilisateur
+- [x] Une bascule réelle produit un solde net cohérent avec l'état du projet
+- [x] Le fichier exhaustif du lot existe et est consultable avant la confirmation
+- [x] Le refus en bloc ne supprime rien et ne déclenche aucun repli
+- [x] Aucun test de frontière externe n'entre dans un lot de suppression
+- [x] La ligne `Validation reelle — Pass` figure dans le Log, écrite après accord utilisateur
 
 ## Amendments
 
@@ -220,6 +220,9 @@ flowchart TD
 ## Log
 
 <!-- APPEND ONLY. One entry per step attempt. Never rewrite. -->
+
+- Phases 1 a 4 — Pass. `SKILL.md` : la regle « no batch auto-apply » devient une exception bornee deux fois — `06-align` seulement, bascule de phase seulement — justification par le cout de reecriture conservee dans la regle, borne de saturation reprise de `04-strengthen`, `02-audit` inchange. `06-align.md` : blocs de sortie `PHASE SWITCH` et `REMOVAL BATCH`, detection par comparaison, sortant sur deux motifs (heuristiques `02-audit` reprises telles quelles + obsolescence de phase et ses trois exclusions), entrant par `04-strengthen` rejoue et route par `01-write` un a un, solde net presente comme constat, exception `sustaining` sur les frontieres externes, lot a quatre elements avec fichier exhaustif ecrit avant la question, refus en bloc sans repli. Contrainte « ne supprime rien » requalifiee en « hors bascule ». Artefacts `3.6.0` : `plugin.json`, `marketplace.json`, section de CHANGELOG couvrant cette partie seule, ligne `control` du README etendue. `sc-js` non rebumpe.
+- Validation reelle — Pass. Bascule jouee sur `TARGET_PROJECT` : phase declaree `production` (`aidd_docs/memory/testing.md:118`) surchargee vers `sustaining`. Bascule detectee par comparaison. Solde net -1 sur 60 fichiers de contrat. Lot : critere enonce, decompte par motif (trivial 1, doublon 0, getter 0, **obsolescence de phase 0**), echantillon affiche, liste exhaustive ecrite dans un fichier **avant** la question, exclusions chiffrees (3 frontieres externes, 59/60 sans motif qualifiant). **Refus en bloc joue d'abord** : aucun fichier supprime, aucune confirmation par item en repli. **Puis lot accepte sur accord explicite** : exactement un fichier retire (`tests/unit/mode-views-config.test.js`, `expect(true).toBe(true)` sur une source de 5 lignes de commentaire, DEC-001), entree de seuil orpheline retiree de `vitest.config.js` en artefact couple annonce avant consentement. Suite verte apres coup : exit 0, 59 fichiers, 1803 tests, aucun seuil viole, les trois tests de frontiere externe intacts. Resultat notable : le motif propre a la bascule a qualifie **zero** test — 728 des 1375 commits du depot sont tombes sur les 90 derniers jours, 2 fichiers `lib` sur 72 sont calmes ; rien n'est tenu par le churn seul. Le depot ne se comporte pas comme un projet `sustaining`, et l'action le dit au lieu de presenter un lot creux.
 
 ## Validation flow demonstration
 

@@ -49,5 +49,11 @@
   { "prompt": "comparer les deux navigateurs", "expect_action": "mirror" },
   { "prompt": "corriger les différences maquette vs impl", "expect_action": "mirror" },
   { "prompt": "trouve les différences dans cette image", "expect_action": "mirror" },
-  { "prompt": "aligne l'implémentation sur la maquette de gauche", "expect_action": "mirror" }
+  { "prompt": "aligne l'implémentation sur la maquette de gauche", "expect_action": "mirror" },
+  { "prompt": "codex-vision", "expect_action": "codex-vision" },
+  { "prompt": "alias codex-vision", "expect_action": "codex-vision" },
+  { "prompt": "audit le code généré par un autre LLM", "expect_action": "codex-vision" },
+  { "prompt": "fais une analyse critique de ce code IA", "expect_action": "codex-vision" },
+  { "prompt": "vérifie ce diff sans perte de fonctionnalités", "expect_action": "codex-vision" },
+  { "prompt": "review AI-generated code for regressions", "expect_action": "codex-vision" }
 ]

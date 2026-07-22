@@ -8,13 +8,13 @@ Plugin principal, installé globalement (`recommended`). Il ne cible pas une sta
 
 | Skill | Déclencheur | Description |
 |---|---|---|
-| `alias` | `/alias` | Enchaîne des skills AIDD en une commande (plan→challenge, implement→review…) ou réécrit un prompt |
+| `alias` | `/alias` | Enchaîne des workflows en une commande, réécrit un prompt ou audite du code généré par une IA sans régression fonctionnelle |
 | `harvest` | `/harvest` | Maintenance globale — réconcilie le tracker, extrait les décisions, purge l'éphémère |
 | `reconcile-normative` | `/reconcile-normative` | Réconcilie le normatif entre archives, mémoire et règles actives (doublons, contradictions, obsolètes) |
 | `taste` | `/taste [fichier]` | Détecte les contenus obsolètes — assess-doc (claims vs codebase) ou assess-code (imports, symboles) |
 | `foresee` | `/foresee <cible> [--depth N]` | Analyse prospective docs/code/dépendances — problèmes à moyen terme |
 | `behave` | `/behave <action>` | Harness de tests comportementaux (skills, agents, loops) — scaffold de suites de scénarios, run dry-run jugé, régression |
-| `control` | `/control <action>` | Gouvernance de la suite de tests d'un projet, pondérée par sa **phase** (`scaffolding` / `hardening` / `production` / `sustaining`, déclarée ou demandée, jamais déduite) — décide du tier avant écriture (`write`), traque les tests sans valeur (`audit`), classe par risque les tests manquants (`strengthen`), détecte l'outillage mal configuré (`configure`), donne l'état des lieux d'un coup d'œil (`stats`), et réaligne le document de stratégie du projet sur ce qu'il fait réellement (`align`) |
+| `control` | `/control <action>` | Gouvernance de la suite de tests d'un projet, pondérée par sa **phase** (`scaffolding` / `hardening` / `production` / `sustaining`, déclarée ou demandée, jamais déduite) — décide du tier avant écriture (`write`), traque les tests sans valeur (`audit`), classe par risque les tests manquants (`strengthen`), détecte l'outillage mal configuré (`configure`), donne l'état des lieux d'un coup d'œil (`stats`), et réaligne le document de stratégie du projet sur ce qu'il fait réellement — y compris le solde net d'une bascule de phase et son lot de suppression caractérisé par son critère (`align`) |
 | `dig` | `/dig` | Quiz interactif 5 questions sur le codebase ou la memory bank — noté /20 |
 | `web-optimize` | `/web-optimize` | Audit perf web (LCP, CLS, INP, bundle, N+1) selon une checklist stack-aware, roadmap priorisée |
 | `data-optimize` | `/data-optimize` | Audit perf de la couche données (N+1, index, pagination, cache), stack-aware |
@@ -26,7 +26,7 @@ Plugin principal, installé globalement (`recommended`). Il ne cible pas une sta
 | `journey` | `/journey` | Exécute un parcours utilisateur depuis une issue GitHub/GitLab (résultats Playwright) |
 | `status` | `/status` | Santé projet — synthèse/export de la mémoire, rapport de santé, snapshot |
 
-Chaînes d'alias fournies (via `alias`) : `rechallenge`, `endtask`, `bump-plugin`, `previously`, `smarten`, `skillconf`, `aiddlegacy`, `weeklyemail`, `gitit`.
+Chaînes d'alias fournies (via `alias`) : `rechallenge`, `endtask`, `bump-plugin`, `previously`, `smarten`, `skillconf`, `weeklyemail`, `gitit`, `mirror`, `codex-vision`.
 
 ## Licence
 

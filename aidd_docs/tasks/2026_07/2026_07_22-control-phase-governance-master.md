@@ -44,8 +44,8 @@ Le plan `2026_07_22-control-strengthen-action.md` déclarait explicitement en ho
 | --- | --------------------------------------- | --------------- | ------- | --------- |
 | 1   | La phase comme contexte de lecture      | `./2026_07_22-control-phase-governance-part-1.md` | done    | [x]       |
 | 2   | Action `06-align` et retour au document | `./2026_07_22-control-phase-governance-part-2.md` | done    | [x]       |
-| 3   | Bascule de phase et lot borné           | `./2026_07_22-control-phase-governance-part-3.md` | pending | [ ]       |
-| 4   | La densité de test remplace la contrainte de nombre | `./2026_07_22-control-phase-governance-part-4.md` | blocked | [ ]       |
+| 3   | Bascule de phase et lot borné           | `./2026_07_22-control-phase-governance-part-3.md` | done    | [x]       |
+| 4   | La densité de test remplace la contrainte de nombre | `./2026_07_22-control-phase-governance-part-4.md` | pending | [ ]       |
 
 <!-- RULE: Plan N+1 blocked until Plan N checkbox checked -->
 
@@ -58,7 +58,7 @@ Le plan `2026_07_22-control-strengthen-action.md` déclarait explicitement en ho
 3. Débloquer la partie 2, idem
 4. [x] Checkpoint 2 : l'utilisateur confirme que la proposition de `testing.md` sépare bien les faits des décisions, et qu'il a pu refuser le bloc stratégie sans perdre le bloc faits — validé sur `multisite-clients` : le bloc faits a été inscrit seul, le document n'a porté que des faits jusqu'à la validation séparée de la stratégie
 5. Débloquer la partie 3, idem
-6. [ ] Checkpoint 3 : une bascule de phase complète sur un projet réel produit un solde net cohérent, et le lot proposé est refusable en bloc
+6. [x] Checkpoint 3 : une bascule de phase complète sur un projet réel produit un solde net cohérent, et le lot proposé est refusable en bloc — validé sur `multisite-clients` (`production` → `sustaining`) : solde net -1, refus en bloc joué sans suppression ni repli, puis lot accepté retirant exactement le fichier du critère, suite verte après coup
 7. Débloquer la partie 4, idem
 8. [ ] Final : sur un dépôt réel, la densité de référence signale une minorité nette de fichiers, chaque valeur aberrante se vérifie à la main, et aucun tier ne change à cause d'elle
 
