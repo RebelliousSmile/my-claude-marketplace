@@ -8,7 +8,7 @@ Le **détail des skills de chaque plugin vit dans son propre README** — ce tab
 
 | Plugin | Doc | `recommended` | Description |
 |---|---|---|---|
-| [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, readme, changelog…) |
+| [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows projet-agnostiques (alias, harvest, audits perf, gouvernance des tests, readme, changelog…) |
 | [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Design system en entonnoir : define → destructure → adjust → enforce → diffuse |
 | [`game-writer`](plugins/game-writer/README.md) | [README](plugins/game-writer/README.md) · [CHANGELOG](plugins/game-writer/CHANGELOG.md) | — | Écriture narrative de jeu vidéo (8-MINE) : timelines Dialogic, bank d'assets |
 | [`sc-godot`](plugins/sc-godot/README.md) | [README](plugins/sc-godot/README.md) · [CHANGELOG](plugins/sc-godot/CHANGELOG.md) | — | Stack Godot / GDScript : sniff, audit, improve, legacy, teach |

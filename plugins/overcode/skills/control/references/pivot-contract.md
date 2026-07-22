@@ -19,9 +19,23 @@ A `testing` pivot is a markdown file with:
 - **Test runner(s)** - the command(s) used to run unit/contract tests and, separately, E2E tests.
 - **Test file glob** - the pattern(s) identifying test files in this stack (e.g. `**/*.spec.js`, `**/*_test.py`).
 - **Test-count command** - a command or query returning the current number of tests (or test files), used by the `write` action's number-constraint check.
+- **Coverage command** (optional) - the command producing a **machine-readable, per-file** branch/line coverage report for this stack, plus the path of the file it writes. It must be stated as a command `strengthen` can run as-is: a stack's default reporters are frequently human-readable only, so the pivot names the reporter to request explicitly. It must also produce its report **independently of any coverage gate**: a project enforcing thresholds exits non-zero when they are missed, and `strengthen` reads a report, it does not pass a gate. When absent, `strengthen` falls back to a static source-to-test mapping and says so.
+- **Source glob & exclusions** (optional) - the pattern(s) identifying the stack's *classifiable production code*, and what is never classifiable in it (build artifacts, generated code, config files, vendored code). This is the field that defines the universe `strengthen` ranks: the source glob pilots the ranking and the coverage report only enriches it, so a file matching this glob but absent from the coverage report is treated as **uncovered**, never as nonexistent. When absent, `strengthen` falls back to the project's own directory convention and says the universe is approximate.
 - **Tier thresholds** (optional) - stack-specific refinements to the generic tier decision (e.g. "a component with no DOM access is always `contract`").
+- **Risk signals** (optional) - what is structurally high-consequence in this stack (money, auth, persistence, deletion, cross-cutting state) and what structurally does not deserve a test of its own (framework pass-through, generated glue). Consumed by `strengthen` to weight its ranking. **Risk signals prioritise; they never classify a tier.** Tier authority stays with *Tier thresholds* and the generic decision framework - a signal may move a gap to the top of the table, never change the tier proposed for it. When absent, `strengthen` uses its own generic consequence weighting.
 - **Known tooling gotchas** - entries covering three axes (issue, detection, fix) for config bugs specific to this stack's test tooling (e.g. a coverage-threshold config key that silently disables the gate on an invalid schema) - as structured keys or as tagged prose, either is acceptable since `control` reads this pivot as an agent, not as a parser. Consumed by the `configure` action.
 - **Canonical E2E tool** - the name of the E2E framework this stack standardizes on, if any. Informational only - `control` never proposes replacing it, regardless of what this field says.
+
+## Field names versus section titles
+
+The field names above are this contract's vocabulary, in English. A pivot's actual section titles are written in its own plugin's language (see *Language* below), so they will often not match verbatim - `sc-js` writes `Signaux de risque` for **Risk signals**, `Glob source et exclusions` for **Source glob & exclusions**.
+
+Two rules keep discovery from depending on an improvised translation:
+
+- **One section per field, and its title states the field.** A pivot must not scatter a field across sections, nor merge two fields under one title. `control` reads the pivot as an agent, so a faithful translation of the field name is enough - but a title that renames the concept (`Priorités`, `Ce qui compte`) is not: it makes the field undiscoverable.
+- **The pivot declares its own mapping when the titles diverge.** A pivot whose titles are not literal translations carries a short correspondence list, so the binding is stated in the pivot rather than guessed by the reader.
+
+A field `control` cannot locate is treated as **absent**, and its documented fallback applies - never as an error, and never as an invitation to infer the field from a neighbouring section.
 
 ## Absence
 

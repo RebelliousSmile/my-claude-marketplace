@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-js",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "JS knowledge provider: detects runtime (web/desktop), framework (Nuxt/Vue/SvelteKit/Alpine/Vite/Astro), ORMs and capabilities, then emits a pivot manifeste. /sc-js:audit delegates code review to aidd-dev:reviewer. improve, legacy (Vue 2→3, ESM, TS), teach (composables, reactivity, async). Perf pivots (SvelteKit), store pivots (Svelte stores), Biome pivot, data pivots for web-optimize and data-optimize. design-bridge: réceptacle du pivot design (enforce → règle ESLint/Biome + pre-commit ; diffuse → composant Vue 3 SFC ou React). wp-blocks: round-trip de validité des blocs Gutenberg (Playwright, éditeur) pour markup FSE généré hors éditeur.",
   "author": {
     "name": "François-Xavier Guillois"
