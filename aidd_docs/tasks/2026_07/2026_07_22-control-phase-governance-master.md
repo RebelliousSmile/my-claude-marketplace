@@ -43,8 +43,8 @@ Le plan `2026_07_22-control-strengthen-action.md` déclarait explicitement en ho
 | #   | Plan                                    | File            | Status  | Validated |
 | --- | --------------------------------------- | --------------- | ------- | --------- |
 | 1   | La phase comme contexte de lecture      | `./2026_07_22-control-phase-governance-part-1.md` | done    | [x]       |
-| 2   | Action `06-align` et retour au document | `./2026_07_22-control-phase-governance-part-2.md` | pending | [ ]       |
-| 3   | Bascule de phase et lot borné           | `./2026_07_22-control-phase-governance-part-3.md` | blocked | [ ]       |
+| 2   | Action `06-align` et retour au document | `./2026_07_22-control-phase-governance-part-2.md` | done    | [x]       |
+| 3   | Bascule de phase et lot borné           | `./2026_07_22-control-phase-governance-part-3.md` | pending | [ ]       |
 | 4   | La densité de test remplace la contrainte de nombre | `./2026_07_22-control-phase-governance-part-4.md` | blocked | [ ]       |
 
 <!-- RULE: Plan N+1 blocked until Plan N checkbox checked -->
@@ -56,7 +56,7 @@ Le plan `2026_07_22-control-strengthen-action.md` déclarait explicitement en ho
 1. Compléter la partie 1, exécuter son `success_condition` et sa validation réelle
 2. [x] Checkpoint 1 : l'utilisateur confirme que la phase retenue sur les deux projets cibles est celle qu'il déclare, et que sa restitution — valeur, provenance, question posée le cas échéant — est lisible
 3. Débloquer la partie 2, idem
-4. [ ] Checkpoint 2 : l'utilisateur confirme que la proposition de `testing.md` sépare bien les faits des décisions, et qu'il a pu refuser le bloc stratégie sans perdre le bloc faits
+4. [x] Checkpoint 2 : l'utilisateur confirme que la proposition de `testing.md` sépare bien les faits des décisions, et qu'il a pu refuser le bloc stratégie sans perdre le bloc faits — validé sur `multisite-clients` : le bloc faits a été inscrit seul, le document n'a porté que des faits jusqu'à la validation séparée de la stratégie
 5. Débloquer la partie 3, idem
 6. [ ] Checkpoint 3 : une bascule de phase complète sur un projet réel produit un solde net cohérent, et le lot proposé est refusable en bloc
 7. Débloquer la partie 4, idem

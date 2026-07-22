@@ -184,23 +184,27 @@ flowchart TD
 
 #### Acceptance criteria
 
-- [ ] `testing.md` de `TARGET_PROJECT` contient les faits mesurés, et aucune ligne de stratégie non validée
-- [ ] La porte d'approbation d'`aidd-context:05-learn` s'est présentée, et `03-sync` s'est exécuté
-- [ ] Le texte inscrit est identique au texte approuvé, ou l'écart a été rapporté à l'écran
-- [ ] Un second passage sans changement ne propose aucun écart de fait
-- [ ] Aucun fichier n'est créé sur `NO_DOC_PROJECT` après refus
-- [ ] La ligne `Validation reelle — Pass` figure dans le Log, écrite après accord utilisateur
+- [x] `testing.md` de `TARGET_PROJECT` contient les faits mesurés, et aucune ligne de stratégie non validée
+- [x] La porte d'approbation d'`aidd-context:05-learn` s'est présentée, et `03-sync` s'est exécuté
+- [x] Le texte inscrit est identique au texte approuvé, ou l'écart a été rapporté à l'écran
+- [x] Un second passage sans changement ne propose aucun écart de fait
+- [x] Aucun fichier n'est créé sur `NO_DOC_PROJECT` après refus
+- [x] La ligne `Validation reelle — Pass` figure dans le Log, écrite après accord utilisateur
 
 ## Amendments
 
 <!-- AI-initiated changes during implementation. Each entry is prefixed with 🤖. -->
 
+- 🤖 **Un `03-sync` muet est indiscernable d'un échec.** Révélé par la validation réelle : sur `TARGET_PROJECT`, l'étape de resynchronisation sort avec le code 0 et **zéro octet**. C'était légitime — le bloc `<aidd_project_memory>` de `CLAUDE.md` listait déjà `testing.md`, il n'y avait rien à faire — mais je ne l'ai su qu'en allant lire `CLAUDE.md` moi-même. La consigne « s'assurer que l'étape de sync s'exécute » demandait donc une vérification qu'elle ne décrivait pas. `06-align.md` étape 8 reçoit la contrainte manquante : ne jamais prendre une sortie propre pour une preuve, ouvrir le fichier de contexte IA, et **rapporter laquelle des deux situations** s'est produite — resynchronisé, ou déjà à jour.
+- 🤖 **L'idempotence ne se teste pas sur un arbre de travail qui bouge.** `TARGET_PROJECT` a été modifié par l'utilisateur pendant la session (12 fichiers suivis modifiés, 1 nouveau fichier de test non suivi). Le second passage a donc bien détecté des écarts de fait — et c'est le bon résultat : **chaque écart s'explique intégralement par ces modifications** (60 fichiers de contrat au lieu de 59, +1 = le fichier non suivi ; 1783 cas au lieu de 1775 ; 107 déclarations e2e au lieu de 108, dans les deux specs `prerender-*` modifiées), et **aucun autre fait n'a bougé** — jsdom 48, seuils par fichier 12, sources `lib` 72, specs e2e 23, `skip` 17, `fixme` 11, toutes identiques. Le critère « pas de changement → pas d'écart » est validé dans la seule forme que l'arbre permettait : l'audit ne signale que la dérive réelle, et rien qu'elle.
+- 🤖 **Aucune commande de comptage de tests dans le pivot `sc-js`.** Constaté en mesurant le volume : ni Vitest ni Jest n'expose de commande de comptage, le pivot n'en propose donc aucune, et le chiffre de cas est un appariement de motif — déclaré comme tel dans le bloc faits. Playwright, lui, en a une (`--list`), et c'est ce qui a permis de rapporter un chiffre outillé côté e2e. Asymétrie à traiter en **partie 4**, où la contrainte de nombre devient une densité et où la source du dénombrement cesse d'être un détail.
 - 🤖 **La phase n'est plus déduite — répercussion sur `06-align`.** Amendement transversal décidé pendant cette partie et appliqué aussi à la partie 1 (voir son propre journal d'amendements). Conséquences propres à `06-align` : la phase sort du bloc `MEASURED FACTS` — la skill n'en mesure plus aucune et n'a donc rien à y écrire ; le bloc `PHASE` restitue la question posée à la place des signaux d'inférence ; et une contrainte est ajoutée, celle qui donne à cette action sa raison d'être — **c'est elle qui met fin au questionnement**, en transformant une réponse valable un seul run en déclaration inscrite dans le document du projet. Quand l'utilisateur refuse de la déclarer, l'action dit explicitement que la question sera reposée au run suivant.
 
 ## Log
 
 <!-- APPEND ONLY. One entry per step attempt. Never rewrite. -->
 
+- Validation reelle — Pass. `06-align` joue sur `TARGET_PROJECT` (`multisite-clients`), phase repondue `production` par l'utilisateur. Audit d'ecart : trois natures distinguees, cinq faits errones du transcript corriges avant inscription (12 seuils par fichier et non 14 ; 225 tests e2e outilles via `playwright test --list` a cote des 107 declarations ; 17 `test.skip` + 11 `test.fixme` et non « 29 skip » ; hCaptcha sans aucun code appelant). Bloc faits ecrit seul d'abord — le document a porte les faits et rien d'autre, l'approbation independante par bloc est donc demontree — puis bloc strategie apres validation. Regle de fidelite : `diff` texte approuve / texte inscrit vide dans les deux cas, 54 lignes preexistantes intactes. Voie : delegation a `aidd-context:05-learn`, porte `01-scope` presentee, `02-write` execute, `03-sync` sans effet legitime. Non-ecrasement : six faits perimes montres en difference et remplaces sur validation explicite (quatre dans `testing.md`, un dans `CLAUDE.md`, un sixieme sorti de la verification). `NO_DOC_PROJECT` (`moodboard-generator`) : creation refusee, empreinte du projet identique avant et apres, aucun `aidd_docs/` ni `testing.md` cree.
 - Phases 1 a 3 — Pass. `SKILL.md` : regle d'ecriture inversee et restreinte a `06-align`, table d'actions et routage a six entrees, `description` du frontmatter etendue a l'alignement. `actions/06-align.md` cree : audit d'ecart adosse a `05-stats`, trois natures d'ecart, cas du document absent, deux blocs a approbation independante, voie d'ecriture annoncee, regle de fidelite et regle de non-ecrasement.
 
 ## Validation flow demonstration
