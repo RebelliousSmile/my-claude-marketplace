@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "overcode",
-      "version": "3.6.0",
+      "version": "3.7.0",
       "source": "./plugins/overcode",
       "description": "Extends the AIDD framework: dig, harvest, reconcile-normative, data-optimize, web-optimize, seo-optimize, behave, control (gouvernance de la suite de tests, pondérée par la phase de projet : décision de tier, audit des tests sans valeur, manques classés par risque, config d'outillage, état des lieux, alignement du document de stratégie), status. Alias: rechallenge, endtask, bump-plugin, previously, smarten, skillconf, weeklyemail, gitit, mirror, codex-vision.",
       "recommended": true

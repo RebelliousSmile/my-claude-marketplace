@@ -26,7 +26,12 @@ STRATEGY
   authority   : project doc <path> | generic default (references/decision-framework.md)
   readability : actionable | template-shaped (tier decision falls back to the default)
   tiers       : <tiers named by the authority in force, and the mapping applied if any>
-  budget      : <explicit test-count limit from the project doc> | null (no documented budget)
+  budget      : <explicit test-count limit from the project doc> | null (the constraint in force is the density below)
+  density     : median <ratio> over <n> files carrying a matched case (<n> unmatched, excluded)
+              | insufficient population (<n> files carry a test - no median is defensible)
+  outliers    : <n> past 3x the median | none
+              <one line each: <path> <ratio> - refactoring signal (top decile of branch points) | low-value tests (-> 02-audit)>
+  matching    : <how test cases were mapped to source files> - <n> unmatched
   declared    : <any coverage percentage the doc states, verbatim - reported, never used as a target>
   mechanics   : <language plugin> testing pivot | none (stack-agnostic run)
 
@@ -55,11 +60,16 @@ FLAGS
    - **actionable** - it names tiers, or states what must be tested versus not, in terms this skill can map to `contract` / `e2e` / `skip`;
    - **template-shaped** - untouched placeholders, or test *types* listed without decision criteria: report the mapping applied by default (unit and integration -> `contract`, end-to-end -> `e2e`), and flag that the tier decision is effectively still the generic default. A richly written document with no placeholder left still lands here when nothing in it says what deserves a test: **say which of the two it is**, because "empty template" and "detailed but non-deciding" call for opposite fixes;
    - **budget** - populate it only from an explicit test-count limit. A coverage percentage is **not** a budget and never becomes one - report it verbatim as declared, outside the `budget` line.
+
+3-bis. **Density** per `@../references/test-density.md`. A `null` budget is not an absence of constraint, and this is the line that makes that true: compute the project's own distribution from its coverage report, report the median, and list every file past **3× that median** with **which of the two readings applies** - top decile of branch points means the code branches too much (a refactoring signal, and this skill proposes no refactoring), otherwise it means tests with no detection power (which is `02-audit`'s subject, named as such and judged no further here).
+
+   Two things are reported and not glossed over. **The matching rule**, with how many test files it failed to map to a source - a ratio built on a naming convention carries that convention's error rate, and an undeclared approximation is how a number acquires authority it did not earn. And **`insufficient population`** when too few files carry a matched case: emit no median and no outlier rather than a median over three points. That is the ordinary state of a small or young project and is reported as a fact about the measurement, never as a finding about the suite.
 4. **Mechanics provenance** - detect the active language plugin and whether it ships a `testing` pivot (`@../references/pivot-contract.md`). Report found/absent; absent is not an error, it only means the counts and tooling lines are stack-agnostic.
 5. **Volume** - count with the pivot's test-count command when available, which gives test **cases**; otherwise count test **files** matching the glob, and say explicitly that the count is file-level. Split contract vs e2e by the pivot's respective globs, else by the project's own directory convention. Add the source-file ratio using the pivot's source glob when it provides one.
 6. **Tooling** - report the runner command actually wired in the project (not the one the docs claim), whether a coverage gate exists **and is invoked** by something that runs, and the established E2E tool. Never evaluate the E2E tool choice.
 7. **Flags** - one line per divergence found, each naming the action that handles it. Report only what the snapshot itself proves:
-   - no documented strategy -> the generic default is in force, budget unbounded (see the `write` action's number constraint);
+   - no documented strategy -> the generic default is in force, and no **cap** is declared; the number constraint still applies, as the density (see `write`);
+   - density outliers reported -> name the action each one routes to, and route nothing here: refactoring signals are stated and left with the user, low-value readings go to `02-audit`;
    - `testing.md` present but template-shaped -> it exists without governing anything; the fix is to fill it in the project's own terms, through whichever `aidd-context` project-memory action owns that document in the installed version - this skill never writes it;
    - documented strategy naming a tool the project does not actually have installed, or vice versa -> stale document;
    - coverage gate declared but invoked by nothing -> `03-configure`;

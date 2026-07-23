@@ -2,7 +2,7 @@
 
 Find the coverage gaps that actually matter in an existing suite, ranked by risk, and propose the smallest set of tests that closes the most exposure - never a bulk "raise coverage to N%" campaign.
 
-Mirror image of `02-audit`: `audit` removes tests that carry no value, `strengthen` adds the few that carry the most. Both are bounded by the same number constraint - a gap is only worth a test when the risk it leaves open outweighs the maintenance cost of the test.
+Mirror image of `02-audit`: `audit` removes tests that carry no value, `strengthen` adds the few that carry the most. Both are bounded by the same number constraint - now a **density** rather than a count (`references/test-density.md`) - and by the same principle it serves: a gap is only worth a test when the risk it leaves open outweighs the maintenance cost of the test.
 
 ## Inputs
 
@@ -31,7 +31,9 @@ No test file is written as part of producing this table.
 
    Resolve the project **phase** per `@../references/phase-framework.md` and state it in the report header with its provenance (`argument` / `declared <path>` / `answered` / `undetermined`). The phase is **never deduced**: when neither the argument nor the project's documentation gives it, **ask before ranking anything** - the answer is what the order is built on, so a table produced first and re-sorted after is a table the user has already read in the wrong order. The phase re-weights the criteria in step 3; it changes no proposed tier, no exclusion, and neither of the two bounded edge cases below.
 
-   State which strategy is in force. When the project documents none, say so in the report and state the consequence plainly: `limit` stays `null`, so nothing caps the suite's growth but this action's own restraint. An undocumented project is reported as undocumented, never as implicitly following the default.
+   State which strategy is in force. When the project documents none, say so in the report and state the consequence plainly: no **cap** is declared. That is no longer the same as unbounded growth - the number constraint holds as the **density** (`@../references/test-density.md`), which needs nothing declared to apply since its reference is the project's own median. An undocumented project is reported as undocumented, never as implicitly following the default.
+
+   Since this action's whole business is *adding*, the density is the one measurement that can argue against it, and it is read here in one specific way: a gap landing on a file already past 3× the median is not disqualified - it is reported with that fact attached. Many cases on little logic and a real gap remaining usually means the existing cases are aimed at the wrong thing, which makes it an `02-audit` referral first and an addition second. Say that; do not decide it. **Density ranks nothing and refuses nothing here either** - the risk criteria of step 3 own the order.
 
 2. **Establish the universe to rank, then enrich it.** The **Source glob & exclusions** field pilots: it defines which files are classifiable production code. The coverage report only adds branch detail to that universe - it never defines it.
    - Run the pivot's **Coverage command** as written and read per-file **branch/line** coverage. It is expected to produce a machine-readable report and to be decoupled from any coverage gate: a non-zero exit code from a threshold check is not a failure to read. Reason on `covered`/`total`, never on a percentage alone - a file with no branches reports 100% branch coverage while being entirely untested.
