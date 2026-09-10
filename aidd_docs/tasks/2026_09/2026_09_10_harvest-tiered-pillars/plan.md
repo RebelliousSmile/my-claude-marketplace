@@ -1,6 +1,6 @@
 ---
 objective: "Harvest preserves its exhaustive default while allowing one requested pillar to run with only its indispensable, briefly reported dependencies, proven by behavioural regression tests."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Tiered Harvest pillars
