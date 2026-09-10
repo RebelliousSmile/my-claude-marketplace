@@ -46,3 +46,20 @@ Pass when all eight outcomes follow the modern directory/status contract and S4 
 **Frictions / gaps:** discrepancy naming and Git tracking terminology remain implicit in the shared Endtask contract; neither changes Harvest behaviour.
 
 **Tally:** 8/8 PASS (0 N/A) — no extraction regression; no fixture writes.
+
+### 2026-09-10 — selective-routing release regression — 8/8 PASS
+
+| Scenario | Verdict | Evidence |
+|---|---|---|
+| S1 | PASS | Default `all` retains one owned completed feature record. |
+| S2 | PASS | Active feature status remains authoritative. |
+| S3 | PASS | Tracker-less completed roots retain group C and enumerated cleanup. |
+| S4 | PASS | Targeted tracker and cleanup inventories explicitly retain legacy `*.processed.md` roots. |
+| S5 | PASS | Invalid statuses remain excluded from closure and purge. |
+| S6 | PASS | Owned phases cannot become loose plans. |
+| S7 | PASS | Extra files remain individually enumerated before deletion. |
+| S8 | PASS | Active roots, including legacy identities, prevent false orphan cleanup and require clarification with a review. |
+
+**Frictions / gaps:** none material.
+
+**Tally:** 8/8 PASS (0 N/A) — selective routing preserves lifecycle behaviour; no fixture writes.

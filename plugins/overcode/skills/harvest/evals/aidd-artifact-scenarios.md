@@ -46,3 +46,20 @@ Pass when no fixture without a direct `plan.md` is ever evaluated by the plan ag
 **Frictions / gaps:** legacy phase-number terminology remains in scenario prose, while the modular contract expresses the same rules through `06-review.md` and `remaining-artifacts.md`.
 
 **Tally:** 8/8 PASS (0 N/A) — no extraction regression; no fixture writes.
+
+### 2026-09-10 — selective-routing release regression — 8/8 PASS
+
+| Scenario | Verdict | Evidence |
+|---|---|---|
+| A1 | PASS | Full and review inventories retain backlog stories and Local tracker state. |
+| A2 | PASS | Product artifacts remain report-only under every route. |
+| A3 | PASS | Audit runs remain units under review-specific age rules. |
+| A4 | PASS | Non-plan outputs never enter lifecycle cleanup. |
+| A5 | PASS | Autonomous files remain status-driven. |
+| A6 | PASS | PRDs remain excluded from plan age bands and deletion. |
+| A7 | PASS | Cleanup preserves explicit enumeration and confirmation. |
+| A8 | PASS | Direct status reports remain independent and newest-preserving. |
+
+**Frictions / gaps:** none material.
+
+**Tally:** 8/8 PASS (0 N/A) — selective routing preserves artifact classification; no fixture writes.

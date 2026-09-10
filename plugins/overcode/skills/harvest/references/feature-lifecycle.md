@@ -19,3 +19,10 @@ A directory with no direct `plan.md` is never a plan unit.
 For a modern feature directory use its directory name; for a loose legacy artifact use its filename. Normalize both by stripping the leading date and lifecycle/review suffix before comparing. A file inside a modern feature directory always inherits that directory's identity and decision.
 
 Only fall back to orphan when no modern or legacy active/completed root shares the normalized slug. Never interpret a numeric date segment as a tracker identifier.
+
+## Legacy root identities
+
+- A loose `*.processed.md` is a legacy completed plan root.
+- A loose task Markdown file is a legacy active root only after excluding reviews, journeys, stories, checklists/phases, legacy sub-plans with a master, autonomous tracking files, product artifacts, and every file owned by a modern feature directory.
+
+Tracker inventory retains legacy completed roots. Cleanup inventory retains both completed and active legacy root identities so a loose review or journey is never declared orphan while a matching active plan exists.

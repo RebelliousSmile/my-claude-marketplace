@@ -2,7 +2,7 @@
 name: harvest
 description: Global or pillar-targeted maintenance skill — runs all Harvest work by default, or only tracker, normative, cleanup, freshness, or remaining-artifact review with required dependencies
 author: François-Xavier Guillois
-version: 4.7.0
+version: 5.6.0
 vibe_version: ">=1.0.0"
 permissions:
   - files
@@ -43,6 +43,15 @@ Parse arguments before reading any action file or accessing the project:
 - exactly one selector routes to its exact action;
 - an unknown bare token, unknown configuration key, malformed value, or more than one selector stops before work and lists the valid selectors and configuration keys.
 
+Explicit trigger mapping:
+
+- "harvest", "harvest all", or configuration-only input → `all`
+- "harvest tracker" → `tracker`
+- "harvest normative" → `normative`
+- "harvest cleanup" → `cleanup`
+- "harvest freshness" → `freshness`
+- "harvest review" → `review`
+
 Routes and dependency closure:
 
 | Selected | Run in order |
@@ -71,7 +80,7 @@ Use a supplied `key=value` instead of its default. Values are positive integers.
 
 - Never close a tracker item without showing the closing comment and waiting for confirmation.
 - Never delete files without explicit confirmation. Enumerate files; never recursively delete a feature directory.
-- Use only the tracker CLI detected by inventory, never MCP.
+- Use only the tracker interface detected by the tracker action, never MCP.
 - Adapt shell commands to the OS detected once by inventory.
 - A feature lifecycle comes only from direct `plan.md` frontmatter, never a filename suffix or phase contents.
 - Normative reconciliation must complete before cleanup can purge completed work.

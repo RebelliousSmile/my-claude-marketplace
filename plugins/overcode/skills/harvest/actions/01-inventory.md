@@ -10,8 +10,8 @@
 1. Detect the OS once and retain the matching shell conventions.
 2. Validate the requested inventory scope before reading project artifacts.
 3. Apply only the selected scope:
-   - `tracker`: read `feature-lifecycle.md`; inventory completed roots and association candidates.
-   - `cleanup`: read `feature-lifecycle.md`; inventory completed roots, loose reviews/journeys, Learn traces, and association candidates.
+   - `tracker`: read `feature-lifecycle.md`; inventory completed modern roots, legacy `*.processed.md` roots, and association candidates.
+   - `cleanup`: read `feature-lifecycle.md`; inventory completed modern and legacy roots, active modern and legacy root identities, loose reviews/journeys, Learn traces, and association candidates.
    - `freshness`: inventory eligible project Markdown and detect source roots; read neither lifecycle reference.
    - `review`: read `remaining-artifacts.md` and the small ownership/status contract in `feature-lifecycle.md`; inventory remaining units and tracker associations without reading completed-plan bodies.
    - `all`: read both references, list Markdown below both owned AIDD roots, and build the complete classification.
@@ -36,3 +36,4 @@ Print the complete per-type count summary only for `all`; otherwise return the s
 - Invalid direct `plan.md` status is reported and cannot reach closure or cleanup.
 - No harvest report, product artifact, or fixture outside the selected project root enters cleanup classification.
 - No action or reference foreign to the selected scope is required by inventory.
+- Tracker and cleanup scopes retain legacy processed roots; cleanup also retains active-root identities before deciding that a review or journey is orphaned.

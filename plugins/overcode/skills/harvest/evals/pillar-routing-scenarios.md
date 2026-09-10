@@ -61,3 +61,28 @@ The populated fixture pinned Windows and Local tracker detection. The judge reas
 **Frictions / gaps:** scope and configuration share an undefined argument surface; tracker has no status-only mode; dependencies cannot return compact receipts; sibling skills have no direct pillar route; targeted report and instruction-load boundaries are absent. Existing closure, purge, and ordering safety controls are strong.
 
 **Tally:** 4/14 PASS (0 N/A) — missing selective behaviour reproduced; no fixture writes.
+
+### 2026-09-10 — run 2 (post-fix, dry-run, target=Harvest pillars, fixture=tiered-project) — **14/14 PASS**
+
+The same populated fixture and pinned Local tracker environment were reused. The judge loaded only scenario-required instructions and performed no command, delegated call, tracker mutation, or file write.
+
+| # | Behaviour | Verdict | Delta vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| S1 | No-argument exhaustive default | PASS | = PASS → PASS | `SKILL.md` defaults to `all`; `08-all.md` runs one inventory, all pillars, then report. |
+| S2 | Explicit `all` route | PASS | ▲ FAIL → PASS | `all` is an exact selector and `07-report.md` accepts only that route. |
+| S3 | Tracker-only route | PASS | ▲ FAIL → PASS | The route is bounded to `inventory(tracker) → tracker(reconcile)`. |
+| S4 | Normative-only route | PASS | ▲ FAIL → PASS | Normative routes directly to `03-normative.md` with no Harvest inventory. |
+| S5 | Cleanup-only dependency closure | PASS | ▲ FAIL → PASS | Cleanup requires scoped inventory, tracker reconciliation, then normative before purge. |
+| S6 | Freshness-only route | PASS | ▲ FAIL → PASS | Freshness inventory discovers documents and sources only; tracker and lifecycle instructions remain unloaded. |
+| S7 | Review-only status lookup | PASS | ▲ FAIL → PASS | Review uses tracker `status-only`, which forbids comments, writes, closure, and cleanup grouping. |
+| S8 | Cleanup plus configuration | PASS | ▲ FAIL → PASS | The selector and positive integer override parse independently and cleanup remains the detailed result. |
+| S9 | Configuration-only exhaustive default | PASS | = PASS → PASS | Configuration without a selector routes exactly to `all`. |
+| S10 | Review avoids tracker closure | PASS | ▲ FAIL → PASS | `status-only` reads the open Local story without updating it or purging its completed plan. |
+| S11 | Invalid selection refusal | PASS | ▲ FAIL → PASS | Unknown, malformed, or multiple selectors stop before actions or project access. |
+| S12 | Targeted output boundary | PASS | ▲ FAIL → PASS | `pillar-contract.md` requires one detailed result, compact dependencies, omitted unrelated sections, and no report. |
+| S13 | Destructive confirmation control | PASS | = PASS → PASS | Closure preview and explicit enumerated deletion confirmation remain mandatory. |
+| S14 | Normative-before-cleanup control | PASS | = PASS → PASS | `04-cleanup.md` refuses purge until tracker and normative prerequisites complete. |
+
+**Frictions / gaps:** none material. The dry-run proves instruction routing and intended effects; runtime token telemetry and delegated-skill internals remain outside this suite.
+
+**Tally:** 14/14 PASS (0 N/A) — +10 PASS, no PASS → FAIL regression, no fixture writes.

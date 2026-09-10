@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Prove compatibility and publish the contract
@@ -87,4 +87,3 @@ journey
 | 1 | The post-change targeted suite records all specified routes and dependency behaviours as passing, with no PASS-to-FAIL regression in either existing Harvest suite. |
 | 2 | Skill and plugin validation, JSON parsing, cross-reference checks, and the default repository test command all pass; behavioural runs leave the fixture unchanged. |
 | 3 | README and changelog describe the same invocation contract as the router, and every version-bearing Overcode registry or manifest consistently publishes 5.6.0 with a fresh Codex cachebuster. |
-

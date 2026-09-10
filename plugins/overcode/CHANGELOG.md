@@ -4,6 +4,22 @@
 
 ## [Unreleased]
 
+## [5.6.0] — 2026-09-10
+
+### Added
+
+- `harvest` expose cinq piliers ciblables — `tracker`, `normative`, `cleanup`, `freshness` et `review` — tout en conservant `all` comme comportement sans argument. Chaque route charge uniquement son action, ses références et ses prérequis indispensables.
+- Une suite comportementale sur fixture isolée couvre le routage, les dépendances minimales, les refus, la réponse ciblée et les confirmations destructives. Elle reproduit d'abord la limite monolithique à 4/14, puis valide la refonte à 14/14.
+
+### Changed
+
+- Le workflow Harvest monolithique est réparti en huit actions et quatre références spécialisées. `cleanup` conserve tracker puis normatif comme prérequis ; `review` utilise une consultation tracker sans clôture ; `freshness` ne charge que les documents, les sources et Taste.
+- Une exécution ciblée développe seulement le pilier demandé, rend une quittance compacte de ses dépendances et n'écrit pas de rapport Harvest partiel. Le mode complet réutilise un inventaire unique et conserve le rapport historique.
+
+### Security
+
+- Les clôtures et suppressions atteintes par une dépendance gardent leurs aperçus et confirmations explicites. Une sélection inconnue ou ambiguë s'arrête avant tout inventaire, appel externe ou écriture.
+
 ## [5.5.0] — 2026-09-10
 
 ### Added
