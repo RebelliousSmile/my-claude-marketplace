@@ -4,6 +4,18 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [4.3.0] - 2026-09-10
+
+### Added
+
+- `overcode:alias previously` reprend désormais le contexte documentaire d'un projet depuis son état durable avant de produire le snapshot courant.
+- `overcode:taste` évalue la sobriété d'un produit ou d'un code et distingue l'ajout minimal justifié, la conservation, la simplification, la fusion et la suppression sans assimiler volume et valeur.
+- `overcode:foresee` compose une analyse de résilience bornée par scénarios, fondée sur les preuves d'architecture, de tests, de plans, de travaux terminés ou d'horizon des dépendances fournies par AIDD.
+
+### Changed
+
+- Le contrat de délégation AIDD partagé résout les capacités canoniques du catalogue vivant, conserve l'autorité de chaque rapport, expose toutes les écritures dans une quittance et exige un consentement explicite avant toute mutation du produit évalué.
+
 ## [4.2.0] - 2026-09-01
 
 ### Added
