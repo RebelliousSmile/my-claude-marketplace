@@ -29,3 +29,37 @@ Pass when no fixture without a direct `plan.md` is ever evaluated by the plan ag
 | A6 | PASS | Type 9 covers `*-prd.md`; 6d names it among the types that never enter the age table. |
 | A7 | PASS | Phase 1 record building enumerates every artifact of the folder, and Phase 5 forbids unenumerated deletion. |
 | A8 | PASS | Type 4 names `status/`, `memory/`, `audits/` at the `tasks/` root; 6g keeps the most recent report and ages the rest. |
+
+### 2026-09-10 — modular extraction regression — 8/8 PASS
+
+| Scenario | Verdict | Evidence |
+|---|---|---|
+| A1 | PASS | `01-inventory.md` scans tasks and backlog; Local detection and story review preserve done-story deletion. |
+| A2 | PASS | `remaining-artifacts.md` classifies non-story backlog files as product artifacts and forbids purge. |
+| A3 | PASS | Audit directories remain one unit under the audit threshold; pillar files never enter plan age bands. |
+| A4 | PASS | Memory-check directories remain non-plan outputs and use the non-plan age rule. |
+| A5 | PASS | Autonomous tracking uses status only, keeps `in-progress`, and reports iteration. |
+| A6 | PASS | `*-prd.md` remains a report-only product artifact excluded from plan age bands. |
+| A7 | PASS | Every feature-directory file, including extras, is enumerated; recursive deletion is forbidden. |
+| A8 | PASS | Direct status reports age independently and the newest is retained regardless of age. |
+
+**Frictions / gaps:** legacy phase-number terminology remains in scenario prose, while the modular contract expresses the same rules through `06-review.md` and `remaining-artifacts.md`.
+
+**Tally:** 8/8 PASS (0 N/A) — no extraction regression; no fixture writes.
+
+### 2026-09-10 — selective-routing release regression — 8/8 PASS
+
+| Scenario | Verdict | Evidence |
+|---|---|---|
+| A1 | PASS | Full and review inventories retain backlog stories and Local tracker state. |
+| A2 | PASS | Product artifacts remain report-only under every route. |
+| A3 | PASS | Audit runs remain units under review-specific age rules. |
+| A4 | PASS | Non-plan outputs never enter lifecycle cleanup. |
+| A5 | PASS | Autonomous files remain status-driven. |
+| A6 | PASS | PRDs remain excluded from plan age bands and deletion. |
+| A7 | PASS | Cleanup preserves explicit enumeration and confirmation. |
+| A8 | PASS | Direct status reports remain independent and newest-preserving. |
+
+**Frictions / gaps:** none material.
+
+**Tally:** 8/8 PASS (0 N/A) — selective routing preserves artifact classification; no fixture writes.

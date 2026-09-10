@@ -22,7 +22,7 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 | Skill | Invocation | Description |
 |---|---|---|
 | `alias` | `/overcode:alias <nom>` | Enchaîne des workflows en une commande — dix chaînes pré-écrites |
-| `harvest` | `/overcode:harvest` | Maintenance globale — réconcilie le tracker, extrait les décisions, purge l'éphémère |
+| `harvest` | `/overcode:harvest [all\|tracker\|normative\|cleanup\|freshness\|review]` | Maintenance complète par défaut, ou pilier ciblé avec ses seuls prérequis |
 | `reconcile-normative` | `/overcode:reconcile-normative` | Cohérence du normatif entre archives, mémoire et règles actives |
 | `taste` | `/overcode:taste [cible]` | Vérifie la fraîcheur documentaire ou juge la sobriété d'une cible : ajouter le minimum, conserver, simplifier, fusionner ou retirer avec preuves AIDD et empreinte complète |
 | `foresee` | `/overcode:foresee <cible>` | Route les analyses vers AIDD, synthétise jusqu'à trois scénarios de résilience et conserve l'horizon d'abandon, d'isolation et de migration des dépendances |
@@ -41,6 +41,12 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 | `baby` | `/overcode:baby` | Explique, réécrit ou compare un sujet en langage simple, sans jargon non défini |
 | `research` | `/overcode:research` | Recherche documentaire cross-référencée et extraction de terminologie |
 | `extract-pdf` | `/overcode:extract-pdf <action>` | Extraction multi-session de gros PDF vers des sources Markdown brutes sous `sources/`, sans synthèse aval implicite |
+
+### Harvest par pilier
+
+`/overcode:harvest` et `/overcode:harvest all` exécutent les cinq piliers dans l'ordre sûr historique. Un seul pilier peut être ciblé : `tracker`, `normative`, `cleanup`, `freshness` ou `review`. Les paramètres existants restent composables, par exemple `/overcode:harvest cleanup plan_stale_days=30`.
+
+Une exécution ciblée charge uniquement son action et ses dépendances indispensables. `cleanup` réconcilie d'abord le tracker puis le normatif ; `review` consulte le tracker en lecture seule ; `freshness` ne charge ni cycle de vie ni tracker. La réponse développe le pilier demandé et résume brièvement les prérequis. Seul le mode `all` écrit le rapport Harvest global ; toutes les confirmations de clôture et de suppression restent obligatoires.
 
 Chaînes d'alias fournies : `rechallenge`, `endtask`, `bump-plugin`, `previously`, `smarten`, `skillconf`, `weeklyemail`, `gitit`, `mirror`, `codex-vision` — détail dans [`docs/aliases.md`](docs/aliases.md). `mirror` charge le contrat feuille `design/agents/copycat.md` dans un sous-agent natif ; il n'appelle aucune skill `design:copycat`.
 
