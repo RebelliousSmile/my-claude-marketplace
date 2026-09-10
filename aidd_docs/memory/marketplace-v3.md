@@ -6,6 +6,12 @@ Un `version.txt` racine a existé et a été **supprimé le 2026-07-30** : aucun
 
 **⚠ `pnpm test` lit l'arbre de travail, jamais l'état commité.** La règle M1 de `tools/eval/consistency.mjs` (parité version + description `plugin.json` ↔ `marketplace.json`, l. 45-46) passe par `readFileSync(join(ROOT, p))` (l. 29) : elle n'interroge ni l'index ni un commit. Un test vert n'atteste donc rien du contenu qu'on est en train de livrer. **Mesuré le 2026-08-05** sur `feat/design-harness-durcissement` : quatre commits consécutifs (`7c7997f`, `8c3b26b`, `7e7e080`, `53be804`) portaient `plugin=2.9.1` contre `marketplace=2.9.0` — violation M1 dans l'arbre commité — pendant que le gate restait vert, parce que la copie de travail portait déjà le bump à venir. Corollaire pratique : le bump et son contenu doivent atterrir dans **le même commit**, et vérifier la parité se fait sur `git show HEAD:…`, pas sur `pnpm test`.
 
+## Chargement sélectif des workflows composites
+
+Une skill composite coûteuse conserve son comportement complet historique comme route `all`, mais expose comme actions utilisateur les résultats réellement demandables. L'inventaire, l'orchestration et le rapport restent des actions de support : ils ne deviennent pas des choix utilisateur par accident.
+
+Une route ciblée charge uniquement son action, ses prérequis et leurs références. Une dépendance fournit le niveau minimal requis — par exemple une consultation `status-only` ne réutilise pas une réconciliation capable de fermer un item. La détection ou l'état partagé possède un seul propriétaire puis circule dans le contexte d'exécution ; la dupliquer dans plusieurs actions recrée du coût et des contradictions. La réponse développe le résultat demandé, résume les prérequis et omet les sections qui n'ont pas tourné au lieu de fabriquer des zéros.
+
 | Plugin | Rôle |
 |---|---|
 | `overcode` | Extensions AIDD projet-agnostiques : alias, behave, control, harvest, status, taste, foresee, baby, readme, changelog, decompose, journey, reconcile-normative, seo-optimize, data/web/ap-optimize |
