@@ -3,26 +3,31 @@
 ## Inputs
 
 - The execution context from `references/pillar-contract.md`.
-- Inventory scope. In the current exhaustive flow it is `all`.
+- Inventory scope: `all`, `tracker`, `cleanup`, `freshness`, or `review`.
 
 ## Process
 
 1. Detect the OS once and retain the matching shell conventions.
-2. Detect tracker kind once in the priority defined by `references/feature-lifecycle.md`; retain one CLI or Local/None.
-3. List every Markdown file below `aidd_docs/tasks/` and `aidd_docs/backlog/`, skipping an absent root without failure. Never scan `aidd_docs/harvests/`.
-4. Read `references/feature-lifecycle.md` and build feature-directory records before loose-file classification.
-5. Read `references/remaining-artifacts.md` and classify every remaining directory and file in its declared priority order. Do not count an owned file twice.
-6. Detect source roots from repository layout, including `src/`, `app/`, `components/`, and `lib/` when present. Exclude dependencies, VCS metadata, vendor output, and build output.
-7. Store records and source roots in the execution context.
+2. Validate the requested inventory scope before reading project artifacts.
+3. Apply only the selected scope:
+   - `tracker`: read `feature-lifecycle.md`; inventory completed roots and association candidates.
+   - `cleanup`: read `feature-lifecycle.md`; inventory completed roots, loose reviews/journeys, Learn traces, and association candidates.
+   - `freshness`: inventory eligible project Markdown and detect source roots; read neither lifecycle reference.
+   - `review`: read `remaining-artifacts.md` and the small ownership/status contract in `feature-lifecycle.md`; inventory remaining units and tracker associations without reading completed-plan bodies.
+   - `all`: read both references, list Markdown below both owned AIDD roots, and build the complete classification.
+4. Skip an absent owned root without failure and never scan `aidd_docs/harvests/` as task inventory.
+5. For lifecycle scopes, build feature-directory records before loose-file classification and never count an owned file twice.
+6. Detect source roots only for `freshness` or `all`, including `src/`, `app/`, `components/`, and `lib/` when present. Exclude dependencies, VCS metadata, vendor output, and build output.
+7. Store only the records required by the scope in the execution context and identify the scope in the output.
 
 ## Outputs
 
-- Detected OS, shell, tracker kind, and CLI.
-- Feature and artifact records with paths, status/type, age basis, ownership, and association candidates.
-- Detected source roots.
-- Counts for completed and active feature directories, audit runs, non-plan outputs, legacy completed plans, loose reviews, journeys, autonomous files, product artifacts, stories, checklists, sub-plans, and legacy active plans.
+- Detected OS and shell. Tracker detection belongs to `02-tracker.md` and is absent from `freshness` inventory.
+- Feature and artifact records required by the scope, with paths, status/type, age basis, ownership, and association candidates.
+- Detected source roots for `freshness` and `all`.
+- Per-type counts only for types included by the scope.
 
-Print the per-type count summary.
+Print the complete per-type count summary only for `all`; otherwise return the scoped counts to the selected pillar.
 
 ## Test
 
@@ -30,4 +35,4 @@ Print the per-type count summary.
 - Every feature directory is one record, and none of its files is classified independently.
 - Invalid direct `plan.md` status is reported and cannot reach closure or cleanup.
 - No harvest report, product artifact, or fixture outside the selected project root enters cleanup classification.
-
+- No action or reference foreign to the selected scope is required by inventory.

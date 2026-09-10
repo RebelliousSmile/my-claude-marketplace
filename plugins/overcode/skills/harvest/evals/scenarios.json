@@ -1,0 +1,38 @@
+[
+  {
+    "prompt": "harvest",
+    "expect_action": "all"
+  },
+  {
+    "prompt": "harvest all",
+    "expect_action": "all"
+  },
+  {
+    "prompt": "harvest plan_stale_days=30",
+    "expect_action": "all"
+  },
+  {
+    "prompt": "harvest tracker",
+    "expect_action": "tracker"
+  },
+  {
+    "prompt": "harvest normative",
+    "expect_action": "normative"
+  },
+  {
+    "prompt": "harvest cleanup plan_stale_days=30",
+    "expect_action": "cleanup"
+  },
+  {
+    "prompt": "harvest freshness",
+    "expect_action": "freshness"
+  },
+  {
+    "prompt": "harvest review audit_stale_days=30",
+    "expect_action": "review"
+  },
+  {
+    "prompt": "audit this codebase",
+    "expect_action": null
+  }
+]

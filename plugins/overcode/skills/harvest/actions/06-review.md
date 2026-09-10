@@ -15,6 +15,7 @@
 5. Resolve needs-clarification rows through grouped questions.
 6. Present the resolved deletion set and ask once for explicit irreversible confirmation.
 7. After confirmation, delete only the listed paths and return metrics by type.
+8. When targeted, render review in full and summarize inventory plus tracker `status-only`; do not run closure, normative, cleanup, freshness, or report.
 
 ## Outputs
 
@@ -28,4 +29,3 @@
 - The newest direct-root status or memory report is retained regardless of age.
 - Active autonomous files are never deleted because of age.
 - No collected deletion is applied before clarification and final confirmation.
-

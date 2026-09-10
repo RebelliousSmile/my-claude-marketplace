@@ -13,6 +13,7 @@
 4. Run `freshness`, then `review` over the remaining state.
 5. Run `report` with all collected metrics.
 6. Reuse every completed action result and surface skipped or blocked work with its reason.
+7. Load each action and its references only when that step becomes due; do not preload every procedure into the router context.
 
 ## Outputs
 
@@ -24,4 +25,3 @@
 - Every action runs at most once and inventory state is reused.
 - Tracker, normative, and cleanup order is invariant.
 - The complete historical report and every destructive confirmation remain present.
-

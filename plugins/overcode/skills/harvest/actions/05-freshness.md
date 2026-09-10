@@ -2,7 +2,7 @@
 
 ## Inputs
 
-- Remaining Markdown paths after cleanup.
+- Eligible project Markdown paths discovered for this route, excluding paths already deleted when running under `all`.
 - Source roots detected by inventory.
 
 ## Process
@@ -11,6 +11,7 @@
 2. Run its document assessment over remaining Markdown, oldest first, excluding files deleted by cleanup.
 3. Run its code assessment over detected source roots, excluding dependency, VCS, vendor, and build directories.
 4. Collect returned document verdicts, code findings, and delegation receipts without replacing unavailable evidence.
+5. When targeted, render freshness only plus the inventory dependency receipt; do not load lifecycle references or global reporting.
 
 ## Outputs
 
@@ -23,4 +24,3 @@
 - Deleted files are not assessed and source scanning stays within detected roots.
 - Taste remains the owner of freshness evidence and every delegated artifact is disclosed.
 - Missing metrics are reported as limits, never fabricated as zero.
-
