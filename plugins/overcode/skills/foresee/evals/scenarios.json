@@ -2,7 +2,7 @@
   {
     "prompt": "foresee this plan: aidd_docs/tasks/2026_01/some-plan.md",
     "expect_action": "analyze-doc",
-    "expect_delegate": "aidd-refine:04-shadow-areas"
+    "expect_delegate": "aidd-refine:03-shadow-areas"
   },
   {
     "prompt": "prospective analysis of this skill",

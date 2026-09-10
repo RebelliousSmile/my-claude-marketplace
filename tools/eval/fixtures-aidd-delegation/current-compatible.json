@@ -1,0 +1,15 @@
+{
+  "packages": {
+    "aidd-refine": "3.0.1",
+    "aidd-dev": "2.5.0"
+  },
+  "skills": [
+    "aidd-refine:03-shadow-areas",
+    "aidd-refine:02-challenge",
+    "aidd-refine:04-fact-check",
+    "aidd-dev:04-audit",
+    "aidd-dev:03-assert",
+    "aidd-dev:01-plan",
+    "aidd-dev:05-review"
+  ]
+}

@@ -48,7 +48,14 @@
   {
     "prompt": "are there broken imports in src/?",
     "expect_action": "assess-code",
-    "expect_delegate": "aidd-dev:03-assert"
+    "expect_proposed_delegate": "aidd-dev:03-assert",
+    "expect_consent": "required"
+  },
+  {
+    "prompt": "repair the broken imports in src/",
+    "expect_action": "assess-code",
+    "expect_delegate": "aidd-dev:03-assert",
+    "expect_consent": "granted"
   },
   {
     "prompt": "/taste src/views/AddSongView.vue",

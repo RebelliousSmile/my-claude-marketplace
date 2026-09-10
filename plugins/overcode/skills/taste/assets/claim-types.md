@@ -14,7 +14,7 @@ An absent critical claim has more influence than any two informative claims and 
 
 ## External factual claims
 
-Claims whose authority is outside the repository are tagged `external` and carry no local weight. Examples: market share, public product behavior, laws, standards, vendor promises, external dates, and factual comparisons. Delegate them to `aidd-refine:05-fact-check` as extracted text.
+Claims whose authority is outside the repository are tagged `external` and carry no local weight. Examples: market share, public product behavior, laws, standards, vendor promises, external dates, and factual comparisons. Delegate them to `aidd-refine:04-fact-check` as extracted text.
 
 Project tracker state, release assets, and upstream repository facts used by the decision protocol remain eligible only when they are directly tied to this repository's decision subject and their primary source is accessible. Otherwise tag them external.
 

@@ -51,7 +51,7 @@ Pour une reprise de contexte rapide en début de session, l'alias `previously` e
 
 Deux actions selon la cible :
 
-- **`assess-doc`** — classe les affirmations en critique (3), structurelle (2) ou informative (1), les vérifie contre le dépôt et rend score, couverture et veto critique. Sans argument, le scan traite 25 documents prioritaires par défaut et nomme les fichiers non couverts. Les faits externes partent séparément vers `aidd-refine:05-fact-check` et ne gonflent jamais le score local.
+- **`assess-doc`** — classe les affirmations en critique (3), structurelle (2) ou informative (1), les vérifie contre le dépôt et rend score, couverture et veto critique. Sans argument, le scan traite 25 documents prioritaires par défaut et nomme les fichiers non couverts. Les faits externes partent séparément vers `aidd-refine:04-fact-check` et ne gonflent jamais le score local.
 - **`assess-code`** — route une intention explicite : fraîcheur générale vers audit `code-quality`, dépendances vers audit `dependencies`, imports/compilation/typage/exécution vers `aidd-dev:03-assert`. Un chemin nu déclenche une seule question de routage.
 
 C'est la skill à lancer avant de faire confiance à une doc qu'on n'a pas relue depuis longtemps.

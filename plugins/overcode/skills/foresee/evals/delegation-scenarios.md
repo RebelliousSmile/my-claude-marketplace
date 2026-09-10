@@ -10,7 +10,7 @@ Each scenario is scored as Situation → Expected behavior → Pass criteria. Th
 
 | ID | Situation | Expected behavior | Pass criteria |
 |---|---|---|---|
-| F1 | Codex receives an unfinished plan path. | Resolve `aidd-refine:04-shadow-areas` and use Codex-native skill invocation. | Receipt names shadow-areas; no local scoring rubric or foresee history is used. |
+| F1 | Codex receives an unfinished plan path. | Resolve `aidd-refine:03-shadow-areas` and use Codex-native skill invocation. | Receipt names shadow-areas, its report write, and `consent: not-required`; no local scoring rubric or foresee history is used. |
 | F2 | Claude Code receives completed work plus its agreed plan. | Resolve `aidd-refine:02-challenge` and use Claude-native invocation. | Both artifacts reach challenge; receipt is otherwise host-equivalent to F1. |
 | F3 | A general code directory is supplied. | Delegate audit pillar `architecture`. | Exactly one audit route; no per-file local agents or improvement catalogue. |
 | F4 | `aidd-dev` is absent. | Apply the common package-absent failure. | Package and minimum version are named; no local audit runs. |

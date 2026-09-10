@@ -20,7 +20,8 @@ Each scenario is scored as Situation → Expected behavior → Pass criteria. Fi
 | T8 | Fact-check is absent. | Mark external-unverified and qualify the local verdict. | No local fallback and no unqualified global Current. |
 | T9 | Scan finds 60 Markdown files. | Prioritize and assess 25 by default. | All 35 unscanned paths and `25/60` coverage are reported. |
 | T10 | Codex and Claude Code receive the same dependency-deprecation code request. | Delegate audit pillar `dependencies` through native syntax. | Same canonical receipt and no language detector. |
-| T11 | Broken import or compilation concern is explicit. | Delegate `aidd-dev:03-assert`. | No regex import resolver executes. |
+| T11 | Broken import or compilation concern is explicit, but no repair is requested. | Propose `aidd-dev:03-assert` and require consent without invoking it. | Receipt says `consent: required`; no source, test, configuration, or local regex resolver is touched. |
+| T13 | The populated fixture exposes a compiler failure at `src/broken.ts`, and the user explicitly asks Taste to repair it. | Delegate `aidd-dev:03-assert` with granted consent. | Receipt says `consent: granted`, lists every report and assessed-product path named by assert's result or diff under `writes`, and no local regex resolver executes. |
 | T12 | A removed language reference or detector is restored. | Reject the fixture. | Any active reference to the removed engine fails. |
 
 ## Results log
@@ -46,3 +47,27 @@ Repository populated after the weighted-freshness refactor; threshold, decision,
 
 **Frictions / gaps:** T12's automatic enforcement belongs to the repository structural guard; T9 determines `25/60` through selected/eligible fields rather than a mandated literal rendering.
 **Tally:** 12/12 PASS (0 N/A) — initial green run, no fixture writes.
+
+### 2026-09-10 — run 2 (post-fix, dry-run, target=taste consent routing, fixture=my-marketplace + compatible catalogue) — **1/2 PASS**
+
+The populated repository exposes `aidd-dev:03-assert` through `tools/eval/fixtures-aidd-delegation/current-compatible.json`; T13 supplies the compiler-failure state inline. The judge made no fixture write.
+
+| # | Behavior | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| T11 | Compile concern without repair consent | PASS | = | `02-assess-code.md` › Process/Boundaries and the shared routing matrix require `consent: required` without invocation. |
+| T13 | Explicitly consented compilation repair | FAIL | new | The route grants consent, but the receipt contract lists report paths only and does not require copying source/test/config paths from assert's result. |
+
+**Frictions / gaps:** T13 exposed a receipt-contract gap: consented mutations were allowed but not exhaustively disclosed.
+**Tally:** 1/2 PASS (0 N/A) — target fix required; no fixture writes.
+
+### 2026-09-10 — run 3 (post-fix, dry-run, target=taste consent routing, fixture=my-marketplace + compatible catalogue) — **2/2 PASS**
+
+The same populated repository and compatible catalogue were reused; T13 supplies `src/broken.ts` as inline compiler-failure state. The judge made no fixture write.
+
+| # | Behavior | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| T11 | Compile concern without repair consent | PASS | = PASS → PASS | `02-assess-code.md` › Process/Boundaries returns `consent: required` without invocation or product writes. |
+| T13 | Explicitly consented compilation repair | PASS | ▲ FAIL → PASS | `02-assess-code.md` › Process step 5 and the shared receipt contract copy every path named by assert's result or diff into `writes`. |
+
+**Frictions / gaps:** none material; the compiler failure is explicit inline fixture state and all actual mutation paths remain derived from assert's result.
+**Tally:** 2/2 PASS (0 N/A) — consent routing green; no fixture writes.

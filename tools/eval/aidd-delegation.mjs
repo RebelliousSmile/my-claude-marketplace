@@ -11,12 +11,13 @@ const TARGET_ROOTS = [
   join(ROOT, 'plugins/overcode/skills/taste'),
 ];
 const REQUIRED_SKILLS = new Set([
-  'aidd-refine:04-shadow-areas',
+  'aidd-refine:03-shadow-areas',
   'aidd-refine:02-challenge',
-  'aidd-refine:05-fact-check',
+  'aidd-refine:04-fact-check',
   'aidd-dev:04-audit',
   'aidd-dev:03-assert',
   'aidd-dev:01-plan',
+  'aidd-dev:05-review',
 ]);
 const REMOVED = [
   'plugins/overcode/skills/foresee/references/improvement-patterns.md',
@@ -60,6 +61,20 @@ function canonicalSkillFailureProblems(text) {
   return requirements
     .filter(([, pattern]) => !pattern.test(response))
     .map(([requirement]) => `Canonical skill absent response missing ${requirement}`);
+}
+
+function consentContractProblems(text) {
+  const problems = [];
+  for (const field of ['writes:', 'consent:']) {
+    if (!text.includes(field)) problems.push(`delegation receipt missing ${field} field`);
+  }
+  if (!/runtime resolution without repair consent[^\n]*consent: required/i.test(text)) {
+    problems.push('runnable-resolution route missing explicit consent gate');
+  }
+  if (!/Source, tests, configuration, and product data remain untouched/i.test(text)) {
+    problems.push('contract missing assessed-product mutation boundary');
+  }
+  return problems;
 }
 
 function versionAtLeast(actual, minimum) {
@@ -111,6 +126,20 @@ function validateFixtures() {
     throw new Error('positive-known-route: false unknown route');
   }
 
+  const positiveConsent = [
+    'writes: aidd_docs/tasks/audit/report.md',
+    'consent: required',
+    'Imports, compilation, typing, build, or runtime resolution without repair consent | Return with consent: required',
+    'Source, tests, configuration, and product data remain untouched',
+  ].join('\n');
+  if (consentContractProblems(positiveConsent).length) {
+    throw new Error('positive-consent-contract: false contract problem');
+  }
+  const negativeConsent = positiveConsent.replaceAll('consent: required', 'consent: not-required');
+  if (!consentContractProblems(negativeConsent).length) {
+    throw new Error('negative-consent-contract: bypass was accepted');
+  }
+
   const positiveFailure = '| Canonical skill absent | Name the missing skill, package, and minimum compatible version; stop without fallback. |';
   if (canonicalSkillFailureProblems(positiveFailure).length) {
     throw new Error('positive-canonical-skill-failure: false contract problem');
@@ -140,11 +169,11 @@ function validateContract(entries, problems) {
 
 function validateRoutes(problems) {
   const routes = new Map([
-    ['plugins/overcode/skills/foresee/actions/01-analyze-doc.md', ['aidd-refine:04-shadow-areas', 'aidd-refine:02-challenge']],
+    ['plugins/overcode/skills/foresee/actions/01-analyze-doc.md', ['aidd-refine:03-shadow-areas', 'aidd-refine:02-challenge']],
     ['plugins/overcode/skills/foresee/actions/02-analyze-code.md', ['aidd-dev:04-audit', 'architecture', 'code-quality', 'tests']],
     ['plugins/overcode/skills/foresee/actions/03-analyze-dep.md', ['aidd-dev:04-audit', 'dependencies', 'five dependencies']],
-    ['plugins/overcode/skills/taste/actions/01-assess-doc.md', ['aidd-refine:05-fact-check', '--limit 25']],
-    ['plugins/overcode/skills/taste/actions/02-assess-code.md', ['aidd-dev:04-audit', 'aidd-dev:03-assert']],
+    ['plugins/overcode/skills/taste/actions/01-assess-doc.md', ['aidd-refine:04-fact-check', '--limit 25']],
+    ['plugins/overcode/skills/taste/actions/02-assess-code.md', ['aidd-dev:04-audit', 'aidd-dev:03-assert', 'consent: required']],
   ]);
   for (const [path, tokens] of routes) {
     const text = readFileSync(join(ROOT, path), 'utf8');
@@ -172,6 +201,7 @@ function validateStatic() {
   const entries = parseContract(contractText);
   validateContract(entries, problems);
   problems.push(...canonicalSkillFailureProblems(contractText));
+  problems.push(...consentContractProblems(contractText));
   validateRoutes(problems);
   validateSuites(problems);
 
