@@ -4,7 +4,7 @@ Each scenario is scored as Situation → Expected behavior → Pass criteria. Th
 
 ## Target and fixture
 
-- Target: `../SKILL.md`, all three files under `../actions/`, `../../../references/aidd-delegation.md`, and the repository guard `tools/eval/aidd-delegation.mjs`.
+- Target: `../SKILL.md`, all files under `../actions/` and `../references/`, `../../../references/aidd-delegation.md`, and the repository guard `tools/eval/aidd-delegation.mjs`.
 - Populated fixture: this repository after the AIDD-routing refactor, plus the concrete catalogue/manifest state stated in each row. Synthetic absence, version, and 80-dependency variants are reasoned as read-only deltas; they are never written into the repository.
 - How to run: use `overcode:behave run`, read the target and repository read-only, and judge the exact intended route, receipt, report scope, and forbidden local work. F1 is the positive routing control; F10 is the negative no-local-engine control.
 
@@ -20,6 +20,9 @@ Each scenario is scored as Situation → Expected behavior → Pass criteria. Th
 | F8 | Maintainer metadata cannot be sourced. | Record continuity as `unknown` and reduce coverage. | Unknown is absent from the mean denominator and cannot improve horizon. |
 | F9 | A prior local horizon report exists. | Compare only horizon signals. | AIDD CVE/version findings are linked, never copied into persistence. |
 | F10 | A candidate patch presented to the structural guard reintroduces a legacy detector/checklist into doc or code routes. | Reject the candidate patch. | The guard returns non-zero and names the forbidden local engine; accepting the candidate is a failure. |
+| F11 | Explicit code resilience is requested. | Run Audit `architecture`, then Audit `tests`, and synthesize at most three supported scenarios. | Two unchanged reports and receipts are returned; one pillar never masquerades as complete resilience. |
+| F12 | Explicit resilience is requested for an unfinished plan. | Route evidence to `aidd-refine:03-shadow-areas` before synthesis. | No code audit runs and missing recovery evidence stays unknown. |
+| F13 | Explicit resilience is requested for a dependency manifest. | Reuse `analyze-dep`. | Dependency audit and horizon scores are linked once and never copied into a new score. |
 
 ## Results log
 
@@ -53,3 +56,16 @@ Target now includes the repository guard; only F10 is replayed against the same 
 
 **Frictions / gaps:** the gate recognizes the historical paths and algorithm signatures pinned by its negative fixtures; an equivalent engine under wholly new vocabulary would require a new fixture.
 **Tally:** 1/1 PASS (0 N/A) — F10 confirmed green after target-scope repair; no fixture writes.
+
+### 2026-09-10 — run 3 (post-fix, dry-run, target=foresee resilience delegation, fixture=my-marketplace + compatible catalogue) — **3/3 PASS**
+
+The populated repository and compatible catalogue expose Shadow Areas, Challenge and Audit. The judge made no fixture write.
+
+| # | Behavior | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| F11 | Code resilience evidence | PASS | new | `04-analyze-resilience.md` runs architecture then tests, preserves both reports and returns at most three scenarios. |
+| F12 | Prospective-document resilience | PASS | new | Shadow Areas is the only delegate before synthesis; missing recovery remains unknown. |
+| F13 | Dependency resilience | PASS | new | `analyze-dep` remains the single horizon authority and no duplicate score is emitted. |
+
+**Frictions / gaps:** none; suite metadata now loads every Foresee action and reference.
+**Tally:** 3/3 PASS (0 N/A) — all target-specific resilience routes green; no fixture writes.

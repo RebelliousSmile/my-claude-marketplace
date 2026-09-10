@@ -65,6 +65,18 @@ Never revive an Overcode checklist, regex detector, or model-specific fallback a
 | Explicit correctness or coverage concern | `aidd-dev:04-audit`, pillar `tests` |
 | Explicit conflicting signals | Ask once for the primary angle. |
 
+### `foresee analyze-resilience`
+
+| Target kind | Evidence route |
+|---|---|
+| Prospective document | `aidd-refine:03-shadow-areas` |
+| Completed work with agreed reference | `aidd-refine:02-challenge` |
+| Code | `aidd-dev:04-audit`, pillar `architecture`, then `aidd-dev:04-audit`, pillar `tests` |
+| Dependency or manifest | Existing Foresee `analyze-dep` action; keep its AIDD dependency audit and local horizon authoritative |
+| Target kind or lifecycle cannot be determined | Ask once; do not guess or invoke multiple branches |
+
+Return one receipt per invocation. A failed or unscannable applicable input reduces resilience coverage; it never licenses invented evidence or a positive global verdict.
+
 ### `taste assess-code`
 
 | Intent | Route |

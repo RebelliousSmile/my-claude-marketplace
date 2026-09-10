@@ -58,5 +58,21 @@
   {
     "prompt": "implement the auth feature",
     "expect_action": null
+  },
+  {
+    "prompt": "assess the resilience of src/auth/",
+    "expect_action": "analyze-resilience",
+    "expect_delegates": ["aidd-dev:04-audit:architecture", "aidd-dev:04-audit:tests"],
+    "expect_default_limit": 3
+  },
+  {
+    "prompt": "how resilient is this unfinished plan: aidd_docs/tasks/2026_09/example/plan.md",
+    "expect_action": "analyze-resilience",
+    "expect_delegate": "aidd-refine:03-shadow-areas"
+  },
+  {
+    "prompt": "analyze only the architecture coupling in src/auth/",
+    "expect_action": "analyze-code",
+    "expect_pillar": "architecture"
   }
 ]
