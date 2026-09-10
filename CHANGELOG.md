@@ -4,6 +4,16 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [4.4.0] - 2026-09-10
+
+### Added
+
+- `overcode:harvest` accepte désormais un pilier ciblé (`inventory`, `tracker`, `normative`, `cleanup`, `freshness`, `review` ou `report`) tout en conservant l’exécution complète lorsque rien n’est précisé.
+
+### Changed
+
+- Les opérations de maintenance de `harvest` sont chargées à la demande depuis des actions séparées, avec leurs dépendances minimales explicites, afin de réduire la consommation de contexte des parcours ciblés.
+
 ## [4.3.0] - 2026-09-10
 
 ### Added
