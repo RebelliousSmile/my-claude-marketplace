@@ -46,8 +46,8 @@ Apply the project's normative-load rule to all normative sources: drain the arch
 
 ### Sources
 
-- `aidd_docs/internal/decisions/` — normative archive to drain
-- `aidd_docs/memory/` — project memory (auto-loaded)
+- `aidd_docs/memory/internal/decisions/` — normative archive to drain (ADR destination of `aidd-context:10-learn`); legacy projects keep it at `aidd_docs/internal/decisions/` — sweep whichever exists
+- `aidd_docs/memory/` — project memory bank, **flat**: `aidd_docs/memory/<bank>.md`, with `internal/` and `external/` reserved for on-demand notes (`aidd-context:02-project-memory`, `references/structure.md`)
 - `${PROJECT_RULES_ROOT}/` — codified rule references (all categories 00-09)
 - `AGENTS.md` — auto-loaded Codex project instructions, when present
 
@@ -86,7 +86,7 @@ Get-ChildItem -Recurse -Filter "*.md" aidd_docs\memory, ${PROJECT_RULES_ROOT} |
 
 ### Archive sweep
 
-List **every** file in `aidd_docs/internal/decisions/` (and any detected `*/decisions/`, `*/adr/`, `*/archive/`), with no date filter — their mere presence is the anomaly to resolve.
+List **every** file in `aidd_docs/memory/internal/decisions/`, in the legacy `aidd_docs/internal/decisions/`, and in any detected `*/decisions/`, `*/adr/`, `*/archive/`, with no date filter — their mere presence is the anomaly to resolve.
 
 **The incremental scan is NOT a sweep replacement.** A prior harvest may have audited DEC-001 to DEC-024 and a new run may be tempted to scan only DEC-025+. Every file must be **classified** at every run (normative / historical / mixed) — even if previously seen. If a file was classified `historical` in a prior report and remains unchanged, log it as "skipped — historical, audited YYYY-MM-DD" rather than silently ignoring it. Never skip without explicit log entry.
 
@@ -126,7 +126,7 @@ A keyword grep that finds the term inside an example block or descriptive table 
   1. Split normative slice / historical slice
   2. **Choose target — rule or memory** per the criterion below
   3. If **rule**: create/enrich a path-scoped rule; on Codex, also update the bounded normative index in `AGENTS.md` so the reference is discoverable
-  4. If **memory**: pick the target file via the mapping below, read the template `aidd_docs/templates/aidd/memory/<file>.md` for the expected section
+  4. If **memory**: pick the target file via the mapping below. For the expected sections, read the template shipped by `aidd-context:02-project-memory` (`skills/02-project-memory/assets/templates/memory/<capability>/<file>.md`, resolved through host portability; `references/memory-destinations.md` maps template → bank file). If the plugin is not reachable, infer the sections from the target file itself — never fail on a missing template
   5. Insert in the section's format (table row, 3-15 word bullet, H3 subtitle, mermaid block) — prefer existing sections; create a new section only if the file's spirit justifies it.
 
      **Content shaping rules** (apply to memory inserts only; for the rule branch at step 3, follow `${PROJECT_RULES_ROOT}/01-standards/1-rule-writing.md` — 3-7 word imperatives, no inline rationale):
@@ -161,37 +161,46 @@ On ambiguity: if the decision can be expressed as a testable code convention **a
 
 ### Topic → memory file mapping
 
-The mapping below is a starting point, not exhaustive. When a topic spans multiple rows (e.g. auth ∈ {security, backend}), pick the file whose **template section** most closely matches the decision's substance. When no row fits, follow the fallback heuristic at the bottom.
+Bank files are **flat** — `aidd_docs/memory/<file>.md`, kebab-case, never nested. `memory/internal/` and `memory/external/` hold on-demand notes and ADRs, never a bank file. The canonical file list is `aidd-context:02-project-memory`, `references/memory-destinations.md`; a bank only holds the files its capabilities warranted, so a row's file may legitimately be absent.
+
+The mapping below is a starting point, not exhaustive. When a topic spans multiple rows (e.g. auth ∈ {auth, api}), pick the file whose **template section** most closely matches the decision's substance. When no row fits, follow the fallback heuristic at the bottom.
 
 | Decision topic | Memory file | Template sections to favor |
 |---|---|---|
-| Stack, naming, modules, service organization | `architecture.md` | Language/Framework, Naming Conventions, Services communication |
-| Frontend ↔ backend API, request types, validation, error handling | `internal/backend_communication.md` | Services, Data Flow, Error Handling, Validation |
-| Auth flows, security rules, custom claims, session handling, listener cleanup | `internal/backend_communication.md` (auth angle) — prefer a path-scoped rule if the convention is verifiable at write-time | Services, Error Handling |
-| Real-time listeners, websocket / `onSnapshot` patterns | `internal/backend_communication.md` | Data Flow |
-| DB schema, entities, migrations, seeding | `internal/database.md` | Main entities, Migrations, Seeding |
-| Design system, theme, tokens, UI components, accessibility | `internal/design.md` | Design Implementation, Component Standards, Layout System |
-| Forms, client validation, form state | `internal/forms.md` | State Management, Validation, Error handling, Form Flow |
-| Navigation, browsing flow, lists/filters, product UX | `internal/browsing.md` | existing sections |
-| CI/CD, hosting, env vars, monitoring, URLs | `deployment.md` | CI/CD Pipeline, Environments Variables, URLs, Monitoring & Logging |
+| Stack, naming, modules, service organization, i18n | `architecture.md` | Language/Framework, Naming Conventions, Services communication |
+| Internal API surface, request/response types, validation, error handling | `api.md` | Services, Data Flow, Error Handling, Validation |
+| Third-party integrations, SDK wiring, webhooks | `integration.md` | existing sections |
+| Auth flows, security rules, custom claims, session handling | `auth.md` — prefer a path-scoped rule if the convention is verifiable at write-time | existing sections |
+| Real-time listeners, websocket / `onSnapshot` patterns | `realtime.md` | existing sections |
+| DB schema, entities, migrations, seeding | `database.md` | Main entities, Migrations, Seeding |
+| Data modeling, pipelines, storage formats | `data.md` | existing sections |
+| Design system, theme, tokens, UI components, accessibility | `design.md` | Design Implementation, Component Standards, Layout System |
+| Forms, client validation, form state | `forms.md` | State Management, Validation, Error handling, Form Flow |
+| Navigation, browsing flow, lists/filters, product UX | `navigation.md` | existing sections |
+| CI/CD, hosting, env vars, URLs, monitoring, observability, tracking, consent/RGPD | `deployment.md` | CI/CD Pipeline, Environments Variables, URLs, Monitoring & Logging |
+| Runtime topology, containers, provisioning | `infra.md` | existing sections |
 | Caching strategy (HTTP headers, hosting cache, store TTL, query result cache) | `deployment.md` (hosting/CDN angle) or `architecture.md` (in-app cache angle) | CI/CD Pipeline, Services |
 | Feature flags, kill switches, gradual rollout | `deployment.md` | Environments Variables |
+| Notifications (transactional email, marketing flows, push) | `messaging.md` | existing sections |
 | Test strategy, fixtures, mocks, test types | `testing.md` | Testing Strategy, Tools and Frameworks, Mocking |
-| Repo overview | `codebase_map.md` | single flowchart |
+| Repo overview | `codebase-map.md` | single flowchart |
 | VCS, branches, commit conventions | `vcs.md` | template sections |
-| Constants binding the future, business value assertions | `coding_assertions.md` | existing sections |
-| Transverse principles, golden rules, general guardrails | `golden_principles.md` | existing sections |
-| Product context, vision, target audience | `project_brief.md` | existing sections |
-| i18n, localization, locale routing | `architecture.md` | Language/Framework |
-| Performance decisions accumulated within an iteration | `iteration-N-perf-learnings.md` (or custom equivalent) | dedicated section per chain |
-| Observability, tracking, operational metrics | `analytics_runbook.md` (or custom equivalent) | dedicated section |
-| Consent, RGPD, tracking opt-in, cookie banners | `analytics_runbook.md` | dedicated section |
-| Notifications (transactional email, marketing flows, push) | `analytics_runbook.md` or `internal/backend_communication.md` depending on angle | dedicated section |
-| Multi-agent coordination, sub-agent invocation rules, parallel work conventions | `agents_coordination.md` | dedicated section |
-| Custom main workflow, project-specific orchestration deviating from default AIDD flow | `custom-main-workflow.md` | dedicated section |
-| Outside the taxonomy above | **First**: scan existing custom memory files (top-level `memory/*.md` not listed above) for a thematic fit. **Only if no fit**: propose creation to the user, justifying both the new file and the matching new template under `aidd_docs/templates/aidd/memory/`. | dedicated section |
+| Constants binding the future, business value assertions, transverse guardrails | `coding-assertions.md` | existing sections |
+| Product context, vision, target audience | `project-brief.md` | existing sections |
+| Backlog conventions, refinement workflow | `backlog.md` | existing sections |
+| Vendor ecosystem, external services in use | `ecosystem.md` | existing sections |
+| Packaging, publishing, versioning, release channels | `package.md` | existing sections |
+| CLI surface, commands, flags conventions | `cli.md` | existing sections |
+| Mobile-specific conventions | `mobile.md` | existing sections |
+| Desktop-specific conventions | `desktop.md` | existing sections |
+| Performance decisions accumulated within an iteration | custom file, e.g. `iteration-N-perf-learnings.md` | dedicated section per chain |
+| Multi-agent coordination, sub-agent invocation rules | custom file, e.g. `agents-coordination.md` | dedicated section |
+| Project-specific orchestration deviating from the default AIDD flow | custom file, e.g. `custom-main-workflow.md` | dedicated section |
+| Outside the taxonomy above | **First**: scan existing custom bank files (`aidd_docs/memory/*.md` not listed above) for a thematic fit. **Only if no fit**: propose creation to the user, justifying the new file against the canonical list in `references/memory-destinations.md`. | dedicated section |
 
-If no file fits, **propose creation** to the user before acting: every new memory file must align with an existing template under `aidd_docs/templates/aidd/memory/` or justify adding a new template.
+Team-owned documents — `aidd_docs/README.md`, `GUIDELINES.md`, `CONTRIBUTING.md` — are never a migration target: their placeholders belong to a human.
+
+If no file fits, **propose creation** to the user before acting: every new bank file must either match a capability row of `references/memory-destinations.md` or be justified as a custom bank file.
 
 Any other deletion of a memory file → **user confirmation** before acting.
 
@@ -222,9 +231,9 @@ Get-ChildItem -Recurse -Filter "*.md" ${PROJECT_RULES_ROOT} |
 ### For each candidate rule
 
 1. Extract **key terms**: technical symbols named in the rule (file, flag, function, constant, lib). Ignore generic words (`must`, `never`, `pattern`, etc.).
-2. For each term, grep in `aidd_docs/memory/` and `aidd_docs/internal/decisions/`:
+2. For each term, grep in `aidd_docs/memory/` (bank + `internal/decisions/`) and in the legacy `aidd_docs/internal/decisions/`:
    ```bash
-   rg "<term>" aidd_docs/memory aidd_docs/internal/decisions
+   rg "<term>" aidd_docs/memory aidd_docs/internal/decisions 2>/dev/null
    ```
 3. Filter hits with `mtime` > rule's modification date.
 4. **If hits found**: flag "rule potentially stale — verify contradiction" with:

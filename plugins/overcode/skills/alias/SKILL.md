@@ -28,7 +28,7 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 01  | `rechallenge` | Plan the current task, then challenge until 0 deal-breakers and 0 suggestions  | current task in context      |
 | 02  | `endtask`     | Commit → resolve implemented plan directory → learn (auto) → merge/push → changelog → push tags → close issue | current branch + optional issue number |
 | 03  | `bump-plugin` | Bump version + description across plugin.json and marketplace.json → verify → commit → push | plugin name + version or bump type |
-| 04  | `previously`  | Project snapshot with status context — optional backlog sync + status summary + tests/git/lint snapshot | optional depth (commit count or duration like 7d), `--backlog <file.md>`, and optional `--milestone`/`--ml <title>` |
+| 04  | `previously`  | Documentary catch-up — previous conversations + `aidd_docs/` movement + git state, no build and no audit | optional depth (commit count or duration like 7d), `--backlog <file.md>`, and optional `--milestone`/`--ml <title>` |
 | 05  | `smarten`     | Rewrite a prompt file in place — remove fluff, compress steps, bullet points    | file path |
 | 06  | `skillconf`   | Classify enabled skills as auto-trigger vs user-invocable-only → update skillOverrides | settings.json accessible |
 | 07  | `weeklyemail` | Collecte les commits de la semaine sur tous les dépôts GitHub ou GitLab accessibles et génère un e-mail client synthétique | plateforme (`github` / `gitlab`) + optionnel `since` |

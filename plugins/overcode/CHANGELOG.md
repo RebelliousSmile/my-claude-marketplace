@@ -4,6 +4,26 @@
 
 ## [Unreleased]
 
+## [5.4.0] — 2026-09-10
+
+### Added
+
+- `harvest` inventorie désormais `aidd_docs/backlog/` en plus de `aidd_docs/tasks/` : les user stories d'`aidd-pm` sont lues dans `aidd_docs/backlog/stories/`, ce qui rend de nouveau détectable le tracker local, et les autres artefacts produit (tasks, defects, spikes, epics, `*-prd.md`) sont comptés sans jamais être proposés à la suppression.
+- `harvest` reconnaît les répertoires AIDD sans `plan.md` : les campagnes d'audit `<yyyy_mm_dd>_audit/` d'`aidd-dev:04-audit` et les sorties non-plan (`<yyyy_mm_dd>_memory-check/`, run browser-QA) sont traitées comme des unités soumises à la règle des 90 jours, et les fichiers de suivi autonome d'`aidd-dev:09-for-sure` sont arbitrés sur leur statut, jamais sur leur âge.
+- `status report` accepte `--audit` : les axes d'audit et de sécurité ne sont exécutés sur le code que sur demande explicite. Par défaut le rapport réutilise la dernière campagne `aidd-dev:04-audit` avec sa date, ou signale `none on record`.
+
+### Changed
+
+- `alias previously` devient une reprise de contexte documentaire et ne lance plus aucun build : plus d'escalade vers `status report`, plus de suite de tests, de couverture ni de lint, plus de fan-out de trois sous-agents. La synthèse est reconstruite depuis les conversations précédentes (`~/.claude/history.jsonl` filtré sur le projet, titres de session et résumés de compaction des transcripts) et depuis ce qui a bougé dans `aidd_docs/` (statuts des `plan.md`, phase en cours, `review.md`, banques de mémoire touchées par `10-learn`, backlog ouvert, suivis autonomes), complétées par l'état git. La sortie mène désormais avec le point de reprise et affiche la fraîcheur de chaque source. Budget cible sous 20 secondes, chaque sonde sous `timeout` et dégradée en `N/A` plutôt que bloquante ; l'information peut diverger du code, les traitements suivants réalignent.
+- `status report` digère l'arborescence des tâches par métadonnées seules — frontmatter `status:` des `plan.md`, noms et dates de modification en repli — au lieu de lire et classer chaque document, et exclut les répertoires de rapports du décompte des plans.
+
+### Fixed
+
+- `harvest` couvre les racines de rapports `aidd_docs/tasks/status/`, `tasks/memory/` et `tasks/audits/`, écrites directement sous `tasks/` et donc hors de la règle des répertoires mensuels : leurs fichiers datés sont vieillis un par un, le plus récent est toujours conservé, et aucun ne peut plus être classé « plan actif hérité » puis supprimé sur l'âge.
+- `harvest` et `reconcile-normative` ne lisent plus de template sous `aidd_docs/templates/`, racine disparue de la structure AIDD : le commentaire de clôture d'issue et le rapport de récolte sont inline dans `harvest`, et les sections attendues d'un fichier de mémoire proviennent des templates livrés par `aidd-context:02-project-memory`.
+- `reconcile-normative` cible la banque de mémoire AIDD actuelle : fichiers à plat en kebab-case (`api.md`, `auth.md`, `design.md`, `navigation.md`, `codebase-map.md`…) au lieu de l'ancienne arborescence `internal/` en snake_case, et archive normative balayée dans `aidd_docs/memory/internal/decisions/` avec repli sur l'emplacement historique.
+- `harvest` cite `aidd-dev:01-plan` (`references/plan-status.md`) comme propriétaire du cycle de vie des statuts, détecte les répertoires sources en phase 1 pour la phase 5b qui les réclamait, et ne présume plus que `10-learn` a tourné : un plan clos sans `endtask` déclenche une alerte avant purge.
+
 ## [5.3.0] — 2026-09-02
 
 ### Added
