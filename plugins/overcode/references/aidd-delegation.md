@@ -75,6 +75,17 @@ Never revive an Overcode checklist, regex detector, or model-specific fallback a
 | Imports, compilation, typing, build, or runtime resolution without repair consent | Return the proposed `aidd-dev:03-assert` route with `consent: required`; do not invoke it |
 | A source path without intent | Ask once which of the three lenses is wanted. |
 
+### `taste assess-sobriety`
+
+| Target kind | Evidence route |
+|---|---|
+| Repository or module | `aidd-dev:04-audit`, pillar `code-quality` |
+| Diff with its stated need | `aidd-dev:05-review`, axis `relevancy` |
+| Completed feature or work with an agreed reference | `aidd-refine:02-challenge` |
+| Target kind cannot be determined | Ask once for repository/module, diff, or completed work; do not delegate silently |
+
+The delegate owns its findings and persisted report. Taste owns the later product-purpose, footprint, loss, and `Add minimally | Retain | Simplify | Merge | Remove` verdict. It must not rescore the delegate.
+
 ## Legacy flags
 
 - Default: return the delegated report and receipt.

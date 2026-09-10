@@ -4,7 +4,7 @@ Each scenario is scored as Situation → Expected behavior → Pass criteria. Fi
 
 ## Target and fixture
 
-- Target: `../SKILL.md`, both files under `../actions/`, both files under `../assets/`, and `../../../references/aidd-delegation.md`.
+- Target: `../SKILL.md`, all files under `../actions/`, `../assets/`, and `../references/`, plus `../../../references/aidd-delegation.md`.
 - Populated fixture: this repository after the weighted-freshness refactor, plus the exact weighted claim set, decision evidence, catalogue state, and file count stated in each row. Numeric boundary cases are complete inline data fixtures; no project file is mutated.
 - How to run: use `overcode:behave run`, read the target and repository read-only, and judge verdict math, qualification, intended delegation, and forbidden local code analysis. T2 is the positive threshold control; T12 is the negative removed-engine control.
 
@@ -22,6 +22,9 @@ Each scenario is scored as Situation → Expected behavior → Pass criteria. Fi
 | T10 | Codex and Claude Code receive the same dependency-deprecation code request. | Delegate audit pillar `dependencies` through native syntax. | Same canonical receipt and no language detector. |
 | T11 | Broken import or compilation concern is explicit, but no repair is requested. | Propose `aidd-dev:03-assert` and require consent without invoking it. | Receipt says `consent: required`; no source, test, configuration, or local regex resolver is touched. |
 | T13 | The populated fixture exposes a compiler failure at `src/broken.ts`, and the user explicitly asks Taste to repair it. | Delegate `aidd-dev:03-assert` with granted consent. | Receipt says `consent: granted`, lists every report and assessed-product path named by assert's result or diff under `writes`, and no local regex resolver executes. |
+| T14 | The user requests sobriety of a repository or module. | Delegate evidence to `aidd-dev:04-audit`, pillar `code-quality`, then let Taste author the verdict. | Audit report is unchanged and disclosed; no AIDD severity is rescored as product value. |
+| T15 | A diff and its need are supplied for sobriety. | Delegate evidence to `aidd-dev:05-review`, axis `relevancy`. | Review requires AIDD Dev 2.5.0, its report is preserved, and Taste owns the later footprint verdict. |
+| T16 | Completed work and its agreed reference are supplied for sobriety. | Delegate evidence to `aidd-refine:02-challenge`. | Challenge report remains authoritative and Taste does not duplicate its correctness score. |
 | T12 | A removed language reference or detector is restored. | Reject the fixture. | Any active reference to the removed engine fails. |
 
 ## Results log
@@ -71,3 +74,16 @@ The same populated repository and compatible catalogue were reused; T13 supplies
 
 **Frictions / gaps:** none material; the compiler failure is explicit inline fixture state and all actual mutation paths remain derived from assert's result.
 **Tally:** 2/2 PASS (0 N/A) — consent routing green; no fixture writes.
+
+### 2026-09-10 — run 4 (post-fix, dry-run, target=taste sobriety delegation, fixture=my-marketplace + compatible catalogue) — **3/3 PASS**
+
+The populated repository and `current-compatible.json` expose Audit, Review, and Challenge at their required versions. The judge made no fixture write.
+
+| # | Behavior | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| T14 | Repository/module evidence | PASS | new | `03-assess-sobriety.md` and the shared matrix route Audit `code-quality`; Taste owns the verdict. |
+| T15 | Diff relevancy evidence | PASS | new | AIDD Dev 2.5.0 satisfies Review `relevancy`; its report is preserved and disclosed. |
+| T16 | Completed-work challenge evidence | PASS | new | Challenge remains authoritative; Taste separately judges purpose and footprint. |
+
+**Frictions / gaps:** none; suite metadata now loads all Taste actions and sobriety references.
+**Tally:** 3/3 PASS (0 N/A) — all sobriety delegation routes green; no fixture writes.

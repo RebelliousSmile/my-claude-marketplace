@@ -174,6 +174,7 @@ function validateRoutes(problems) {
     ['plugins/overcode/skills/foresee/actions/03-analyze-dep.md', ['aidd-dev:04-audit', 'dependencies', 'five dependencies']],
     ['plugins/overcode/skills/taste/actions/01-assess-doc.md', ['aidd-refine:04-fact-check', '--limit 25']],
     ['plugins/overcode/skills/taste/actions/02-assess-code.md', ['aidd-dev:04-audit', 'aidd-dev:03-assert', 'consent: required']],
+    ['plugins/overcode/skills/taste/actions/03-assess-sobriety.md', ['aidd-dev:04-audit', 'aidd-dev:05-review', 'aidd-refine:02-challenge', 'Add minimally', 'Retain', 'Simplify', 'Merge', 'Remove']],
   ]);
   for (const [path, tokens] of routes) {
     const text = readFileSync(join(ROOT, path), 'utf8');
