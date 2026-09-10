@@ -29,3 +29,20 @@ Pass when all eight outcomes follow the modern directory/status contract and S4 
 | S6 | PASS | `endtask` verifies every declared phase; harvest preserves parent-directory ownership. |
 | S7 | PASS | `endtask` verifies tracked durable files; harvest forbids recursive or unenumerated deletion. |
 | S8 | PASS | Neither skill derives completion from `review.md`. |
+
+### 2026-09-10 — modular extraction regression — 8/8 PASS
+
+| Scenario | Verdict | Evidence |
+|---|---|---|
+| S1 | PASS | `feature-lifecycle.md` builds one record per feature directory and `01-inventory.md` prevents owned files from being reclassified. |
+| S2 | PASS | `feature-lifecycle.md` preserves `pending`, `in-progress`, and `blocked` as active states. |
+| S3 | PASS | Tracker-less completed roots map to C and `04-cleanup.md` enumerates every file before confirmation. |
+| S4 | PASS | `remaining-artifacts.md` isolates loose `*.processed.md` as legacy completed work. |
+| S5 | PASS | Missing, malformed, and unknown direct statuses are invalid and excluded from closure and purge. |
+| S6 | PASS | Feature-directory phases remain owned by their parent and never become loose plans. |
+| S7 | PASS | Inventory includes every extra file and cleanup permits only explicitly enumerated paths. |
+| S8 | PASS | Active directories containing `review.md` require clarification; completion is never inferred. |
+
+**Frictions / gaps:** discrepancy naming and Git tracking terminology remain implicit in the shared Endtask contract; neither changes Harvest behaviour.
+
+**Tally:** 8/8 PASS (0 N/A) — no extraction regression; no fixture writes.
