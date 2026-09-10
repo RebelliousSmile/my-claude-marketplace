@@ -3,7 +3,7 @@ name: foresee
 description: >-
   Route prospective document and code analysis to installed AIDD skills, analyze dependency horizons, or synthesize bounded resilience scenarios across change impact, detection, containment, recovery, and reversibility. Use for foresee, resilience, future-problem analysis, discussion, or follow-up planning. Do NOT use to run tests, implement features, or duplicate a general audit.
 author: François-Xavier Guillois
-version: 4.7.0
+version: 5.5.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash

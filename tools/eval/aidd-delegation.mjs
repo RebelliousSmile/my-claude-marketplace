@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const CONTRACT = join(ROOT, 'plugins/overcode/references/aidd-delegation.md');
+const BUNDLED_CATALOG = join(ROOT, 'tools/eval/fixtures-aidd-delegation/current-compatible.json');
 const TARGET_ROOTS = [
   join(ROOT, 'plugins/overcode/skills/foresee'),
   join(ROOT, 'plugins/overcode/skills/taste'),
@@ -258,14 +259,15 @@ if (args.length) {
 
 try {
   const { entries, problems } = validateStatic();
+  problems.push(...validateCatalog(entries, loadCatalog(BUNDLED_CATALOG)));
   if (catalogPath) problems.push(...validateCatalog(entries, loadCatalog(catalogPath)));
   if (problems.length) {
     console.error(`✗ aidd-delegation — ${problems.length} problem(s)`);
     for (const problem of problems) console.error(`  - ${problem}`);
     process.exit(1);
   }
-  const live = catalogPath ? `; live catalog ${catalogPath} resolved` : '; static contract only';
-  console.log(`✓ aidd-delegation — ${entries.length} canonical skills${live}; negative fixtures discriminant`);
+  const live = catalogPath ? `; live catalog ${catalogPath} resolved` : '';
+  console.log(`✓ aidd-delegation — ${entries.length} canonical skills; bundled compatible catalog resolved${live}; negative fixtures discriminant`);
 } catch (error) {
   console.error(`✗ aidd-delegation — ${error.message}`);
   process.exit(1);

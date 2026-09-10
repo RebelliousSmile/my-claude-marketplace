@@ -69,3 +69,26 @@ The populated repository and compatible catalogue expose Shadow Areas, Challenge
 
 **Frictions / gaps:** none; suite metadata now loads every Foresee action and reference.
 **Tally:** 3/3 PASS (0 N/A) — all target-specific resilience routes green; no fixture writes.
+
+### 2026-09-10 — run 4 (regression, dry-run, target=foresee delegation, fixture=my-marketplace + compatible catalogue) — **13/13 PASS**
+
+The populated repository, inline delegate states, bundled catalogue, and structural guard were reused. The judge made no fixture write.
+
+| # | Behavior | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| F1 | Prospective document | PASS | = | Current Shadow Areas route and receipt held. |
+| F2 | Completed work | PASS | = | Challenge still receives work and reference. |
+| F3 | General code | PASS | = | Non-resilience code still routes one architecture audit. |
+| F4 | Missing AIDD Dev | PASS | = | Package failure remains explicit without fallback. |
+| F5 | Old AIDD Dev | PASS | = | Minimum version remains enforced. |
+| F6 | Five-dependency bound | PASS | = | Top-five horizon scope held. |
+| F7 | Explicit all | PASS | = | Count/cost announcement and no second confirmation held. |
+| F8 | Unknown metadata | PASS | = | Unknown remains outside the denominator. |
+| F9 | Horizon-only history | PASS | = | Audit findings remain linked, never copied. |
+| F10 | Removed-engine control | PASS | = | Structural guard still rejects the candidate. |
+| F11 | Code resilience | PASS | = | Architecture then tests, two receipts, max three scenarios. |
+| F12 | Prospective-plan resilience | PASS | = | Shadow Areas only; recovery gaps remain unknown. |
+| F13 | Dependency resilience | PASS | = | Existing horizon remains unique and authoritative. |
+
+**Frictions / gaps:** the structural guard detects pinned historical engine signatures; equivalent future vocabulary will require a new negative fixture.
+**Tally:** 13/13 PASS (0 N/A) — all verdicts held, 0 regressions, no fixture writes.

@@ -3,7 +3,7 @@ name: taste
 description: >-
   Assess repository-backed Markdown freshness, route narrow code checks to AIDD, or judge whether a bounded product/code target should be added minimally, retained, simplified, merged, or removed. Use for outdated docs/code, feature bloat, over-engineering, or code-volume reduction. Do NOT use to implement findings or maintain a parallel code scanner.
 author: François-Xavier Guillois
-version: 4.7.0
+version: 5.5.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash

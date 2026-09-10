@@ -91,3 +91,30 @@ Repository populated after the bounded-scan correction; inventories and evidence
 
 **Frictions / gaps:** inline inventories still do not materialize all path names; S10's path deduplication and S16's literal metric serialization remain semantic rather than explicitly formatted. S17 is the intended live red, not a target regression.
 **Tally:** 16/17 PASS (0 N/A) — S11 changed FAIL → PASS; no PASS → FAIL regression; S17 remains the sole intentional FAIL.
+
+### 2026-09-10 — run 3 (regression, dry-run, target=taste scan, fixture=my-marketplace + inline inventories) — **16/17 PASS**
+
+The same populated repository and complete inline inventories were reused. The judge made no fixture write.
+
+| # | Behaviour | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| S1 | Default 25/60 budget | PASS | = | Default selection and unscanned coverage held. |
+| S2 | Eight eligible files | PASS | = | Worker count remains bounded by eligibility. |
+| S3 | Explicit limit 7 | PASS | = | Seven selected and 53 unscanned remain explicit. |
+| S4 | Explicit all | PASS | = | `--all` remains the only all-file opt-in. |
+| S5 | Decision-marker priority | PASS | = | Marker affects priority, not verdict. |
+| S6 | Critical-shape priority | PASS | = | Critical shapes precede informative ones. |
+| S7 | Broken-relative-link priority | PASS | = | Links resolve from the document. |
+| S8 | Git divergence is not evidence | PASS | = | Git history remains priority only. |
+| S9 | Mtime cannot make Obsolete | PASS | = | No eligible claim remains N/A. |
+| S10 | Cross-file root cause | PASS | = | Duplicate normalized causes still group across files. |
+| S11 | Rewrite at three claims | PASS | = | Per-file rewrite remains independent of cross-file grouping. |
+| S12 | Salvage blocks deletion | PASS | = | Salvageable content prevents delete. |
+| S13 | Read-only delete recommendation | PASS | = | Recommendation never performs deletion. |
+| S14 | Exact aggregate schema/order | PASS | = | Fields, totals and qualifications survive aggregation. |
+| S15 | Sequential host fallback | PASS | = | No model or topology is required. |
+| S16 | Harvest metrics | PASS | = | Counts, points, pending facts and coverage remain available. |
+| S17 | Unbounded scanner control | FAIL | = intentional FAIL | Candidate all-file default remains rejected by the 25-file bound. |
+
+**Frictions / gaps:** inline inventories do not list 60 literal paths; S17 remains the live red control, not a target regression.
+**Tally:** 16/17 PASS (0 N/A) — all verdicts held, 0 regressions, no fixture writes.

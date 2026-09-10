@@ -87,3 +87,29 @@ The populated repository and `current-compatible.json` expose Audit, Review, and
 
 **Frictions / gaps:** none; suite metadata now loads all Taste actions and sobriety references.
 **Tally:** 3/3 PASS (0 N/A) — all sobriety delegation routes green; no fixture writes.
+
+### 2026-09-10 — run 5 (regression, dry-run, target=taste delegation, fixture=my-marketplace + compatible catalogue) — **16/16 PASS**
+
+The populated repository, inline states, and bundled compatible catalogue were reused. The judge made no fixture write.
+
+| # | Behavior | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| T1 | 19% boundary | PASS | = | Weighted threshold unchanged. |
+| T2 | 20/79/80 boundaries | PASS | = | Shared single/aggregate thresholds unchanged. |
+| T3 | Critical veto | PASS | = | Critical obsolete claims still veto Current and Superseded. |
+| T4 | Zero eligible claims | PASS | = | N/A remains percentage-free. |
+| T5 | Subject-matched supersession | PASS | = | Replacement evidence requirements unchanged. |
+| T6 | Unrelated closed issue | PASS | = | Unmatched evidence cannot supersede a decision. |
+| T7 | Mixed local/external claims | PASS | = | Fact Check remains separate from local score. |
+| T8 | Missing Fact Check | PASS | = | Qualified local verdict and no fallback remain required. |
+| T9 | Bounded document scan | PASS | = | Default remains 25 with unscanned coverage. |
+| T10 | Dependency route | PASS | = | Audit `dependencies` remains canonical. |
+| T11 | Compile concern without repair | PASS | = | Assert is proposed with `consent: required`, not invoked. |
+| T12 | Removed-engine control | PASS | = | Local detectors remain forbidden. |
+| T13 | Consented compilation repair | PASS | = | Assert receives consent and every returned write is disclosed. |
+| T14 | Repository/module sobriety | PASS | = | Audit supplies evidence; Taste owns the verdict. |
+| T15 | Diff sobriety | PASS | = | Review `relevancy` supplies evidence at AIDD Dev 2.5.0. |
+| T16 | Completed-work sobriety | PASS | = | Challenge stays authoritative without rescoring. |
+
+**Frictions / gaps:** none; every scenario has a prior applicable verdict and the target list includes all actions and references.
+**Tally:** 16/16 PASS (0 N/A) — all verdicts held, 0 regressions, no fixture writes.

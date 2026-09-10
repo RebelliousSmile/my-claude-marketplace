@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "overcode",
-  "version": "5.4.0",
-  "description": "Extends AIDD with project-agnostic workflows: research and multi-session PDF extraction; interactive codebase and project-memory quizzes (dig); memory maintenance; repository-backed Markdown freshness with AIDD-routed code checks (taste); AIDD-routed document/code foresight plus dependency abandonment and migration horizon (foresee); behavioural testing; test governance; performance, data, ActivityPub, and SEO/GEO audits; project health and repository-backed Markdown backlog synchronization via status; plain-language explanations; documentation; and planning utilities. Stack and service knowledge remains pivot-driven through specialist plugins, and AIDD delegation fails explicitly when a required capability is unavailable. Alias chains: rechallenge, endtask, bump-plugin, previously, smarten, skillconf, weeklyemail, gitit, mirror, codex-vision.",
+  "version": "5.5.0",
+  "description": "Extends AIDD with project-agnostic workflows: research and multi-session PDF extraction; interactive codebase and project-memory quizzes (dig); memory maintenance; repository-backed Markdown freshness and AIDD-evidenced product/code sobriety (taste); target-aware resilience scenarios plus dependency abandonment and migration horizon (foresee); behavioural testing; test governance; performance, data, ActivityPub, and SEO/GEO audits; project health and repository-backed Markdown backlog synchronization via status; plain-language explanations; documentation; and planning utilities. Stack and service knowledge remains pivot-driven through specialist plugins, and AIDD delegation fails explicitly when a required capability is unavailable. Alias chains: rechallenge, endtask, bump-plugin, previously, smarten, skillconf, weeklyemail, gitit, mirror, codex-vision.",
   "author": {
     "name": "François-Xavier Guillois"
   }

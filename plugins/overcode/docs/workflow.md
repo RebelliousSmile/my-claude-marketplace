@@ -11,7 +11,9 @@ Les skills s'invoquent sous la forme `/overcode:<skill>`.
 | « où en est le projet ? » | [`status`](#santé-projet--status) action `report`, ou l'alias `previously` |
 | « synchronise le backlog Markdown depuis les issues » | [`status`](#santé-projet--status) action `backlog` |
 | « ce document dit-il encore la vérité ? » | [`taste`](#obsolescence--taste) |
+| « quelles fonctionnalités ou couches peut-on retirer ? » | [`taste`](#obsolescence--taste) action `assess-sobriety` |
 | « qu'est-ce qui va nous coûter cher dans six mois ? » | [`foresee`](#prospective--foresee) |
+| « ce module résistera-t-il à une panne ou un changement ? » | [`foresee`](#prospective--foresee) action `analyze-resilience` |
 | « le site est lent » | [`web-optimize`](#audits-de-performance) |
 | « le backend / la base est lente » | [`data-optimize`](#audits-de-performance) |
 | « on n'est pas visibles sur Google » | [`seo-optimize`](#audit-seo--geo) |
@@ -49,16 +51,19 @@ Pour une reprise de contexte rapide en début de session, l'alias `previously` e
 
 ## Obsolescence — `taste`
 
-Deux actions selon la cible :
+Trois actions selon la cible :
 
 - **`assess-doc`** — classe les affirmations en critique (3), structurelle (2) ou informative (1), les vérifie contre le dépôt et rend score, couverture et veto critique. Sans argument, le scan traite 25 documents prioritaires par défaut et nomme les fichiers non couverts. Les faits externes partent séparément vers `aidd-refine:04-fact-check` et ne gonflent jamais le score local.
-- **`assess-code`** — route une intention explicite : fraîcheur générale vers audit `code-quality`, dépendances vers audit `dependencies`, imports/compilation/typage/exécution vers `aidd-dev:03-assert`. Un chemin nu déclenche une seule question de routage.
+- **`assess-code`** — route une intention explicite : fraîcheur générale vers audit `code-quality`, dépendances vers audit `dependencies`, imports/compilation/typage/exécution vers `aidd-dev:03-assert`. Une assertion susceptible de corriger le produit exige une demande de réparation explicite ; un chemin nu déclenche une seule question de routage.
+- **`assess-sobriety`** — part d'une cible bornée et de la finalité du produit, délègue les preuves techniques à Audit `code-quality`, Review `relevancy` ou Challenge, puis classe chaque candidat `Add minimally`, `Retain`, `Simplify`, `Merge` ou `Remove`. Le bilan couvre source, tests, configuration et documentation, chiffre l'ajout, le retrait et le solde connus, nomme les pertes fonctionnelles et ne confond jamais volume et valeur.
 
 C'est la skill à lancer avant de faire confiance à une doc qu'on n'a pas relue depuis longtemps.
 
 ## Prospective — `foresee`
 
 Le point d'entrée reste unique, mais l'autorité est distribuée : un document prospectif part vers `shadow-areas`, un travail terminé vers `challenge`, et le code vers un pilier explicite de `aidd-dev:04-audit`.
+
+`analyze-resilience` prend la priorité quand la demande nomme résilience, rayon d'impact, récupération, rollback ou réversibilité. Il adapte ses preuves à la cible : Shadow Areas pour un document prospectif, Challenge pour un travail terminé, audits `architecture` puis `tests` pour le code, et l'horizon existant pour une dépendance. Foresee ajoute au plus trois scénarios par défaut, avec impact, détection, confinement, récupération et réversibilité. Une preuve absente reste inconnue et aucun score AIDD n'est recalculé.
 
 `analyze-dep` commence par l'audit AIDD `dependencies`, puis ajoute seulement les signaux de continuité, d'isolation et de sortie. En mode manifeste, cinq dépendances au maximum sont approfondies par défaut ; `--all` est l'opt-in explicite. Toute métrique indisponible reste `unknown` et sort du dénominateur.
 
