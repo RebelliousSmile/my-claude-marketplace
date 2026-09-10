@@ -17,7 +17,7 @@ Le nom peut aussi être formulé en langage naturel : « clôture la tâche » a
 | [`rechallenge`](#rechallenge) | plan → challenge, en boucle jusqu'à zéro objection | la tâche en cours |
 | [`endtask`](#endtask) | commit → plan implémenté → learn → merge → changelog → tags → issue | la branche courante |
 | [`bump-plugin`](#bump-plugin) | bump de version → commit → push marketplace | nom du plugin + version ou type de bump |
-| [`previously`](#previously) | backlog optionnel → statut + snapshot git / tests / lint | profondeur optionnelle, `--backlog <fichier.md>`, puis `--milestone`/`--ml <titre>` et `--exclude-milestone`/`--em <titre>` (plusieurs possibles) |
+| [`previously`](#previously) | backlog optionnel → reprise de contexte documentaire (conversations, `aidd_docs/`, git) | profondeur optionnelle, `--backlog <fichier.md>`, puis `--milestone`/`--ml <titre>` et `--exclude-milestone`/`--em <titre>` (plusieurs possibles) |
 | [`smarten`](#smarten) | réécriture minimale d'un fichier de prompt, sur place | un chemin `.md` |
 | [`skillconf`](#skillconf) | classe les skills auto vs sur-invocation → écrit `skillOverrides` | *(rien)* |
 | [`weeklyemail`](#weeklyemail) | commits de la semaine → e-mail client | `github` ou `gitlab` |
@@ -49,7 +49,7 @@ La version d'un plugin vit dans **deux** fichiers — `plugins/<nom>/.claude-plu
 
 Reprise de contexte en début de session. Avec `--backlog <fichier.md>`, commence toujours par appeler `status backlog`, y compris lorsqu'un rapport récent existe ; `--milestone <titre>` et son raccourci strict `--ml <titre>` sont transmis à cette action, ainsi que `--exclude-milestone <titre>` et son raccourci `--em <titre>` (plusieurs exclusions possibles). Un échec de synchronisation arrête la routine avant le snapshot.
 
-Cherche ensuite un rapport de statut de moins de 7 jours dans `aidd_docs/tasks/status/` ; s'il existe, il en extrait le résumé projet et les quick wins, sinon il lance explicitement `status report`. Puis il ajoute le snapshot factuel : git, tests, arbre de travail, lint. La sortie ne reconstruit pas de liste d'issues depuis les commits : le compte visible reste celui du rapport de statut.
+Reconstruit ensuite l'état du projet à partir de trois sources documentaires, jamais d'un build : les conversations précédentes (`~/.claude/history.jsonl` filtré sur le projet, titres de session et résumés de compaction des transcripts), ce qui a bougé dans `aidd_docs/` (statut des `plan.md`, phase en cours, `review.md`, banques touchées par `10-learn`, backlog, suivis autonomes) et l'état git (branche, log, arbre de travail). N'exécute jamais la suite de tests, le lint, une couverture ni `status report` ; chaque sonde a un budget de temps et se dégrade en `N/A` plutôt que de bloquer. La sortie mène par le point de reprise et peut diverger du code — les traitements suivants réalignent.
 
 Syntaxe : `previously [<profondeur>] [--backlog <fichier.md>] [--milestone <titre> | --ml <titre>] [--exclude-milestone <titre> | --em <titre>]...`. La profondeur optionnelle reste un nombre de commits ou une durée du type `7d`, placée avant les options.
 

@@ -45,7 +45,7 @@ Quatre actions indépendantes, à ne pas confondre :
 
 `backlog` lit le dépôt dans le frontmatter `git_repo`. Sans milestone dans le projet, il conserve les lignes plates historiques. Dès qu'un catalogue existe, il regroupe les issues par échéance croissante, puis milestones sans échéance, et termine par `Sans milestone`. Un filtre absent garde tout le backlog ouvert ; un titre exact inconnu produit un état vide sans retomber sur toutes les issues. Les exclusions (`--exclude-milestone`) s'appliquent après le filtre et retirent les issues des milestones spécifiées, même si celles-ci n'ont pas d'issues associées.
 
-Pour une reprise de contexte rapide en début de session, l'alias `previously` est plus direct : snapshot git + tests + lint, avec le contexte de statut. Son option `--backlog` chaîne d'abord cette action sans devenir propriétaire de son rendu.
+Pour une reprise de contexte rapide en début de session, l'alias `previously` est le bon choix : il ne lance aucun build. Il reconstruit l'état du projet depuis les conversations précédentes, ce qui a bougé dans `aidd_docs/` et l'état git, avec un budget de temps sous 20 secondes. Pour un audit complet avec tests, sécurité et plan à 7 jours, utiliser `status report`. Son option `--backlog` chaîne d'abord cette action sans devenir propriétaire de son rendu.
 
 ## Obsolescence — `taste`
 
