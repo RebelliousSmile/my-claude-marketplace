@@ -4,6 +4,23 @@
 
 ## [Unreleased]
 
+## [5.5.0] — 2026-09-10
+
+### Added
+
+- `taste assess-sobriety` juge une cible bornée contre la finalité du produit et classe les candidats `Add minimally`, `Retain`, `Simplify`, `Merge` ou `Remove`. Les preuves techniques viennent d'Audit `code-quality`, Review `relevancy` ou Challenge ; Taste conserve le verdict de valeur, l'empreinte source/tests/configuration/documentation, les pertes et le solde de volume.
+- `foresee analyze-resilience` compose les preuves adaptées à un document prospectif, un travail terminé, un module de code ou une dépendance, puis rend jusqu'à trois scénarios étayés d'impact, détection, de confinement, de récupération et de réversibilité.
+- Deux suites comportementales dédiées reproduisent les capacités absentes avant correction puis prouvent leur comportement, leurs refus et leur non-mutation après correction. Une fixture de catalogue AIDD compatible est désormais validée par le gate par défaut.
+
+### Changed
+
+- Le contrat de délégation annonce chaque écriture de rapport ou de produit dans la quittance. Les capacités analytiques peuvent persister leurs rapports contractuels ; Assert ou toute autre capacité mutante exige un consentement explicite.
+- Les identifiants AIDD Refine suivent le catalogue 3.0.1 : `03-shadow-areas` et `04-fact-check`. Review `relevancy` requiert AIDD Dev 2.5.0.
+
+### Fixed
+
+- Une demande de compilation adressée à `taste` ne lance plus silencieusement la boucle corrective d'Assert : sans demande de réparation, la quittance propose la route avec `consent: required` et n'écrit rien.
+
 ## [5.4.0] — 2026-09-10
 
 ### Added

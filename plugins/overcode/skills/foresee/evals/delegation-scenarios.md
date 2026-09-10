@@ -4,13 +4,13 @@ Each scenario is scored as Situation → Expected behavior → Pass criteria. Th
 
 ## Target and fixture
 
-- Target: `../SKILL.md`, all three files under `../actions/`, `../../../references/aidd-delegation.md`, and the repository guard `tools/eval/aidd-delegation.mjs`.
+- Target: `../SKILL.md`, all files under `../actions/` and `../references/`, `../../../references/aidd-delegation.md`, and the repository guard `tools/eval/aidd-delegation.mjs`.
 - Populated fixture: this repository after the AIDD-routing refactor, plus the concrete catalogue/manifest state stated in each row. Synthetic absence, version, and 80-dependency variants are reasoned as read-only deltas; they are never written into the repository.
 - How to run: use `overcode:behave run`, read the target and repository read-only, and judge the exact intended route, receipt, report scope, and forbidden local work. F1 is the positive routing control; F10 is the negative no-local-engine control.
 
 | ID | Situation | Expected behavior | Pass criteria |
 |---|---|---|---|
-| F1 | Codex receives an unfinished plan path. | Resolve `aidd-refine:04-shadow-areas` and use Codex-native skill invocation. | Receipt names shadow-areas; no local scoring rubric or foresee history is used. |
+| F1 | Codex receives an unfinished plan path. | Resolve `aidd-refine:03-shadow-areas` and use Codex-native skill invocation. | Receipt names shadow-areas, its report write, and `consent: not-required`; no local scoring rubric or foresee history is used. |
 | F2 | Claude Code receives completed work plus its agreed plan. | Resolve `aidd-refine:02-challenge` and use Claude-native invocation. | Both artifacts reach challenge; receipt is otherwise host-equivalent to F1. |
 | F3 | A general code directory is supplied. | Delegate audit pillar `architecture`. | Exactly one audit route; no per-file local agents or improvement catalogue. |
 | F4 | `aidd-dev` is absent. | Apply the common package-absent failure. | Package and minimum version are named; no local audit runs. |
@@ -20,6 +20,9 @@ Each scenario is scored as Situation → Expected behavior → Pass criteria. Th
 | F8 | Maintainer metadata cannot be sourced. | Record continuity as `unknown` and reduce coverage. | Unknown is absent from the mean denominator and cannot improve horizon. |
 | F9 | A prior local horizon report exists. | Compare only horizon signals. | AIDD CVE/version findings are linked, never copied into persistence. |
 | F10 | A candidate patch presented to the structural guard reintroduces a legacy detector/checklist into doc or code routes. | Reject the candidate patch. | The guard returns non-zero and names the forbidden local engine; accepting the candidate is a failure. |
+| F11 | Explicit code resilience is requested. | Run Audit `architecture`, then Audit `tests`, and synthesize at most three supported scenarios. | Two unchanged reports and receipts are returned; one pillar never masquerades as complete resilience. |
+| F12 | Explicit resilience is requested for an unfinished plan. | Route evidence to `aidd-refine:03-shadow-areas` before synthesis. | No code audit runs and missing recovery evidence stays unknown. |
+| F13 | Explicit resilience is requested for a dependency manifest. | Reuse `analyze-dep`. | Dependency audit and horizon scores are linked once and never copied into a new score. |
 
 ## Results log
 
@@ -53,3 +56,39 @@ Target now includes the repository guard; only F10 is replayed against the same 
 
 **Frictions / gaps:** the gate recognizes the historical paths and algorithm signatures pinned by its negative fixtures; an equivalent engine under wholly new vocabulary would require a new fixture.
 **Tally:** 1/1 PASS (0 N/A) — F10 confirmed green after target-scope repair; no fixture writes.
+
+### 2026-09-10 — run 3 (post-fix, dry-run, target=foresee resilience delegation, fixture=my-marketplace + compatible catalogue) — **3/3 PASS**
+
+The populated repository and compatible catalogue expose Shadow Areas, Challenge and Audit. The judge made no fixture write.
+
+| # | Behavior | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| F11 | Code resilience evidence | PASS | new | `04-analyze-resilience.md` runs architecture then tests, preserves both reports and returns at most three scenarios. |
+| F12 | Prospective-document resilience | PASS | new | Shadow Areas is the only delegate before synthesis; missing recovery remains unknown. |
+| F13 | Dependency resilience | PASS | new | `analyze-dep` remains the single horizon authority and no duplicate score is emitted. |
+
+**Frictions / gaps:** none; suite metadata now loads every Foresee action and reference.
+**Tally:** 3/3 PASS (0 N/A) — all target-specific resilience routes green; no fixture writes.
+
+### 2026-09-10 — run 4 (regression, dry-run, target=foresee delegation, fixture=my-marketplace + compatible catalogue) — **13/13 PASS**
+
+The populated repository, inline delegate states, bundled catalogue, and structural guard were reused. The judge made no fixture write.
+
+| # | Behavior | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| F1 | Prospective document | PASS | = | Current Shadow Areas route and receipt held. |
+| F2 | Completed work | PASS | = | Challenge still receives work and reference. |
+| F3 | General code | PASS | = | Non-resilience code still routes one architecture audit. |
+| F4 | Missing AIDD Dev | PASS | = | Package failure remains explicit without fallback. |
+| F5 | Old AIDD Dev | PASS | = | Minimum version remains enforced. |
+| F6 | Five-dependency bound | PASS | = | Top-five horizon scope held. |
+| F7 | Explicit all | PASS | = | Count/cost announcement and no second confirmation held. |
+| F8 | Unknown metadata | PASS | = | Unknown remains outside the denominator. |
+| F9 | Horizon-only history | PASS | = | Audit findings remain linked, never copied. |
+| F10 | Removed-engine control | PASS | = | Structural guard still rejects the candidate. |
+| F11 | Code resilience | PASS | = | Architecture then tests, two receipts, max three scenarios. |
+| F12 | Prospective-plan resilience | PASS | = | Shadow Areas only; recovery gaps remain unknown. |
+| F13 | Dependency resilience | PASS | = | Existing horizon remains unique and authoritative. |
+
+**Frictions / gaps:** the structural guard detects pinned historical engine signatures; equivalent future vocabulary will require a new negative fixture.
+**Tally:** 13/13 PASS (0 N/A) — all verdicts held, 0 regressions, no fixture writes.

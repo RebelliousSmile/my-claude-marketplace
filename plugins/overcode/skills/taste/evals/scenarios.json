@@ -48,7 +48,14 @@
   {
     "prompt": "are there broken imports in src/?",
     "expect_action": "assess-code",
-    "expect_delegate": "aidd-dev:03-assert"
+    "expect_proposed_delegate": "aidd-dev:03-assert",
+    "expect_consent": "required"
+  },
+  {
+    "prompt": "repair the broken imports in src/",
+    "expect_action": "assess-code",
+    "expect_delegate": "aidd-dev:03-assert",
+    "expect_consent": "granted"
   },
   {
     "prompt": "/taste src/views/AddSongView.vue",
@@ -70,5 +77,18 @@
     "expect_action": "assess-doc",
     "expect_output_sections": ["Root causes", "Fix plan", "Coverage"],
     "expect_default_limit": 25
+  },
+  {
+    "prompt": "make this module lighter: plugins/overcode/skills/taste",
+    "expect_action": "assess-sobriety"
+  },
+  {
+    "prompt": "which features can we remove from plugins/overcode?",
+    "expect_action": "assess-sobriety"
+  },
+  {
+    "prompt": "assess sobriety",
+    "expect_action": "assess-sobriety",
+    "expect_question": "repository | module | diff | completed feature"
   }
 ]

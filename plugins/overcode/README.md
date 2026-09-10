@@ -24,8 +24,8 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 | `alias` | `/overcode:alias <nom>` | Enchaîne des workflows en une commande — dix chaînes pré-écrites |
 | `harvest` | `/overcode:harvest` | Maintenance globale — réconcilie le tracker, extrait les décisions, purge l'éphémère |
 | `reconcile-normative` | `/overcode:reconcile-normative` | Cohérence du normatif entre archives, mémoire et règles actives |
-| `taste` | `/overcode:taste [fichier]` | Pondère la fraîcheur d'un Markdown contre le dépôt ; route les questions code vers audit/assert AIDD. Sans argument : scan borné à 25 documents |
-| `foresee` | `/overcode:foresee <cible>` | Route docs/code vers AIDD ; complète l'audit de dépendances par l'horizon d'abandon, d'isolation et de migration |
+| `taste` | `/overcode:taste [cible]` | Vérifie la fraîcheur documentaire ou juge la sobriété d'une cible : ajouter le minimum, conserver, simplifier, fusionner ou retirer avec preuves AIDD et empreinte complète |
+| `foresee` | `/overcode:foresee <cible>` | Route les analyses vers AIDD, synthétise jusqu'à trois scénarios de résilience et conserve l'horizon d'abandon, d'isolation et de migration des dépendances |
 | `behave` | `/overcode:behave <action>` | Harness de tests comportementaux pour **prompts** — scaffold, run jugé, régression, review |
 | `control` | `/overcode:control <action>` | Gouvernance de la suite de tests d'un projet, bornée par une **densité** lue contre la médiane du projet et pondérée par sa **phase** déclarée. **Ne se déclenche jamais seule.** |
 | `dig` | `/overcode:dig` | Quiz interactif de cinq questions sur le code ou la mémoire du projet — difficulté adaptative, score sur 20 et rapport sourcé |

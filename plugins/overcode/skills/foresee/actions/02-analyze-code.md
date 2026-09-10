@@ -22,6 +22,7 @@ Routes prospective code analysis to the relevant pillar of the installed AIDD au
 
 ## Boundaries
 
+- Explicit resilience, change-tolerance, blast-radius, failure-recovery, rollback, or reversibility intent belongs to `analyze-resilience`; do not reduce it to one pillar here.
 - Do not select files, spawn per-file agents, score code, or apply a local improvement catalogue.
 - Do not write `aidd_docs/foresee/` history for delegated code audits.
 - If audit cannot be resolved, use the common failure contract and stop.

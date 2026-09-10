@@ -76,3 +76,25 @@ Repository populated on the corrected foresee/taste branch; delegate report and 
 
 **Frictions / gaps:** inline scenario paths remain synthetic but their complete states satisfy the dry-run preconditions. The corrected suite is all-green and therefore has no independent live red after L7; this structural harness debt does not change the current verdicts.
 **Tally:** 12/12 PASS (0 N/A) — L7 changed FAIL → PASS; no PASS → FAIL regression.
+
+### 2026-09-10 — run 3 (regression, dry-run, target=foresee flags, fixture=my-marketplace + inline delegate states) — **12/12 PASS**
+
+The same populated repository and complete inline delegate states were reused. The judge made no fixture write.
+
+| # | Behaviour | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| L1 | Default report and receipt | PASS | = | Audit report and receipt precede any local follow-up. |
+| L2 | Discuss after Shadow Areas | PASS | = | Delegate precedes discussion and may persist its report. |
+| L3 | Discuss Challenge findings | PASS | = | Challenge report remains unchanged and unrescored. |
+| L4 | Audit then Plan | PASS | = | `--plan` consumes the delegated report. |
+| L5 | Horizon then Plan | PASS | = | Timestamped horizon remains Plan input. |
+| L6 | Missing Plan follow-up | PASS | = | Completed report survives the stopped follow-up. |
+| L7 | Missing primary delegate | PASS | = | Skill, package and minimum version remain explicit. |
+| L8 | Ambiguous lifecycle | PASS | = | One question precedes every call. |
+| L9 | Conflicting code concerns | PASS | = | Primary angle is requested before audit. |
+| L10 | Cross-host receipt | PASS | = | Canonical content matches across native syntaxes. |
+| L11 | No zero-file promise | PASS | = | Contract-required report artifacts remain allowed and disclosed. |
+| L12 | No local Plan fallback | PASS | = | No handcrafted task artifact is created. |
+
+**Frictions / gaps:** inline artifact paths are synthetic but complete; the suite is all-green and relies on its NO-GO candidate rows rather than a residual product defect.
+**Tally:** 12/12 PASS (0 N/A) — all verdicts held, 0 regressions, no fixture writes.

@@ -49,7 +49,7 @@ The same fields and verdict algorithm apply to a scan worker and to aggregation.
    - `≥80%` → `Current` unless a critical claim is `Obsolete`.
 6. A critical obsolete claim vetoes `Current` and `Superseded`; use `Partial` when the weighted score is at least 20%, otherwise `Obsolete`.
 7. For a decision document, apply `@../assets/decision-doc.md`. `Superseded` precedes `Current`, but requires score `≥80%`, no critical obsolete claim, and subject-matched replacement evidence.
-8. For each external factual claim, resolve `aidd-refine:05-fact-check` through `@../../../references/aidd-delegation.md` and invoke it on the extracted text or ephemeral copy. Keep its rewritten/cited artifact separate. If unavailable, mark `external-unverified` and stop that branch without a local fallback.
+8. For each external factual claim, resolve `aidd-refine:04-fact-check` through `@../../../references/aidd-delegation.md` and invoke it on the extracted text or ephemeral copy. Keep its rewritten/cited artifact separate. If unavailable, mark `external-unverified` and stop that branch without a local fallback.
 9. External results never enter `earned` or `eligible`. If any external branch remains unverified, set qualification `local evidence only — external verification pending`; never present the local verdict as an unqualified global verdict.
 10. Report stale passages (at most two quoted sentences each), suggested actions, local evidence, external state, and the delegation receipt when fact-check ran.
 
