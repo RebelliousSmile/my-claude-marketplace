@@ -149,10 +149,12 @@ def banner(sources: list, comment: str) -> str:
 def css_list_value(value: list):
     """Serialize a list-typed $value to valid CSS.
 
-    Two, and only two, groups carry a list $value in this schema (token-schema.md's
-    documented exceptions): font.family.* (list of family names) and motion.easing.*
-    (a cubic-bezier's four numbers). Distinguished by element type, not by the caller
-    knowing which group it is - css_value() never receives $type, only $value.
+    Two groups reach this function with a list $value (token-schema.md's documented
+    exceptions): font.family.* (list of family names) and motion.easing.* (a
+    cubic-bezier's four numbers). A third list shape, multi-layer shadow.* (a list of
+    shadow objects), is intercepted by css_value() before it gets here. Distinguished
+    by element type, not by the caller knowing which group it is - css_value() never
+    receives $type, only $value.
 
     A bare Python str()/repr() of the list is not CSS (it wraps names in single quotes
     it never closes correctly for consumers and keeps the brackets) - that bug shipped
@@ -183,6 +185,13 @@ def css_shadow_value(value: dict):
 def css_value(value, base: dict):
     """A stylesheet references another token, it does not copy its value."""
     if isinstance(value, list):
+        if value and all(isinstance(item, dict) for item in value):
+            # multi-layer shadow: a list of shadow objects, comma-joined per the
+            # CSS box-shadow multi-value syntax (shadow.md/lg/xl's documented shape).
+            layers = [css_shadow_value(item) for item in value]
+            if any(layer is None for layer in layers):
+                return None, f"shadow list $value has a layer missing a shadow field {{color, offsetX, offsetY, blur, spread}}: {value!r}"
+            return ", ".join(layers), None
         rendered = css_list_value(value)
         if rendered is None:
             return None, f"list $value has mixed or unsupported element types: {value!r}"

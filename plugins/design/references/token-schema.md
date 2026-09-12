@@ -17,7 +17,7 @@ A complete design system MUST define these groups. Mark anything genuinely inapp
 | `font.lineHeight.*` | `number` | unitless |
 | `space.*` | `dimension` | one consistent scale (e.g. `0,1,2,3,4,6,8,12,16,24` → rem) |
 | `radius.*` | `dimension` | `none…full` |
-| `shadow.*` | `shadow` | elevation steps (composite tokens) |
+| `shadow.*` | `shadow` | elevation steps (composite tokens); a step needing multiple layers takes a **list** of composite objects instead of one |
 | `border.width.*` | `dimension` | hairline / default / thick |
 | `motion.duration.*` | `duration` | fast / base / slow |
 | `motion.easing.*` | `cubicBezier` | standard / entrance / exit |
@@ -219,7 +219,7 @@ Every token path becomes a CSS custom property under `:root`, by the transform o
 }
 ```
 
-- Shadow composite tokens → a single `box-shadow` string per step.
+- Shadow composite tokens → a single `box-shadow` string per step; a step whose `$value` is a list of composite objects (multi-layer shadow) → the same layers comma-joined in one `box-shadow` value, source order preserved.
 - Breakpoints stay as custom properties for reference, but media queries cannot use `var()` in their conditions — so the breakpoint **px values are also written as literals** in any generated CSS `@media` rule, with a comment naming the token.
 
 ### Theme-scoped emission

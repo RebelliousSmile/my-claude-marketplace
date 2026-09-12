@@ -16,7 +16,7 @@
     },
     {
       "name": "design",
-      "version": "2.15.0",
+      "version": "2.15.1",
       "source": "./plugins/design",
       "description": "Builds, critiques, freezes, enforces, and diffuses grounded design systems, with standardized reviewable UI wireframes and measurable harnesses.",
       "recommended": false
