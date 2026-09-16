@@ -2,7 +2,7 @@
 
 Interface partagée entre `design:enforce` / `design:diffuse` (émetteurs) et `sc-<langage>:design-bridge` (réceptacles). Fige le format du spec d'enforcement et du spec de rendu, et ce que le réceptacle doit renvoyer.
 
-Réutilise l'idiome de relais existant du dépôt (cf `web-tiers:setup help` et `sc-*:sniff` → `.claude/rules/07-quality`).
+Réutilise l'idiome de relais existant du dépôt (cf `overcode:service help` et `sc-*:sniff` → `.claude/rules/07-quality`).
 
 ---
 

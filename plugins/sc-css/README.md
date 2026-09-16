@@ -14,7 +14,7 @@ Détecte l'architecture CSS du projet (BEM, utility-first, CSS Modules, ITCSS), 
 | `legacy` | `/sc-css:legacy` | Migration vers les standards modernes — float/clearfix → flex/grid, px → rem/em, préfixes vendor → standard, variables Sass/Less → custom properties CSS natives, hacks IE/Edge classiques → standards |
 | `teach` | `/sc-css:teach` | Explique les concepts CSS en contexte du codebase courant (spécificité, cascade, custom properties, cascade layers, `has()`/`is()`/`where()`, container queries, nesting). Read-only |
 | `design-bridge` | `/sc-css:design-bridge` | Réceptacle du pivot design pour la couche CSS pure — reçoit le contrat (`tokens.json` + `components.json`) et produit des custom properties CSS (`tokens` → `:root`) et des stylesheets de composants BEM sous cascade layers. Jamais invoqué directement, appelé via `design:enforce`/`design:diffuse` quand la stack est CSS pure |
-| `cd` | `/sc-css:cd local\|server\|automata` | Build, preview et livraison d'un site statique pur. Dans une application composite, sc-css contribue seulement aux assets et ne crée jamais une seconde façade. Sortie inconnue ou `web-tiers` absent : arrêt sans cible concurrente. |
+| `cd` | `/sc-css:cd local\|server\|automata` | Build, preview et livraison d'un site statique pur. Dans une application composite, sc-css contribue seulement aux assets et ne crée jamais une seconde façade. Sortie inconnue ou `overcode` absent : arrêt sans cible concurrente. |
 
 ## CD multi-cibles
 

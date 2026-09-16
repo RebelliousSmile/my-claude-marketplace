@@ -11,7 +11,7 @@
       "name": "overcode",
       "version": "5.6.0",
       "source": "./plugins/overcode",
-      "description": "Extends AIDD with project-agnostic workflows: research and multi-session PDF extraction; interactive codebase and project-memory quizzes (dig); memory maintenance; repository-backed Markdown freshness and AIDD-evidenced product/code sobriety (taste); target-aware resilience scenarios plus dependency abandonment and migration horizon (foresee); behavioural testing; test governance; performance, data, ActivityPub, and SEO/GEO audits; project health and repository-backed Markdown backlog synchronization via status; plain-language explanations; documentation; and planning utilities. Stack and service knowledge remains pivot-driven through specialist plugins, and AIDD delegation fails explicitly when a required capability is unavailable. Alias chains: rechallenge, endtask, bump-plugin, previously, smarten, skillconf, weeklyemail, gitit, mirror, codex-vision.",
+      "description": "Extends AIDD with project-agnostic workflows: research and multi-session PDF extraction; interactive codebase and project-memory quizzes (dig); memory maintenance; repository-backed Markdown freshness and AIDD-evidenced product/code sobriety (taste); target-aware resilience scenarios plus dependency abandonment and migration horizon (foresee); behavioural testing; test governance; performance, data, ActivityPub, and SEO/GEO audits; project health and repository-backed Markdown backlog synchronization via status; third-party SaaS guidance; documentation; and planning utilities. Stack and service knowledge remains pivot-driven through specialist plugins, and AIDD delegation fails explicitly when a required capability is unavailable. Alias chains: rechallenge, endtask, bump-plugin, previously, gitit, mirror.",
       "recommended": true
     },
     {
@@ -40,13 +40,6 @@
       "version": "0.7.1",
       "source": "./plugins/sc-css",
       "description": "CSS ecosystem skills for auditing, modernization, and multi-target delivery of deterministic static artifacts with bounded composite ownership.",
-      "recommended": false
-    },
-    {
-      "name": "web-tiers",
-      "version": "0.6.0",
-      "source": "./plugins/web-tiers",
-      "description": "Third-party SaaS guidance plus target-isolated server and automata adapters for SSH, Alwaysdata, Railway, Heroku, GitHub, and GitLab.",
       "recommended": false
     },
     {

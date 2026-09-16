@@ -1,6 +1,6 @@
 # Verify
 
-Audit the current project's code against the web-tiers rules and report violations, warnings, and compliant patterns.
+Audit the current project's code against the service rules and report violations, warnings, and compliant patterns.
 
 ## Inputs
 
@@ -87,7 +87,7 @@ For each service, search the project files for violations of the rules. Focus on
 ### Step 5 — Output report
 
 ```
-## web-tiers audit — <project_name>
+## overcode service audit — <project_name>
 
 Services detected: firebase, klaviyo, gtm
 

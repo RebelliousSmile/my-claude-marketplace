@@ -4,7 +4,7 @@ Install third-party SaaS consumption guidance using the active host's native pro
 
 ## Host routing
 
-- **Codex:** copy references to `.agents/rules/` using the Codex targets below, then create or update one bounded `## SC Tiers` section in the nearest applicable `AGENTS.md`. That section must tell Codex which reference to read for each service; do not paste every reference body into `AGENTS.md`.
+- **Codex:** copy references to `.agents/rules/` using the Codex targets below, then create or update one bounded `## Overcode services` section in the nearest applicable `AGENTS.md`. That section must tell Codex which reference to read for each service; do not paste every reference body into `AGENTS.md`.
 - **Claude Code:** copy references verbatim to the `.claude/rules/` targets below.
 - **Both hosts:** write both surfaces and keep their service mapping equivalent.
 
@@ -45,9 +45,9 @@ Only stacks with a source above are covered. If a source is absent, report it an
 1. Resolve each source relative to the loaded setup skill.
 2. Create parent directories as needed.
 3. If a target is absent, write it; if identical, skip it; if different, update it atomically.
-4. On Codex, update only the bounded `## SC Tiers` section of `AGENTS.md`; preserve all unrelated user content.
+4. On Codex, update only the bounded `## Overcode services` section of `AGENTS.md`; preserve all unrelated user content.
 5. Report only paths actually processed. Never claim installation when nothing was written.
 
 ## Output
 
-Report the selected host surface, counts by coding rules and data pivots, and one status line per processed target. Report missing references explicitly. If every reference is missing, return `❌ web-tiers rules — nothing written`.
+Report the selected host surface, counts by coding rules and data pivots, and one status line per processed target. Report missing references explicitly. If every reference is missing, return `❌ overcode service rules — nothing written`.

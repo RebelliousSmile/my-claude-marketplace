@@ -14,9 +14,9 @@ Table de correspondance `<stack> → <plugin>, <commande>`, partagée par les qu
 | `sc-php` | `/sc-php:sniff` | idem |
 | `sc-python` | `/sc-python:sniff` | idem |
 | `sc-rust` | `/sc-rust:sniff` | idem |
-| `web-tiers` | `/web-tiers:setup` | action `01-install`, qui est l'invocation par défaut |
+| `overcode` | `/overcode:service` | action `install`, qui est l'invocation par défaut |
 
-Autrement dit : `web-tiers` s'installe par `setup 01-install`, les quatre autres par `sniff 02-install-pivots`. `web-tiers` **n'a pas de skill `sniff`** — lui proposer un gabarit uniforme serait remplacer un remède faux par un autre. La commande se lit ici, elle ne se dérive pas.
+Autrement dit : les pivots de services tiers s'installent par `overcode:service install`, les quatre autres par `sniff 02-install-pivots`. La commande se lit ici, elle ne se dérive pas.
 
 ## `perf-pivots-*` — consommés par `web-optimize`
 
@@ -50,7 +50,7 @@ Autrement dit : `web-tiers` s'installe par `setup 01-install`, les quatre autres
 | `data-pivots-doctrine.md` | `sc-php` | `/sc-php:sniff` |
 | `data-pivots-drizzle.md` | `sc-js` | `/sc-js:sniff` |
 | `data-pivots-eloquent.md` | `sc-php` | `/sc-php:sniff` |
-| `data-pivots-firebase.md` | `web-tiers` | `/web-tiers:setup` |
+| `data-pivots-firebase.md` | `overcode` | `/overcode:service` |
 | `data-pivots-graphql.md` | `sc-js` | `/sc-js:sniff` |
 | `data-pivots-mongoose.md` | `sc-js` | `/sc-js:sniff` |
 | `data-pivots-prisma.md` | `sc-js` | `/sc-js:sniff` |
@@ -76,7 +76,7 @@ Autrement dit : `web-tiers` s'installe par `setup 01-install`, les quatre autres
 
 Cette table dérive des tables *Target* des installeurs, sous deux bornes.
 
-**Borne de forme.** N'entre que la cible de la forme `.claude/rules/07-quality/<famille>-pivots-<stack>.md`, `famille ∈ {perf, data, ap, seo}`. Un installeur peut écrire sous `.claude/rules/` sans produire de pivot — `web-tiers` déclare ainsi 9 cibles dont 8 n'en sont pas (`03-firebase-resources.md`, `12-pagespeed-insights.md`, …). Un autre peut nommer ses fichiers sans chemin de destination ni famille : aucune de ses lignes ne satisfait alors la forme, et le plugin n'apparaît pas ici du tout.
+**Borne de forme.** N'entre que la cible de la forme `.claude/rules/07-quality/<famille>-pivots-<stack>.md`, `famille ∈ {perf, data, ap, seo}`. Un installeur peut écrire sous `.claude/rules/` sans produire de pivot — `overcode:service` déclare ainsi neuf cibles dont huit n'en sont pas (`03-firebase-resources.md`, `12-pagespeed-insights.md`, …). Un autre peut nommer ses fichiers sans chemin de destination ni famille : aucune de ses lignes ne satisfait alors la forme, et le plugin n'apparaît pas ici du tout.
 
 **Borne d'état.** Une ligne n'entre que si sa **source résout sur disque**. Une cible déclarée sans fichier source derrière est hors table : elle promet un remède qui ne s'installerait pas.
 

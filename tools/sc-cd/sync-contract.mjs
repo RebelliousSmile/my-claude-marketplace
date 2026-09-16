@@ -4,7 +4,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const plugins = ['sc-css', 'sc-js', 'sc-php', 'sc-python', 'sc-rust', 'web-tiers'];
+const plugins = ['overcode', 'sc-css', 'sc-js', 'sc-php', 'sc-python', 'sc-rust'];
 const check = process.argv.includes('--check');
 const sources = [
   ['contract.md', 'cd-contract.md'],

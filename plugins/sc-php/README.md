@@ -17,7 +17,7 @@ Détecte la stack du projet et charge à la demande les pivots de capacité appl
 | `bruno` | `/sc-php:bruno` | Tests API Bruno en CLI — itère jusqu'au vert (scripts, environnements, assertions) |
 | `design-bridge` | `/sc-php:design-bridge` | Réceptacle du pivot design pour PHP/WP — linter natif PHP/WP + export de block patterns WordPress + lint du contenu stocké en base (règles `stored-content`), rendu au gate par un rapport de pivot ; possède le workflow de plateforme block theme / FSE |
 | `builder-coverage` | `/sc-php:builder-coverage` | Gate de couverture WYSIWYG pour un thème bloc WordPress FSE — prouve par parcours exhaustif que chaque composant a une block pattern éditable, et que les patterns sont rangées par rôle de section |
-| `cd` | `/sc-php:cd local\|server\|automata` | wp-env/Docker en local, façade de déploiement native du projet en production et enveloppe via web-tiers. WordPress sépare code, base, contenus et médias et adapte le transport aux capacités vérifiées de chaque cible. |
+| `cd` | `/sc-php:cd local\|server\|automata` | wp-env/Docker en local, façade de déploiement native du projet en production et enveloppe via overcode. WordPress sépare code, base, contenus et médias et adapte le transport aux capacités vérifiées de chaque cible. |
 
 > `bruno`, `design-bridge` et `builder-coverage` sont spécifiques à PHP/WordPress et ne sont pas propagés aux autres plugins `sc-*`.
 

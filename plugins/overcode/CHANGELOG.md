@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### Removed
+
+- Les alias `smarten`, `skillconf`, `weeklyemail` et `codex-vision`, ainsi que l'allowlist réservée à `skillconf`. `alias` conserve six actions, renumérotées sans trou.
+- La skill `baby`, inutilisée, et ses références dans le catalogue, la documentation et la migration Vibe.
+- La skill `journey`, remplacée pour les parcours navigateur par les skills AIDD ; la reconnaissance de ses anciens rapports reste dans `harvest`.
+
 ## [5.6.0] — 2026-09-10
 
 ### Added

@@ -1,9 +1,0 @@
-{
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "web-tiers",
-  "version": "0.6.0",
-  "description": "Third-party SaaS guidance plus target-isolated server and automata adapters for SSH, Alwaysdata, Railway, Heroku, GitHub, and GitLab.",
-  "author": {
-    "name": "François-Xavier Guillois"
-  }
-}

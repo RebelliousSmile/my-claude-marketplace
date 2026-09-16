@@ -29,12 +29,8 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 02  | `endtask`     | Commit → resolve implemented plan directory → learn (auto) → merge/push → changelog → push tags → close issue → safe worktree/branch cleanup | current branch + optional issue number |
 | 03  | `bump-plugin` | Bump version + description across plugin.json and marketplace.json → verify → commit → push | plugin name + version or bump type |
 | 04  | `previously`  | Documentary catch-up — previous conversations + `aidd_docs/` movement + git state, no build and no audit | optional depth (commit count or duration like 7d), `--backlog <file.md>`, and optional `--milestone`/`--ml <title>` |
-| 05  | `smarten`     | Rewrite a prompt file in place — remove fluff, compress steps, bullet points    | file path |
-| 06  | `skillconf`   | Classify enabled skills as auto-trigger vs user-invocable-only → update skillOverrides | settings.json accessible |
-| 07  | `weeklyemail` | Collecte les commits de la semaine sur tous les dépôts GitHub ou GitLab accessibles et génère un e-mail client synthétique | plateforme (`github` / `gitlab`) + optionnel `since` |
-| 08  | `gitit`       | Init git dans `R` + dépôt distant **privé** via gh (si absent) + commit + pull + push + tag SemVer si un push a eu lieu | dossier cible `R` (défaut CWD) `[--public]` |
-| 09  | `mirror`      | Image deux navigateurs côte à côte → diff texte + style → corrections via le contrat agent `design/agents/copycat.md` | image (chemin ou collée) + optionnel `--ref right` |
-| 10  | `codex-vision` | Audit critique, prouvé et non-mutant du code généré par un autre LLM, avec contrôle explicite des régressions fonctionnelles | diff/branche/commit/chemin (défaut : changements locaux) + contrat optionnel |
+| 05  | `gitit`       | Init git dans `R` + dépôt distant **privé** via gh (si absent) + commit + pull + push + tag SemVer si un push a eu lieu | dossier cible `R` (défaut CWD) `[--public]` |
+| 06  | `mirror`      | Image deux navigateurs côte à côte → diff texte + style → corrections via le contrat agent `design/agents/copycat.md` | image (chemin ou collée) + optionnel `--ref right` |
 
 ## Default flow
 
@@ -44,12 +40,8 @@ Trigger-to-action mapping:
 - "end task", "close task", "endtask", "alias endtask", "commit and release", "wrap up this task", "finish the task", "end plan", "close plan", "endplan", "merge the plan branch", "archive the plan", "finish the plan branch" → `endtask`
 - "bump plugin", "release plugin", "bump-plugin", "alias bump-plugin", "monter en version", "bumper le plugin", "release <plugin>" → `bump-plugin`
 - "where are we in the project", "catch me up", "what's the current project state", "project snapshot", "previously", "alias previously" → `previously`
-- "smarten", "slim this", "simplify this prompt", "optimize this prompt", "compress this file", "alias smarten" → `smarten`
-- "skillconf", "configure skills", "auto-configure skills", "reduce skill context", "skill overrides", "alias skillconf", "skills prennent trop de place", "descriptions écretées" → `skillconf`
-- "weeklyemail", "weekly email", "rapport hebdomadaire", "email client semaine", "résumé commits semaine", "weekly report", "rapport de la semaine" → `weeklyemail`
 - "gitit", "alias gitit", "git it", "init le dépôt git", "crée le dépôt git", "versionne ce dossier", "crée et pousse le dépôt", "git init + remote + push" → `gitit`
 - "mirror", "alias mirror", "comparer les deux navigateurs", "corriger les différences maquette", "aligner l'implémentation sur la maquette", "réconcilier mockup vs impl", "trouve les différences dans l'image", "corrige les écarts visuels" → `mirror`
-- "codex-vision", "alias codex-vision", "audit le code généré par un autre LLM", "review AI-generated code", "analyse critique du code IA", "vérifie ce code sans perte de fonctionnalités", "audit non-régression du code généré" → `codex-vision`
 
 ## Transversal rules
 

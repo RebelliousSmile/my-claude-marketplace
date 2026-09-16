@@ -57,7 +57,7 @@ Run a structured performance audit on a web project, picking the right checklist
 |---|---|
 | §0–§8 : render, images, bundle, CSS, cache, SSR | `data-optimize` : N+1 queries, quota, payload bytes, index DB |
 | §9 TTFB latence serveur (symptôme) | `data-optimize` : causes DB/API du TTFB |
-| Scripts tiers chargement lazy | `web-tiers verify` : compliance consent GTM/Clarity/Klaviyo |
+| Scripts tiers chargement lazy | `overcode:service verify` : compliance consent GTM/Clarity/Klaviyo |
 | CWV **mesuré** (LCP/CLS/INP déterministe) | `seo-optimize` §8 : CWV **comme signal de ranking** + on-page, schema, GEO/IA, GBP |
 
 Quand §9 dépasse 200ms sans cause render-blocking évidente → recommander `data-optimize` sur la route hot path.

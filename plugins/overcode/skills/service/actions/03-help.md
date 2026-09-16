@@ -28,7 +28,7 @@ If multiple related services are requested (e.g. `gtm,meta-pixel`), serve the sa
 ## Output format
 
 ```
-## web-tiers help — <service>
+## overcode service help — <service>
 
 <full content of the reference file>
 
@@ -84,7 +84,7 @@ Before submitting code that uses <service>, verify:
 When a planner or implementer skill needs to integrate a third-party service, it should call this action first to load the rules into context before generating any code:
 
 ```
-Before implementing the Klaviyo integration, call `/web-tiers:setup help klaviyo`
+Before implementing the Klaviyo integration, call `$overcode:service help klaviyo`
 to load the authoritative patterns into context.
 ```
 

@@ -1,6 +1,6 @@
 # SC CD differential synchronization
 
-Canonical maintenance source: `tools/sc-cd/differential-sync.md`. It is copied to every SC-CD plugin as a shared behavioral reference; application plugins own generated project procedures and `web-tiers` owns transport prerequisites only.
+Canonical maintenance source: `tools/sc-cd/differential-sync.md`. It is copied to every SC-CD plugin as a shared behavioral reference; application plugins own generated project procedures and `overcode` owns transport prerequisites only.
 
 ## Manifest
 

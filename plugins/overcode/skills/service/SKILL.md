@@ -1,7 +1,7 @@
 ---
-name: setup
+name: service
 description: >-
-  Install and verify host-native project guidance for supported third-party SaaS integrations and data pivots.
+  Install, verify, or explain host-native project guidance for supported third-party SaaS integrations and data pivots.
 author: François-Xavier Guillois
 version: 0.3.2
 vibe_version: ">=1.0.0"
@@ -16,9 +16,9 @@ tags:
 
 Read [host portability](../../references/host-portability.md) before resolving plugin files, invoking sibling skills, or persisting project guidance.
 
-# web-tiers Setup
+# Service
 
-Installs third-party SaaS consumption rules in the current project. On Codex, it writes the references under `.agents/rules/` and maintains a bounded `## SC Tiers` index in `AGENTS.md`; on Claude Code, it writes the corresponding `.claude/rules/` files.
+Service manages third-party SaaS consumption rules in the current project. On Codex, it writes the references under `.agents/rules/` and maintains a bounded `## Overcode services` index in `AGENTS.md`; on Claude Code, it writes the corresponding `.claude/rules/` files.
 
 ## Available actions
 
@@ -27,14 +27,18 @@ Installs third-party SaaS consumption rules in the current project. On Codex, it
 | 01 | `install` | Write SaaS rules to the host-native instruction surface | current project path |
 | 02 | `verify` | Audit the project code against installed SaaS rules | current project (auto-detected) |
 | 03 | `help` | Provide integration context for a specific service to a calling skill | service name |
+| 04 | `local` | Reconcile a supported local provider adapter | provider setup |
+| 05 | `server` | Reconcile one named server target’s prerequisites | production provider |
 
 ## Default flow
 
 Trigger-to-action mapping:
 
-- "install", "setup", "add rules", default invocation → `install`
+- "install", "setup", "add rules", "service rules", default invocation → `install`
 - "verify", "audit", "check", "validate", "compliance" → `verify`
 - "help", "how to integrate", "rules for", "guide for" + service name → `help`
+- "local provider", "emulator" → `local`
+- "server provider", "configure target" → `server`
 
 ## References
 
@@ -60,3 +64,4 @@ Trigger-to-action mapping:
 - Preserve frontmatter (paths: globs) verbatim from each reference file.
 - If a target file already exists, overwrite it without confirmation.
 - Report each written file path at the end.
+- For target configuration, require a current delivery contract and never execute its project delivery command.
