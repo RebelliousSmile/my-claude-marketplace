@@ -4,6 +4,20 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [4.5.0] - 2026-09-16
+
+### Added
+
+- `overcode:alias endtask` termine la clôture depuis une branche de tâche ouverte dans un worktree lié : il fusionne depuis le worktree de la branche cible, puis retire le worktree de tâche propre et sa branche fusionnée après toutes les étapes de release applicables. Une suite comportementale en lecture seule couvre 18 parcours de réussite et d'échec.
+
+### Changed
+
+- `endtask` commite les apprentissages écrits après le premier commit, conserve le worktree et la branche en cas d'échec ou de changements restants, et signale précisément un nettoyage incomplet.
+
+### Fixed
+
+- `design` génère les ombres à plusieurs couches sous forme d'un unique `box-shadow` à valeurs séparées par des virgules, conformément aux tokens documentés.
+
 ## [4.4.0] - 2026-09-10
 
 ### Added
