@@ -1,6 +1,6 @@
 ---
 objective: "Endtask closes a task from a Codex linked worktree and removes that clean worktree and its merged branch only after every applicable closure step succeeds, while preserving resumable state on failure."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Clean up Codex worktrees after endtask
