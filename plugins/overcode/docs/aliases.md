@@ -15,7 +15,7 @@ Le nom peut aussi être formulé en langage naturel : « clôture la tâche » a
 | Alias | Ce qu'il enchaîne | Entrée |
 |---|---|---|
 | [`rechallenge`](#rechallenge) | plan → challenge, en boucle jusqu'à zéro objection | la tâche en cours |
-| [`endtask`](#endtask) | commit → plan implémenté → learn → merge → changelog → tags → issue | la branche courante |
+| [`endtask`](#endtask) | commit → plan implémenté → learn → merge → changelog → tags → issue → nettoyage du worktree | la branche courante |
 | [`bump-plugin`](#bump-plugin) | bump de version → commit → push marketplace | nom du plugin + version ou type de bump |
 | [`previously`](#previously) | backlog optionnel → reprise de contexte documentaire (conversations, `aidd_docs/`, git) | profondeur optionnelle, `--backlog <fichier.md>`, puis `--milestone`/`--ml <titre>` et `--exclude-milestone`/`--em <titre>` (plusieurs possibles) |
 | [`smarten`](#smarten) | réécriture minimale d'un fichier de prompt, sur place | un chemin `.md` |
@@ -35,9 +35,9 @@ Une vérification `ls` du fichier de plan est intercalée entre l'écriture et l
 
 ## `endtask`
 
-La séquence de clôture complète : commit conventionnel → résolution du répertoire de feature dont `plan.md` porte `status: implemented` → extraction des apprentissages → merge et push → changelog → push des tags → fermeture de l'issue. Le plan moderne n'est ni renommé ni déplacé : son répertoire, ses phases et son statut constituent l'archive durable.
+La séquence de clôture complète : commit conventionnel → résolution du répertoire de feature dont `plan.md` porte `status: implemented` → extraction des apprentissages → merge et push → changelog → push des tags → fermeture de l'issue → nettoyage du worktree de tâche. Les fichiers écrits par l'extraction des apprentissages sont commités avant la fusion. Le plan moderne n'est ni renommé ni déplacé : son répertoire, ses phases et son statut constituent l'archive durable.
 
-Le mode de branche est détecté, pas demandé : sur `main`, `master`, `develop` ou `staging`, il n'y a pas de branche de plan à merger et l'étape est sautée. Le numéro d'issue est résolu automatiquement ; si aucune source ne correspond, la fermeture d'issue est simplement ignorée.
+Le mode de branche est détecté, pas demandé : sur `main`, `master`, `develop` ou `staging`, il n'y a pas de branche de plan à merger et l'étape est sautée. Si la branche cible est déjà ouverte dans un autre worktree, la fusion et la release s'y exécutent. Après toutes les étapes applicables réussies, `endtask` retire uniquement le worktree lié à la tâche s'il est propre et non verrouillé, puis supprime sa branche fusionnée. Un échec, des changements restants ou un verrou conservent le worktree et la branche et sont signalés dans le rapport. Le worktree principal n'est jamais supprimé. Le numéro d'issue est résolu automatiquement ; si aucune source ne correspond, la fermeture d'issue est simplement ignorée.
 
 ## `bump-plugin`
 
