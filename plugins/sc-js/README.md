@@ -35,7 +35,7 @@ Pertinent si tu travailles sur des projets Vue / Nuxt / SvelteKit / Vite / Alpin
 /sc-js:teach          → explications composables, réactivité, patterns async
 /sc-js:design-bridge  → réceptacle du pivot design (règle ESLint + composant Vue 3/React) — rend au gate chaque règle assignée, réalisée ou non ; possède le workflow de plateforme SPA (application à composants)
 /sc-js:wp-blocks      → round-trip de validité des blocs Gutenberg (Playwright) pour markup FSE généré hors éditeur
-/sc-js:cd local|server|automata → local reproductible, façade de production native et enveloppe CI/PaaS via overcode
+/sc-js:cd local|server|automata → local reproductible, façade de production native et enveloppe CI/PaaS via `overcode:deploy`
 ```
 
 ## Utilisation

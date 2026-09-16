@@ -33,7 +33,8 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 | `data-optimize` | `/overcode:data-optimize` | Audit perf de la couche données (N+1, index, pagination, cache, quota) |
 | `seo-optimize` | `/overcode:seo-optimize` | Audit SEO et GEO → roadmap priorisée + copy prêt à coller |
 | `ap-optimize` | `/overcode:ap-optimize` | Audit d'une implémentation ActivityPub (inbox, outbox, signatures, fan-out, AS2) |
-| `service` | `/overcode:service <action>` | Installe, vérifie ou explique les règles Firebase, Klaviyo, GTM/Meta, Clarity et PageSpeed/Lighthouse |
+| `service` | `/overcode:service <action>` | Installe, vérifie ou explique les règles SaaS, et configure une cible SSH, Alwaysdata, Railway ou Heroku |
+| `deploy` | `/overcode:deploy automata` | Génère une enveloppe de livraison GitHub, GitLab, Railway ou Heroku depuis le contrat validé d’une cible |
 | `readme` | `/overcode:readme` | Rédige ou met à jour un README.md (`write` depuis zéro, `update` par section) |
 | `changelog` | `/overcode:changelog` | Génère le CHANGELOG depuis git (Keep a Changelog) ; `curate` comble et condense l'historique |
 | `decompose` | `/overcode:decompose` | Décompose un objectif en graphe de dépendances (méthode Mikado) |
