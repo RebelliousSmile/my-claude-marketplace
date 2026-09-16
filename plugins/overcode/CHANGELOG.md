@@ -10,6 +10,16 @@
 - La skill `baby`, inutilisée, et ses références dans le catalogue, la documentation et la migration Vibe.
 - La skill `journey`, remplacée pour les parcours navigateur par les skills AIDD ; la reconnaissance de ses anciens rapports reste dans `harvest`.
 
+## [5.6.1] — 2026-09-16
+
+### Added
+
+- `service` reprend les règles SaaS et la configuration des cibles ; `deploy` génère les enveloppes de livraison depuis un contrat validé.
+
+### Removed
+
+- Le plugin autonome `web-tiers`, dont les workflows et références sont désormais portés par Overcode.
+
 ## [5.6.0] — 2026-09-10
 
 ### Added

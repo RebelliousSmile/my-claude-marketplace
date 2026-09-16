@@ -4,6 +4,12 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [4.5.1] - 2026-09-16
+
+### Changed
+
+- `web-tiers` est retiré de la marketplace : `overcode:service` porte les règles SaaS et la configuration des cibles, tandis que `overcode:deploy` génère les enveloppes de livraison.
+
 ## [4.5.0] - 2026-09-16
 
 ### Added

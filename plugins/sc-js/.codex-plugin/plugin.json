@@ -1,8 +1,10 @@
 {
   "name": "sc-js",
-  "version": "0.17.2+codex.20260828.3",
+  "version": "0.17.3+codex.20260828.3",
   "description": "JavaScript stack detection, audit, modernization, and multi-target CD with safe DrvFs permissions plus behavior-bound proof and recovery.",
-  "author": { "name": "François-Xavier Guillois" },
+  "author": {
+    "name": "François-Xavier Guillois"
+  },
   "skills": "./skills/",
   "interface": {
     "displayName": "SC JavaScript",
@@ -10,7 +12,14 @@
     "longDescription": "Detect JavaScript frameworks, audit and modernize code, validate Gutenberg blocks, and reconcile local plus production delivery through the project's package-manager facade.",
     "developerName": "François-Xavier Guillois",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Write"],
-    "defaultPrompt": ["Detect this JavaScript stack", "Audit this JavaScript codebase", "Modernize this Vue application"]
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Detect this JavaScript stack",
+      "Audit this JavaScript codebase",
+      "Modernize this Vue application"
+    ]
   }
 }

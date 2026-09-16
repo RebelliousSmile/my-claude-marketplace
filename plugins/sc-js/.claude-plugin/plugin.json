@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-js",
-  "version": "0.17.2",
+  "version": "0.17.3",
   "description": "JavaScript stack detection, audit, modernization, and multi-target CD with safe DrvFs permissions plus behavior-bound proof and recovery.",
   "author": {
     "name": "François-Xavier Guillois"

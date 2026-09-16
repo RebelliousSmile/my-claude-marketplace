@@ -1,5 +1,11 @@
 # Changelog — sc-js
 
+## [0.17.3] — 2026-09-16
+
+### Changed
+
+- `cd automata` délègue son enveloppe de livraison à `overcode:deploy`.
+
 ## [0.17.2] — 2026-08-28
 
 ### Fixed

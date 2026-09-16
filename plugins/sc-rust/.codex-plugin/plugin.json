@@ -1,8 +1,10 @@
 {
   "name": "sc-rust",
-  "version": "0.7.1+codex.20260828.2",
+  "version": "0.7.2+codex.20260828.2",
   "description": "Rust stack skills with target-isolated reversible releases, schema delivery, and one facade shared by server and automata modes.",
-  "author": { "name": "François-Xavier Guillois" },
+  "author": {
+    "name": "François-Xavier Guillois"
+  },
   "skills": "./skills/",
   "interface": {
     "displayName": "SC Rust",
@@ -10,7 +12,14 @@
     "longDescription": "Detect Rust stacks, audit and modernize code, inspect logs, and reconcile reproducible local plus reversible production releases.",
     "developerName": "François-Xavier Guillois",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Write"],
-    "defaultPrompt": ["Detect this Rust stack", "Audit this Rust codebase", "Analyze these Rust logs"]
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Detect this Rust stack",
+      "Audit this Rust codebase",
+      "Analyze these Rust logs"
+    ]
   }
 }

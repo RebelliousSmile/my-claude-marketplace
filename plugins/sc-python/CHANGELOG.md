@@ -1,5 +1,11 @@
 # Changelog — sc-python
 
+## [0.8.2] — 2026-09-16
+
+### Changed
+
+- `cd automata` délègue son enveloppe de livraison à `overcode:deploy`.
+
 ## [0.8.1] — 2026-08-28
 
 ### Fixed
