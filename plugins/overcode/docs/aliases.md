@@ -24,6 +24,7 @@ Le nom peut aussi être formulé en langage naturel : « clôture la tâche » a
 | [`gitit`](#gitit) | init → remote privé → commit → pull → push → tag | dossier cible (défaut : CWD) |
 | [`mirror`](#mirror) | image deux navigateurs → diff → corrections via le contrat agent `design/agents/copycat.md` | une image |
 | [`codex-vision`](#codex-vision) | audit critique et non mutant du code généré par un autre LLM | diff, branche, commit ou chemin |
+| [`debrief`](#debrief) | transcripts → blocages, usage des skills, prompts, synergies entre plugins | profondeur optionnelle, `--scope`, `--focus`, `--save <fichier.md>` |
 
 ---
 
@@ -102,6 +103,23 @@ Audite du code généré ou modifié par un autre LLM : défauts réels, simplif
 L'action est **non mutante vis-à-vis du code audité** — elle analyse et rapporte, elle ne corrige pas, ne reformate pas, ne commit pas, ne pousse pas. Les commandes de validation susceptibles d'écrire des artefacts ou des données persistantes sont écartées du périmètre.
 
 Par défaut, la cible est l'ensemble des changements suivis et non suivis du working tree, comparés à `HEAD`. Fournir le contrat fonctionnel (issue, plan, critères d'acceptation) est optionnel mais change la qualité de l'audit : sans lui, l'action juge la cohérence interne du code ; avec lui, elle juge la conformité à ce qui était demandé.
+
+## `debrief`
+
+Le pendant méthodologique de `previously`. Là où `previously` répond « où en est le projet », `debrief` répond « comment a-t-on travaillé, et qu'est-ce qui doit changer ». Il ne lit pas la documentation du projet mais les transcripts de sessions — la télémétrie du processus.
+
+Quatre axes, tous reconstruits depuis `~/.claude/projects/<slug>/*.jsonl` :
+
+- **Blocages** — erreurs d'outils répétées sur la même forme, interruptions utilisateur (une exécution stoppée partait dans le mur), compactions (la session a débordé de sa fenêtre : périmètre trop large ou contexte dépensé au mauvais endroit), prompts de correction.
+- **Usage des skills** — ce qui a été invoqué, ce qui a été abandonné juste après, et l'écart coûteux : le travail fait à la main en boucle `Read`/`Edit`/`Bash` alors qu'une skill disponible le couvrait exactement.
+- **Prompts** — la forme récurrente, jamais le catalogue. Un prompt laconique suivi d'une correction signale une demande sous-spécifiée ; chaque forme faible repart avec une reformulation concrète.
+- **Synergies entre plugins** — les chaînes de skills qui reviennent d'une session à l'autre sont un workflow retapé à la main : trois occurrences sans alias correspondant en font un candidat nommé. L'inverse compte aussi : plugins installés jamais touchés, skills qui alternent comme si elles se disputaient le même travail.
+
+Deux garde-fous portés par l'action : **un signal vu dans une seule session est une anecdote**, pas un constat — il faut deux sessions pour qu'un motif soit rapporté ; et **chaque recommandation cite sa preuve** (session, date, signal). Une recommandation sans trace est supprimée, pas adoucie.
+
+Lecture seule et bornée : aucune suite de tests, aucun lint, aucune action sœur, jamais un transcript lu en entier ni un corps de résultat d'outil. Seul le digest entre en contexte.
+
+Syntaxe : `debrief [<profondeur>] [--scope project|global] [--focus frictions|skills|prompts|plugins] [--save <fichier.md>]`. La profondeur est un nombre de sessions ou une durée (`30d`, plafonnée à 40 sessions) ; défaut : 8 sessions sur 30 jours. Une session ouverte avant la fenêtre et reprise dedans y entre entière — son `span` le montre, et un constat qui en vient se date par le span. `--scope global` élargit à tous les projets et attribue chaque constat au sien. `--save` ajoute le rapport au fichier sous un titre daté, d'un niveau sous le titre courant, sans jamais tronquer l'existant.
 
 ## Voir aussi
 

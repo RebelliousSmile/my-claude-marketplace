@@ -62,5 +62,17 @@
   { "prompt": "review AI-generated code for regressions", "expect_action": "codex-vision" },
   { "prompt": "alias backlog README-projet.md", "expect_action": null },
   { "prompt": "liste simplement les issues de ce dépôt", "expect_action": null },
-  { "prompt": "modifie ce fichier Markdown", "expect_action": null }
+  { "prompt": "modifie ce fichier Markdown", "expect_action": null },
+  { "prompt": "debrief", "expect_action": "debrief" },
+  { "prompt": "alias debrief", "expect_action": "debrief" },
+  { "prompt": "rétrospective des dernières sessions", "expect_action": "debrief" },
+  { "prompt": "qu'est-ce qui a bloqué ces derniers jours", "expect_action": "debrief" },
+  { "prompt": "où est-ce que j'ai perdu du temps", "expect_action": "debrief" },
+  { "prompt": "analyse mes conversations pour trouver des axes d'amélioration", "expect_action": "debrief" },
+  { "prompt": "comment j'utilise les skills", "expect_action": "debrief" },
+  { "prompt": "debrief 30d --scope global", "expect_action": "debrief" },
+  { "prompt": "debrief --focus plugins", "expect_action": "debrief" },
+  { "prompt": "what slowed us down in the last sessions", "expect_action": "debrief" },
+  { "prompt": "résume-moi la dernière conversation", "expect_action": null },
+  { "prompt": "lance les tests et donne-moi la couverture", "expect_action": null }
 ]

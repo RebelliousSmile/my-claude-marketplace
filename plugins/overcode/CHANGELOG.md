@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [5.7.0] — 2026-09-20
+
+### Added
+
+- `alias debrief` — le pendant méthodologique de `previously`. Reconstruit depuis les transcripts de sessions ce qui a bloqué (erreurs d'outils répétées, interruptions, compactions, prompts de correction), comment la surface de skills a réellement été utilisée, quelles formes de prompts ont échoué, et quelles chaînes de skills reviennent assez souvent pour mériter un alias. Lecture seule, bornée à un digest : aucun transcript n'est lu en entier.
+- `debrief` accepte une profondeur en sessions ou en durée, `--scope project|global`, `--focus frictions|skills|prompts|plugins` et `--save <fichier.md>` qui ajoute le rapport sous un titre daté, d'un niveau sous le titre courant, sans tronquer l'existant. Le digest écarte les rappels système, les enveloppes de commande et les marqueurs de pièce jointe du compte de prompts, et normalise les apostrophes typographiques pour que les motifs de correction français matchent.
+
 ## [5.6.0] — 2026-09-10
 
 ### Added

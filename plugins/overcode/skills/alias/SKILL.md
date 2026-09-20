@@ -1,8 +1,8 @@
 ---
 name: alias
-description: Fires a pre-crafted workflow prompt for recurring project operations. Use for plan/review chains, project snapshots, prompt compression, visual reconciliation, or AI-code review. Do NOT use for custom workflows or when direct control over each step is required.
+description: Fires a pre-crafted workflow prompt for recurring project operations. Use for plan/review chains, project snapshots, session retrospectives, prompt compression, visual reconciliation, or AI-code review. Do NOT use for custom workflows or when direct control over each step is required.
 author: François-Xavier Guillois
-version: 4.7.0
+version: 4.8.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash
@@ -35,6 +35,7 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 08  | `gitit`       | Init git dans `R` + dépôt distant **privé** via gh (si absent) + commit + pull + push + tag SemVer si un push a eu lieu | dossier cible `R` (défaut CWD) `[--public]` |
 | 09  | `mirror`      | Image deux navigateurs côte à côte → diff texte + style → corrections via le contrat agent `design/agents/copycat.md` | image (chemin ou collée) + optionnel `--ref right` |
 | 10  | `codex-vision` | Audit critique, prouvé et non-mutant du code généré par un autre LLM, avec contrôle explicite des régressions fonctionnelles | diff/branche/commit/chemin (défaut : changements locaux) + contrat optionnel |
+| 11  | `debrief`     | Rétrospective de méthode — blocages, usage des skills, formulation des prompts et synergies entre plugins, reconstruits depuis les transcripts | profondeur optionnelle (sessions ou durée), `--scope`, `--focus`, `--save <file.md>` |
 
 ## Default flow
 
@@ -50,6 +51,7 @@ Trigger-to-action mapping:
 - "gitit", "alias gitit", "git it", "init le dépôt git", "crée le dépôt git", "versionne ce dossier", "crée et pousse le dépôt", "git init + remote + push" → `gitit`
 - "mirror", "alias mirror", "comparer les deux navigateurs", "corriger les différences maquette", "aligner l'implémentation sur la maquette", "réconcilier mockup vs impl", "trouve les différences dans l'image", "corrige les écarts visuels" → `mirror`
 - "codex-vision", "alias codex-vision", "audit le code généré par un autre LLM", "review AI-generated code", "analyse critique du code IA", "vérifie ce code sans perte de fonctionnalités", "audit non-régression du code généré" → `codex-vision`
+- "debrief", "alias debrief", "rétrospective", "retro", "qu'est-ce qui a bloqué", "où est-ce que j'ai perdu du temps", "comment j'utilise les skills", "analyse mes conversations", "axes d'amélioration", "post-mortem des sessions", "what slowed us down", "how did we work" → `debrief`
 
 ## Transversal rules
 
