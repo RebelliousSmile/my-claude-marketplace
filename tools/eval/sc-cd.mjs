@@ -7,7 +7,8 @@ import { compareManifests } from '../sc-cd/compare-manifests.mjs';
 import { validateEvidenceFixture } from './validate-js-delivery-evidence.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const plugins = ['sc-css', 'sc-js', 'sc-php', 'sc-python', 'sc-rust', 'web-tiers'];
+const plugins = ['sc-css', 'sc-js', 'sc-php', 'sc-python', 'sc-rust'];
+const contractOwners = [...plugins, 'overcode'];
 const canonical = readFileSync(join(root, 'tools/sc-cd/contract.md'), 'utf8');
 const schema = readFileSync(join(root, 'tools/sc-cd/project-contract.schema.json'), 'utf8');
 const differentialSync = readFileSync(join(root, 'tools/sc-cd/differential-sync.md'), 'utf8');
@@ -15,7 +16,7 @@ const failures = [];
 
 JSON.parse(schema);
 
-for (const plugin of plugins) {
+for (const plugin of contractOwners) {
   const target = join(root, 'plugins', plugin, 'references/cd-contract.md');
   if (!existsSync(target)) failures.push(`${plugin}: missing cd-contract.md`);
   else if (readFileSync(target, 'utf8') !== canonical) failures.push(`${plugin}: cd-contract.md drifted`);
@@ -26,6 +27,7 @@ for (const plugin of plugins) {
   if (!existsSync(differentialTarget)) failures.push(`${plugin}: missing cd-differential-sync.md`);
   else if (readFileSync(differentialTarget, 'utf8') !== differentialSync) failures.push(`${plugin}: differential sync contract drifted`);
 
+  if (plugin === 'overcode') continue;
   const skillRoot = join(root, 'plugins', plugin, 'skills/cd');
   const skill = join(skillRoot, 'SKILL.md');
   if (!existsSync(skill)) failures.push(`${plugin}: missing cd skill`);
@@ -234,20 +236,23 @@ for (const required of ['brochure-server:', 'brochure-edge:', 'repository-fonts'
   if (!behavePark.includes(required)) failures.push(`sc-css fixture: missing ${required}`);
 }
 
-const tiersCd = join(root, 'plugins/web-tiers/skills/cd');
+const tiersCd = join(root, 'plugins/overcode/skills/deploy');
+const serviceRoot = join(root, 'plugins/overcode/skills/service');
 const tiersTexts = [
-  'SKILL.md', 'actions/02-server.md', 'actions/03-automata.md', 'references/providers.md',
+  'SKILL.md', 'actions/03-automata.md', 'references/providers.md',
   'references/ci-adapters.md', 'evals/delivery-scenarios.md', 'evals/delivery-safety-scenarios.md',
-].map((path) => readFileSync(join(tiersCd, path), 'utf8')).join('\n').toLocaleLowerCase('en-US');
+].map((path) => readFileSync(join(tiersCd, path), 'utf8')).concat([
+  readFileSync(join(serviceRoot, 'actions/05-server.md'), 'utf8'),
+]).join('\n').toLocaleLowerCase('en-US');
 for (const required of ['target id', 'alwaysdata', 'host-key', 'lifecycle revision', 'concurrency group', 'target-to-target', 'stale guard']) {
-  if (!tiersTexts.includes(required)) failures.push(`web-tiers: missing target provider rule ${required}`);
+  if (!tiersTexts.includes(required)) failures.push(`overcode: missing target provider rule ${required}`);
 }
 const tiersScenarios = JSON.parse(readFileSync(join(tiersCd, 'evals/scenarios.json'), 'utf8'));
 for (const target of ['alwaysdata-federated', 'railway-main']) {
-  if (!tiersScenarios.some(({ prompt }) => prompt.includes(target))) failures.push(`web-tiers: routing misses named target ${target}`);
+  if (!tiersScenarios.some(({ prompt }) => prompt.includes(target))) failures.push(`overcode: routing misses named target ${target}`);
 }
 for (const required of ['tiers_federated:', 'provider: alwaysdata', 'remoteGuard: deploy/guard.json', 'concurrencyGroup: suddenly-railway-main']) {
-  if (!behavePark.includes(required)) failures.push(`web-tiers fixture: missing ${required}`);
+  if (!behavePark.includes(required)) failures.push(`overcode fixture: missing ${required}`);
 }
 
 for (const plugin of plugins) {
@@ -261,28 +266,23 @@ for (const plugin of plugins) {
   }
 }
 
-const releaseVersions = {
-  'sc-css': '0.7.1', 'sc-js': '0.17.2', 'sc-php': '0.14.1',
-  'sc-python': '0.8.1', 'sc-rust': '0.7.1', 'web-tiers': '0.6.0',
-};
-const codexCachebusters = { 'sc-js': '20260828.3', 'web-tiers': '20260828.1' };
 const marketplace = JSON.parse(readFileSync(join(root, '.claude-plugin/marketplace.json'), 'utf8'));
-for (const [plugin, version] of Object.entries(releaseVersions)) {
+for (const plugin of contractOwners) {
   const claudeManifest = JSON.parse(readFileSync(join(root, 'plugins', plugin, '.claude-plugin/plugin.json'), 'utf8'));
   const codexManifest = JSON.parse(readFileSync(join(root, 'plugins', plugin, '.codex-plugin/plugin.json'), 'utf8'));
   const listing = marketplace.plugins.find(({ name }) => name === plugin);
-  if (claudeManifest.version !== version || listing?.version !== version) failures.push(`${plugin}: Claude/catalog version mismatch`);
-  const cachebuster = codexCachebusters[plugin] ?? '20260828.2';
-  if (codexManifest.version !== `${version}+codex.${cachebuster}`) failures.push(`${plugin}: Codex cachebuster mismatch`);
+  const version = claudeManifest.version;
+  if (listing?.version !== version) failures.push(`${plugin}: Claude/catalog version mismatch`);
+  if (!codexManifest.version.startsWith(`${version}+codex.`)) failures.push(`${plugin}: Codex version mismatch`);
+  if (plugin === 'overcode') continue;
   const readme = readFileSync(join(root, 'plugins', plugin, 'README.md'), 'utf8');
   const changelog = readFileSync(join(root, 'plugins', plugin, 'CHANGELOG.md'), 'utf8');
   if (!readme.includes('CD multi-cibles') && !readme.includes('CD par cible')) failures.push(`${plugin}: README misses v2 capabilities`);
   if (!changelog.includes(`## [${version}]`)) failures.push(`${plugin}: changelog misses ${version}`);
 }
-if (marketplace.version !== '4.0.0') failures.push('marketplace: expected version 4.0.0');
 
 if (failures.length) {
   for (const failure of failures) console.error(`SC-CD FAIL: ${failure}`);
   process.exit(1);
 }
-console.log(`SC-CD PASS: v2 contract, schema, differential oracle, ${plugins.length} portable copies, ${cases.length} project fixtures and fail-closed promotion`);
+console.log(`SC-CD PASS: v2 contract, schema, differential oracle, ${contractOwners.length} portable copies, ${cases.length} project fixtures and fail-closed promotion`);

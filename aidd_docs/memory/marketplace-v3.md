@@ -14,7 +14,7 @@ Une route ciblée charge uniquement son action, ses prérequis et leurs référe
 
 | Plugin | Rôle |
 |---|---|
-| `overcode` | Extensions AIDD projet-agnostiques : alias, behave, control, harvest, status, taste, foresee, baby, readme, changelog, decompose, journey, reconcile-normative, seo-optimize, data/web/ap-optimize |
+| `overcode` | Extensions AIDD projet-agnostiques : alias, behave, control, harvest, status, taste, foresee, readme, changelog, decompose, reconcile-normative, seo-optimize, data/web/ap-optimize |
 | `design` | Entonnoir design system 5 verbes (define→destructure→adjust→enforce→diffuse) + detail et harness hors entonnoir |
 | `game-writer` | Contenu narratif jeu vidéo (bank, dialogic-draft, dialogic-review) |
 | `sc-godot` | Godot/GDScript — coquille (skills à porter) |
@@ -23,8 +23,7 @@ Une route ciblée charge uniquement son action, ses prérequis et leurs référe
 | `sc-php` | Écosystème PHP (WP/Laravel/Symfony) + log-analysis, bruno, setup, design-bridge, builder-coverage |
 | `sc-python` | Écosystème Python (Django/FastAPI/Flask) |
 | `sc-rust` | Écosystème Rust (Axum/Actix + SQLx/Diesel) |
-| `web-tiers` | SaaS tiers (Firebase/Firestore, Klaviyo, GTM, Clarity, PSI) |
-| `obs` | Notes Obsidian, arbre Documents/, filler, research, extract-pdf |
+| | `obs` | Notes Obsidian, arbre Documents/, filler, research, extract-pdf |
 
 ## Plugins supprimés ou renommés
 

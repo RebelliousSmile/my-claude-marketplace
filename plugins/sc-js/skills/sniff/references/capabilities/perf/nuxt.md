@@ -91,7 +91,7 @@ Stack-specific overrides for the generic 12-section perf checklist when auditing
 
 ## §9 — Backend / DB (TTFB)
 
-- Si stack Firebase : voir `data-pivots-firebase.md` (web-tiers)
+- Si stack Firebase : voir `data-pivots-firebase.md` (overcode)
 - Si stack Prisma : voir `data-pivots-prisma.md` (sc-js)
 - SSR critical path ≤ 3 queries séquentielles — `Promise.all` impératif
 - Cold start Nitro/Vercel Functions : `min_instances: 1` si TTFB cold > 1 s et trafic continu

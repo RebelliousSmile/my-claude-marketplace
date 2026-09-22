@@ -54,4 +54,4 @@ Trigger-to-action mapping for `01`:
 - Never auto-run a database import against a remote target — that step stays manual and explicit, always.
 - Never let Docker Compose derive its project name implicitly — every scaffold wires the `COMPOSE_PROJECT_NAME` guard from `compose-project-name-guard.md`.
 - WordPress is the reference-quality flow (real production lineage); Laravel/Symfony are thinner (official installer + standard compose) — say so rather than implying equal depth.
-- Report every file written, per action, same as `sniff`/`web-tiers:setup` do.
+- Report every file written, per action, same as `sniff`/`overcode:service` do.

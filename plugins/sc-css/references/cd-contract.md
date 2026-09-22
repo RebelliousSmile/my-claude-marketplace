@@ -50,4 +50,4 @@ Canonical maintenance source: `tools/sc-cd/contract.md`. This file is copied byt
 - Automation requires a valid version 2 `deploy/contract.json`, a clean materializable source ref, and a matching remote lifecycle guard.
 - The default trigger is manual. Push is emitted only per target when explicitly requested.
 - Provider envelopes install prerequisites and invoke the exact target command. They preserve nonzero status and contain no application, migration, inventory, or synchronization logic.
-- Missing provider support, stale lifecycle state, or a missing `web-tiers` capability stops without writing a fallback workflow.
+- Missing provider support, stale lifecycle state, or a missing `overcode:deploy` capability stops without writing a fallback workflow.

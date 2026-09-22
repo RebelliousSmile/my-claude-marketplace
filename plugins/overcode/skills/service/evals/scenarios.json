@@ -1,5 +1,5 @@
 [
-  { "prompt": "install the web-tiers rules", "expect_action": "install" },
+  { "prompt": "install the overcode service rules", "expect_action": "install" },
   { "prompt": "setup the SaaS consumption rules", "expect_action": "install" },
   { "prompt": "add Firebase coding rules to this project", "expect_action": "install" },
   { "prompt": "installe les règles SaaS dans le projet", "expect_action": "install" },
@@ -22,8 +22,10 @@
   { "prompt": "guide for Meta Pixel", "expect_action": "help" },
   { "prompt": "how to use Microsoft Clarity", "expect_action": "help" },
   { "prompt": "PageSpeed Insights best practices", "expect_action": "help" },
-  { "prompt": "web-tiers help klaviyo", "expect_action": "help" },
-  { "prompt": "web-tiers help firebase", "expect_action": "help" },
+  { "prompt": "overcode service help klaviyo", "expect_action": "help" },
+  { "prompt": "overcode service help firebase", "expect_action": "help" },
+  { "prompt": "configure a local provider emulator", "expect_action": "local" },
+  { "prompt": "configure the production server target", "expect_action": "server" },
   {
     "prompt": "before implementing the Klaviyo integration, provide the authoritative patterns",
     "expect_action": "help",

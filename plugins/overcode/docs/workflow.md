@@ -24,8 +24,7 @@ Les skills s'invoquent sous la forme `/overcode:<skill>`.
 | « la mémoire projet est en vrac » | [`harvest`](#maintenance) puis [`reconcile-normative`](#maintenance) |
 | « il faut un README / un CHANGELOG » | [`readme`](#documentation) · [`changelog`](#documentation) |
 | « ce chantier est trop gros » | [`decompose`](#planification--decompose) |
-| « cette feature marche-t-elle de bout en bout ? » | [`journey`](#recette--journey) |
-| « je ne comprends rien à ce sujet » | [`baby`](#vulgarisation--baby) |
+| « configure ou vérifie Firebase, Klaviyo, GTM, Clarity ou PSI » | [`service`](#services-tiers--service) |
 | « il me faut une recherche documentaire sourcée » | [`research`](#recherche-documentaire--research) |
 | « je veux extraire un gros PDF en plusieurs sessions » | [`extract-pdf`](#extraction-pdf--extract-pdf) |
 | « je veux enchaîner plusieurs skills » | [`alias`](aliases.md) |
@@ -79,7 +78,7 @@ Si la capacité AIDD requise manque ou est incompatible, la branche s'arrête en
 
 ## Audits de performance
 
-Même forme pour les deux : détection de stack/service → chargement des pivots spécialisés (`sc-*`, `web-tiers`) → checklist → roadmap priorisée. Un argument optionnel borne le périmètre à une route ou une action.
+Même forme pour les deux : détection de stack/service → chargement des pivots spécialisés (`sc-*`) → checklist → roadmap priorisée. Un argument optionnel borne le périmètre à une route ou une action.
 
 **`web-optimize`** — LCP, CLS, INP, TBT, TTFB, taille de bundle, ressources bloquantes, N+1 **au rendu**.
 
@@ -159,15 +158,9 @@ Méthode Mikado : décompose un objectif en graphe de dépendances par questions
 
 À utiliser quand un chantier est trop gros pour être attaqué de front et qu'on cherche l'ordre des étapes sûres, pas l'implémentation.
 
-## Recette — `journey`
+## Services tiers — `service`
 
-Exécute un parcours utilisateur depuis une issue GitHub ou GitLab, journalise les résultats Playwright étape par étape dans un rapport `<plan>.journey.md`, et poste le résumé et la conclusion sur l'issue.
-
-Prérequis : une issue existante **et** un fichier de plan correspondant.
-
-## Vulgarisation — `baby`
-
-Explique, réécrit ou compare un sujet en langage progressif et concret, sans jargon non défini. Utile pour un transfert de contexte vers un non-spécialiste, ou pour présenter un arbitrage technique et ses compromis à qui doit trancher sans être du métier.
+Installe les règles de consommation de Firebase, Klaviyo, GTM/Meta, Clarity et PageSpeed/Lighthouse dans la surface d’instructions du projet, les vérifie en lecture seule, ou fournit les contraintes d’un service avant son intégration.
 
 ## Recherche documentaire — `research`
 

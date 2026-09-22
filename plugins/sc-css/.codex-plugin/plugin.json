@@ -1,8 +1,10 @@
 {
   "name": "sc-css",
-  "version": "0.7.1+codex.20260828.2",
+  "version": "0.7.2+codex.20260828.2",
   "description": "CSS ecosystem skills for auditing, modernization, and multi-target delivery of deterministic static artifacts with bounded composite ownership.",
-  "author": { "name": "François-Xavier Guillois" },
+  "author": {
+    "name": "François-Xavier Guillois"
+  },
   "skills": "./skills/",
   "interface": {
     "displayName": "SC CSS",
@@ -10,7 +12,14 @@
     "longDescription": "Detect CSS architecture, audit and modernize styles, realize design pivots, and configure static local and production delivery without stealing application ownership.",
     "developerName": "François-Xavier Guillois",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Write"],
-    "defaultPrompt": ["Detect this project's CSS architecture", "Audit these stylesheets", "Modernize this legacy CSS"]
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Detect this project's CSS architecture",
+      "Audit these stylesheets",
+      "Modernize this legacy CSS"
+    ]
   }
 }

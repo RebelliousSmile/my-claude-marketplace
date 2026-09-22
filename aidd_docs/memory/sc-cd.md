@@ -41,5 +41,5 @@ Après une interruption postérieure à la garde, la reprise termine la promotio
 
 - `sc-css`, `sc-js`, `sc-php`, `sc-python` ou `sc-rust` possèdent la façade et les décisions propres à la stack.
 - Les contributions composites restent bornées sous un seul propriétaire racine.
-- `web-tiers` consomme une cible validée et ne possède que ses prérequis fournisseur et son enveloppe mince ; il ne copie ni build, ni migration, ni inventaire, ni synchronisation.
+- `overcode` consomme une cible validée et ne possède que ses prérequis fournisseur et son enveloppe mince ; il ne copie ni build, ni migration, ni inventaire, ni synchronisation.
 - Les capacités d'Alwaysdata, Railway ou d'un stockage sont des faits vérifiés par cible, jamais des suppositions dérivées du fournisseur.

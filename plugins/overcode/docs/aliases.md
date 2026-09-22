@@ -18,12 +18,8 @@ Le nom peut aussi être formulé en langage naturel : « clôture la tâche » a
 | [`endtask`](#endtask) | commit → plan implémenté → learn → merge → changelog → tags → issue → nettoyage du worktree | la branche courante |
 | [`bump-plugin`](#bump-plugin) | bump de version → commit → push marketplace | nom du plugin + version ou type de bump |
 | [`previously`](#previously) | backlog optionnel → reprise de contexte documentaire (conversations, `aidd_docs/`, git) | profondeur optionnelle, `--backlog <fichier.md>`, puis `--milestone`/`--ml <titre>` et `--exclude-milestone`/`--em <titre>` (plusieurs possibles) |
-| [`smarten`](#smarten) | réécriture minimale d'un fichier de prompt, sur place | un chemin `.md` |
-| [`skillconf`](#skillconf) | classe les skills auto vs sur-invocation → écrit `skillOverrides` | *(rien)* |
-| [`weeklyemail`](#weeklyemail) | commits de la semaine → e-mail client | `github` ou `gitlab` |
 | [`gitit`](#gitit) | init → remote privé → commit → pull → push → tag | dossier cible (défaut : CWD) |
 | [`mirror`](#mirror) | image deux navigateurs → diff → corrections via le contrat agent `design/agents/copycat.md` | une image |
-| [`codex-vision`](#codex-vision) | audit critique et non mutant du code généré par un autre LLM | diff, branche, commit ou chemin |
 | [`debrief`](#debrief) | transcripts → blocages, usage des skills, prompts, synergies entre plugins | profondeur optionnelle, `--scope`, `--focus`, `--save <fichier.md>` |
 
 ---
@@ -54,26 +50,6 @@ Reconstruit ensuite l'état du projet à partir de trois sources documentaires, 
 
 Syntaxe : `previously [<profondeur>] [--backlog <fichier.md>] [--milestone <titre> | --ml <titre>] [--exclude-milestone <titre> | --em <titre>]...`. La profondeur optionnelle reste un nombre de commits ou une durée du type `7d`, placée avant les options.
 
-## `smarten`
-
-Réécrit un fichier `.md` de prompt **sur place**, selon des critères fixes : suppression du remplissage, déduplication des contraintes, compression des étapes, listes à puces plutôt que prose, suppression du spéculatif.
-
-Ce qui est explicitement **conservé** : les paragraphes narratifs porteurs de contexte nécessaire, les fallbacks documentés et les branches conditionnelles (`si X → faire Y`). L'alias abrège, il ne mutile pas la spécification.
-
-Refuse tout ce qui n'est pas un `.md`.
-
-## `skillconf`
-
-Réduit le contexte passif consommé par les descriptions de skills. Chaque skill active est classée en auto-déclenchable ou sur-invocation-seule, puis `skillOverrides` est écrit dans le `.claude/settings.json` **du projet** — le fichier global n'est jamais touché.
-
-La classification n'est pas heuristique : c'est un test d'appartenance à une **allowlist CORE** maintenue à la main (`assets/skillconf-core.json`). Aucune description n'est lue ni interprétée, ce qui rend l'action peu coûteuse à rejouer. Tout ce qui n'est pas dans la liste bascule en sur-invocation — la skill reste appelable par `/nom`, elle disparaît simplement du bloc passif.
-
-## `weeklyemail`
-
-Collecte les commits de la semaine sur tous les dépôts accessibles d'une plateforme (`github` ou `gitlab`), les synthétise par thème fonctionnel, et rédige un e-mail client prêt à envoyer.
-
-Par défaut : les 7 derniers jours, l'utilisateur courant comme auteur. `since` accepte une date ISO ou un nombre de jours ; `author=all` inclut tout le monde.
-
 ## `gitit`
 
 Transforme un dossier en dépôt git synchronisé en une commande : init local → remote GitHub via `gh` → commit → pull → push → tag SemVer si quelque chose a effectivement été poussé.
@@ -95,14 +71,6 @@ Reçoit une capture montrant deux navigateurs côte à côte — la référence 
 | Corrections précises déjà fournies | prompt direct soigné — équivalent |
 | Analyse de style fine (fonds, puces, emphase, spacing) | **`mirror`** — la délégation à `copycat` est le vrai gain |
 | Plusieurs pages à réconcilier | **`mirror --page`** — l'automatisation justifie le coût |
-
-## `codex-vision`
-
-Audite du code généré ou modifié par un autre LLM : défauts réels, simplifications trompeuses, régressions du contrat fonctionnel.
-
-L'action est **non mutante vis-à-vis du code audité** — elle analyse et rapporte, elle ne corrige pas, ne reformate pas, ne commit pas, ne pousse pas. Les commandes de validation susceptibles d'écrire des artefacts ou des données persistantes sont écartées du périmètre.
-
-Par défaut, la cible est l'ensemble des changements suivis et non suivis du working tree, comparés à `HEAD`. Fournir le contrat fonctionnel (issue, plan, critères d'acceptation) est optionnel mais change la qualité de l'audit : sans lui, l'action juge la cohérence interne du code ; avec lui, elle juge la conformité à ce qui était demandé.
 
 ## `debrief`
 

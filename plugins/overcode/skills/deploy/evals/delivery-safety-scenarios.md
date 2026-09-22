@@ -1,6 +1,6 @@
-# web-tiers:cd — Delivery Safety Behavioural Test Scenarios
+# overcode:deploy — Delivery Safety Behavioural Test Scenarios
 
-Behavioural tests for **web-tiers:cd** (`plugins/web-tiers/skills/cd/SKILL.md`) — verifies the single aspect of **thin-envelope mutation safety**: provider and CI files consume a validated producer contract without inventing, executing or masking delivery logic.
+Behavioural tests for **overcode:deploy** (`plugins/web-tiers/skills/cd/SKILL.md`) — verifies the single aspect of **thin-envelope mutation safety**: provider and CI files consume a validated producer contract without inventing, executing or masking delivery logic.
 
 This suite is distinct from:
 
@@ -30,7 +30,7 @@ This suite is distinct from:
 
 ## How to run
 
-Agent-as-`web-tiers:cd` (dry-run, READ-ONLY): load the router, actions, provider/CI references, common contract, schema, this suite and `tools/eval/fixtures-sc-cd/behave-park/fixture.yaml`. State exact provider/workflow intended writes and compare command/directory byte-for-byte to the case contract. Execute nothing.
+Agent-as-`overcode:deploy` (dry-run, READ-ONLY): load the router, actions, provider/CI references, common contract, schema, this suite and `tools/eval/fixtures-sc-cd/behave-park/fixture.yaml`. State exact provider/workflow intended writes and compare command/directory byte-for-byte to the case contract. Execute nothing.
 
 **Decisive observables:** valid current contract required; command and directory copied exactly; manual default; push only explicit; secret values absent; non-zero status unmasked; provider setup never runs deployment.
 

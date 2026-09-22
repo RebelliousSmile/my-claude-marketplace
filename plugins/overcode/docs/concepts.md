@@ -23,7 +23,7 @@ Aucune skill d'`overcode` ne code en dur la connaissance d'une stack. C'est le p
 Une skill d'audit fonctionne en deux temps :
 
 1. **Détecter** la stack depuis les manifestes du projet (`package.json`, `composer.json`, `pyproject.toml`, `Cargo.toml`, les lockfiles).
-2. **Charger les pivots** — des fichiers de règles installés par les plugins spécialisés (`sc-*` et `web-tiers`) sous `.claude/rules/07-quality/`. Aucun pivot trouvé → un schéma générique s'applique.
+2. **Charger les pivots** — des fichiers de règles installés par les plugins spécialisés (`sc-*`) sous `.claude/rules/07-quality/`. Aucun pivot trouvé → un schéma générique s'applique.
 
 ### La quittance : ce que la sortie dit de ce qu'elle n'a pas chargé
 
@@ -51,7 +51,7 @@ La dernière ligne est l'état `no provider` à l'état pur, et elle est écrite
 
 Le détail par stack — quel plugin couvre quelle stack, et sous quelle commande — vit dans `references/pivot-providers.md`, pas ici : cette page nomme le plugin par famille, ce fichier fait la correspondance par stack.
 
-L'inversion de dépendance est délibérée : `overcode` ne connaît pas Laravel, Nuxt ni Firebase. Ce sont `sc-php`, `sc-js` et `web-tiers` qui **déposent** leur savoir dans le projet, et `overcode` qui le ramasse. Ajouter le support d'une stack ou d'un service ne demande donc jamais de toucher `overcode` — les plugins spécialisés évoluent à leur propre rythme.
+L'inversion de dépendance est délibérée : `overcode` ne connaît pas Laravel, Nuxt ni Firebase. Ce sont `sc-php`, `sc-js` qui **déposent** leur savoir dans le projet, et `overcode` qui le ramasse. Ajouter le support d'une stack ou d'un service ne demande donc jamais de toucher `overcode` — les plugins spécialisés évoluent à leur propre rythme.
 
 Conséquence pratique : `/overcode:web-optimize` sur un projet Laravel sans `sc-php` installé produit un audit générique correct mais moins précis. L'installation du pivot est ce qui fait la différence entre « ton bundle est trop gros » et « ton `@vite` charge le manifest en dev à chaque requête ».
 
@@ -109,4 +109,4 @@ C'est la même séparation que dans `design` : le plugin garde le *quoi*, l'exé
 ## Voir aussi
 
 - [`workflow.md`](workflow.md) — quelle skill pour quelle situation
-- [`aliases.md`](aliases.md) — les dix chaînes d'enchaînement
+- [`aliases.md`](aliases.md) — les six chaînes d'enchaînement

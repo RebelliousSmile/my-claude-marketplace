@@ -8,7 +8,7 @@
 | requirements only | Ask before adding any runner or manager. |
 | Celery worker | Declare process ordering and an independent health proof. |
 | SQL data request | Require named scope, backup, confirmation and recovery. |
-| Missing web-tiers | Stop automata without files or fallback. |
+| Missing overcode deploy | Stop automata without files or fallback. |
 | Django federation | Railway automata and Alwaysdata server share one facade and immutable code ref, while retaining distinct databases and media. |
 | Named staging | Mirror only the named staging data/media through a manifest delta; leave production targets untouched. |
 | Mode switch | Preserve facade semantics when a named target changes from server to automata. |

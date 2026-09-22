@@ -1,7 +1,7 @@
 # API / data-layer mapping — perf pivots
 
 > **Generic file**: this file contains ONLY the 12-section schema, the universal REST vanilla pivots, and the fallback procedure.
-> Stack- and service-specific pivots are NOT embedded here — specialist plugins install them as project-level rules. **Which plugin supplies which pivot, and by which command, is read in `${OVERCODE_PLUGIN_ROOT}/references/pivot-providers.md` — never guessed, never derived from a plugin's name.** The command is carried per plugin, not per family: `web-tiers` installs by `setup`, the four `sc-<language>` by `sniff`.
+> Stack- and service-specific pivots are NOT embedded here — specialist plugins install them as project-level rules. **Which plugin supplies which pivot, and by which command, is read in `${OVERCODE_PLUGIN_ROOT}/references/pivot-providers.md` — never guessed, never derived from a plugin's name.** The command is carried per plugin, not per family: `overcode` installs by `setup`, the four `sc-<language>` by `sniff`.
 >
 > **Dispatch order** when running an audit on a detected data stack:
 >
@@ -32,7 +32,7 @@ Les pivots installés par `sc-*` plugins remplacent les items section-par-sectio
 
 ## Plugin → stack mapping
 
-**Read it in `${OVERCODE_PLUGIN_ROOT}/references/pivot-providers.md` › `data-pivots-*`.** That table is the sole source, and it is not duplicated here: a second copy drifts from the installers silently, which is exactly how this file came to advertise a `sc-rust` Sea-ORM pivot that has never existed, to omit `rusqlite` which does, and to keep listing Supabase / DynamoDB / Hasura after `web-tiers` withdrew those three declarations.
+**Read it in `${OVERCODE_PLUGIN_ROOT}/references/pivot-providers.md` › `data-pivots-*`.** That table is the sole source, and it is not duplicated here: a second copy drifts from the installers silently, which is exactly how this file came to advertise a `sc-rust` Sea-ORM pivot that has never existed, to omit `rusqlite` which does, and to keep listing Supabase / DynamoDB / Hasura after `overcode` withdrew those three declarations.
 
 If a stack you detect has no line in that table, the state is `no provider` — follow the fallback procedure below, and say so in the receipt.
 

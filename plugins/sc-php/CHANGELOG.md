@@ -1,5 +1,11 @@
 # Changelog — sc-php
 
+## [0.14.2] — 2026-09-16
+
+### Changed
+
+- `cd automata` délègue son enveloppe de livraison à `overcode:deploy`.
+
 ## [0.14.1] — 2026-08-28
 
 ### Fixed

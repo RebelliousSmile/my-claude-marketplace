@@ -49,11 +49,11 @@ Objet : les fichiers `<famille>-pivots-<stack>.md` que les `sc-*` déposent dans
 
 **Deux lectures qui ne se déduisent pas.** La quittance se lit **par stack**, jamais par dépôt (DEC-008 s'applique tel quel). Et « vide » se lit **sur les règles**, pas sur les fichiers : un réceptacle contenant un `.gitkeep` est vide.
 
-**`no provider` exige une table statique.** Une skill qui tourne dans un projet ne voit pas les autres plugins de la marketplace : elle ne peut rien dériver à l'exécution. `plugins/overcode/references/pivot-providers.md` porte `<stack> → <plugin>, <commande>`, citée par les quatre skills, recopiée par aucune. **La commande est portée par plugin, jamais par famille** — `web-tiers` s'installe par `setup`, les quatre `sc-<langage>` par `sniff` ; un gabarit uniforme remplace un remède faux par un autre.
+**`no provider` exige une table statique.** Une skill qui tourne dans un projet ne voit pas les autres plugins de la marketplace : elle ne peut rien dériver à l'exécution. `plugins/overcode/references/pivot-providers.md` porte `<stack> → <plugin>, <commande>`, citée par les quatre skills, recopiée par aucune. **La commande est portée par plugin, jamais par famille** — `overcode` s'installe par `setup`, les quatre `sc-<langage>` par `sniff` ; un gabarit uniforme remplace un remède faux par un autre.
 
 ## Une déclaration d'installeur est une affirmation vérifiable
 
-Neuf cibles `.claude/rules/` étaient déclarées sans aucun fichier source derrière — trois chez `web-tiers`, six chez `sc-css` — depuis des mois. Ce qui manquait n'était pas la vigilance mais **la garde**. Deux ont été ajoutées à `tools/eval/consistency.mjs` :
+Neuf cibles `.claude/rules/` étaient déclarées sans aucun fichier source derrière — trois chez `overcode`, six chez `sc-css` — depuis des mois. Ce qui manquait n'était pas la vigilance mais **la garde**. Deux ont été ajoutées à `tools/eval/consistency.mjs` :
 
 - **M4** — toute ligne d'action citant une cible `.claude/rules/` voit **toutes** ses sources résoudre sur disque. Trois choix de conception qui se paient si on les rate : ancrage sur la **forme** de la ligne et jamais sur l'intitulé de colonne (il varie d'un plugin à l'autre) · **deux** bases de résolution (`${CLAUDE_PLUGIN_ROOT}/x` → racine du plugin ; relatif → racine du skill) · formulée **par ligne**, parce qu'une action de `sc-python` met source et cible dans la même cellule.
 - **M5** — chaque ligne de `pivot-providers.md` joint une paire (plugin, cible) que M4 a validée. Formulée ainsi, elle est **indépendante de l'ordre des parts** ; la formulation abandonnée (« désigne un fichier réellement produit ») rendait son verdict dépendant de ce qui avait déjà été corrigé.

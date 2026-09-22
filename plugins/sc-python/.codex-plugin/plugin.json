@@ -1,8 +1,10 @@
 {
   "name": "sc-python",
-  "version": "0.8.1+codex.20260828.2",
+  "version": "0.8.2+codex.20260828.2",
   "description": "Python stack skills with manager-preserving multi-target staging/production CD for Django, FastAPI, Flask, workers, SQL, and managed media.",
-  "author": { "name": "François-Xavier Guillois" },
+  "author": {
+    "name": "François-Xavier Guillois"
+  },
   "skills": "./skills/",
   "interface": {
     "displayName": "SC Python",
@@ -10,7 +12,14 @@
     "longDescription": "Detect Python stacks, audit and modernize code, inspect logs, and reconcile local plus production delivery while preserving the existing environment manager.",
     "developerName": "François-Xavier Guillois",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Write"],
-    "defaultPrompt": ["Detect this Python stack", "Audit this Python codebase", "Analyze these Python logs"]
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Detect this Python stack",
+      "Audit this Python codebase",
+      "Analyze these Python logs"
+    ]
   }
 }

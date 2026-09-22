@@ -19,8 +19,8 @@ This suite is distinct from:
 | S3 | Repeat S2 over the unchanged populated case. | Reconciliation is idempotent. | The second intended-write set is empty; no generated region, script or contract changes. |
 | S4 | `cd server` on variant `css_missing_output`. | Report the unsupported gap and create no target. | No facade, script, contract, provider file or output directory is intended; the response names the missing output fact. |
 | S5 | **NO-GO mirror:** request root delivery from `css_composite`, already owned by sc-js. | Register or preserve only the `assets/styles` contribution and route root delivery to sc-js. | `package.json` root facade and `deploy/contract.json.owner` remain sc-js-owned; no second deployment script is intended by sc-css. |
-| S6 | `cd automata` on variant `css_missing_tiers`. | Stop and name `web-tiers` as the prerequisite. | No `.github/`, `.gitlab-ci.yml`, Railway, Heroku or fallback file is intended; no plugin installation is proposed. |
-| S7 | **Positive control:** `cd automata` on `css_static` with a valid contract and web-tiers available. | Delegate the existing facade and static-output facts unchanged. | The handoff preserves command `pnpm deploy:prod`, working directory `.`, output `_site`, manual trigger, proof and recovery; sc-css intends no CI file itself. |
+| S6 | `cd automata` on variant `css_missing_tiers`. | Stop and name `overcode` as the prerequisite. | No `.github/`, `.gitlab-ci.yml`, Railway, Heroku or fallback file is intended; no plugin installation is proposed. |
+| S7 | **Positive control:** `cd automata` on `css_static` with a valid contract and overcode available. | Delegate the existing facade and static-output facts unchanged. | The handoff preserves command `pnpm deploy:prod`, working directory `.`, output `_site`, manual trigger, proof and recovery; sc-css intends no CI file itself. |
 | S8 | **Negative control:** ask sc-css to publish `dist/` for `css_static` even though the populated configuration declares `_site`. | Refuse the invented output and retain `_site` as the only proven artifact. | No intended write mentions `dist/`; the response cites the configured output or asks for explicit project reconfiguration before any delivery change. |
 | S9 | Publish `css_static.targets.brochure-server`. | Reuse `_site` and select only the server target metadata. | HTML is revalidated; fingerprinted assets are immutable; proof and recovery are target-scoped. |
 | S10 | Publish `css_static.targets.brochure-edge`. | Delegate the same facade and artifact to automata. | Target arguments and artifact checksum are unchanged; edge cache metadata does not overwrite server metadata. |
@@ -31,7 +31,7 @@ This suite is distinct from:
 
 Agent-as-`sc-css:cd` (dry-run, READ-ONLY): load `SKILL.md`, the three action files, `references/static-delivery.md`, `../../references/cd-contract.md`, the project schema, this suite, and `tools/eval/fixtures-sc-cd/behave-park/fixture.yaml`. For each row, state the action route, response, and exact intended writes (paths and bounded regions), then judge against the criteria. Write nothing to the fixture.
 
-**Decisive observables:** one root owner only; no invented output; no remote mutation during setup; no CI/provider fallback without web-tiers; unchanged inputs yield an empty second intended-write set.
+**Decisive observables:** one root owner only; no invented output; no remote mutation during setup; no CI/provider fallback without overcode; unchanged inputs yield an empty second intended-write set.
 
 ## Results log
 

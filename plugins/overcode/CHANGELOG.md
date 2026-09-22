@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+## [5.8.0] — 2026-09-22
+
+### Added
+
+- `service` reprend les règles SaaS et la configuration des cibles ; `deploy` génère les enveloppes de livraison depuis un contrat validé.
+
+### Removed
+
+- Le plugin autonome `web-tiers`, dont les workflows et références sont désormais portés par Overcode.
+- Les alias `smarten`, `skillconf`, `weeklyemail` et `codex-vision`, ainsi que l'allowlist réservée à `skillconf`. Les sept actions restantes sont renumérotées sans trou.
+- Les skills `baby` et `journey` ; la reconnaissance des anciens rapports `journey` reste dans `harvest`.
+
 ## [5.7.0] — 2026-09-20
 
 ### Added

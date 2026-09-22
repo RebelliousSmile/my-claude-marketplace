@@ -4,7 +4,7 @@
 
 Plugin principal, installé globalement (`recommended`). Il ne cible pas une stack : il ajoute des workflows transversaux de maintenance, d'analyse, d'ingestion documentaire et de planification, plus des chaînes d'alias pour enchaîner des skills AIDD.
 
-Aucune skill ne code en dur la connaissance d'une stack ou d'un service : les audits chargent les **pivots** déposés par les plugins spécialisés (`sc-*` et `web-tiers`) sous `.claude/rules/07-quality/`. Sans pivot, un schéma générique s'applique — et la sortie rend une **quittance** qui sépare quatre états, une ligne par stack : chargé, aucun fournisseur, fournisseur non installé ici, réceptacle sans règle. Détail dans [`docs/concepts.md`](docs/concepts.md).
+Les audits chargent les **pivots** déposés par les plugins de stack et par `overcode:service` sous `.claude/rules/07-quality/`. Sans pivot, un schéma générique s'applique — et la sortie rend une **quittance** qui sépare quatre états, une ligne par stack : chargé, aucun fournisseur, fournisseur non installé ici, réceptacle sans règle. Détail dans [`docs/concepts.md`](docs/concepts.md).
 
 ## Documentation
 
@@ -12,7 +12,7 @@ Aucune skill ne code en dur la connaissance d'une stack ou d'un service : les au
 |---|---|
 | [`docs/concepts.md`](docs/concepts.md) | Le modèle mental — le socle, les pivots, les frontières entre skills voisines, la densité de `control` |
 | [`docs/workflow.md`](docs/workflow.md) | Quelle skill pour quelle situation — table de routage et détail par skill |
-| [`docs/aliases.md`](docs/aliases.md) | Les dix chaînes d'alias, ce qu'elles enchaînent et leurs garanties |
+| [`docs/aliases.md`](docs/aliases.md) | Les six chaînes d'alias, ce qu'elles enchaînent et leurs garanties |
 | [`docs/control.md`](docs/control.md) | Le modèle de `control` — les quatre autorités, les phases, les domaines, le chaînage |
 
 Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
@@ -21,7 +21,7 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 
 | Skill | Invocation | Description |
 |---|---|---|
-| `alias` | `/overcode:alias <nom>` | Enchaîne des workflows en une commande — dix chaînes pré-écrites |
+| `alias` | `/overcode:alias <nom>` | Enchaîne des workflows en une commande — six chaînes pré-écrites |
 | `harvest` | `/overcode:harvest [all\|tracker\|normative\|cleanup\|freshness\|review]` | Maintenance complète par défaut, ou pilier ciblé avec ses seuls prérequis |
 | `reconcile-normative` | `/overcode:reconcile-normative` | Cohérence du normatif entre archives, mémoire et règles actives |
 | `taste` | `/overcode:taste [cible]` | Vérifie la fraîcheur documentaire ou juge la sobriété d'une cible : ajouter le minimum, conserver, simplifier, fusionner ou retirer avec preuves AIDD et empreinte complète |
@@ -33,12 +33,12 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 | `data-optimize` | `/overcode:data-optimize` | Audit perf de la couche données (N+1, index, pagination, cache, quota) |
 | `seo-optimize` | `/overcode:seo-optimize` | Audit SEO et GEO → roadmap priorisée + copy prêt à coller |
 | `ap-optimize` | `/overcode:ap-optimize` | Audit d'une implémentation ActivityPub (inbox, outbox, signatures, fan-out, AS2) |
+| `service` | `/overcode:service <action>` | Installe, vérifie ou explique les règles SaaS, et configure une cible SSH, Alwaysdata, Railway ou Heroku |
+| `deploy` | `/overcode:deploy automata` | Génère une enveloppe de livraison GitHub, GitLab, Railway ou Heroku depuis le contrat validé d’une cible |
 | `readme` | `/overcode:readme` | Rédige ou met à jour un README.md (`write` depuis zéro, `update` par section) |
 | `changelog` | `/overcode:changelog` | Génère le CHANGELOG depuis git (Keep a Changelog) ; `curate` comble et condense l'historique |
 | `decompose` | `/overcode:decompose` | Décompose un objectif en graphe de dépendances (méthode Mikado) |
-| `journey` | `/overcode:journey` | Exécute un parcours utilisateur depuis une issue GitHub/GitLab (Playwright) |
 | `status` | `/overcode:status <action>` | État durable du projet — mémoire, rapport, audit et synchronisation d'un backlog Markdown depuis les issues GitHub/GitLab, avec filtre et regroupement milestone |
-| `baby` | `/overcode:baby` | Explique, réécrit ou compare un sujet en langage simple, sans jargon non défini |
 | `research` | `/overcode:research` | Recherche documentaire cross-référencée et extraction de terminologie |
 | `extract-pdf` | `/overcode:extract-pdf <action>` | Extraction multi-session de gros PDF vers des sources Markdown brutes sous `sources/`, sans synthèse aval implicite |
 
@@ -48,7 +48,7 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 
 Une exécution ciblée charge uniquement son action et ses dépendances indispensables. `cleanup` réconcilie d'abord le tracker puis le normatif ; `review` consulte le tracker en lecture seule ; `freshness` ne charge ni cycle de vie ni tracker. La réponse développe le pilier demandé et résume brièvement les prérequis. Seul le mode `all` écrit le rapport Harvest global ; toutes les confirmations de clôture et de suppression restent obligatoires.
 
-Chaînes d'alias fournies : `rechallenge`, `endtask`, `bump-plugin`, `previously`, `smarten`, `skillconf`, `weeklyemail`, `gitit`, `mirror`, `codex-vision`, `debrief` — détail dans [`docs/aliases.md`](docs/aliases.md). `mirror` charge le contrat feuille `design/agents/copycat.md` dans un sous-agent natif ; il n'appelle aucune skill `design:copycat`.
+Chaînes d'alias fournies : `rechallenge`, `endtask`, `bump-plugin`, `previously`, `gitit`, `mirror`, `debrief` — détail dans [`docs/aliases.md`](docs/aliases.md). `mirror` charge le contrat feuille `design/agents/copycat.md` dans un sous-agent natif ; il n'appelle aucune skill `design:copycat`.
 
 ## Licence
 
