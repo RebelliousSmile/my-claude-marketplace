@@ -2,7 +2,7 @@
 name: reconcile-normative
 description: Reconcile normative content across decision archives, project memory, and host-native project instructions. Use to detect redundancy, contradictions, uncodified patterns, or stale rules across AGENTS.md/.agents rules on Codex and .claude/rules on Claude Code.
 author: François-Xavier Guillois
-version: 4.7.0
+version: 4.7.1
 vibe_version: ">=1.0.0"
 permissions:
   - files
@@ -19,7 +19,7 @@ Read [host portability](../../references/host-portability.md) before resolving p
 
 ## Purpose
 
-Apply the project's normative-load rule to all normative sources: drain the archive, detect duplicates and contradictions, elevate recurring patterns to host-native instructions, and flag existing rules potentially stale because newer memory or decision content has shifted under them.
+Apply the project's normative-load rule to all normative sources: drain the archive, consolidate existing host instructions, move explanatory content to project memory, detect duplicates and contradictions, elevate recurring patterns when justified, and flag potentially stale rules.
 
 ## When to invoke
 
@@ -49,7 +49,8 @@ Apply the project's normative-load rule to all normative sources: drain the arch
 - `aidd_docs/memory/internal/decisions/` — normative archive to drain (ADR destination of `aidd-context:10-learn`); legacy projects keep it at `aidd_docs/internal/decisions/` — sweep whichever exists
 - `aidd_docs/memory/` — project memory bank, **flat**: `aidd_docs/memory/<bank>.md`, with `internal/` and `external/` reserved for on-demand notes (`aidd-context:02-project-memory`, `references/structure.md`)
 - `${PROJECT_RULES_ROOT}/` — codified rule references (all categories 00-09)
-- `AGENTS.md` — auto-loaded Codex project instructions, when present
+- Every applicable `AGENTS.md` — auto-loaded Codex project instructions, when present; include ancestor and nested files that govern the project
+- `.claude/rules/` and `.agents/rules/` when present — inspect both host surfaces, even when one is not the current host
 
 ### Reference rule
 
@@ -90,9 +91,11 @@ List **every** file in `aidd_docs/memory/internal/decisions/`, in the legacy `ai
 
 **The incremental scan is NOT a sweep replacement.** A prior harvest may have audited DEC-001 to DEC-024 and a new run may be tempted to scan only DEC-025+. Every file must be **classified** at every run (normative / historical / mixed) — even if previously seen. If a file was classified `historical` in a prior report and remains unchanged, log it as "skipped — historical, audited YYYY-MM-DD" rather than silently ignoring it. Never skip without explicit log entry.
 
-**If both scans return nothing AND the archive sweep is empty → Phase A complete, skip to Phase D (freshness pass) then Phase E (report).**
+**If both incremental scans return nothing and the archive sweep is empty, still run Phase D (existing-rule consolidation) before the freshness pass and report.** Existing rules may be bloated or duplicated without having changed since the last Harvest.
 
 Read each returned file. Build a topic map (lib/technology, functional domain) recording for each file: main topic, identified normative content, identified historical content.
+
+Independently inventory **every current rule file and applicable `AGENTS.md`**, regardless of modification date or last-run status. Record host, path scope, and whether the content is always loaded, conditionally loaded, or only reached through an explicit index. The incremental scan limits archive/memory work; it never limits existing-rule consolidation.
 
 ---
 
@@ -103,7 +106,7 @@ For each scanned file, look for:
 | Issue | Definition | Action |
 |---|---|---|
 | **Normative in archive** | File in `decisions/`, `adr/` or `archive/` — content with `must / never / always / required` or names a file/function/flag binding the future | Classify as `normative \| historical \| mixed`. Migrate the normative slice. See Phase C. |
-| **Duplicate** | Same rule described in 2+ auto-loaded files | Merge into the most appropriate file |
+| **Duplicate** | Same constraint repeated in 2+ effective instruction locations for the same host and scope | Merge without removing the only effective copy for another host |
 | **Contradiction** | Two files prescribe opposite behaviors | Keep the most recent or specific, annotate the choice |
 | **Recurring pattern** | Same constraint type in ≥ `rule_elevation_threshold` files in `memory/`, absent from host instructions | Elevate under `${PROJECT_RULES_ROOT}/<category>/` and index it from `AGENTS.md` on Codex |
 | **Obsolete decision** | References a lib, function or pattern that no longer exists | Flag to user |
@@ -131,8 +134,8 @@ A keyword grep that finds the term inside an example block or descriptive table 
 
      **Content shaping rules** (apply to memory inserts only; for the rule branch at step 3, follow `${PROJECT_RULES_ROOT}/01-standards/1-rule-writing.md` — 3-7 word imperatives, no inline rationale):
 
-     - **Imperative phrasing required**: write `Always X` / `Never Y` / `Must Z`. A descriptive bullet ("X is preferred", "we use Y") is read as a suggestion, not a constraint.
-     - **Why-line when the rule isn't self-evident**: place rationale on a separate indented line below the bullet (`  **Why:** <reason>`), so the bullet itself keeps its 3-15 word cap. Skip the why-line when (a) the rule is already encoded in its section header (e.g. under `## Critical Patterns`, the imperative is implied) or (b) the constraint is universally known in the ecosystem (e.g. Firestore `limit()` quota cost). Without rationale, a rule is more easily downweighted when conflicting signals appear.
+     - **Normative memory only**: when a decision is intentionally retained as on-demand guidance rather than an active host rule, express its constraint clearly with `Always X` / `Never Y` / `Must Z`. Explanations, history, and runbooks moved out of existing rules remain descriptive; do not turn them into duplicate imperatives.
+     - **Why-line for normative memory when needed**: place rationale on a separate indented line below the short constraint (`  **Why:** <reason>`). Explanatory memory can carry its rationale in normal prose.
      - **No source trace back to the deleted ADR**: a `(cf. DEC-XYZ)` pointer dies the moment the source is deleted, and keeping the source as archive pollutes memory load 100 % of the time for a revert that happens ~1 % of the time. The bullet's own rationale is what carries the rule forward; the ADR is git history.
      - **For chain migrations into a consolidated section**: place rationale once in the H3 intro paragraph, not per bullet — individual bullets stay terse.
   6. Preserve frontmatter, ordering and style **of the target file** (informed by its template, not slavishly copied)
@@ -153,11 +156,11 @@ A keyword grep that finds the term inside an example block or descriptive table 
 
 | Pick a **rule** (`${PROJECT_RULES_ROOT}/...`) if | Pick **memory** (`aidd_docs/memory/...`) if |
 |---|---|
-| Topic is **path-scopable on a narrow surface** (glob isolating < ~30 % of code: `firebase.json`, `nuxt.config.ts`, `server/api/**`, `models/*.js`) | Topic is **transverse** or conceptual, or the natural glob is too broad (`**/*.vue`, `**/*.ts` alone — cover almost all app code) |
+| Topic is **path-scopable on a narrow surface** (glob isolating < ~30 % of code: `firebase.json`, `nuxt.config.ts`, `server/api/**`, `models/*.js`), or it is a genuinely universal constraint needed on every task and fits in a short host instruction | Topic is **transverse but explanatory** or conceptual, or the natural glob is too broad (`**/*.vue`, `**/*.ts` alone — cover almost all app code) without requiring an always-loaded instruction |
 | Rule is **verifiable at write-time** (concrete convention, named anti-pattern, constant, required value) | Content is **explanatory**: why, context, principle, learning, runbook |
-| Agent should see it **only** when touching the affected files; on Codex, `AGENTS.md` points to the scoped reference | Agent should see it **always** through the active host's auto-loaded project instructions |
+| Agent must obey it when touching the affected files; on Codex, `AGENTS.md` points to the scoped reference | Agent may consult it on demand for explanation, history, decisions or a runbook; memory is not assumed to auto-load |
 
-On ambiguity: if the decision can be expressed as a testable code convention **and** scoped to a narrow surface, prefer **rule**. Otherwise **memory**.
+On ambiguity: if the decision can be expressed as a testable code convention **and** scoped to a narrow surface, prefer **rule**. Keep a truly universal mandatory constraint as a short host instruction. Put its rationale in memory. Otherwise prefer **memory**.
 
 ### Topic → memory file mapping
 
@@ -208,7 +211,31 @@ When several archive entries form a chain (supersession, shared topic), propose 
 
 ---
 
-## Phase D — Existing-rules freshness pass
+## Phase D — Existing-rule consolidation, then freshness
+
+### Full consolidation pass
+
+Use Phase A's **complete** rule inventory on every run, including unchanged files. Work at the level of individual instructions and sections, not whole files. For each item, record its host and path scope, the behavior it requires, any exceptions, its source, and whether a current memory bank already covers its explanation.
+
+Classify each item:
+
+| Class | Criterion | Destination |
+|---|---|---|
+| **Keep as rule** | A current, actionable constraint that changes agent behavior on a future task; concrete enough to check, with the narrowest applicable scope | One concise effective host instruction or scoped rule; retain necessary cross-host equivalents |
+| **Move to memory** | Rationale, decision history, architecture explanation, examples, troubleshooting steps, or runbook material without an independent enforceable constraint | Existing thematic `aidd_docs/memory/<bank>.md` section, following Phase C's memory mapping and format |
+| **Resolve** | Duplicate, overlapping, contradictory, obsolete, or superseded instruction | Merge, narrow, update, or remove only after checking the surviving effective instruction and required confirmations |
+
+Imperative wording alone does not prove that content is a current rule. Verify the current code, decisions, and supported workflow before retaining or elevating it. A mixed file may need a short surviving rule plus a memory entry. Preserve exceptions, paths, and host-specific syntax when shortening; do not silently weaken a constraint. Do not move a real constraint only to on-demand memory.
+
+Compare rules **within each host and applicable path scope**. A Codex `AGENTS.md` index and `.agents/rules/` reference form one effective path; Claude's `.claude/rules/` may need an equivalent constraint. Cross-host equivalents are not redundant copies to delete. For Codex, keep the `AGENTS.md` entry bounded to when and where the scoped file should be read. Remove index entries that no longer point to an active rule.
+
+For each proposed consolidation, show the current instruction, the concise surviving rule, the memory destination and text, the affected hosts/scopes, and any source removal. Follow the existing-rule edit and file-deletion confirmation boundaries. Apply the memory and surviving-rule updates before removing duplicate or obsolete instructions; if an approval is declined, leave the current instruction effective and report the proposal as pending. Use the Phase C memory-target rule when no suitable bank exists.
+
+Measure context load **before and after** each accepted set of edits: report bytes or tokens for applicable always-loaded `AGENTS.md` content and Claude rule content, plus separately the size of conditionally loaded rule references. Do not count on-demand memory as auto-loaded. If an exact host token count is unavailable, use byte counts with the method stated. Report no reduction when no edit was made or when effective load is unchanged.
+
+This pass is complete only after every existing rule file and applicable `AGENTS.md` has been classified, including files unchanged since the last run. Record counts for rules inspected, consolidated, retained, moved to memory, and pending approval.
+
+### Existing-rules freshness pass
 
 ### Goal
 
@@ -262,6 +289,12 @@ List:
 - N contradictions resolved
 - N patterns elevated to rules
 - N obsolete decisions flagged
+- N existing rules inspected, consolidated, retained, and moved to memory; N proposals pending approval
+- Always-loaded bytes or tokens before and after, with conditional-rule size reported separately
 - N rules flagged in freshness pass (updated / touched / deleted)
 
 If invoked as a sub-phase of `harvest`, return these metrics to the orchestrator. Otherwise, write a standalone report at `aidd_docs/harvests/YYYY_MM_DD-reconcile-normative.md`.
+
+## Evals
+
+- [Existing-rule consolidation scenarios](evals/rule-load-scenarios.md)

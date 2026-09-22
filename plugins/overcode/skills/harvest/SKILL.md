@@ -2,7 +2,7 @@
 name: harvest
 description: Global or pillar-targeted maintenance skill — runs all Harvest work by default, or only tracker, normative, cleanup, freshness, or remaining-artifact review with required dependencies
 author: François-Xavier Guillois
-version: 5.6.0
+version: 5.6.1
 vibe_version: ">=1.0.0"
 permissions:
   - files
@@ -83,7 +83,7 @@ Use a supplied `key=value` instead of its default. Values are positive integers.
 - Use only the tracker interface detected by the tracker action, never MCP.
 - Adapt shell commands to the OS detected once by inventory.
 - A feature lifecycle comes only from direct `plan.md` frontmatter, never a filename suffix or phase contents.
-- Normative reconciliation must complete before cleanup can purge completed work.
+- Normative reconciliation, including consolidation of unchanged existing rules into concise rules and on-demand memory, must complete before cleanup can purge completed work.
 - Product artifacts outside backlog stories are reported only and never purged.
 - A targeted run develops only the selected pillar, then briefly reports its dependencies; it never writes the global Harvest report.
 
