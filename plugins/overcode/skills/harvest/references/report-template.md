@@ -25,6 +25,11 @@ Only the `all` action fills this report and writes it to `aidd_docs/harvests/YYY
 | Contradictions résolues | norm_contradictions |
 | Patterns élevés en règles | norm_elevated |
 | Décisions obsolètes signalées | norm_obsolete |
+| Règles existantes inspectées | norm_rules_inspected |
+| Règles consolidées / conservées / déplacées en mémoire | norm_rules_consolidated / norm_rules_retained / norm_rules_moved |
+| Propositions de consolidation en attente | norm_rules_pending |
+| Instructions toujours chargées, avant → après | norm_autoload_before → norm_autoload_after (unité et méthode) |
+| Références chargées conditionnellement | norm_conditional_size (unité et méthode) |
 | Règles passées en freshness (mises à jour / touchées / supprimées) | norm_freshness |
 
 ## Fraîcheur (`taste`)
@@ -64,4 +69,3 @@ Observations ponctuelles, dérives signalées et limites.
 ````
 
 Replace every metric token with the value returned by its owning action. Missing required metrics block the full report; never silently render them as zero.
-

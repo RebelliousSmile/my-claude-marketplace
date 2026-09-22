@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [5.8.1] — 2026-09-22
+
+### Fixed
+
+- `harvest normative` et `reconcile-normative` inspectent désormais toutes les règles existantes, même inchangées, pour conserver les contraintes actives, déplacer les explications vers la mémoire projet et mesurer la charge d'instructions avant/après. Une absence de nouvelles décisions ne court-circuite plus cette consolidation.
+
 ## [5.8.0] — 2026-09-22
 
 ### Added
