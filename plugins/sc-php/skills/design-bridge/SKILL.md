@@ -3,7 +3,7 @@ name: design-bridge
 description: >-
   Realize design pivots as native PHP and WordPress FSE code with lint, block patterns, and rendered ownership proof.
 author: François-Xavier Guillois
-version: 0.12.0
+version: 0.13.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash

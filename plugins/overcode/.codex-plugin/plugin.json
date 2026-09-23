@@ -1,6 +1,6 @@
 {
   "name": "overcode",
-  "version": "5.8.1+codex.20260922123014",
+  "version": "5.9.0+codex.20260923104210",
   "description": "Extends AIDD with project-agnostic workflows: research and multi-session PDF extraction; interactive codebase and project-memory quizzes (dig); memory and rule consolidation; repository-backed Markdown freshness and AIDD-evidenced product/code sobriety (taste); target-aware resilience scenarios plus dependency abandonment and migration horizon (foresee); behavioural testing; test governance; performance, data, ActivityPub, and SEO/GEO audits; project health and repository-backed Markdown backlog synchronization via status; service configuration and deployment; documentation; and planning utilities. Stack and service knowledge remains pivot-driven through specialist plugins, and AIDD delegation fails explicitly when a required capability is unavailable. Alias chains: rechallenge, endtask, bump-plugin, previously, gitit, mirror, debrief.",
   "author": {
     "name": "François-Xavier Guillois"

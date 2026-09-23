@@ -70,3 +70,18 @@ Still live: S4/S5 cannot prove catalogue absence from their load paths; S8 allow
 - `coverage.mjs`: 72 skills, 0 hard problems, 2 unverifiable, 9 missing suites.
 - `pivot-map.mjs`: all declared pivots reachable.
 - The full `pnpm test` reaches the final FSE gate; its sole baseline failure is an environment prerequisite (`ModuleNotFoundError: playwright`), not a target regression.
+
+## Final implementation evidence
+
+| Issue | Disposition | Current evidence |
+| --- | --- | --- |
+| #24 | **implemented** | `reconcile-normative` now classifies `Narrow scope`; `scope-audit.mjs` compares declared globs with named-symbol sites, detects same-list containment, and reports narrower-scope maintenance risk. |
+| #13 | **already satisfied; no replay** | Nested Rust detection, the recognized `rust-vanilla` route, S7 template evidence and historical S8/S12 run-3 verdicts remain present and pass the current pivot/consistency gates. |
+| #12 | **implemented for every live row** | Control now exposes proof-tool availability and configure routing, makes the selected matrix cell authoritative, distinguishes unmeasurable outliers, enforces exact-case strategy discovery, reports each empty collection pattern, accumulates independent flags, and separates action ownership from invocation. The repaired authority criteria reject inherited historical verdicts. |
+| #9 | **implemented against the recalculated baseline** | All nine genuinely missing suites were added, both undeclared single-action routes are explicit, and all four prefixed Action cells are semantic. `coverage.mjs` reports 72 skills and 0 problems. `ERR-09` remains intentionally untouched because no current registry or identifier exists. |
+| #8 | **implemented for every primary live gap** | Brownfield enforcement extends an explicitly marked gate in place and fails closed on ambiguity; the pivot carries canonical values and theme overlays; the PHP receptor maps color/font-size/spacing into `theme.json` idempotently while preserving human sections and rejecting collisions. The old Tailwind concern remains satisfied by DEC-002 and was not reimplemented. |
+
+Release metadata is synchronized at marketplace `4.6.0`, overcode `5.9.0`, design `2.16.0`, and
+sc-php `0.15.0`. With Playwright 1.60.0 and its Chromium installed in an isolated temporary test
+environment, the complete `pnpm test` exits 0, including 6/6 FSE browser tests. The routing gate reports
+72 skills and zero problems; consistency covers all eight plugin manifests.

@@ -2,7 +2,7 @@
 name: control
 description: Governs test creation, existing-test value, coverage gaps, suite-wide reporting, test-tooling configuration, and the alignment of a project's own test strategy document with what it actually does, so tests stay bounded in number and correctly tiered in kind. Use when asked to "add a test", "write a test for X", "should I write a test for X", "audit the test suite", "find low-value tests", "clean up tests", "what should I test next", "which coverage gaps matter most", "check the test config", "why isn't coverage failing the build", "how many tests do we have", "what test strategy is in place", "align the test documentation", "is the test strategy still up to date", "declare the project's phase", "the test document no longer matches the project", or "govern the test strategy". Do NOT use for behavioural/prompt-driven testing of skills or agents - use `behave` instead. Do NOT use to write the test code itself once a tier is decided - this skill delegates that to `aidd-dev:06-test`.
 author: François-Xavier Guillois
-version: 4.7.0
+version: 4.8.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash
