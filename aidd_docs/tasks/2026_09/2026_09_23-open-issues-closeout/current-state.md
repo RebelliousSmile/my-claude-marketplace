@@ -85,3 +85,9 @@ Release metadata is synchronized at marketplace `4.6.0`, overcode `5.9.0`, desig
 sc-php `0.15.0`. With Playwright 1.60.0 and its Chromium installed in an isolated temporary test
 environment, the complete `pnpm test` exits 0, including 6/6 FSE browser tests. The routing gate reports
 72 skills and zero problems; consistency covers all eight plugin manifests.
+
+## Closure
+
+PR #25 merged into `main` as `c5e8b160db4cb772670725cadad314f171a27b46` after both GitHub CI jobs
+passed. Issues #8, #9, #12, #13 and #24 each received an evidence comment distinguishing implemented
+requirements from obsolete claims, then were closed. A final `gh issue list --state open` returned `[]`.

@@ -1,6 +1,6 @@
 ---
 objective: "All currently open GitHub issues are either implemented and verified against the current repository or closed as demonstrably obsolete."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Close every open issue against current state
