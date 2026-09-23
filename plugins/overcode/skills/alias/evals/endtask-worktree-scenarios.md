@@ -28,6 +28,8 @@ This suite differs from `plugins/overcode/skills/harvest/evals/plan-layout-scena
 | S16 | Branch-deletion-failure overlay: every release step and task-worktree removal succeeds, then both branch deletion attempts fail. | Report the removed worktree and retained branch as partial cleanup. | The report does not claim branch deletion or recreate/remove another worktree; the branch remains at its recorded tip. |
 | S17 | Release-failure overlay: `git pull` fails in `/fixture/project` before merge. | Stop before merging and retain the task worktree and feature branch. | No merge, push, changelog, tag push, issue closure, task-worktree removal, or task-branch deletion is intended. |
 | S18 | Release-failure overlay: tracker issue closure succeeds but its required closing comment fails. | Stop before cleanup and report that the issue closed while its comment did not. | No task-worktree removal or task-branch deletion is intended; the report does not claim complete issue handling. |
+| S19 | Base fixture: every applicable release, issue and cleanup step succeeds. | Offer a fresh context only after the complete Step 10 report. | The final output proposes `/clear` on Claude Code or a new conversation on another host, invokes neither, and starts no next skill or work item. |
+| S20 | Partial-success overlay: branch deletion fails after the task worktree was safely removed. | Preserve the current context for resumption and do not offer a reset. | The report names the retained branch; no fresh-context prompt, `/clear` invocation, session marker or new work item is intended. |
 
 ## How to run
 
@@ -114,3 +116,36 @@ Fixture: the same populated issue-42 repository and worktree overlays; S17 adds 
 **Frictions / gaps:** none under this fixture. The suite remains an all-green regression check rather than a live-red reproduction for an unaddressed cleanup edge case.
 
 **Tally:** 18/18 PASS (0 N/A), 0 FAIL. The prior 16 PASS stayed PASS and two new cases passed; no PASS→FAIL regression.
+
+### 2026-09-23 — run 4 (regression, dry-run, target=alias endtask, fixture=endtask-worktrees+fresh-context) — **20/20 PASS, 0 FAIL, 0 N/A**
+
+Fixture: the same populated issue-42 repository and overlays; S19 observes the new all-success terminal
+offer, while S20 reuses partial branch cleanup to prove that the option is absent when resumption is due.
+The judge read the action and fixture without Git, tracker, session-reset or skill mutations.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+| --- | --- | --- | --- |
+| S1 | PASS | = | Steps 2, 5, 9 and 10 retain target-worktree ownership and safe cleanup. |
+| S2 | PASS | = | Steps 5 and 9 retain the target-free switch, removal and verified deletion path. |
+| S3 | PASS | = | Step 4 still commits learning writes before merge. |
+| S4 | PASS | = | Step 9 still retains a dirty task worktree and branch. |
+| S5 | PASS | = | Step 9 still retains a locked task worktree and branch. |
+| S6 | PASS | = | Steps 7 and 9 still stop after tag-push failure. |
+| S7 | PASS | = | Steps 8 and 9 still stop after issue-closure failure. |
+| S8 | PASS | = | Step 9 still preserves the primary worktree. |
+| S9 | PASS | = | Steps 5–9 retain direct-target behaviour. |
+| S10 | PASS | = | Steps 5 and 9 retain and report the branch after target-free failure. |
+| S11 | PASS | = | Step 9 still proves ancestry and branch-tip identity before deletion. |
+| S12 | PASS | = | Step 5 still stops on a dirty target worktree. |
+| S13 | PASS | = | Step 5 still stops on merge conflict. |
+| S14 | PASS | = | Step 5 still stops on target-push failure. |
+| S15 | PASS | = | Step 6 still stops on changelog failure. |
+| S16 | PASS | = | Steps 9–10 still report partial branch cleanup accurately. |
+| S17 | PASS | = | Step 5 still stops immediately on pull failure. |
+| S18 | PASS | = | Step 8 still stops if the required closing comment fails. |
+| S19 | PASS | new | Step 11 runs only after complete success, offers the host-native user action, invokes nothing and ends the workflow. |
+| S20 | PASS | new | Step 11 excludes incomplete cleanup and explicitly preserves the current context without marker or guard. |
+
+**Frictions / gaps:** none under this fixture.
+
+**Tally:** 20/20 PASS (0 N/A), 0 FAIL. The prior 18 PASS stayed PASS and both fresh-context boundaries passed.

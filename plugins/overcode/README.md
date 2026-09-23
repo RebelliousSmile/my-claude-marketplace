@@ -12,7 +12,7 @@ Les audits chargent les **pivots** déposés par les plugins de stack et par `ov
 |---|---|
 | [`docs/concepts.md`](docs/concepts.md) | Le modèle mental — le socle, les pivots, les frontières entre skills voisines, la densité de `control` |
 | [`docs/workflow.md`](docs/workflow.md) | Quelle skill pour quelle situation — table de routage et détail par skill |
-| [`docs/aliases.md`](docs/aliases.md) | Les six chaînes d'alias, ce qu'elles enchaînent et leurs garanties |
+| [`docs/aliases.md`](docs/aliases.md) | Les sept chaînes d'alias, ce qu'elles enchaînent et leurs garanties |
 | [`docs/control.md`](docs/control.md) | Le modèle de `control` — les quatre autorités, les phases, les domaines, le chaînage |
 
 Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
@@ -21,7 +21,7 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 
 | Skill | Invocation | Description |
 |---|---|---|
-| `alias` | `/overcode:alias <nom>` | Enchaîne des workflows en une commande — six chaînes pré-écrites |
+| `alias` | `/overcode:alias <nom>` | Enchaîne des workflows en une commande — sept chaînes pré-écrites, dont une rétrospective de méthode et de consommation de tokens |
 | `harvest` | `/overcode:harvest [all\|tracker\|normative\|cleanup\|freshness\|review]` | Maintenance complète par défaut, ou pilier ciblé avec ses seuls prérequis |
 | `reconcile-normative` | `/overcode:reconcile-normative` | Cohérence du normatif entre archives, mémoire et règles actives |
 | `taste` | `/overcode:taste [cible]` | Vérifie la fraîcheur documentaire ou juge la sobriété d'une cible : ajouter le minimum, conserver, simplifier, fusionner ou retirer avec preuves AIDD et empreinte complète |

@@ -4,6 +4,25 @@
 
 ## [Unreleased]
 
+### Added
+
+- `alias debrief` distingue désormais usage et qualité intrinsèque des skills. L'analyse de qualité lit
+  au plus trois contrats actifs, qualifie le niveau de preuve et réserve toute recommandation
+  rédactionnelle ou fonctionnelle aux skills appartenant à `my-marketplace` ; une skill externe ne peut
+  conduire qu'à une meilleure invocation, une adaptation locale ou un signalement upstream.
+- `alias debrief` ajoute un axe `tokens` fondé en priorité sur le rapport officiel `aidd telemetry` quand
+  la mesure est active. Sans mesure exploitable, il ne présente que des proxys contextuels explicitement
+  étiquetés et applique les recommandations bornées de la recette AIDD `token-optimization`.
+- `alias endtask` propose désormais, après une clôture entièrement réussie, de repartir dans un contexte
+  vierge. L'option reste manuelle et terminale ; elle ne s'affiche jamais quand la session doit permettre
+  la reprise d'une release ou d'un nettoyage incomplet.
+
+### Fixed
+
+- Le digest conserve des épisodes bornés autour des invocations et ne transforme plus automatiquement
+  une absence de correction en succès, une erreur d'outil en temps perdu, une proximité en synergie, ni
+  l'inventaire actuel en preuve de disponibilité historique.
+
 ## [5.9.0] — 2026-09-23
 
 ### Added

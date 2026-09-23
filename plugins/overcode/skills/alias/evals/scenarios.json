@@ -59,6 +59,10 @@
   { "prompt": "comment j'utilise les skills", "expect_action": "debrief" },
   { "prompt": "debrief 30d --scope global", "expect_action": "debrief" },
   { "prompt": "debrief --focus plugins", "expect_action": "debrief" },
+  { "prompt": "debrief --focus tokens", "expect_action": "debrief" },
+  { "prompt": "debrief --focus skill-quality --skill overcode:alias", "expect_action": "debrief" },
+  { "prompt": "analyse la qualité de mes skills", "expect_action": "debrief" },
+  { "prompt": "analyse mon usage des tokens", "expect_action": "debrief" },
   { "prompt": "what slowed us down in the last sessions", "expect_action": "debrief" },
   { "prompt": "résume-moi la dernière conversation", "expect_action": null },
   { "prompt": "lance les tests et donne-moi la couverture", "expect_action": null }

@@ -8,7 +8,7 @@ Le **détail des skills de chaque plugin vit dans son propre README** — ce tab
 
 | Plugin | Doc | `recommended` | Description |
 |---|---|---|---|
-| [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows AIDD, règles SaaS, enveloppes de livraison, maintenance et audits |
+| [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows AIDD, rétrospectives de méthode et de tokens, règles SaaS, enveloppes de livraison, maintenance et audits |
 | [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Création, critique, figeage, contrôle et diffusion d'un design system. Chaque skill fonctionne seule ; le cycle complet reste disponible pour les refontes globales. |
 | [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
 | [`sc-php`](plugins/sc-php/README.md) | [README](plugins/sc-php/README.md) · [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |

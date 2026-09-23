@@ -2,7 +2,7 @@
 name: alias
 description: Fires a pre-crafted workflow prompt for recurring project operations. Use for plan/review chains, project snapshots, session retrospectives, or visual reconciliation. Do NOT use for custom workflows or when direct control over each step is required.
 author: François-Xavier Guillois
-version: 4.9.0
+version: 4.10.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash
@@ -31,7 +31,7 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 04  | `previously`  | Documentary catch-up — previous conversations + `aidd_docs/` movement + git state, no build and no audit | optional depth (commit count or duration like 7d), `--backlog <file.md>`, and optional `--milestone`/`--ml <title>` |
 | 05  | `gitit`       | Init git dans `R` + dépôt distant **privé** via gh (si absent) + commit + pull + push + tag SemVer si un push a eu lieu | dossier cible `R` (défaut CWD) `[--public]` |
 | 06  | `mirror`      | Image deux navigateurs côte à côte → diff texte + style → corrections via le contrat agent `design/agents/copycat.md` | image (chemin ou collée) + optionnel `--ref right` |
-| 07  | `debrief`     | Rétrospective de méthode — blocages, usage des skills, formulation des prompts et synergies entre plugins, reconstruits depuis les transcripts | profondeur optionnelle (sessions ou durée), `--scope`, `--focus`, `--save <file.md>` |
+| 07  | `debrief`     | Rétrospective de méthode, qualité bornée des skills et usage des tokens via AIDD telemetry quand il est actif | profondeur optionnelle (sessions ou durée), `--scope`, `--focus`, `--skill`, `--save <file.md>` |
 
 ## Default flow
 
@@ -43,7 +43,7 @@ Trigger-to-action mapping:
 - "where are we in the project", "catch me up", "what's the current project state", "project snapshot", "previously", "alias previously" → `previously`
 - "gitit", "alias gitit", "git it", "init le dépôt git", "crée le dépôt git", "versionne ce dossier", "crée et pousse le dépôt", "git init + remote + push" → `gitit`
 - "mirror", "alias mirror", "comparer les deux navigateurs", "corriger les différences maquette", "aligner l'implémentation sur la maquette", "réconcilier mockup vs impl", "trouve les différences dans l'image", "corrige les écarts visuels" → `mirror`
-- "debrief", "alias debrief", "rétrospective", "retro", "qu'est-ce qui a bloqué", "où est-ce que j'ai perdu du temps", "comment j'utilise les skills", "analyse mes conversations", "axes d'amélioration", "post-mortem des sessions", "what slowed us down", "how did we work" → `debrief`
+- "debrief", "alias debrief", "rétrospective", "retro", "qu'est-ce qui a bloqué", "où est-ce que j'ai perdu du temps", "comment j'utilise les skills", "analyse la qualité de mes skills", "analyse mon usage des tokens", "analyse mes conversations", "axes d'amélioration", "post-mortem des sessions", "what slowed us down", "how did we work" → `debrief`
 
 ## Transversal rules
 

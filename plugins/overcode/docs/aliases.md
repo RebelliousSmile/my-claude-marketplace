@@ -15,12 +15,12 @@ Le nom peut aussi être formulé en langage naturel : « clôture la tâche » a
 | Alias | Ce qu'il enchaîne | Entrée |
 |---|---|---|
 | [`rechallenge`](#rechallenge) | plan → challenge, en boucle jusqu'à zéro objection | la tâche en cours |
-| [`endtask`](#endtask) | commit → plan implémenté → learn → merge → changelog → tags → issue → nettoyage du worktree | la branche courante |
+| [`endtask`](#endtask) | commit → plan implémenté → learn → merge → changelog → tags → issue → nettoyage du worktree → proposition de contexte neuf | la branche courante |
 | [`bump-plugin`](#bump-plugin) | bump de version → commit → push marketplace | nom du plugin + version ou type de bump |
 | [`previously`](#previously) | backlog optionnel → reprise de contexte documentaire (conversations, `aidd_docs/`, git) | profondeur optionnelle, `--backlog <fichier.md>`, puis `--milestone`/`--ml <titre>` et `--exclude-milestone`/`--em <titre>` (plusieurs possibles) |
 | [`gitit`](#gitit) | init → remote privé → commit → pull → push → tag | dossier cible (défaut : CWD) |
 | [`mirror`](#mirror) | image deux navigateurs → diff → corrections via le contrat agent `design/agents/copycat.md` | une image |
-| [`debrief`](#debrief) | transcripts → blocages, usage des skills, prompts, synergies entre plugins | profondeur optionnelle, `--scope`, `--focus`, `--save <fichier.md>` |
+| [`debrief`](#debrief) | transcripts + télémétrie AIDD optionnelle → méthode, qualité des skills et tokens | profondeur optionnelle, `--scope`, `--focus`, `--skill`, `--save <fichier.md>` |
 
 ---
 
@@ -35,6 +35,8 @@ Une vérification `ls` du fichier de plan est intercalée entre l'écriture et l
 La séquence de clôture complète : commit conventionnel → résolution du répertoire de feature dont `plan.md` porte `status: implemented` → extraction des apprentissages → merge et push → changelog → push des tags → fermeture de l'issue → nettoyage du worktree de tâche. Les fichiers écrits par l'extraction des apprentissages sont commités avant la fusion. Le plan moderne n'est ni renommé ni déplacé : son répertoire, ses phases et son statut constituent l'archive durable.
 
 Le mode de branche est détecté, pas demandé : sur `main`, `master`, `develop` ou `staging`, il n'y a pas de branche de plan à merger et l'étape est sautée. Si la branche cible est déjà ouverte dans un autre worktree, la fusion et la release s'y exécutent. Après toutes les étapes applicables réussies, `endtask` retire uniquement le worktree lié à la tâche s'il est propre et non verrouillé, puis supprime sa branche fusionnée. Un échec, des changements restants ou un verrou conservent le worktree et la branche et sont signalés dans le rapport. Le worktree principal n'est jamais supprimé. Le numéro d'issue est résolu automatiquement ; si aucune source ne correspond, la fermeture d'issue est simplement ignorée.
+
+Une fois seulement la clôture entièrement réussie, `endtask` propose de repartir dans un contexte neuf avant une autre tâche. Ce choix reste manuel et terminal : aucune session n'est effacée automatiquement, et la proposition disparaît dès qu'une étape de release ou de nettoyage doit être reprise.
 
 ## `bump-plugin`
 
@@ -74,20 +76,22 @@ Reçoit une capture montrant deux navigateurs côte à côte — la référence 
 
 ## `debrief`
 
-Le pendant méthodologique de `previously`. Là où `previously` répond « où en est le projet », `debrief` répond « comment a-t-on travaillé, et qu'est-ce qui doit changer ». Il ne lit pas la documentation du projet mais les transcripts de sessions — la télémétrie du processus.
+Le pendant méthodologique de `previously`. Là où `previously` répond « où en est le projet », `debrief` répond « comment a-t-on travaillé, et qu'est-ce qui doit changer ». Il reconstruit le processus depuis les transcripts et, lorsque `aidd-telemetry` mesure effectivement le projet, lit son rapport officiel pour l'axe tokens.
 
-Quatre axes, tous reconstruits depuis `~/.claude/projects/<slug>/*.jsonl` :
+Six axes :
 
-- **Blocages** — erreurs d'outils répétées sur la même forme, interruptions utilisateur (une exécution stoppée partait dans le mur), compactions (la session a débordé de sa fenêtre : périmètre trop large ou contexte dépensé au mauvais endroit), prompts de correction.
-- **Usage des skills** — ce qui a été invoqué, ce qui a été abandonné juste après, et l'écart coûteux : le travail fait à la main en boucle `Read`/`Edit`/`Bash` alors qu'une skill disponible le couvrait exactement.
-- **Prompts** — la forme récurrente, jamais le catalogue. Un prompt laconique suivi d'une correction signale une demande sous-spécifiée ; chaque forme faible repart avec une reformulation concrète.
-- **Synergies entre plugins** — les chaînes de skills qui reviennent d'une session à l'autre sont un workflow retapé à la main : trois occurrences sans alias correspondant en font un candidat nommé. L'inverse compte aussi : plugins installés jamais touchés, skills qui alternent comme si elles se disputaient le même travail.
+- **Blocages** — erreurs d'outils, interruptions, compactions et corrections, sans transformer automatiquement chaque erreur en temps perdu.
+- **Usage des skills** — sélection, répétition et travail apparemment fait à la main, seulement lorsque l'intention et la disponibilité historique sont prouvées.
+- **Qualité des skills** — jusqu'à trois contrats actifs sont comparés aux épisodes observés. Les changements rédactionnels ou fonctionnels sont réservés aux skills de `my-marketplace` ; une skill externe ne produit qu'un conseil d'invocation, un adaptateur local ou un candidat upstream.
+- **Prompts** — formes récurrentes et reformulations étayées ; l'absence de correction n'est jamais présentée comme une preuve de succès.
+- **Synergies entre plugins** — les chaînes adjacentes ne deviennent des workflows qu'après corroboration de leur intention et de leurs frontières de tâche.
+- **Tokens** — quand `aidd-telemetry:01-cost`, le consentement du projet et la CLI sont disponibles, `debrief` consomme une collecte et un rapport JSON officiels. Sinon, il affiche seulement des proxys contextuels nommés comme tels, sans estimer de total ni de coût. La recette AIDD `token-optimization` fournit la grille d'interprétation, jamais une seconde mesure.
 
-Deux garde-fous portés par l'action : **un signal vu dans une seule session est une anecdote**, pas un constat — il faut deux sessions pour qu'un motif soit rapporté ; et **chaque recommandation cite sa preuve** (session, date, signal). Une recommandation sans trace est supprimée, pas adoucie.
+Deux garde-fous portés par l'action : **un signal vu dans une seule session est une anecdote**, pas un constat — il faut deux sessions pour qu'un motif soit rapporté ; et **chaque recommandation cite sa preuve** (session, date, signal). Une recommandation sans trace est supprimée, pas adoucie. Un volume de cache ou une étape coûteuse reste un point à investiguer, jamais une preuve de gaspillage à lui seul.
 
 Lecture seule et bornée : aucune suite de tests, aucun lint, aucune action sœur, jamais un transcript lu en entier ni un corps de résultat d'outil. Seul le digest entre en contexte.
 
-Syntaxe : `debrief [<profondeur>] [--scope project|global] [--focus frictions|skills|prompts|plugins] [--save <fichier.md>]`. La profondeur est un nombre de sessions ou une durée (`30d`, plafonnée à 40 sessions) ; défaut : 8 sessions sur 30 jours. Une session ouverte avant la fenêtre et reprise dedans y entre entière — son `span` le montre, et un constat qui en vient se date par le span. `--scope global` élargit à tous les projets et attribue chaque constat au sien. `--save` ajoute le rapport au fichier sous un titre daté, d'un niveau sous le titre courant, sans jamais tronquer l'existant.
+Syntaxe : `debrief [<profondeur>] [--scope project|global] [--focus frictions|skills|skill-quality|prompts|plugins|tokens] [--skill <plugin:skill>] [--save <fichier.md>]`. La profondeur est un nombre de sessions ou une durée (`30d`, plafonnée à 40 sessions) ; défaut : 8 sessions sur 30 jours. Une session ouverte avant la fenêtre et reprise dedans y entre entière — son `span` le montre, et un constat qui en vient se date par le span. `--scope global` élargit à tous les projets et attribue chaque constat au sien. `--skill` cible le contrôle qualité d'une skill. `--save` ajoute le rapport au fichier sous un titre daté, d'un niveau sous le titre courant, sans jamais tronquer l'existant.
 
 ## Voir aussi
 

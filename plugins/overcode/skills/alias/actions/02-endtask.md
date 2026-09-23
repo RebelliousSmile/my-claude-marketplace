@@ -122,3 +122,18 @@ After the primary worktree has switched off the task branch, or after the linked
 | Branch deleted | `<current_branch>` deleted, retained with reason, or `—` for direct branch |
 | Tag | `<tag>` pushed |
 | Issue closed | `#<n> <url>` or `—` |
+
+### Step 11 — Offer a fresh context
+
+Run this step only when every applicable operation in Steps 1–9 succeeded and the Step 10 report names
+no incomplete release, issue handling, worktree cleanup, or branch cleanup. After the report table,
+append one optional, localized prompt:
+
+> Task complete. Would you like to start the next task with a fresh context?
+> Claude Code: run `/clear`. Other hosts: open a new conversation or thread.
+
+Never invoke `/clear`, a reset command, or a new-session action on the user's behalf. Never show this
+option on a failure or partial-success path, because the current context is then needed for resumption.
+This offer is the final output of `endtask`: do not invoke another skill or begin another work item after
+it. If the user declines or ignores it, the current session remains usable without any guard, marker, or
+restriction.
