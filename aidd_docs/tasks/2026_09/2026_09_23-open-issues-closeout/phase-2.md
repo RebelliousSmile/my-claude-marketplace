@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Add narrow-scope analysis to reconcile-normative (#24)
