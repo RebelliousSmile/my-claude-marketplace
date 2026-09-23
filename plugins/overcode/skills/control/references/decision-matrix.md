@@ -86,9 +86,10 @@ This is the same precedence mechanism already in force elsewhere in the skill (`
 
 ### Deciding among them
 
-1. Is the behavior provable without crossing the product's real public boundary? -> `contract`.
-2. Does proving it require crossing that boundary, with no internal seam able to stand in without hollowing the assertion? -> `e2e`.
-3. Otherwise: is it already exercised by an existing proof on the same path, or a framework guarantee with no branching of its own? -> `skip`.
-4. **Nothing resolves cleanly -> `contract`, the ambiguity flagged - never `e2e` chosen silently.** The most expensive tier is never the default one falls into by not deciding.
+1. **Read the cell first.** If its established count has reached its ceiling, emit `skip` on that cause alone. A ceiling consulted only at delegation time is a ceiling the classification never saw.
+2. Is the same path already exercised by an existing proof, or is it a framework guarantee with no branching of its own? -> `skip` on the corresponding redundancy cause.
+3. When the cell names a required proof, map **that proof** to the output: any requirement containing `anchored` -> `e2e`; an `internal` requirement -> `contract`. On a conjunctive cell, the output is `e2e` because the anchored term must still be produced; the internal term remains visible in `required_proof` and `established`, never erased by the output name.
+4. Only when the cell is `—` (no required proof, no ceiling), classify the behavior intrinsically: provable without crossing the real boundary -> `contract`; only provable across it -> `e2e`.
+5. **Nothing resolves cleanly -> `contract`, the ambiguity flagged - never `e2e` chosen silently.** The most expensive tier is never the default one falls into by not deciding.
 
-**The ceiling is read before this order runs, not after it.** A cell whose established count has reached its ceiling produces `skip` on that cause alone, whatever this order would have named - a ceiling consulted only at delegation time is a ceiling the classification never saw. It is a **cause of `skip`, never a rule of this order**: the order says which proof the behavior needs, the ceiling says the cell will take no more of it.
+The cell therefore says **which proof is due**; this order maps that proof to a public output name and handles redundancy. Intrinsic provability cannot turn an anchored cell into `contract`: it is consulted only for an empty cell, where the phase requires no proof form of its own. The ceiling remains a **cause of `skip`**, not a measuring instrument and not a post-classification delegation check.
