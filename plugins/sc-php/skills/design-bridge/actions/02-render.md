@@ -98,29 +98,37 @@ la feuille du composant. Retirer l'attribut à la source du pattern ou de l'impo
 Une conservation explicitement demandée devient une déviation documentée ; elle n'est jamais compensée
 silencieusement par un nouveau `!important`.
 
-## Étape 2 — Mettre à jour theme.json
+## Étape 2 — Adapter `theme.json`
 
-Pour chaque fond autorisé (`.backgrounds`) du composant, vérifier que la couleur correspondante existe dans `theme.json § settings.color.palette` :
+Résoudre le `theme.json` actif comme dans `01-realize-lint`, puis utiliser l'adaptateur du pivot. Il
+matérialise toutes les échelles WP supportées, pas seulement les fonds du composant :
 
-```json
-{
-  "settings": {
-    "color": {
-      "palette": [
-        {
-          "name": "Background",
-          "slug": "semantic-background",
-          "color": "#f7f8fa"
-        }
-      ]
-    }
-  }
-}
+```bash
+# Aperçu obligatoire : aucune écriture
+node "${SC_PHP_PLUGIN_ROOT}/skills/design-bridge/tools/theme-json-adapter.mjs" \
+  --tokens design/tokens.json \
+  --theme "wp-content/themes/${WP_ACTIVE_THEME}/theme.json"
+
+# Après inspection du diff
+node "${SC_PHP_PLUGIN_ROOT}/skills/design-bridge/tools/theme-json-adapter.mjs" \
+  --tokens design/tokens.json \
+  --theme "wp-content/themes/${WP_ACTIVE_THEME}/theme.json" \
+  --write
 ```
 
-- Si le slug existe déjà avec la bonne valeur → OK.
-- Si le slug manque → ajouter l'entrée (valeur dérivée de `tokens.json` via le spec).
-- Si la valeur diffère → signaler comme divergence (voir piège 7 de `wordpress-pitfalls.md`).
+Passer `--token-theme <nom>` seulement lorsque ce thème WordPress matérialise explicitement l'overlay
+de tokens homonyme. L'adaptateur applique alors l'overlay sparse avant de résoudre les alias.
+
+Correspondances déterministes : `color.*` → `settings.color.palette`, `font.size.*` →
+`settings.typography.fontSizes`, `space.*` → `settings.spacing.spacingSizes`. Les slugs viennent du path
+sans son préfixe de groupe. Le marqueur `settings.custom.design.designTokenPresets` délimite les presets
+générés : une ré-exécution les remplace sans doublon et retire les générés devenus obsolètes. Les clés,
+styles et presets humains hors de ce marqueur sont préservés. Un slug humain qui entrerait en collision
+avec un preset généré fait échouer l'adaptateur avant écriture ; il n'est jamais écrasé.
+
+Enfin vérifier que chaque `.backgrounds` du composant résout vers le slug généré correspondant. Un fond
+absent de la palette ou une valeur différente de la `Token scale` active est une divergence bloquante
+(voir piège 7 de `wordpress-pitfalls.md`). Rejouer l'adaptateur après écriture doit produire un diff vide.
 
 ## Étape 3 — Enregistrer le block pattern
 

@@ -18,6 +18,9 @@ Behavioural tests for **design:enforce**. Authority: `SKILL.md` §Routing; `acti
 | S8 | Ask to render one frozen component. | Do not activate enforcement as the entry skill. | Selected target is `diffuse/render`; internal gates may be downstream, but no enforcement router action is the entry point. |
 | S9 | Wire gates in `dual-host/`, which contains both `AGENTS.md` and `.claude/rules/`. | Select `wire-gates` and plan equivalent persistent instructions for both hosts. | Intended writes update the applicable `AGENTS.md` section and `.claude/rules/08-design/01-enforce.md`; no installed plugin `SKILL.md` is an intended write. |
 | S10 | Install the linter from a Codex-loaded skill while the working directory is unrelated and no plugin-root environment variable exists. | Resolve `DESIGN_PLUGIN_ROOT` from the loaded `enforce/SKILL.md` path, then select `build-linter`. | Source reads name the resolved plugin copies of `run-gates.py`, `lint-core.mjs`, `migrate-contract.py`, and `status.py`; no path starts at `/tools` or depends on `CLAUDE_PLUGIN_ROOT`. |
+| S11 | Build enforcement in a brownfield project whose existing DS gate has a machine-readable extension marker. | Select `build-linter` in `extend` mode. | The existing command remains the only entrypoint; generated files live below `design/lint/generated/design-enforce-v2/`; rerunning replaces the marked block without duplicates. |
+| S12 | Build enforcement where a DS linter exists but has no explicit extension marker. | Refuse an implicit overwrite or parallel install. | Output shows the proposed integration diff and stops before writing. |
+| S13 | Pivot native enforcement for a platform configuration that exposes raw token values. | Emit both token paths and resolved token scales. | Canonical values and each named theme overlay are present; the receptor is required to validate raw values against the active scale. |
 
 ## How to run
 
@@ -96,3 +99,27 @@ from loaded SKILL.md.
 
 **Frictions / gaps:** none.
 **Tally:** 10/10 PASS (0 N/A) — real green gate, host persistence and root portability confirmed.
+
+### 2026-09-23 — run 5 (generality, dry-run, target=enforce, fixture=gate-configs+dual-host+brownfield-contract) — **13/13 PASS**
+
+Fixture state: the prior deterministic configs and dual-host baseline remain green; brownfield cases are
+checked against the explicit extension marker contract and the token-scale pivot schema.
+
+| # | Behaviour | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|---|
+| S1 | contractless inspect | PASS | = | `actions/00-inspect.md § Process` |
+| S2 | P2 warns, exit 0 | PASS | = | `control-priorities.md § Evidence rules` |
+| S3 | P0 missing, exit 1 | PASS | = | `control-priorities.md § P0` |
+| S4 | maturity exit 4 | PASS | = | `SKILL.md § Transversal rules` |
+| S5 | invalid config exit 2 | PASS | = | `SKILL.md § Transversal rules` |
+| S6 | legacy exit 3 | PASS | = | `SKILL.md § Transversal rules` |
+| S7 | freeze entry excluded | PASS | = | `adjust/SKILL.md § Routing` |
+| S8 | render entry excluded | PASS | = | `diffuse/SKILL.md § Routing` |
+| S9 | equivalent Codex/Claude persistence | PASS | = | `actions/02-wire-gates.md § Étape 3` |
+| S10 | artifact-derived plugin root | PASS | = | `host-portability.md § Root resolution` |
+| S11 | marked brownfield gate extended in place | PASS | new | `actions/01-build-linter.md § Étape 0` |
+| S12 | ambiguous existing gate fails closed | PASS | new | `actions/01-build-linter.md § Étape 0` |
+| S13 | paths and resolved values cross the pivot | PASS | new | `actions/04-pivot.md § Étape 2` |
+
+**Frictions / gaps:** none.
+**Tally:** 13/13 PASS (0 N/A) — brownfield ownership and raw-value authority are explicit.

@@ -97,6 +97,13 @@ Ou utiliser une fonction `resolveFile()` centralisée qui applique la normalisat
 
 **Pour `diffuse`** : les block patterns et templates WP consomment les tokens via `theme.json` + les classes générées par Gutenberg (pas via `adapters/tokens.css` directement). L'adaptateur WP de `diffuse` doit en tenir compte.
 
+L'adaptation couvre `color.*`, `font.size.*` et `space.*` via
+`tools/theme-json-adapter.mjs`. Son marqueur `settings.custom.design.designTokenPresets` est la seule
+frontière qu'il peut remplacer : les presets et les sections humaines restent intacts. Un slug humain en
+collision est une erreur, pas une autorisation implicite d'écraser. Un overlay nommé est appliqué avec
+`--token-theme` et ses alias sont résolus après fusion avec la base. Toujours prévisualiser sans
+`--write`, puis rejouer après écriture pour prouver l'idempotence.
+
 ## Piège 8 : reset global sur sélecteur d'élément — il bat toutes les classes simples
 
 Symptôme : une couleur (ou `text-decoration`) déclarée sur une classe de composant n'est jamais rendue,

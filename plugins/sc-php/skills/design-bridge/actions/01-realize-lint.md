@@ -12,6 +12,7 @@ Source: design/tokens.json + design/components.json
 Version: <semver>
 Valid class sets: [...]
 Token paths: [...]
+Token scales: { canonical values: {...}, theme overlays: {...} }
 a11y requirements: [...]
 Enforcement target: { language: php, targets: [...] }
 ```
@@ -28,9 +29,24 @@ WordPress FSE combine PHP (templates), JSON (block patterns, theme.json) et HTML
 | `stored-content` | contenu HTML en base | `lint-core.mjs`, sur export | via `wp post get` (`${SC_PHP_PLUGIN_ROOT}/skills/design-bridge/references/wordpress-lint-instances.md`) |
 | `platform-config` | palette déclarée par la plateforme | vérification JSON | cohérence `theme.json` ↔ `tokens.json` |
 
+## Étape 0 — Étendre le gate existant quand il existe
+
+Reprendre le mode décidé par `design:enforce/01-build-linter`. En mode `extend`, résoudre la commande
+et le `generatedBlock` depuis son marqueur ; les deux sont requis. Si le projet possède déjà un checker
+PHP/WP de design system :
+
+- générer la logique dérivée du spec dans `design/lint/generated/design-enforce-v2/check-classes.php` ;
+- enregistrer son appel **dans le bloc généré** de l'agrégateur existant ;
+- ne jamais remplacer le checker humain ni ajouter une seconde commande pre-commit/CI ;
+- remplacer le bloc à la ré-exécution, sans dupliquer `require`, commande ou rapport.
+
+Un checker existant sans marqueur d'extension est ambigu : proposer le bloc et s'arrêter avant écriture.
+En mode `install`, poursuivre avec le chemin historique ci-dessous.
+
 ## Étape 1 — Générer le PHP class checker
 
-Créer `design/lint/check-classes.php` dans le projet :
+Créer `design/lint/check-classes.php` dans le projet en mode `install`, ou le module généré nommé à
+l'étape 0 en mode `extend` :
 
 ```php
 <?php
@@ -125,9 +141,22 @@ console.log(JSON.stringify(slugs));
 
 Chaque slug WP doit correspondre à un chemin de token dans le spec. Une divergence est signalée comme warning (non bloquant mais documenté).
 
+Vérifier aussi les **valeurs** contre `Token scales`, sans relire `tokens.json` pour reconstruire une
+information absente du spec :
+
+- `settings.color.palette[*].color` ∈ échelle `color.*` canonique ;
+- `settings.typography.fontSizes[*].size` ∈ échelle `font.size.*` ;
+- `settings.spacing.spacingSizes[*].size` ∈ échelle `space.*` ;
+- sur une surface de thème nommée, comparer à l'overlay correspondant, avec repli sur la base pour les
+  paths non redéfinis.
+
+Un preset humain hors vocabulaire DS reste autorisé s'il n'est pas déclaré dans le marqueur généré
+`settings.custom.design.designTokenPresets`. Un slug déclaré généré dont la valeur sort de l'échelle est
+une violation `platform-config`, pas un warning : il prétend dériver du contrat et le contredit.
+
 ## Étape 3 — Écrire le rapport et le brancher au gate
 
-Le hook pre-commit n'est **pas** étendu : il exécute la commande unique du gate (`design/skills/enforce/references/gate-wiring.md § La commande unique`). Un checker appelé à côté produirait un second verdict que rien n'agrège.
+Le hook pre-commit n'est **pas** doublé : il exécute la commande unique du gate (`design/skills/enforce/references/gate-wiring.md § La commande unique`). En mode `extend`, c'est la commande existante du marqueur ; en mode `install`, la commande portable. Un checker appelé à côté produirait un second verdict que rien n'agrège.
 
 Le checker écrit son résultat au format `plugins/design/references/gate-config-schema.md § Rapport de pivot`, une entrée par règle de `Declared rules` :
 
@@ -165,7 +194,8 @@ php design/lint/check-classes.php /tmp/test.php         # exit 1
 ## Sortie attendue
 
 > Linter PHP/WP installé :
-> - `design/lint/check-classes.php` (classes dans les templates)
+> - mode `extend` | `install`, commande unique `<commande>`
+> - `<chemin du checker gouverné par le mode>` (classes dans les templates)
 > - Rapport écrit à `<Report path>` — réalisées : \<ids\>, non réalisées : \<ids + raison\>
 > - Branché dans `gates.config.json § pivotReports` avec `command`
 > - Cohérence de la configuration de plateforme : [OK / N warnings]

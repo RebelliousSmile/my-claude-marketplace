@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Make design enforcement brownfield-capable (#8)
@@ -14,12 +14,13 @@ plugins/
 │   ├── ✏️ references/sc-pivot-contract.md
 │   ├── ✏️ skills/enforce/actions/01-build-linter.md
 │   ├── ✏️ skills/enforce/actions/04-pivot.md
-│   └── ✏️ skills/enforce/evals/enforcement-scenarios.md
+│   └── ✏️ skills/enforce/evals/routing-autonomy-scenarios.md
 └── sc-php/skills/design-bridge/
     ├── ✏️ actions/01-realize-lint.md
     ├── ✏️ actions/02-render.md
     ├── ✏️ references/wordpress-pitfalls.md
     ├── ✏️ evals/scenarios.json
+    ├── ✅ tools/theme-json-adapter.mjs
     └── ✅ evals/fixtures/theme-json/
         ├── tokens.json
         ├── theme.input.json
