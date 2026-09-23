@@ -40,6 +40,12 @@ const audit = requireText('plugins/overcode/skills/control/actions/02-audit.md',
 requireText('plugins/overcode/skills/control/actions/03-configure.md', [
   '`01-write` routes into it when the selected cell requires a proof mechanism',
 ]);
+requireText('plugins/overcode/skills/control/evals/authority-scenarios.md', [
+  'Both lines and both destinations are required',
+  'Measured `6/6` permits `skip`; `unknown` or a value below 6 forbids a ceiling refusal',
+  '`tooling.status` is `unavailable`',
+  'run 10 preflight (fixtures unavailable, no inherited verdict)',
+]);
 
 if (matrix.includes('the order says which proof the behavior needs')) {
   failures.push('decision-matrix still lets intrinsic order choose the required proof');
