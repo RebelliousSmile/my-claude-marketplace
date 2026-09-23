@@ -1,5 +1,24 @@
 # Changelog — design
 
+## [2.16.0] — 2026-09-23
+
+### Added
+
+- Le spec d'enforcement transporte les chemins de tokens, leurs valeurs canoniques résolues et les
+  overlays de thèmes, afin que les réceptacles puissent vérifier les valeurs natives sans lecture cachée.
+- `enforce build-linter` distingue installation et extension d'un gate brownfield marqué ; le bloc
+  généré est idempotent et la commande existante reste l'unique autorité.
+
+### Fixed
+
+- Un linter existant sans point d'extension explicite ferme désormais l'opération avant écriture au lieu
+  d'être remplacé ou doublé silencieusement.
+
+### Verification
+
+- Les scénarios d'autonomie couvrent l'extension, le refus ambigu et le transport des échelles ; les 13
+  scénarios `enforce` et le gate comportemental design passent.
+
 ## [2.14.0] — 2026-09-01
 
 ### Added

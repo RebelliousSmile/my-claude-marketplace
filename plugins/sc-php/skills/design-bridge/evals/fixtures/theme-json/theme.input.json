@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "settings": {
+    "color": {
+      "custom": false,
+      "palette": [
+        { "name": "Editorial Accent", "slug": "editorial-accent", "color": "#ff00aa" },
+        { "name": "Old Generated", "slug": "old-generated", "color": "#000000" }
+      ]
+    },
+    "typography": { "fontSizes": [] },
+    "spacing": { "spacingSizes": [] },
+    "custom": {
+      "project": { "density": "compact" },
+      "design": {
+        "designTokenPresets": {
+          "version": 1,
+          "color": ["old-generated"],
+          "fontSize": [],
+          "spacing": []
+        }
+      }
+    }
+  },
+  "styles": { "elements": { "link": { "color": { "text": "#ff00aa" } } } }
+}

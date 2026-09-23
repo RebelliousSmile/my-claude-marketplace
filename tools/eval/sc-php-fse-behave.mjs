@@ -4,6 +4,7 @@
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
+import { mergeThemeJson, presetsFromTokens } from '../../plugins/sc-php/skills/design-bridge/tools/theme-json-adapter.mjs';
 
 const failures = [];
 const fail = (message) => failures.push(message);
@@ -14,7 +15,13 @@ const required = {
   'plugins/design/skills/diffuse/actions/03-pivot.md': ['sc-php', 'sc-css', 'sans chevauchement'],
   'plugins/sc-php/skills/design-bridge/actions/02-render.md': [
     'patterns/<canonical-name>.php', 'Inserter: yes', 'fse-bindings.css',
-    '--ownership-stylesheet', 'WP_EDITOR_STORAGE_STATE'],
+    '--ownership-stylesheet', 'WP_EDITOR_STORAGE_STATE', 'theme-json-adapter.mjs',
+    'designTokenPresets', '--token-theme'],
+  'plugins/sc-php/skills/design-bridge/actions/01-realize-lint.md': [
+    'Token scales', 'design-enforce-v2', 'sans marqueur d\'extension est ambigu'],
+  'plugins/design/skills/enforce/actions/01-build-linter.md': [
+    'mode **`extend`**', 'generatedBlock', 'système parallèle'],
+  'plugins/design/references/sc-pivot-contract.md': ['Canonical values:', 'Theme overlays:', '2-bis.'],
   'plugins/sc-css/skills/design-bridge/actions/03-realize-lint.md': [
     'preuve **statique**', 'sans nouvelle règle `pivotReports`'],
   'plugins/design/adapters/measure/measure.py': [
@@ -26,8 +33,30 @@ for (const [path, needles] of Object.entries(required)) {
 }
 
 const scenarios = JSON.parse(read('plugins/sc-php/skills/design-bridge/evals/scenarios.json'));
-if (!Array.isArray(scenarios) || scenarios.length < 6)
-  fail('scénarios FSE: au moins six décisions doivent rester couvertes');
+if (!Array.isArray(scenarios) || scenarios.length < 9)
+  fail('scénarios FSE: au moins neuf décisions doivent rester couvertes');
+
+const themeFixture = 'plugins/sc-php/skills/design-bridge/evals/fixtures/theme-json';
+const tokens = JSON.parse(read(`${themeFixture}/tokens.json`));
+const themeInput = JSON.parse(read(`${themeFixture}/theme.input.json`));
+const themeExpected = JSON.parse(read(`${themeFixture}/theme.expected.json`));
+const mergedTheme = mergeThemeJson(themeInput, tokens);
+if (JSON.stringify(mergedTheme) !== JSON.stringify(themeExpected))
+  fail('theme.json: la fusion ne correspond pas à la fixture attendue');
+if (JSON.stringify(mergeThemeJson(mergedTheme, tokens)) !== JSON.stringify(mergedTheme))
+  fail('theme.json: une seconde fusion n’est pas idempotente');
+if (mergedTheme.settings.custom.project.density !== 'compact' || !mergedTheme.styles.elements.link)
+  fail('theme.json: une section humaine non gouvernée a été perdue');
+const darkPresets = presetsFromTokens(tokens, 'dark');
+if (!darkPresets.groups.color.every((preset) => preset.color === '#93c5fd'))
+  fail('theme.json: l’overlay sombre ou ses alias ne sont pas résolus après fusion');
+const conflicting = structuredClone(themeInput);
+conflicting.settings.color.palette.push({ name: 'Human Brand', slug: 'brand-primary', color: '#000' });
+let conflictClosed = false;
+try { mergeThemeJson(conflicting, tokens); } catch (error) {
+  conflictClosed = /slug conflict outside generated boundary/.test(error.message);
+}
+if (!conflictClosed) fail('theme.json: une collision avec un slug humain n’a pas fermé l’adaptation');
 
 const validatePattern = (path, body) => path.endsWith('.php')
   && ['Title:', 'Slug:', 'Categories:', 'Inserter: yes'].every((header) => body.includes(header))

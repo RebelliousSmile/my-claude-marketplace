@@ -1,0 +1,10 @@
+[
+  {"prompt":"realize these design tokens as CSS custom properties","expect_action":"realize-tokens"},
+  {"prompt":"generate tokens.css from this enforcement spec","expect_action":"realize-tokens"},
+  {"prompt":"realize this card component as governed CSS","expect_action":"realize-components"},
+  {"prompt":"produce the component stylesheet from the design render spec","expect_action":"realize-components"},
+  {"prompt":"realize the stylesheet rules from this enforcement spec","expect_action":"realize-lint"},
+  {"prompt":"wire native CSS enforcement and report every assigned rule","expect_action":"realize-lint"},
+  {"prompt":"render this component as a WordPress block pattern","expect_action":null},
+  {"prompt":"audit unrelated legacy CSS","expect_action":null}
+]

@@ -34,8 +34,8 @@ Lire `plugins/design/references/sc-pivot-contract.md` pour le format attendu du 
 
 | # | Action | Déclencheur | Input |
 |---|--------|-------------|-------|
-| 01 | `01-realize-lint` | Spec d'enforcement reçu de enforce/04-pivot | Valid class sets + token paths + targets |
-| 02 | `02-render` | Spec de rendu reçu de diffuse/03-pivot | Composant neutre + variantes + stack JS |
+| 01 | `realize-lint` | Spec d'enforcement reçu de enforce/04-pivot | Valid class sets + token paths + targets |
+| 02 | `render` | Spec de rendu reçu de diffuse/03-pivot | Composant neutre + variantes + stack JS |
 
 ## Détection du framework JS
 

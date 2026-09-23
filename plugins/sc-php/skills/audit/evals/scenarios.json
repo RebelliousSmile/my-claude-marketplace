@@ -1,0 +1,6 @@
+[
+  {"prompt":"audit this PHP project and load the applicable stack pivots","expect_action":"audit"},
+  {"prompt":"run a code-quality audit on this WordPress plugin","expect_action":"audit"},
+  {"prompt":"analyze this PHP error log","expect_action":null},
+  {"prompt":"scaffold a new Symfony application","expect_action":null}
+]

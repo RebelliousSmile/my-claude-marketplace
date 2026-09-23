@@ -1,0 +1,6 @@
+[
+  {"prompt":"decompose this migration goal into a Mikado graph","expect_action":"mikado"},
+  {"prompt":"use the Mikado method to find the prerequisites of this refactor","expect_action":"mikado"},
+  {"prompt":"write an implementation plan with phases","expect_action":null},
+  {"prompt":"implement the next backlog item","expect_action":null}
+]

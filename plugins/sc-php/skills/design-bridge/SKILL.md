@@ -3,7 +3,7 @@ name: design-bridge
 description: >-
   Realize design pivots as native PHP and WordPress FSE code with lint, block patterns, and rendered ownership proof.
 author: François-Xavier Guillois
-version: 0.12.0
+version: 0.13.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash
@@ -34,8 +34,8 @@ Lire `plugins/design/references/sc-pivot-contract.md` pour le format attendu du 
 
 | # | Action | Déclencheur | Input |
 |---|--------|-------------|-------|
-| 01 | `01-realize-lint` | Spec d'enforcement reçu de enforce/04-pivot | Valid class sets + token paths + targets |
-| 02 | `02-render` | Spec de rendu reçu de diffuse/03-pivot | Composant neutre + variantes + stack WP |
+| 01 | `realize-lint` | Spec d'enforcement reçu de enforce/04-pivot | Valid class sets + token paths + targets |
+| 02 | `render` | Spec de rendu reçu de diffuse/03-pivot | Composant neutre + variantes + stack WP |
 
 ## Règle de dérivation stricte
 

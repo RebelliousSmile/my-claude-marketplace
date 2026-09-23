@@ -1,0 +1,6 @@
+[
+  {"prompt":"scan this project and detect its CSS architecture","expect_action":"scan"},
+  {"prompt":"identify the stylesheet stack and emit the CSS capability manifest","expect_action":"scan"},
+  {"prompt":"install performance pivot rules","expect_action":null},
+  {"prompt":"audit selector specificity","expect_action":null}
+]

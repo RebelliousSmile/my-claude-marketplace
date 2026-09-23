@@ -31,6 +31,10 @@ All valid classes: [union de tous .base + .elements.* + .modifiers.*]
 ### Token paths
 All token paths: [liste des chemins de tokens.json aplatis]
 
+### Token scales
+Canonical values: [map plate `<token.path>: <valeur résolue>` pour chaque feuille de tokens.json]
+Theme overlays: [map `<theme>: { <token.path>: <valeur résolue dans ce thème> }`, vide sans thème]
+
 ### a11y requirements
 [Par composant avec .a11y.requires non vide]
 - <component>: role=<role>, requires=[<attr>, ...]
@@ -54,6 +58,9 @@ Targets: [globs de fichiers à linter — en mode utility-first, couvrir tous le
 Réalise un linter natif idiomatique pour <langage> qui vérifie, selon Mode :
 1. (bem) Toute classe appartenant au design system utilise un nom déclaré dans valid class sets.
 2. Les références de tokens CSS (var(--...)) pointent vers un path existant.
+2-bis. Quand la plateforme expose une valeur brute gouvernée (preset CMS, configuration native,
+attribut sérialisé), cette valeur appartient à la **Token scale** correspondante. Comparer la valeur
+canonique résolue, pas l'alias `{path}` ni une chaîne normalisée au hasard du réceptacle.
 3. (bem) Les composants déclarant .a11y.requires portent les attributs requis.
 4. Si Themes n'est pas vide, le linter natif reste theme-agnostique (§ A2 : les thèmes re-déclarent les mêmes noms de `--var` dans leur bloc de sélecteur — aucune règle par thème à générer côté vocabulaire).
 5. (utility-first) Toute couleur hexadécimale brute est interdite si Raw hex forbidden = true (le baseline le vérifie déjà dans style="…"/<style> — le pivot peut étendre à d'autres contextes CSS-in-JS idiomatiques au langage, ex. styles co-localisés dans le composant, template literals `css\`...\``).
@@ -63,6 +70,12 @@ Réalise un linter natif idiomatique pour <langage> qui vérifie, selon Mode :
 
 Retourne : le linter installé dans le projet + les instructions de câblage dans l'outillage natif + le rapport écrit.
 ```
+
+`Token paths` répond à « ce nom existe-t-il ? » ; `Token scales` répond à « cette valeur appartient-elle
+à l'échelle ? ». Aucun réceptacle ne relit `tokens.json` en secret pour reconstruire le second champ :
+l'émetteur aplatit les feuilles, résout les alias, et transporte la valeur canonique avec le path. Un
+overlay de thème ne crée pas un nouveau path ; il remplace sa valeur dans la map du thème, séparée de la
+base afin qu'un linter puisse choisir la surface réellement inspectée.
 
 ---
 

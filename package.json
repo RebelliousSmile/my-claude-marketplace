@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Scripts de test du marketplace (tools/eval). Pas un paquet publiable.",
   "scripts": {
-    "test": "node tools/eval/sc-cd.mjs && node tools/eval/consistency.mjs && node tools/eval/aidd-delegation.mjs && node tools/eval/harness.mjs && node tools/eval/coverage.mjs && node tools/eval/pivot-map.mjs && node tools/eval/selftest.mjs && node tools/eval/design-behave.mjs && node tools/eval/design-harness.mjs && node tools/eval/design-wireframes.mjs && node tools/eval/sc-php-fse-behave.mjs",
+    "test": "node tools/eval/sc-cd.mjs && node tools/eval/consistency.mjs && node tools/eval/aidd-delegation.mjs && node tools/eval/harness.mjs && node tools/eval/coverage.mjs && node tools/eval/pivot-map.mjs && node tools/eval/selftest.mjs && node plugins/overcode/skills/reconcile-normative/tools/scope-audit.mjs --self-test && node tools/eval/control-contract.mjs && node tools/eval/control-authority-criteria.mjs && node tools/eval/design-behave.mjs && node tools/eval/design-harness.mjs && node tools/eval/design-wireframes.mjs && node tools/eval/sc-php-fse-behave.mjs",
     "test:fse": "node tools/eval/sc-php-fse-behave.mjs",
     "test:fse-integration": "node tools/eval/sc-php-fse-integration.mjs"
   }

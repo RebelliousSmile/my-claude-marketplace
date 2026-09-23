@@ -4,5 +4,8 @@
   {"prompt":"Render this composite FSE component through the PHP receptor.","expect_action":"02-render"},
   {"prompt":"Produce a native WordPress block pattern and its platform bindings.","expect_action":"02-render"},
   {"prompt":"Ensure core/button and core/navigation-link are governed by the DS on front and editor.","expect_action":"02-render"},
+  {"prompt":"Extend the marked WordPress design checker without replacing its existing command.","expect_action":"01-realize-lint","expect":"reuse the generated extension boundary and remain idempotent"},
+  {"prompt":"A WordPress DS checker exists but exposes no extension marker. Install alongside it.","expect_action":"01-realize-lint","expect":"stop before writing; show the proposed integration diff"},
+  {"prompt":"Merge the frozen color, font-size and spacing tokens into the active theme.json twice.","expect_action":"02-render","expect":"preserve human keys and produce no second-run diff"},
   {"prompt":"Build a generic Vue component.","expect_action":null,"note":"belongs to sc-js, not sc-php"}
 ]

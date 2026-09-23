@@ -36,6 +36,12 @@ Read [host portability](../../references/host-portability.md) before resolving p
 
 Run a structured SEO/GEO audit on a website, picking the right checklist for the detected site type, grounding every finding in an authoritative source (Google Search Central / Schema.org / GBP guidelines — never SEO folklore), and emit an actionable roadmap plus ready-to-paste copy.
 
+## Actions
+
+| # | Action | Role | Input |
+|---|---|---|---|
+| 01 | `run` | Detect the site type, capture the baseline, audit SEO/GEO, and emit the roadmap | Site or project scope |
+
 ## Rules
 
 - Detect the site type BEFORE picking a checklist — never assume `local-business`

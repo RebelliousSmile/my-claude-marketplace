@@ -1,5 +1,22 @@
 # Changelog — sc-php
 
+## [0.15.0] — 2026-09-23
+
+### Added
+
+- `design-bridge` adapte les tokens couleur, tailles typographiques et espacements vers les presets
+  `theme.json`, avec slugs déterministes, overlays nommés et frontière générée explicite.
+
+### Changed
+
+- Le réceptacle PHP étend un checker brownfield marqué dans sa commande existante et refuse les points
+  d'intégration ambigus. La cohérence `theme.json` contrôle désormais les valeurs contre l'échelle active.
+
+### Verification
+
+- Les fixtures prouvent la préservation des clés humaines, la suppression des presets générés obsolètes,
+  l'idempotence, la résolution d'overlay et le refus des collisions ; 6 tests FSE/Chromium passent.
+
 ## [0.14.2] — 2026-09-16
 
 ### Changed

@@ -4,6 +4,24 @@
 
 ## [Unreleased]
 
+## [5.9.0] — 2026-09-23
+
+### Added
+
+- `reconcile-normative` compare les globs de règles aux sites de symboles réellement nommés, détecte
+  les scopes redondants et propose une classification `Narrow scope` avec le risque de maintenance du
+  périmètre resserré.
+- Un audit déterministe de scope et ses fixtures adversariales rejoignent le gate du dépôt.
+
+### Fixed
+
+- `control` rend explicites l'autorité de la cellule de stratégie, l'indisponibilité d'un mécanisme de
+  preuve, le routage vers la configuration, les patterns de collecte vides et les états d'outliers non
+  mesurables. La découverte de stratégie est désormais sensible à la casse de façon déterministe et les
+  drapeaux indépendants s'accumulent.
+- Les critères de la suite d'autorité ont été réalignés sur ces contrats ; une fixture externe absente
+  reste `UNRUN` et ne recycle aucun verdict historique.
+
 ## [5.8.1] — 2026-09-22
 
 ### Fixed

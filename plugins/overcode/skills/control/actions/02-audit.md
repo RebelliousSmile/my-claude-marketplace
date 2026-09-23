@@ -19,6 +19,17 @@ Find low-value tests in an existing suite and propose their removal - never dele
 
 No file is deleted as part of producing this table.
 
+The table is preceded by the collection trace, one line per configured or inferred pattern rather than
+one summary per stack:
+
+```
+enumeration:
+  <stack> <pattern> -> <n> file(s) [configured | observed fallback]
+```
+
+A zero on one pattern is reported even when sibling patterns populate the union. This distinguishes a
+legitimate alternate naming convention from a stale collector entry that silently stopped matching.
+
 The table is followed by the **resolution report**, in **two slots covering opposite directions**, neither substituting for the other - the same pair `04-strengthen` renders, for the same reason:
 
 ```
@@ -34,11 +45,16 @@ unclassified: <count> test file(s) matched by no domain in force
 
 ## Process
 
-1. Resolve `project_path` and `scope`. Enumerate test files using the **Test file glob** of **every** applicable language plugin shipping a `testing` pivot (`@../references/pivot-contract.md`) - the population is their **union**, and the run names the globs it combined. **For a stack with no pivot, the fallback is the project's own observed convention, never a pattern shaped by one stack.** Read how this repository actually names its tests - a `tests/` or `spec/` tree, a `test_*` or `*_test` prefix or suffix, a `.test.` or `.spec.` infix, whatever the runner it wires is configured to collect - and enumerate on that. Say the enumeration is convention-based and name the pattern used, so a reader can see what was searched.
+1. Resolve `project_path` and `scope`. Enumerate test files using the **Test file glob** of **every** applicable language plugin shipping a `testing` pivot (`@../references/pivot-contract.md`) - the population is their **union**, and the run names the globs it combined. Split a pivot or runner configuration carrying several collection patterns and measure **each pattern separately before unioning**: report the pattern, stack, provenance and match count, including every zero-match pattern. A stack-level non-empty total never hides an empty constituent pattern. **For a stack with no pivot, the fallback is the project's own observed convention, never a pattern shaped by one stack.** Read how this repository actually names its tests - a `tests/` or `spec/` tree, a `test_*` or `*_test` prefix or suffix, a `.test.` or `.spec.` infix, whatever the runner it wires is configured to collect - and enumerate on that. Say the enumeration is convention-based and name the pattern used, so a reader can see what was searched.
 
    **A hardcoded single-stack pattern is the defect this states in place of.** `**/*.{test,spec}.*` is a JavaScript shape: it matches none of a Python suite's `test_*.py`, none of a Go suite's `*_test.go`, and none of a Rust project's `#[cfg(test)]` modules - and this action's whole output is a table of test files, so a fallback matching nothing produces an **empty candidates table that reads exactly like a clean suite**. That is the inverse of the truth and the most expensive way this action can fail.
 
    **An enumeration that resolved to zero test files is a finding, stated before the table.** Say which pattern was tried and that it matched nothing, and stop rather than presenting an empty table: no heuristic can flag a candidate in a population of zero, so every downstream statement of the run would be vacuously true.
+
+   **A zero-match constituent with a non-empty union is also a finding, but does not stop the run.** Name
+   the empty pattern beside the populated siblings and continue over the union. It may be an intentional
+   alternate accepted by the runner or a stale convention; the action reports that fact and decides
+   neither reading. Reporting only the stack total erases the distinction.
 
    **A partial enumeration is the same finding at a smaller scale, and it is stated too.** A repository whose tests live in two stacks - a `vitest` suite under `tests/` and Rust tests inside `#[cfg(test)]` modules of the same repository's source files - has a population no single stack's glob reaches. Name the stacks whose tests were enumerated and those whose were not, before the table. A table missing one stack's tests entirely reads as a clean stack, which is the same falsehood as an empty table, minus the tell.
 2. For each test, apply three low-value heuristics:

@@ -34,6 +34,12 @@ Read [host portability](../../references/host-portability.md) before resolving p
 
 Run a structured performance audit on a web project, picking the right checklist for the detected stack, and emit an actionable roadmap.
 
+## Actions
+
+| # | Action | Role | Input |
+|---|---|---|---|
+| 01 | `run` | Detect the stack, capture the baseline, audit performance, and emit the roadmap | Project or route scope |
+
 ## Rules
 
 - Detect the stack BEFORE picking a checklist — never assume any specific framework

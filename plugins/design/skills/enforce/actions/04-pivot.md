@@ -33,6 +33,10 @@ Format complet : `${DESIGN_PLUGIN_ROOT}/references/sc-pivot-contract.md § Spec 
 
 - **Declared rules** — uniquement les règles routées vers ce réceptacle, id et description repris verbatim du contrat. Un réceptacle ne reçoit jamais une règle qu'un autre réalise.
 - **Report path** — le fichier où le réceptacle écrit son rapport.
+- **Token paths + Token scales** — aplatir les mêmes feuilles de `tokens.json`, résoudre les alias pour
+  les valeurs, puis émettre la map canonique de base et une map par overlay sous `themes`. Les paths
+  prouvent l'existence d'un nom ; les scales rendent l'appartenance d'une valeur vérifiable sans lecture
+  cachée du fichier source.
 
 Puis appeler `/sc-<langage>:design-bridge` avec ce spec en contexte.
 

@@ -2,7 +2,7 @@
 name: reconcile-normative
 description: Reconcile normative content across decision archives, project memory, and host-native project instructions. Use to detect redundancy, contradictions, uncodified patterns, or stale rules across AGENTS.md/.agents rules on Codex and .claude/rules on Claude Code.
 author: François-Xavier Guillois
-version: 4.7.1
+version: 4.8.0
 vibe_version: ">=1.0.0"
 permissions:
   - files
@@ -222,8 +222,27 @@ Classify each item:
 | Class | Criterion | Destination |
 |---|---|---|
 | **Keep as rule** | A current, actionable constraint that changes agent behavior on a future task; concrete enough to check, with the narrowest applicable scope | One concise effective host instruction or scoped rule; retain necessary cross-host equivalents |
+| **Narrow scope** | A current, write-time-verifiable rule whose declared `paths:` cover significantly more files than the measured call sites of the technical symbol(s) it names, or whose path list contains an entry wholly covered by another entry | Keep the rule, remove redundant entries, and propose the smallest measured scope that still contains every current site; do not move the constraint to memory |
 | **Move to memory** | Rationale, decision history, architecture explanation, examples, troubleshooting steps, or runbook material without an independent enforceable constraint | Existing thematic `aidd_docs/memory/<bank>.md` section, following Phase C's memory mapping and format |
 | **Resolve** | Duplicate, overlapping, contradictory, obsolete, or superseded instruction | Merge, narrow, update, or remove only after checking the surviving effective instruction and required confirmations |
+
+Before assigning a class to a path-scoped rule, extract the concrete technical symbols it names
+(function, constant, flag, command, configuration key; never generic prose) and measure its effective
+population:
+
+```bash
+node "${OVERCODE_PLUGIN_ROOT}/skills/reconcile-normative/tools/scope-audit.mjs" \
+  --root <project-root> --rule <rule.md> --symbol <literal> --json
+```
+
+Pass one `--symbol` per independently named mechanism. The report compares the union of files matched
+by `paths:` with the union of literal symbol sites, lists sites outside the scope, and compares every
+path entry with its siblings. A path whose measured file set is wholly contained by another entry is
+redundant even when their glob strings look different. A declared population at least twice the symbol
+population, or carrying at least three files with no site, is a **Narrow scope candidate**, not an
+automatic edit: inspect dynamic dispatch, generated calls, conventions that apply before the first call,
+and non-literal use before proposing the narrower paths. A symbol site outside the current scope is a
+coverage defect and blocks narrowing until the surviving scope includes it.
 
 Imperative wording alone does not prove that content is a current rule. Verify the current code, decisions, and supported workflow before retaining or elevating it. A mixed file may need a short surviving rule plus a memory entry. Preserve exceptions, paths, and host-specific syntax when shortening; do not silently weaken a constraint. Do not move a real constraint only to on-demand memory.
 
@@ -232,6 +251,11 @@ Compare rules **within each host and applicable path scope**. A Codex `AGENTS.md
 For each proposed consolidation, show the current instruction, the concise surviving rule, the memory destination and text, the affected hosts/scopes, and any source removal. Follow the existing-rule edit and file-deletion confirmation boundaries. Apply the memory and surviving-rule updates before removing duplicate or obsolete instructions; if an approval is declined, leave the current instruction effective and report the proposal as pending. Use the Phase C memory-target rule when no suitable bank exists.
 
 Measure context load **before and after** each accepted set of edits: report bytes or tokens for applicable always-loaded `AGENTS.md` content and Claude rule content, plus separately the size of conditionally loaded rule references. Do not count on-demand memory as auto-loaded. If an exact host token count is unavailable, use byte counts with the method stated. Report no reduction when no edit was made or when effective load is unchanged.
+
+For every accepted **Narrow scope** edit, Phase E names the before/after file populations, the symbols
+used for the measurement, any redundant path removed, and this tradeoff explicitly: the tighter scope
+reduces irrelevant automatic loading but a future legitimate call site outside it will not load the rule.
+That risk is reported in prose, not hidden in the consolidation count.
 
 This pass is complete only after every existing rule file and applicable `AGENTS.md` has been classified, including files unchanged since the last run. Record counts for rules inspected, consolidated, retained, moved to memory, and pending approval.
 

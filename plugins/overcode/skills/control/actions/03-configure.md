@@ -10,7 +10,7 @@ Detect test-tooling misconfiguration and propose fixes, without ever proposing t
 
 **Given one of them anyway, run - and say in the output that it was ignored, and why.** Silently dropping a parameter leaves the user believing the report was narrowed or ordered when it was not, and a scope in particular reads as a promise that the rest of the project was left alone. Neither refuse the run nor honour the parameter: the check does not depend on it, so there is nothing to stop for. This differs from `scope` and `domain` given together elsewhere in the skill, where the run *does* stop - there, two mutually exclusive intents were expressed and only the user can say which was meant; here there is one intent, and it is simply not one this action has.
 
-It is reachable and terminal in the chaining graph: `05-stats` routes into it, and it routes out to nothing (`SKILL.md`, *Action chaining*).
+It is reachable and terminal in the chaining graph: `05-stats` routes into it for a measured wiring defect, and `01-write` routes into it when the selected cell requires a proof mechanism the project does not have. It routes out to nothing (`SKILL.md`, *Action chaining*).
 
 ## Outputs
 

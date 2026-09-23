@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "my-marketplace",
-  "version": "4.5.1",
+  "version": "4.6.0",
   "description": "Local marketplace — personal overlay on the AIDD framework",
   "owner": {
     "name": "François-Xavier Guillois"
@@ -9,21 +9,21 @@
   "plugins": [
     {
       "name": "overcode",
-      "version": "5.8.1",
+      "version": "5.9.0",
       "source": "./plugins/overcode",
       "description": "Extends AIDD with project-agnostic workflows: research and multi-session PDF extraction; interactive codebase and project-memory quizzes (dig); memory and rule consolidation; repository-backed Markdown freshness and AIDD-evidenced product/code sobriety (taste); target-aware resilience scenarios plus dependency abandonment and migration horizon (foresee); behavioural testing; test governance; performance, data, ActivityPub, and SEO/GEO audits; project health and repository-backed Markdown backlog synchronization via status; service configuration and deployment; documentation; and planning utilities. Stack and service knowledge remains pivot-driven through specialist plugins, and AIDD delegation fails explicitly when a required capability is unavailable. Alias chains: rechallenge, endtask, bump-plugin, previously, gitit, mirror, debrief.",
       "recommended": true
     },
     {
       "name": "design",
-      "version": "2.15.1",
+      "version": "2.16.0",
       "source": "./plugins/design",
       "description": "Builds, critiques, freezes, enforces, and diffuses grounded design systems, with standardized reviewable UI wireframes and measurable harnesses.",
       "recommended": false
     },
     {
       "name": "sc-php",
-      "version": "0.14.2",
+      "version": "0.15.0",
       "source": "./plugins/sc-php",
       "description": "PHP and WordPress skills with native FSE patterns and multi-target staging/production CD with differential WordPress media.",
       "recommended": false
