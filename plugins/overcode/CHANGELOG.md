@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [5.10.0] — 2026-09-23
+
 ### Added
 
 - `alias debrief` distingue désormais usage et qualité intrinsèque des skills. L'analyse de qualité lit
