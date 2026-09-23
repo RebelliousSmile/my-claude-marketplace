@@ -1,0 +1,6 @@
+[
+  {"prompt":"audit the specificity and cascade conflicts in these stylesheets","expect_action":"specificity"},
+  {"prompt":"find problematic important rules and overly deep selectors","expect_action":"specificity"},
+  {"prompt":"render this design component in CSS","expect_action":null},
+  {"prompt":"teach me how :where works","expect_action":null}
+]

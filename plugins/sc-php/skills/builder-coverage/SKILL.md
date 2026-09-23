@@ -42,9 +42,9 @@ builder-coverage contrôle la complétude. Il reste autonome et lançable seul.
 
 | # | Action | Quand |
 |---|--------|-------|
-| 01 | `01-scan` | Auditer la couverture → liste des composants non couverts |
-| 02 | `02-close-gaps` | Créer/étendre les patterns pour amener les gaps à 0 |
-| 03 | `03-organize` | Ranger les patterns par rôle de section + lint d'équilibre (taxonomie de référence, généralisable ~90 % des projets) |
+| 01 | `scan` | Auditer la couverture → liste des composants non couverts |
+| 02 | `close-gaps` | Créer/étendre les patterns pour amener les gaps à 0 |
+| 03 | `organize` | Ranger les patterns par rôle de section + lint d'équilibre (taxonomie de référence, généralisable ~90 % des projets) |
 
 **Deux dimensions de qualité** : `01/02` = *complétude* (chaque composant a une
 pattern) ; `03` = *organisation* (patterns rangées par rôle, sans fourre-tout,

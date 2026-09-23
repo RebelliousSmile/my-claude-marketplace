@@ -1,0 +1,6 @@
+[
+  {"prompt":"explain how :where changes specificity using this project","expect_action":"explain"},
+  {"prompt":"teach me container queries with examples from our CSS","expect_action":"explain"},
+  {"prompt":"refactor these selectors now","expect_action":null},
+  {"prompt":"audit the whole stylesheet","expect_action":null}
+]

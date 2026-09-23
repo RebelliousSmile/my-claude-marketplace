@@ -1,0 +1,6 @@
+[
+  {"prompt":"analyze this stylesheet and prioritize safe improvements","expect_action":"analyze"},
+  {"prompt":"inspect the CSS audit report and tell me what to improve first","expect_action":"analyze"},
+  {"prompt":"apply all CSS changes without showing a plan","expect_action":null},
+  {"prompt":"explain CSS specificity without changing code","expect_action":null}
+]

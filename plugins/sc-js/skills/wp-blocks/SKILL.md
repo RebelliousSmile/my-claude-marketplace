@@ -81,7 +81,7 @@ exactement ce que la skill cible.
 
 | # | Action | Déclencheur | Sortie |
 |---|--------|-------------|--------|
-| 01 | `01-validate-roundtrip` | « valide les blocs gutenberg » / après édition d'un pattern | Script Playwright + rapport des blocs invalides (page · type · extrait), exit 1 si ≥ 1 invalide |
+| 01 | `validate-roundtrip` | « valide les blocs gutenberg » / après édition d'un pattern | Script Playwright + rapport des blocs invalides (page · type · extrait), exit 1 si ≥ 1 invalide |
 
 ## Intégration
 

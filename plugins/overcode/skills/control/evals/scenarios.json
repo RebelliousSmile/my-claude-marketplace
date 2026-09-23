@@ -1,0 +1,17 @@
+[
+  {"prompt":"should I write a test for this refund calculation?","expect_action":"write"},
+  {"prompt":"add the smallest useful test for this validation path","expect_action":"write"},
+  {"prompt":"audit the suite for duplicate and trivial tests","expect_action":"audit"},
+  {"prompt":"which existing tests can I safely remove?","expect_action":"audit"},
+  {"prompt":"why is the configured coverage gate not failing CI?","expect_action":"configure"},
+  {"prompt":"check whether our test tooling is wired correctly","expect_action":"configure"},
+  {"prompt":"what are the riskiest untested paths in this project?","expect_action":"strengthen"},
+  {"prompt":"rank the missing tests that matter most","expect_action":"strengthen"},
+  {"prompt":"give me a snapshot of the current test strategy and counts","expect_action":"stats"},
+  {"prompt":"where do we stand on tests across each stack?","expect_action":"stats"},
+  {"prompt":"align testing.md with the tools and phase the project actually uses","expect_action":"align"},
+  {"prompt":"our test strategy document is stale; reconcile it with reality","expect_action":"align"},
+  {"prompt":"run the unit tests","expect_action":null},
+  {"prompt":"write behavioural scenarios for this skill","expect_action":null},
+  {"prompt":"review this pull request","expect_action":null}
+]

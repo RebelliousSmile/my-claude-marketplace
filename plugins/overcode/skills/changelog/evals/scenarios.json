@@ -1,0 +1,8 @@
+[
+  {"prompt":"generate the changelog for version 5.9.0 and tag it","expect_action":"generate"},
+  {"prompt":"prépare le CHANGELOG de la prochaine release depuis les commits","expect_action":"generate"},
+  {"prompt":"curate our existing changelog and condense the old majors","expect_action":"curate"},
+  {"prompt":"complète les versions manquantes du CHANGELOG sans nouvelle release","expect_action":"curate"},
+  {"prompt":"bump package.json only","expect_action":null},
+  {"prompt":"write GitHub release notes without touching CHANGELOG.md","expect_action":null}
+]
