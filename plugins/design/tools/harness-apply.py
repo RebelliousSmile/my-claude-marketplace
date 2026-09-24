@@ -37,6 +37,12 @@ def raw_script(value: str, field: str) -> str:
     return value.strip("\n")
 
 
+def raw_style(value: str, field: str) -> str:
+    if re.search(r"</\s*style", value, re.IGNORECASE):
+        fail(f"{field} contains </style>; author CSS cannot cross the style boundary")
+    return value
+
+
 def replace_zone(text: str, start: str, end: str, content: str) -> str:
     pattern = re.compile(f"({re.escape(start)})([\\s\\S]*?)({re.escape(end)})")
     matches = list(pattern.finditer(text))
@@ -103,7 +109,7 @@ def apply_payload(harness: str, payload: dict) -> str:
         result,
         "/* ===== AUTHOR PAGE STYLES — LLM MAY EDIT BETWEEN THESE MARKERS ===== */",
         "/* ===== END AUTHOR PAGE STYLES ===== */",
-        payload.get("styles", ""),
+        raw_style(payload.get("styles", ""), "styles"),
     )
     result = replace_zone(
         result,

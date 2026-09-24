@@ -8,6 +8,8 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
+from urllib.request import url2pathname
 
 
 def intersects(a: dict, b: dict, tolerance: float = 0.5) -> bool:
@@ -18,19 +20,46 @@ def inside(inner: dict, outer: dict, tolerance: float = 1.0) -> bool:
     return inner["left"] >= outer["left"] - tolerance and inner["right"] <= outer["right"] + tolerance and inner["top"] >= outer["top"] - tolerance and inner["bottom"] <= outer["bottom"] + tolerance
 
 
+def request_allowed(url: str, root: Path) -> bool:
+    """The board is a standalone local file: it may load itself and assets beside it, and
+    nothing else. This, not a Chromium sandbox, is what keeps the rendered page off the
+    network and away from the rest of the disk."""
+    parsed = urlparse(url)
+    if parsed.scheme in ("data", "blob", "about"):
+        return True
+    if parsed.scheme != "file" or parsed.netloc not in ("", "localhost"):
+        return False
+    try:
+        Path(url2pathname(parsed.path)).resolve().relative_to(root)
+    except (ValueError, OSError):
+        return False
+    return True
+
+
 def _static_lint(path: Path, report_path: Path) -> int:
     script = Path(__file__).resolve().parents[2] / "tools" / "wireframes-lint.py"
     return subprocess.run([sys.executable, str(script), str(path), "--report", str(report_path)], check=False).returncode
 
 
-def _browser_check(path: Path, executable: str | None) -> list[dict]:
+def _browser_check(path: Path, executable: str | None) -> tuple[list[dict], list[str]]:
     try:
         from playwright.sync_api import sync_playwright
     except ImportError as exc:
         raise RuntimeError("Playwright 1.60.0 is required; install adapters/measure/requirements.txt") from exc
     errors: list[dict] = []
+    blocked: list[str] = []
+    root = path.parent.resolve()
+
+    def guard(route) -> None:
+        url = route.request.url
+        if request_allowed(url, root):
+            route.continue_()
+        else:
+            blocked.append(url)
+            route.abort()
+
     with sync_playwright() as pw:
-        launch = {"headless": True, "args": ["--allow-file-access-from-files", "--no-sandbox"]}
+        launch = {"headless": True}
         if executable:
             launch["executable_path"] = executable
         try:
@@ -39,6 +68,7 @@ def _browser_check(path: Path, executable: str | None) -> list[dict]:
             raise RuntimeError(f"Chromium cannot start: {exc}") from exc
         try:
             page = browser.new_page(viewport={"width": 1920, "height": 1080})
+            page.route("**/*", guard)
             page.goto(path.as_uri(), wait_until="load", timeout=20000)
             page.add_style_tag(content="*,*::before,*::after{animation:none!important;transition:none!important}")
             page.evaluate("() => document.fonts && document.fonts.ready")
@@ -98,7 +128,7 @@ def _browser_check(path: Path, executable: str | None) -> list[dict]:
                 a, b = row["boxes"].get(left), row["boxes"].get(right)
                 if a and b and a["visible"] and b["visible"] and intersects(a, b) and tuple(sorted((left, right))) not in allowed:
                     errors.append({"rule": "element-collision", "message": "peer elements overlap without allowedOverlaps", **location, "elements": [left, right], "boxes": {left: a, right: b}})
-    return errors
+    return errors, blocked
 
 
 def main() -> int:
@@ -118,7 +148,7 @@ def main() -> int:
         print(f"Error: static lint must pass before rendered checks (exit {static_exit})", file=sys.stderr)
         return 2 if static_exit == 2 else 1
     try:
-        errors = _browser_check(path, args.chromium)
+        errors, blocked = _browser_check(path, args.chromium)
     except RuntimeError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
@@ -126,7 +156,8 @@ def main() -> int:
         "schemaVersion": 1,
         "file": str(path),
         "static": {"status": "passed", "report": str(static_report)},
-        "rendered": {"status": "passed" if not errors else "failed", "errors": errors},
+        "rendered": {"status": "passed" if not errors else "failed", "errors": errors,
+                     "blockedRequests": blocked},
         "review": {"status": "required"},
         "summary": {"validCandidate": not errors, "errorCount": len(errors)}
     }

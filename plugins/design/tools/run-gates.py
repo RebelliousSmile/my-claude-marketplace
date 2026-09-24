@@ -243,6 +243,13 @@ def resolve_pivot_reports(config: dict, config_path: Path) -> list[Path]:
         has_command = "command" in entry
         command = entry.get("command")
         report_path = base / entry["path"]
+        try:
+            report_path.resolve().relative_to(base.resolve())
+        except ValueError:
+            # The realizer's report is deleted, then restored: a path outside the config
+            # directory would let an agent-written config remove any file.
+            raise abort(f"{config_path}: pivot report {entry['path']!r} escapes "
+                        f"the config directory {base.resolve()}") from None
         if has_command:
             if (not isinstance(command, list) or not command
                     or not all(isinstance(a, str) and a for a in command)):

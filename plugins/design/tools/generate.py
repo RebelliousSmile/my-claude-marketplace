@@ -49,6 +49,10 @@ def source_for(role: str) -> str:
     return DEVIATIONS if role in LEDGER_ROLES else TOKENS
 
 ALIAS_RE = re.compile(r"^\{([^}]+)\}$")
+# A theme name lands in a CSS selector and a value in a declaration: neither may close the
+# block it sits in or open markup around an inlined stylesheet.
+THEME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+CSS_BREAKOUT = ("{", "}", ";", "<")
 
 
 def fail(message: str) -> int:
@@ -212,23 +216,36 @@ def css_value(value, base: dict):
     return f"var({var_name(tuple(match.group(1).split('.')))})", None
 
 
+def css_declaration(path: tuple, value, base: dict) -> tuple:
+    """css_value, refused when the rendered value could break out of its declaration."""
+    rendered, err = css_value(value, base)
+    if err:
+        return None, err
+    breakout = [c for c in CSS_BREAKOUT if c in str(rendered)]
+    if breakout:
+        return None, f"{'.'.join(map(str, path))}: value {rendered!r} carries {' '.join(breakout)}"
+    return rendered, None
+
+
 def emit_css(tokens: dict, sources: list) -> tuple:
     base = {k: v for k, v in tokens.items() if k != "themes"}
     lines = [banner(sources, "css"), ":root {\n"]
     for path, value in flatten(base):
-        rendered, err = css_value(value, base)
+        rendered, err = css_declaration(path, value, base)
         if err:
             return None, err
         lines.append(f"  {var_name(path)}: {rendered};\n")
     lines.append("}\n")
     for name, overlay in (tokens.get("themes") or {}).items():
+        if not isinstance(name, str) or not THEME_RE.match(name):
+            return None, f"theme name {name!r} is not a slug [A-Za-z0-9_-]"
         # `dark` is a class because a consuming app toggles it on the root element; every
         # other theme is an attribute. Same var names in every block - no consumer, the
         # linter included, needs to know which theme is active to validate a var().
         selector = ".dark" if name == "dark" else f'[data-theme="{name}"]'
         lines.append(f"\n{selector} {{\n")
         for path, value in flatten(overlay):
-            rendered, err = css_value(value, base)
+            rendered, err = css_declaration(path, value, base)
             if err:
                 return None, err
             lines.append(f"  {var_name(path)}: {rendered};\n")
@@ -407,6 +424,18 @@ def produce(contract_dir: Path) -> tuple:
 
 # --- modes ------------------------------------------------------------------------------
 
+def confine(rendered: dict, out_dir: Path):
+    """Every artifact path stays under out_dir: policies.json is written by an agent, and
+    `../x.css` or an absolute path would write, or read for --check, anywhere."""
+    root = out_dir.resolve()
+    for artifact in rendered:
+        try:
+            (out_dir / artifact).resolve().relative_to(root)
+        except ValueError:
+            return fail(f"{artifact}: artifact path escapes the output directory {root}")
+    return None
+
+
 def write_all(rendered: dict, contract_dir: Path, out_dir: Path) -> int:
     for artifact, (text, sources) in rendered.items():
         target = out_dir / artifact
@@ -488,6 +517,9 @@ def main(argv: list[str] | None = None) -> int:
     out_dir = Path(args.out) if args.out else contract_dir
 
     rendered, code = produce(contract_dir)
+    if code is not None:
+        return code
+    code = confine(rendered, out_dir)
     if code is not None:
         return code
     if not rendered:
