@@ -4,6 +4,25 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [4.6.0] - 2026-09-24
+
+### Added
+
+- `design` fait porter le gate de fidélité par le contrat : `adjust` fige `oracle.json § pages` depuis la carte des éléments signée dans la table de `define`, `config-gen.py --page` génère la configuration par page et `measure.py` lit les propriétés déclarées par cible. `enforce` applique ce gate figé sans pouvoir retirer ou surcharger une cible (design 2.17.0).
+- `design` prend en charge l'enforcement brownfield d'un site WordPress.
+- `overcode:alias debrief` ajoute une rétrospective des sessions : méthode, qualité bornée des skills et usage des tokens via AIDD telemetry quand elle est active.
+- `overcode:reconcile-normative` détecte les scopes de règles normatives trop larges et propose de les resserrer.
+
+### Changed
+
+- `overcode:alias endtask` propose un nouveau contexte après une clôture entièrement réussie.
+- La dette de couverture du routage de la marketplace est soldée.
+
+### Fixed
+
+- `overcode:harvest` consolide à nouveau toutes les règles existantes, même inchangées.
+- `overcode:control` expose explicitement les lacunes de son outillage de preuve ; ses scénarios d'autorité sont réalignés.
+
 ## [4.5.1] - 2026-09-16
 
 ### Changed
