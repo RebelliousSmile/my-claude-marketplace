@@ -4,6 +4,20 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [4.6.1] - 2026-09-24
+
+### Fixed
+
+- `design` 2.18.0 corrige les constats de la review du gate figé et de l'audit design : quatre faux verts de gate (contraste en alpha, `var()` avec fallback, propriétés de couleur manquantes, carte de l'entonnoir), exit 2 sur toute entrée inutilisable, écritures atomiques de la migration.
+
+### Security
+
+- `design` confine les chemins écrits par `generate` et `run-gates`, échappe les valeurs écrites par un agent, évalue le harness dans un contexte `node:vm` sans objet hôte et coupe le réseau de `render-check`.
+
+### Changed
+
+- `design` : `pnpm test:design` et un job CI `design` gardent les suites du plugin ; le linter prend plusieurs fichiers par appel et `run-gates` ne lance qu'un processus `node` ; la mesure réutilise la session de login.
+
 ## [4.6.0] - 2026-09-24
 
 ### Added
