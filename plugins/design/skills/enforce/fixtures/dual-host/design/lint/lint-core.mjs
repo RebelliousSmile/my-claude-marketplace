@@ -221,8 +221,9 @@ if (!declared.length) {
 // disabled rule: components.json missing leaves Rule 1 with an empty vocabulary and every class
 // valid, policies.json missing leaves Rules 3 and 4 inert, and the run still returns 0. Since
 // release.json is hand-written at freeze, the case is reachable, so it is refused (exit 2).
-// oracle.json is not required here: it is written only when the brief produces measure targets,
-// and no rule below reads it.
+// oracle.json is not required here: the contract requires it only when the reference is
+// measurable (the frozen fidelity gate), config-gen.py --check proves it at freeze, and no lint
+// rule below reads it.
 const REQUIRED = ['tokens.json', 'components.json', 'policies.json'];
 const undeclared = REQUIRED.filter((name) => !declared.includes(name));
 if (undeclared.length) {

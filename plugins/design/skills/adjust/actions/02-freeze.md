@@ -79,15 +79,34 @@ Construire les artefacts à partir des composants résolus dans le brief d'arbit
 }
 ```
 
-`design/oracle.json` — cibles de mesure, écrit seulement si le brief en produit :
+`design/oracle.json` — cibles de mesure et gate de fidélité figé par page, écrit quand la référence est mesurable (§ Prouver le gate de fidélité) — même forme que `references/contract-schema.md § oracle.json` :
 
 ```json
 {
   "$schema": "design/references/contract-schema#oracle",
   "components": {
     "<canonical-name>": {
-      "elements": { "<label>": { "check_text": true, "props": [] } },
-      "collections": [{ "name": "", "item_selector": "", "ack": { } }]
+      "props": ["display", "gridTemplateColumns", "gap"],
+      "elements": {
+        "<element-label>": { "check_text": true, "props": ["fontSize", "color"] }
+      },
+      "collections": [
+        { "name": "<label>", "item_selector": "<BEM-element>", "ack": { "id": "DEV-xxx", "reason": "<prose>" } }
+      ]
+    }
+  },
+  "pages": {
+    "<page-key>": {
+      "components": {
+        "<canonical-name>": {
+          "root": "<mockup selector>",
+          "elements": {
+            "<element-label>": "<mockup selector>",
+            "<other-label>": { "skip": "<raison>" }
+          },
+          "collections": { "<collection-name>": "<mockup item selector>" }
+        }
+      }
     }
   }
 }

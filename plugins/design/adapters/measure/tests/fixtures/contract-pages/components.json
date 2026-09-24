@@ -1,0 +1,9 @@
+{
+  "$schema": "design/references/contract-schema#components",
+  "components": {
+    "header": { "base": "site-header", "elements": { "logo": "site-header__logo", "nav": "site-header__nav" } },
+    "card": { "base": "card", "elements": { "title": "card__title", "body": "card__body" } },
+    "footer": { "base": "site-footer", "elements": { "copy": "site-footer__copy" } },
+    "promo": { "base": "promo", "elements": {} }
+  }
+}

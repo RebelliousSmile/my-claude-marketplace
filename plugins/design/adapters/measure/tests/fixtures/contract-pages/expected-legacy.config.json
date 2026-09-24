@@ -1,0 +1,87 @@
+{
+  "_generated_by": "config-gen.py — review selectors before use",
+  "reference_url": "http://ref.test",
+  "implementation_url": "http://impl.test",
+  "breakpoints": [
+    {
+      "name": "mobile",
+      "width": 375,
+      "height": 812,
+      "mockup_viewport": "mobile"
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900,
+      "mockup_viewport": "desktop"
+    }
+  ],
+  "props": [
+    "fontSize",
+    "color",
+    "backgroundColor"
+  ],
+  "targets": [
+    {
+      "name": "header",
+      "mockup": ".site-header",
+      "implementation": ".site-header"
+    },
+    {
+      "name": "header · logo",
+      "mockup": ".site-header__logo",
+      "implementation": ".site-header__logo"
+    },
+    {
+      "name": "header · nav",
+      "mockup": ".site-header__nav",
+      "implementation": ".site-header__nav"
+    },
+    {
+      "name": "card",
+      "mockup": ".card",
+      "implementation": ".card"
+    },
+    {
+      "name": "card · title",
+      "mockup": ".card__title",
+      "implementation": ".card__title",
+      "check_text": true,
+      "props": [
+        "fontSize"
+      ]
+    },
+    {
+      "name": "card · body",
+      "mockup": ".card__body",
+      "implementation": ".card__body"
+    },
+    {
+      "name": "footer",
+      "mockup": ".site-footer",
+      "implementation": ".site-footer"
+    },
+    {
+      "name": "footer · copy",
+      "mockup": ".site-footer__copy",
+      "implementation": ".site-footer__copy"
+    },
+    {
+      "name": "promo",
+      "mockup": ".promo",
+      "implementation": ".promo"
+    }
+  ],
+  "headings_sel": {
+    "mockup": "h1, h2, h3",
+    "implementation": "h1, h2, h3"
+  },
+  "reference_page": "a",
+  "collections": [
+    {
+      "name": "cards",
+      "mockup": ".card",
+      "implementation": ".card"
+    }
+  ]
+}
