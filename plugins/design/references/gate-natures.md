@@ -30,4 +30,11 @@ même valeur aujourd'hui tout en donnant des verdicts opposés. Si WordPress gag
 pas gouverné par le DS. Une surface authentifiée inaccessible ou une classe DS sans déclaration
 inspectable vaut `ownership_unrealized` et maintient le verdict `OPEN`.
 
-**Quand la fidélité ne s'applique pas.** Sans référence visuelle externe, l'oracle n'a rien à mesurer et le gate de vocabulaire s'applique seul : limite énoncée dans `skills/enforce/actions/05-fidelity-gate.md § Chemin construction-depuis-brief`.
+## Quand la fidélité ne s'applique pas
+
+Limite assumée, pas un gap silencieux. Le gate de fidélité mesure un rendu contre une **référence visuelle externe**. Un projet construit depuis un brief (`skills/define/actions/03-construct.md`) n'en a aucune : l'oracle n'a rien à mesurer et ne s'applique pas, par nature. C'est distinct d'un oracle non câblé, où une référence existe mais la mesure manque, qui est un refus.
+
+- **Profil de gate** : vocabulaire seul (`lint-core.mjs`), plus les bonnes pratiques visuelles (réduction mobile, cohérence des échelles) jugées en revue humaine. Pas de second gate mesuré.
+- **Contraste** : hors de cette revue. Il est mesuré au figeage sur les paires déclarées (`adapters/a11y/contrast.py`) et vit dans `release.json § checks.contrast`.
+- **Retour de la fidélité** : dès qu'une référence apparaît (une maquette produite après coup), le gate de fidélité redevient applicable.
+- **Non construit** : un gate de substitution (checklist formalisée de réductions responsive et de couverture d'états) servirait de proxy *soft* ; noté comme piste seulement.

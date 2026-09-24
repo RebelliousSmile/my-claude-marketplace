@@ -43,4 +43,4 @@ Le core trio (palette · type · jeu d'icônes) a été présenté pour approbat
 
 ## En aval
 
-Ce chemin n'a pas de visuel de référence : aucun gate de fidélité (`enforce/05-fidelity-gate.md`) ne s'applique en aval — seul le gate vocabulaire (`lint-core.mjs`) + les bonnes pratiques visuelles couvrent un projet construit depuis un brief. Voir `${DESIGN_PLUGIN_ROOT}/skills/enforce/actions/05-fidelity-gate.md § Chemin construction-depuis-brief` pour la limite assumée.
+Ce chemin n'a pas de visuel de référence : aucun gate de fidélité (`enforce/05-fidelity-gate.md`) ne s'applique en aval — seul le gate vocabulaire (`lint-core.mjs`) + les bonnes pratiques visuelles couvrent un projet construit depuis un brief. Limite assumée : `${DESIGN_PLUGIN_ROOT}/references/gate-natures.md § Quand la fidélité ne s'applique pas`.

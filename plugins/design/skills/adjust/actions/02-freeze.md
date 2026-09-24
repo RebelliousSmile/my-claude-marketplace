@@ -48,24 +48,7 @@ Construire les artefacts à partir des composants résolus dans le brief d'arbit
 
 ### Structure minimale requise
 
-`design/components.json` — anatomie seule (schéma détaillé : `${DESIGN_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md`) :
-
-```json
-{
-  "$schema": "design/references/contract-schema#components",
-  "components": {
-    "<canonical-name>": {
-      "base": "<BEM-block>",
-      "elements": { },
-      "modifiers": { },
-      "backgrounds": ["<token.path>"],
-      "foregrounds": ["<token.path>"],
-      "a11y": { "role": "<ARIA-role>", "requires": [] },
-      "states": { "disabled": <bool>, "error": <bool>, "focus": <bool> }
-    }
-  }
-}
-```
+`design/components.json` — anatomie seule, `.states` compris. Schéma, champs et exemples : `${DESIGN_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md`, seul exemplaire.
 
 `design/policies.json` — ce qui est transverse au contrat :
 
@@ -79,7 +62,7 @@ Construire les artefacts à partir des composants résolus dans le brief d'arbit
 }
 ```
 
-`design/oracle.json` — cibles de mesure et gate de fidélité figé par page, écrit quand la référence est mesurable (§ Prouver le gate de fidélité) — même forme que `references/contract-schema.md § oracle.json` :
+`design/oracle.json` — cibles de mesure et gate de fidélité figé par page, écrit quand la référence est mesurable (§ Prouver le gate de fidélité) — seul exemplaire du schéma ; ses champs sont décrits dans `${DESIGN_PLUGIN_ROOT}/references/contract-schema.md § oracle.json` :
 
 ```json
 {

@@ -4,7 +4,7 @@ Applicable **dès qu'une référence visuelle externe existe**, quelle que soit 
 mesure un rendu contre une maquette résolue, propriété par propriété, et cette comparaison ne
 dépend d'aucune plateforme. **Sans référence externe** (construction depuis un brief,
 `define/03-construct`), l'oracle ne s'applique pas *par nature* — voir
-`## Chemin construction-depuis-brief` plus bas.
+`${DESIGN_PLUGIN_ROOT}/references/gate-natures.md § Quand la fidélité ne s'applique pas`.
 
 ## Rôle
 
@@ -143,32 +143,8 @@ Le gate de fidélité s'arme **à côté** du lint vocabulaire (cf. `${DESIGN_PL
 
 ## Chemin construction-depuis-brief — pas de gate de fidélité
 
-**Limite assumée et nommée (2nd-audit #3 / A9), pas un gap silencieux.** Ce gate mesure la
-fidélité d'un rendu à une **référence visuelle externe** (une maquette résolue par `adjust`).
-Un projet construit **depuis un brief** (`${DESIGN_PLUGIN_ROOT}/skills/define/actions/03-construct.md` —
-pas de visuel, un système de tokens dérivé de l'intention écrite) n'a, par construction, **aucune
-référence externe à comparer** : il n'y a rien à mesurer, donc l'oracle de fidélité **ne
-s'applique pas par nature** à ce chemin. C'est distinct du refus ci-dessus : là, aucune référence
-n'existe ; ici, une référence existe mais l'oracle n'est pas encore câblé.
-
-- **Profil de gate pour ce cas** : vocabulaire seul (`lint-core.mjs`) + bonnes
-  pratiques visuelles (réduction mobile, cohérence des échelles — jugées en
-  revue humaine, pas par un oracle automatisable). Pas de second gate mesuré.
-  Le contraste, lui, ne relève **pas** de cette revue humaine : il a été mesuré en amont, au
-  figeage, sur les paires déclarées (`${DESIGN_PLUGIN_ROOT}/adapters/a11y/contrast.py`), et son
-  résultat vit dans `release.json § checks.contrast`. Ce chemin n'a pas de référence externe ;
-  il a quand même un contrôle de contraste, et il n'y a donc rien à rejuger à l'œil ici.
-- Ceci n'est **pas** un oubli du contrat : c'est la même règle que la note d'applicabilité
-  ci-dessus, vue de l'autre côté — *la fidélité exige une référence ; un projet brief-only n'en
-  a aucune*. Dès qu'une référence apparaît ultérieurement (ex. une maquette est produite après
-  coup pour valider le résultat du brief), ce gate redevient applicable normalement.
-- **Option de suivi non construite ici** (A9, option 2) : un gate de substitution/auto-cohérence
-  (checklist de bonnes pratiques formalisée : réductions responsive, couverture d'états)
-  pourrait servir de proxy de fidélité *soft* pour ce chemin — non implémenté
-  dans cette part, noté comme piste possible seulement. Les paires de contraste en sont
-  sorties : elles ne sont plus une checklist à formaliser, elles sont calculées au figeage.
-- Renvoi croisé : `${DESIGN_PLUGIN_ROOT}/skills/define/actions/03-construct.md` porte la note
-  réciproque en aval.
+Sans référence externe, rien à mesurer : sortie « sans objet ». Profil de gate, contraste et retour
+de la fidélité : `${DESIGN_PLUGIN_ROOT}/references/gate-natures.md § Quand la fidélité ne s'applique pas`.
 
 ## Sortie attendue
 

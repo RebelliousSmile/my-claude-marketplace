@@ -91,7 +91,7 @@ Annoncer à l'utilisateur :
 > Gate enforce : vert (0 erreur, <N> warning(s))
 > Variantes produites : <liste>
 >
-> [Si le rendu est recopié en instances] Propagation nécessaire → relancer `${DESIGN_PLUGIN_ROOT}/skills/enforce/actions/03-lint-instances` pour réécrire les instances stockées.
+> [Si le rendu est recopié en instances] Propagation nécessaire → relancer `${DESIGN_PLUGIN_ROOT}/skills/enforce/actions/03-lint-instances.md` pour réécrire les instances stockées.
 
 ### Rendu baseline (preview non intégrée)
 

@@ -4,7 +4,7 @@
 
 Le diff pixel **pointe** où regarder ; il ne **prouve** rien. Un diff à zéro ne clôt pas le gate
 de fidélité, un diff non nul ne le fait pas échouer par lui-même : la preuve de conformité vient
-du verdict par propriété de `measure.py` (`${DESIGN_PLUGIN_ROOT}/skills/enforce/actions/05-fidelity-gate.md`).
+du verdict par propriété de `measure.py` (`${DESIGN_PLUGIN_ROOT}/references/gate-natures.md`).
 Cette passe alimente le classement des deltas, elle ne le remplace pas.
 
 ## Quand l'utiliser

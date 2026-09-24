@@ -149,23 +149,7 @@ Inchangé — schéma complet dans `token-schema.md`. Aucun champ ne quitte ni n
 
 Anatomie seule. `mode`, `$utilityPrefixes` et `usage` sont partis en `policies.json` ; `oracle` en `oracle.json` ; `$version` en `release.json`.
 
-```json
-{
-  "$schema": "design/references/contract-schema#components",
-  "components": {
-    "<canonical-name>": {
-      "base": "<BEM-block>",
-      "elements":  { "<element-label>": "<BEM-element>" },
-      "modifiers": { "<variant-label>": "<BEM-modifier>" },
-      "backgrounds": ["<token.path>"],
-      "foregrounds": ["<token.path>"],
-      "a11y": { "role": "<ARIA-role>", "requires": ["<attribute>"] }
-    }
-  }
-}
-```
-
-Champ par champ, invariants et exemples : `adjust/references/manifest-schema.md`.
+Schéma, champ par champ, invariants et exemples : `${DESIGN_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md`, seul exemplaire.
 
 ## `policies.json`
 
@@ -223,36 +207,7 @@ Règle d'émission d'un adapter : `write-system-procedure.md § Adapter emission
 
 Inerte pour le lint. Seul `config-gen.py` le lit. **Requis quand la référence est mesurable** (maquette servie avec DOM, harness `setPage`) : il porte alors `pages`, le gate de fidélité figé par `adjust`. Sans référence mesurable (brief seul, maquette-image), le contrat ne l'écrit pas et ne le déclare pas dans `release.json § artifacts` — la fidélité y est sans objet.
 
-```json
-{
-  "$schema": "design/references/contract-schema#oracle",
-  "components": {
-    "<canonical-name>": {
-      "props": ["display", "gridTemplateColumns", "gap"],
-      "elements": {
-        "<element-label>": { "check_text": true, "props": ["fontSize", "color"] }
-      },
-      "collections": [
-        { "name": "<label>", "item_selector": "<BEM-element>", "ack": { "id": "DEV-xxx", "reason": "<prose>" } }
-      ]
-    }
-  },
-  "pages": {
-    "<page-key>": {
-      "components": {
-        "<canonical-name>": {
-          "root": "<mockup selector>",
-          "elements": {
-            "<element-label>": "<mockup selector>",
-            "<other-label>": { "skip": "<raison>" }
-          },
-          "collections": { "<collection-name>": "<mockup item selector>" }
-        }
-      }
-    }
-  }
-}
-```
+Schéma : `${DESIGN_PLUGIN_ROOT}/skills/adjust/actions/02-freeze.md § Structure minimale requise`, qui le fige et en porte le seul exemplaire. Champs :
 
 | Champ | Requis | Statut · consommateur | Description |
 |---|---|---|---|

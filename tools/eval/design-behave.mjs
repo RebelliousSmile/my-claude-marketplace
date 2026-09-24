@@ -126,6 +126,32 @@ for (const copied of ['run-gates.py', 'status.py', 'migrate-contract.py'])
   if (/^\s*(from|import)\s+(_common|wireframes_common)\b/m.test(readFileSync(`plugins/design/tools/${copied}`, 'utf8')))
     fail(`trio copié: ${copied} importe un module partagé absent de design/lint/`);
 
+// One copy per schema: components.json lives in adjust/references/manifest-schema.md, oracle.json in
+// adjust/actions/02-freeze.md. contract-schema.md points at them and must not grow a second copy.
+const contractSchema = readFileSync('plugins/design/references/contract-schema.md', 'utf8');
+for (const artifact of ['components', 'oracle'])
+  if (new RegExp(String.raw`"\$schema":\s*"[^"]*contract-schema#${artifact}"`).test(contractSchema))
+    fail(`contract-schema: bloc JSON ${artifact} recopié, le schéma a un seul exemplaire`);
+if (!existsSync('plugins/design/adapters/measure/README.md'))
+  fail('measure: README absent, renvoyé par enforce/05-fidelity-gate et define/05-copycat-fanout');
+
+// Every ${DESIGN_PLUGIN_ROOT}/ path and every relative markdown link in the plugin's prose resolves.
+const markdownUnder = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+  const path = join(dir, entry.name);
+  if (entry.isDirectory())
+    return entry.name.startsWith('.') || ['__pycache__', 'node_modules', 'out', 'fixtures'].includes(entry.name) ? [] : markdownUnder(path);
+  return entry.name.endsWith('.md') ? [path] : [];
+});
+for (const file of markdownUnder('plugins/design')) {
+  const text = readFileSync(file, 'utf8');
+  for (const [, target] of text.matchAll(/\$\{DESIGN_PLUGIN_ROOT\}\/([^`\s§*<>{}]+)/g)) {
+    const path = target.replace(/[.,;:)]+$/, '');
+    if (!existsSync(join('plugins/design', path))) fail(`${file}: \${DESIGN_PLUGIN_ROOT}/${path} ne résout pas`);
+  }
+  for (const [, target] of text.matchAll(/\]\(([^)#\s]+)(?:#[^)]*)?\)/g))
+    if (!/^[a-z]+:/.test(target) && !existsSync(join(file, '..', target))) fail(`${file}: lien ${target} ne résout pas`);
+}
+
 const runGate = (config) => spawnSync(python, [
   'plugins/design/tools/run-gates.py', '--config',
   `plugins/design/skills/enforce/fixtures/${config}`,

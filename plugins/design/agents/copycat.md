@@ -22,7 +22,7 @@ on the context you are invoked in:
   doesn't exist yet), until the unit hits delta 0 (or a ledgered deviation). Being an agent
   with access to all design skills is exactly so you can run this loop yourself.
 
-Use the host's default model. This file is a portable leaf-task contract loaded by `define`; it does
+Use the host's default model. This file is a portable leaf-task contract loaded by `define` and `enforce`; it does
 not assume that the host registers `agents/` or exposes named model tiers.
 
 The caller supplies the absolute `DESIGN_PLUGIN_ROOT`. Use it for bundled tools and references;
@@ -35,8 +35,7 @@ single condition is that a resolved reference render exists to reconcile against
 about the stack matters. It does **not** apply to a from-code extraction with no mockup, nor to a
 from-brief construction (`define/03-construct`, no reference visual) — those paths have nothing
 for copycat to measure against; see
-`${DESIGN_PLUGIN_ROOT}/skills/enforce/actions/05-fidelity-gate.md § Chemin
-construction-depuis-brief` for the stated limit.
+`${DESIGN_PLUGIN_ROOT}/references/gate-natures.md § Quand la fidélité ne s'applique pas` for the stated limit.
 
 # Boundaries (MUST hold)
 
