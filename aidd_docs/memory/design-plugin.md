@@ -2,10 +2,10 @@
 
 | Champ | Valeur |
 |---|---|
-| Version courante | 2.17.0 |
+| Version courante | 2.18.0 |
 | Dernière release | 2026-09-24 |
 
-> Cette mémoire couvre 2.6.0 puis saute à 2.10.0 : **2.7.x / 2.8.0 / 2.9.x ne sont pas résumés ici**, `plugins/design/CHANGELOG.md` fait foi pour eux. De 2.10.0 à 2.17.0, seules les sections datées ci-dessous sont résumées.
+> Cette mémoire couvre 2.6.0 puis saute à 2.10.0 : **2.7.x / 2.8.0 / 2.9.x ne sont pas résumés ici**, `plugins/design/CHANGELOG.md` fait foi pour eux. De 2.10.0 à 2.18.0, seules les sections datées ci-dessous sont résumées.
 
 ## Architecture — verbe 0 + entonnoir 5 verbes
 
@@ -49,7 +49,7 @@
 Le plugin documentait des règles de fond, a11y, concordance de couches et contraste WCAG comme comportements d'`enforce`. `lint-core.mjs` implémente **cinq règles** et aucune de celles-là. 1.17.0 les retire ou les requalifie et tague chaque champ du contrat *exécutable* (consommateur nommé) ou *informationnel*.
 
 - **Vocabulaire ouvert par défaut** : une classe dont le bloc n'est pas déclaré est traitée comme utilitaire. Fermeture uniquement sous `--strict`, en `warning`, sur les classes de forme BEM hors `$utilityPrefixes`.
-- `lint-core.mjs` scanne **un fichier de markup à la fois**, comme du texte. Hors périmètre par construction : CSS, liaisons dynamiques, contenu stocké, fichiers de thème de plateforme, cohérence inter-fichiers.
+- `lint-core.mjs` scanne **chaque fichier de markup isolément**, comme du texte (plusieurs par appel depuis 2.18.0 : contrat lu une fois, un verdict par fichier). Hors périmètre par construction : CSS, liaisons dynamiques, contenu stocké, fichiers de thème de plateforme, cohérence inter-fichiers.
 - **Gaps déclarés, non vérifiés** : contraste WCAG, rôles ARIA, fond réellement appliqué.
 - Invariants 3, 4, 7 du manifeste sont réels mais tenus **au figeage** par `adjust/02-freeze.md`, jamais par le linter.
 - Baseline des huit fixtures (ordre lexicographique) : `0 1 0 1 0 1 0 1` — pinnée par le plan Lot 0, à re-vérifier après toute modification du linter **et après toute migration de contrat** (c'est le contrôle de non-régression du Lot 1). Ne s'obtient qu'en fournissant le répertoire de contrat en `--contract`.
@@ -211,8 +211,22 @@ Plan complet : `aidd_docs/tasks/2026_09/2026_09_01_wireframes-milestone-followup
 - `enforce` n'ajoute au config généré que URLs, auth `ownership`, `ledger`, `coverage_ack`. Contrat mesurable sans `pages` = refus renvoyant à `adjust`. `copycat` en dérive ne surcharge ni ne retire une cible.
 - `measure.py` : les `props` d'une cible remplacent la liste globale — des `props` d'élément dormantes dans un ancien `oracle.json` peuvent changer un verdict.
 - ⚠ Un bump + push ne met pas à jour le cache installé : réinstaller le plugin avant toute vérification en session.
-- ⚠ `adapters/lint-core.mjs` a une copie dans `skills/enforce/fixtures/dual-host/design/lint/lint-core.mjs` que `design-behave.mjs` exige identique octet pour octet : toute édition de la source (même un commentaire) se recopie dans la fixture.
+- ⚠ `skills/enforce/adapters/lint-core.mjs` a une copie dans `skills/enforce/fixtures/dual-host/design/lint/lint-core.mjs` que `design-behave.mjs` exige identique octet pour octet : toute édition de la source (même un commentaire) se recopie dans la fixture.
 - `evals/scenarios.json` ne teste que le **routage** (`prompt → expect_action`) : un refus de gel ou de gate n'y est pas vérifié. Ces comportements sont gardés par présence de chaînes dans `tools/eval/design-behave.mjs` — une garde s'y prouve en la cassant (mutation) avant de la croire.
 - `pnpm test` est une chaîne `&&` : un eval rouge (ex. `debrief-contract`, déjà rouge sur `main` au 2026-09-24) masque tous les suivants, `design-behave` compris. Lancer les scripts restants un par un avant de conclure.
 
 Plan complet : `aidd_docs/tasks/2026_09/2026_09_24_fidelity-gate-frozen-by-adjust/`.
+
+## Corrections review + audit (2.18.0, 2026-09-24)
+
+- **Preuve des suites design : `pnpm test:design`** (pytest measure/wireframes/a11y/tools, `design-behave`, `design-harness`, selftest wireframes), en tête de `pnpm test`, et job CI `design` (Python 3.13, Chromium Playwright, `WIREFRAMES_CHROMIUM`). Sans `WIREFRAMES_CHROMIUM`, `design-wireframes` ne revendique pas Chromium : le rendu se prouve par `pytest adapters/wireframes/tests` avec la variable posée.
+- Trio copié seul (`run-gates.py`, `status.py`, `migrate-contract.py`) : jamais d'import de `tools/_common.py`, `design-behave` le refuse. Les copies dual-host de `run-gates.py` et `lint-core.mjs` restent identiques octet pour octet.
+- `run-gates.py` lance un seul `node` pour toutes les cibles markup (par lots au-delà de 30 000 caractères de ligne de commande, limite Windows 32 767).
+- Risque résiduel assumé : `node:vm` de `harness-runtime-check` n'est pas une frontière de sécurité.
+- **Constats écartés — ne pas les rouvrir au prochain audit sans fait nouveau** :
+  - `lint-core.mjs` reste dans `skills/enforce/adapters/` et `manifest-schema.md` dans `skills/adjust/references/` : chemins publiés, cités par les design-bridge `sc-css` / `sc-js` / `sc-php`.
+  - Helpers locaux dupliqués dans le trio copié seul : prix de la portabilité de `design/lint/`.
+  - Pas de préfixe imposé à `auth_hook_env` : `WP_EDITOR_AUTH_HOOK` ne le respecterait pas, et l'environnement vient du shell de confiance.
+  - Hors plan, à planifier à part : WordPress sorti de `measure` vers `sc-php`, découpage de `measure.py` / `harness.py` / `02-freeze.md`, module unique de chargement du contrat ; montée Playwright / numpy, lockfile avec hashes, fusion `screenshot.py` → `measure.py` (changer Playwright change le Chromium qui rend).
+
+Plan complet : `aidd_docs/tasks/2026_09/2026_09_24_design-review-audit-fixes/`.

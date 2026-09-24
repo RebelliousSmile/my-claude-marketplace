@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "per-target-props"
@@ -28,6 +30,7 @@ def _config(tmp_path: Path, **overrides) -> Path:
     return path
 
 
+@pytest.mark.browser
 def test_target_props_replace_global_list(tmp_path):
     out = tmp_path / "report.json"
     result = _run(_config(tmp_path), out)
@@ -42,6 +45,7 @@ def test_target_props_replace_global_list(tmp_path):
     assert title == {"fontSize", "color"}
 
 
+@pytest.mark.browser
 def test_mode_a_extracts_target_props_on_mockup_side(tmp_path):
     out = tmp_path / "report.json"
     result = _run(_config(tmp_path, implementation_url=None), out, "--mode", "A", "--side", "mockup")
@@ -59,3 +63,58 @@ def test_target_without_any_props_exits_2(tmp_path):
     assert "Title" in result.stderr
     assert "Grid · root" not in result.stderr
     assert not out.exists()
+
+
+@pytest.mark.browser
+@pytest.mark.parametrize("mockup, implementation, match", [
+    ("rgb(0, 0, 0)", "rgb(255, 0, 0)", False),
+    # Two spellings of one colour: a string comparison would report a gap.
+    ("color(srgb 0 0 0 / 0.5)", "rgba(0, 0, 0, 0.5)", True),
+])
+def test_border_left_colour_is_measured_as_a_colour(tmp_path, mockup, implementation, match):
+    page = ('<!doctype html><html><head><style>.box {{ border-left: 2px solid {}; }}</style>'
+            '</head><body><h1>T</h1><div class="box">x</div></body></html>')
+    (tmp_path / "mockup.html").write_text(page.format(mockup), encoding="utf-8")
+    (tmp_path / "impl.html").write_text(page.format(implementation), encoding="utf-8")
+    config = tmp_path / "config.json"
+    config.write_text(json.dumps({
+        "reference_url": "mockup.html", "reference_page": None, "implementation_url": "impl.html",
+        "breakpoints": [{"name": "desktop", "width": 1280, "height": 800}],
+        "props": ["borderLeftColor"],
+        "targets": [{"name": "Box", "mockup": ".box", "implementation": ".box"}],
+        "headings_sel": {"mockup": "h1", "implementation": "h1"},
+    }), encoding="utf-8")
+    out = tmp_path / "report.json"
+    result = _run(config, out)
+    assert result.returncode in (0, 1), result.stderr
+    rows = json.loads(out.read_text(encoding="utf-8"))["breakpoints"]["desktop"]
+    row = next(r for r in rows if r["element"] == "Box" and r["prop"] == "borderLeftColor")
+    assert row["match"] is match
+
+
+@pytest.mark.browser
+def test_transition_started_by_a_resize_is_measured_once_settled(tmp_path):
+    # The implementation page is loaded once and resized per breakpoint: a media query that flips
+    # a transitioned colour must be read at its end value, not mid-transition.
+    (tmp_path / "mockup.html").write_text(
+        '<!doctype html><html><body><h1 class="t" style="color: rgb(0, 0, 0)">T</h1></body></html>',
+        encoding="utf-8")
+    (tmp_path / "impl.html").write_text(
+        '<!doctype html><html><head><style>.t { color: rgb(0, 0, 0); transition: color .4s linear; }'
+        '@media (max-width: 400px) { .t { color: rgb(255, 0, 0); } }</style></head>'
+        '<body><h1 class="t">T</h1></body></html>', encoding="utf-8")
+    config = tmp_path / "config.json"
+    config.write_text(json.dumps({
+        "reference_url": "mockup.html", "reference_page": None, "implementation_url": "impl.html",
+        "breakpoints": [{"name": "mobile", "width": 375, "height": 800},
+                        {"name": "desktop", "width": 1280, "height": 800}],
+        "props": ["color"],
+        "targets": [{"name": "Title", "mockup": ".t", "implementation": ".t"}],
+        "headings_sel": {"mockup": "h1", "implementation": "h1"},
+    }), encoding="utf-8")
+    out = tmp_path / "report.json"
+    result = _run(config, out)
+    assert result.returncode == 0, result.stderr
+    rows = json.loads(out.read_text(encoding="utf-8"))["breakpoints"]
+    assert rows["mobile"][0]["implementation"] == "rgb(255, 0, 0)"
+    assert rows["desktop"][0]["implementation"] == "rgb(0, 0, 0)"

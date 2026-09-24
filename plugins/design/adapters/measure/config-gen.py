@@ -146,8 +146,47 @@ class GateError(ValueError):
     """Entrée invalide, ou gate incomplet pour la page demandée (exit 2)."""
 
 
+def _read_object(path: Path, name: str) -> dict:
+    """Charge un artefact JSON dont la racine doit être un objet ; sinon GateError (exit 2)."""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise GateError(f"{name} : la racine doit être un objet JSON")
+    return data
+
+
+def _require_objects(mapping, where: str, nullable: bool = False) -> dict:
+    """`mapping` est un objet dont chaque valeur est un objet (ou null si `nullable`)."""
+    if not isinstance(mapping, dict):
+        raise GateError(f"{where} : objet attendu")
+    for key, value in mapping.items():
+        if not (isinstance(value, dict) or (nullable and value is None)):
+            raise GateError(f"{where}.{key} : objet attendu")
+    return mapping
+
+
+def _check_shape(components: dict, oracle: dict) -> None:
+    """Valide la forme des objets que la dérivation parcourt, avant de les parcourir."""
+    for name, comp in _require_objects(components.get("components", {}),
+                                       "components.json § components").items():
+        if not isinstance(comp.get("elements", {}), dict):
+            raise GateError(f"components.json § components.{name}.elements : objet attendu")
+    for name, hint in _require_objects(oracle.get("components", {}),
+                                       "oracle.json § components").items():
+        _require_objects(hint.get("elements", {}), f"oracle.json § components.{name}.elements")
+    raw_pages = oracle.get("pages")
+    pages = _require_objects({} if raw_pages is None else raw_pages, "oracle.json § pages",
+                             nullable=True)
+    for page, page_def in pages.items():
+        _require_objects((page_def or {}).get("components", {}),
+                         f"oracle.json § pages.{page}.components", nullable=True)
+
+
 def _is_skip(sel) -> bool:
     return isinstance(sel, dict) and bool(sel.get("skip"))
+
+
+def _is_selector(sel) -> bool:
+    return isinstance(sel, str) and bool(sel.strip())
 
 
 def _page_components(oracle: dict, page: str) -> dict:
@@ -155,7 +194,10 @@ def _page_components(oracle: dict, page: str) -> dict:
     if page not in pages:
         raise GateError(f"page '{page}' absente de oracle.json § pages "
                         f"(pages connues : {', '.join(sorted(pages)) or 'aucune'})")
-    return pages[page].get("components", {})
+    placed = (pages[page] or {}).get("components", {})
+    if not placed:
+        raise GateError(f"page '{page}' sans composant dans oracle.json § pages (lancer --check)")
+    return placed
 
 
 def _derive_targets_and_collections(
@@ -184,7 +226,7 @@ def _derive_targets_and_collections(
         def mockup_of(frozen, impl_sel: str, what: str) -> str:
             if placed is None:
                 return impl_sel
-            if not isinstance(frozen, str) or not frozen.strip():
+            if not _is_selector(frozen):
                 raise GateError(f"{comp_name} / {what} : aucun sélecteur maquette (lancer --check)")
             return frozen
 
@@ -259,7 +301,7 @@ def check_gate(components: dict, oracle: dict) -> dict:
                 continue
             placed_anywhere.add(comp_name)
             entry = entry or {}
-            if not isinstance(entry.get("root"), str) or not entry["root"].strip():
+            if not _is_selector(entry.get("root")):
                 defects.append(f"{where} / root : aucun sélecteur maquette")
             declared = all_comps[comp_name].get("elements", {})
             frozen = entry.get("elements", {})
@@ -268,14 +310,14 @@ def check_gate(components: dict, oracle: dict) -> dict:
                 if _is_skip(sel):
                     excluded.append({"page": page, "component": comp_name, "element": label,
                                      "reason": sel["skip"]})
-                elif not isinstance(sel, str) or not sel.strip():
+                elif not _is_selector(sel):
                     defects.append(f"{where} / {label} : aucun sélecteur maquette ni skip")
             defects += [f"{where} / {label} : élément inconnu de components.json"
                         for label in frozen if label not in declared]
             coll_names = [c.get("name") for c in hints.get(comp_name, {}).get("collections", [])]
             frozen_colls = entry.get("collections", {})
             defects += [f"{where} / collection {name} : aucun sélecteur maquette"
-                        for name in coll_names if not frozen_colls.get(name)]
+                        for name in coll_names if not _is_selector(frozen_colls.get(name))]
             defects += [f"{where} / collection {name} : collection inconnue de oracle.json"
                         for name in frozen_colls if name not in coll_names]
     unplaced = [c for c in all_comps if c not in placed_anywhere]
@@ -338,14 +380,18 @@ def _derive_ownership_targets(components: dict, oracle_hints: dict,
     found: dict[tuple[str, str, str], dict] = {}
     seen_classes: set[str] = set()
     sources = [Path(path).name for path in stylesheets]
+    # A selector's classes are read once, then intersected with the contract's. A class counts
+    # only as a whole token after a dot that follows no word character (`a.btn` is not `.btn`),
+    # and matches keep the contract's order so the targets come out in a stable order.
+    rank = {cls: index for index, cls in enumerate(classes)}
     for stylesheet in stylesheets:
         text = Path(stylesheet).read_text(encoding="utf-8")
         for selector_group, body in _css_rules(text):
             declared = _declarations(body)
             for selector in (part.strip() for part in selector_group.split(",")):
-                for cls, (label, hinted) in classes.items():
-                    if not re.search(rf"(?<![\w-])\.{re.escape(cls)}(?![\w-])", selector):
-                        continue
+                hits = set(re.findall(r"(?<![\w-])\.([\w-]+)", selector)) & rank.keys()
+                for cls in sorted(hits, key=rank.__getitem__):
+                    label, hinted = classes[cls]
                     seen_classes.add(cls)
                     props = [prop for prop in declared if not hinted or prop in hinted]
                     for prop in props:
@@ -360,8 +406,6 @@ def _derive_ownership_targets(components: dict, oracle_hints: dict,
     # alternatives into one query-selector list so an absent variant does not become a false gap.
     merged: dict[tuple[str, str], dict] = {}
     for row in found.values():
-        if not row.get("prop"):
-            continue
         key = (row["class"], row["prop"])
         target = merged.setdefault(key, {**row, "selector": "", "sources": []})
         selectors = [part.strip() for part in target["selector"].split(",") if part.strip()]
@@ -385,7 +429,7 @@ def _load_oracle(components_path: str, oracle_path: str | None) -> dict:
     # les targets se dérivent de la seule anatomie, sans check_text ni collections.
     oracle_file = Path(oracle_path) if oracle_path else Path(components_path).with_name("oracle.json")
     if oracle_file.is_file():
-        return json.loads(oracle_file.read_text(encoding="utf-8"))
+        return _read_object(oracle_file, "oracle.json")
     return {}
 
 
@@ -399,9 +443,10 @@ def generate(
     ownership_stylesheets: list[str] | None = None,
     editor_url: str | None = None,
 ) -> dict:
-    components = json.loads(Path(components_path).read_text(encoding="utf-8"))
-    tokens = json.loads(Path(tokens_path).read_text(encoding="utf-8"))
+    components = _read_object(components_path, "components.json")
+    tokens = _read_object(tokens_path, "tokens.json")
     oracle = _load_oracle(components_path, oracle_path)
+    _check_shape(components, oracle)
     oracle_hints: dict = oracle.get("components", {})
 
     # Gate figé : la page choisit les composants et porte le sélecteur maquette de chacun.
@@ -453,8 +498,10 @@ def generate(
 
 
 def run_check(components_path: str, oracle_path: str | None) -> int:
-    components = json.loads(Path(components_path).read_text(encoding="utf-8"))
-    report = check_gate(components, _load_oracle(components_path, oracle_path))
+    components = _read_object(components_path, "components.json")
+    oracle = _load_oracle(components_path, oracle_path)
+    _check_shape(components, oracle)
+    report = check_gate(components, oracle)
     for d in report["defects"]:
         print(f"DEFECT   {d}")
     for e in report["excluded"]:
@@ -505,7 +552,7 @@ def main():
         cfg = generate(args.components, args.tokens,
                        args.reference_url, args.implementation_url, args.page, args.oracle,
                        args.ownership_stylesheet, args.editor_url)
-    except (GateError, OSError, json.JSONDecodeError) as exc:
+    except (OSError, ValueError) as exc:
         print(f"config-gen error: {exc}", file=sys.stderr)
         sys.exit(2)
 

@@ -2,7 +2,7 @@
 name: harness
 description: Generates or normalizes a standalone, measurable HTML mockup with controllable pages and viewports. Use when the user wants to scaffold, import, repair, or prepare a visual reference for manual review or fidelity measurement.
 author: François-Xavier Guillois
-version: 2.13.1
+version: 2.13.2
 vibe_version: ">=1.0.0"
 permissions:
   - files

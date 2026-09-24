@@ -13,13 +13,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "_shared"))
 
-from measure import (  # noqa: E402
-    COLOR_PROPS,
-    _color_match,
-    _normalize_color,
-    _split_top_level,
-)
+from colors import normalize_color as _normalize_color, split_top_level as _split_top_level  # noqa: E402
+from measure import COLOR_PROPS, _color_match  # noqa: E402
 
 
 # --- the pair that motivated the change -------------------------------------------------------
@@ -101,10 +98,11 @@ def test_only_color_props_are_normalized():
         assert _color_match(p, a, b) is False, p
 
 
-def test_allow_list_membership_is_exactly_the_six_declared():
+def test_allow_list_membership_is_exactly_the_declared_colour_properties():
     assert COLOR_PROPS == frozenset({
-        "color", "backgroundColor", "borderColor", "borderTopColor",
-        "outlineColor", "textDecorationColor",
+        "color", "backgroundColor", "borderColor", "borderTopColor", "borderRightColor",
+        "borderBottomColor", "borderLeftColor", "outlineColor", "textDecorationColor",
+        "fill", "stroke",
     })
 
 

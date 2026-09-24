@@ -48,24 +48,7 @@ Construire les artefacts à partir des composants résolus dans le brief d'arbit
 
 ### Structure minimale requise
 
-`design/components.json` — anatomie seule (schéma détaillé : `${DESIGN_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md`) :
-
-```json
-{
-  "$schema": "design/references/contract-schema#components",
-  "components": {
-    "<canonical-name>": {
-      "base": "<BEM-block>",
-      "elements": { },
-      "modifiers": { },
-      "backgrounds": ["<token.path>"],
-      "foregrounds": ["<token.path>"],
-      "a11y": { "role": "<ARIA-role>", "requires": [] },
-      "states": { "disabled": <bool>, "error": <bool>, "focus": <bool> }
-    }
-  }
-}
-```
+`design/components.json` — anatomie seule, `.states` compris. Schéma, champs et exemples : `${DESIGN_PLUGIN_ROOT}/skills/adjust/references/manifest-schema.md`, seul exemplaire.
 
 `design/policies.json` — ce qui est transverse au contrat :
 
@@ -79,7 +62,7 @@ Construire les artefacts à partir des composants résolus dans le brief d'arbit
 }
 ```
 
-`design/oracle.json` — cibles de mesure et gate de fidélité figé par page, écrit quand la référence est mesurable (§ Prouver le gate de fidélité) — même forme que `references/contract-schema.md § oracle.json` :
+`design/oracle.json` — cibles de mesure et gate de fidélité figé par page, écrit quand la référence est mesurable (§ Prouver le gate de fidélité) — seul exemplaire du schéma ; ses champs sont décrits dans `${DESIGN_PLUGIN_ROOT}/references/contract-schema.md § oracle.json` :
 
 ```json
 {
@@ -265,10 +248,10 @@ Jamais de glob ou de jeu de règles codé en dur : les deux se dérivent du cham
 
 ### Oracle de scan : `lint-core.mjs`, réutilisé tel quel
 
-Aucun nouveau scanner n'est écrit : `enforce/adapters/lint-core.mjs` est invoqué comme oracle, une fois par fichier du glob résolu ci-dessus, contre le contrat tout juste écrit :
+Aucun nouveau scanner n'est écrit : `enforce/adapters/lint-core.mjs` est invoqué comme oracle sur les fichiers du glob résolu ci-dessus, contre le contrat tout juste écrit ; il en prend plusieurs par appel et rend un verdict par fichier :
 
 ```
-node lint-core.mjs <fichier-du-glob> --contract <dossier-du-contrat-tout-juste-figé>
+node lint-core.mjs <fichiers-du-glob>… --contract <dossier-du-contrat-tout-juste-figé>
 ```
 
 Rule 1 (`class-vocab`, mode `bem`) et Rule 4 (`allowed colour namespaces`, mode `utility-first`) portent déjà exactement la direction **code → manifeste** ci-dessous : un `ERROR` remonté par `lint-core.mjs` sur un fichier du glob EST la divergence à traiter ici. Pour la direction **manifeste → code**, invoquer le mode additif `--report-unused` (voir `enforce/adapters/lint-core.mjs`) sur chaque fichier du glob ; une entrée n'est réellement "inutilisée dans le projet" que si **tous** les fichiers scannés la rapportent `UNUSED` — un seul fichier ne prouve que son absence locale.

@@ -13,13 +13,13 @@ in UTF-8 (avoids console encoding loss); a short summary is printed to stdout.
 
 Colour normalisation (introduced in design 2.7.0 — this file carries no version constant of its
 own; its version is the plugin's, in .claude-plugin/plugin.json). Properties listed in COLOR_PROPS
-are compared through _normalize_color(), which folds a computed colour to a canonical
+are compared through colors.normalize_color(), which folds a computed colour to a canonical
 `rgba(r, g, b, a)` tuple (channels rounded to 0-255, alpha to 4 decimals) before the equality test.
 Without it the oracle reported `rgba(255, 255, 255, 0.7)` and `color(srgb 1 1 1 / 0.7)` — the same
 colour, serialised two ways by Chromium depending on whether the author wrote rgba() or
 color-mix(in srgb, …) — as a style difference. This is a canonical form, NOT a tolerance: two
 genuinely different colours still differ, and a value that fails to parse falls back to raw string
-equality rather than being treated as a match. Only sRGB folds; see _normalize_one's docstring for
+equality rather than being treated as a match. Only sRGB folds; see colors.normalize_one's docstring for
 the colour spaces deliberately left out.
 
 --ledger-registry is REQUIRED — the oracle asserts conformity from the per-property comparison
@@ -153,7 +153,15 @@ from datetime import date, datetime, timezone
 from difflib import SequenceMatcher
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "_shared"))
+from colors import normalize_color  # noqa: E402
+
+# Browser waits, in ms. NAV bounds a navigation or load; the settles let late layout land.
+NAV_TIMEOUT_MS = 20000
+SETTLE_MS = 300          # screenshot.py: fixed pause before a capture
+SETTLE_TIMEOUT_MS = 5000  # cap on the _SETTLED wait; past it the page is measured as it stands
+MOCKUP_SETTLE_MS = 500   # the SPA mockup re-renders on setViewport/setPage: no signal to wait on
+HOOK_SETTLE_MS = 750     # a hook off the login page may navigate: no signal says whether it will
 
 # JS injected to read getComputedStyle for each target on the current page.
 # When check_text is true, also captures __text (normalised textContent) for P7 text-parity.
@@ -195,20 +203,10 @@ _COLLECT = """(args) => {
 # match the measured node, and applies the author-cascade dimensions relevant to a DS/platform
 # conflict (importance, inline style, specificity, then source order). The returned winner is
 # classified in Python so the same provenance rule is unit-testable without Chromium.
-_OWNERSHIP = """(target) => {
-  const el = document.querySelector(target.selector);
-  if (!el) {
-    const nearby = target.diagnostic_selector ? Array.from(document.querySelectorAll(target.diagnostic_selector))
-      .slice(0, 5).map(node => {
-        const chain = []; let current = node;
-        for (let i = 0; current && i < 5; i++, current = current.parentElement)
-          chain.push({tag: current.tagName.toLowerCase(), classes: Array.from(current.classList || [])});
-        return chain;
-      }) : undefined;
-    return {unrealized: `missing element: ${target.selector}`, nearby};
-  }
-  const prop = target.prop;
-  const candidates = [];
+_OWNERSHIP = """(input) => {
+  // One target or a list of them: the author rules are walked once, then matched per target.
+  const many = Array.isArray(input);
+  const rules = [];
   let order = 0;
   let layerOrder = 0;
 
@@ -244,24 +242,11 @@ _OWNERSHIP = """(target) => {
     return [0, ids, classes, types + pseudoElements];
   }
 
-  function visit(rules, source, layer = null) {
-    for (const rule of Array.from(rules || [])) {
+  function visit(list, source, layer = null) {
+    for (const rule of Array.from(list || [])) {
       order += 1;
       if (rule.type === 1 && rule.selectorText) {
-        const matched = splitSelectors(rule.selectorText).filter(s => {
-          try { return el.matches(s); } catch (_) { return false; }
-        });
-        const value = rule.style.getPropertyValue(prop);
-        if (matched.length && value) {
-          matched.sort((a, b) => {
-            const sa = specificity(a), sb = specificity(b);
-            for (let i = 0; i < 4; i++) if (sa[i] !== sb[i]) return sb[i] - sa[i];
-            return 0;
-          });
-          candidates.push({source, selector: matched[0], value: value.trim(),
-            important: rule.style.getPropertyPriority(prop) === 'important',
-            specificity: specificity(matched[0]), order, layer});
-        }
+        rules.push({rule, source, order, layer, selectors: splitSelectors(rule.selectorText)});
       } else if (rule.styleSheet && rule.styleSheet.cssRules) {
         visit(rule.styleSheet.cssRules, rule.styleSheet.href || source, layer);
       } else if (rule.cssRules) {
@@ -277,26 +262,68 @@ _OWNERSHIP = """(target) => {
     const source = sheet.href || `inline:${order}`;
     try { visit(sheet.cssRules, source); } catch (_) { /* cross-origin sheet: not inspectable */ }
   }
-  const inline = el.style.getPropertyValue(prop);
-  if (inline) candidates.push({source: 'inline-style', selector: '<inline>', value: inline.trim(),
-    important: el.style.getPropertyPriority(prop) === 'important', specificity: [1, 0, 0, 0],
-    order: ++order, layer: null, inline: true});
-  if (!candidates.length) return {unrealized: `no inspectable declaration for ${prop}`,
-    computed: getComputedStyle(el).getPropertyValue(prop).trim()};
-  candidates.sort((a, b) => {
-    if (a.important !== b.important) return a.important ? 1 : -1;
-    if (a.inline !== b.inline && (a.inline || b.inline)) return a.inline ? 1 : -1;
-    const aLayered = a.layer !== null, bLayered = b.layer !== null;
-    if (aLayered !== bLayered) {
-      if (a.important) return aLayered ? 1 : -1;
-      return aLayered ? -1 : 1;
+
+  function probe(target) {
+    const el = document.querySelector(target.selector);
+    if (!el) {
+      const nearby = target.diagnostic_selector ? Array.from(document.querySelectorAll(target.diagnostic_selector))
+        .slice(0, 5).map(node => {
+          const chain = []; let current = node;
+          for (let i = 0; current && i < 5; i++, current = current.parentElement)
+            chain.push({tag: current.tagName.toLowerCase(), classes: Array.from(current.classList || [])});
+          return chain;
+        }) : undefined;
+      return {unrealized: `missing element: ${target.selector}`, nearby};
     }
-    if (aLayered && a.layer !== b.layer) return a.important ? b.layer - a.layer : a.layer - b.layer;
-    for (let i = 0; i < 4; i++) if (a.specificity[i] !== b.specificity[i]) return a.specificity[i] - b.specificity[i];
-    return a.order - b.order;
-  });
-  return {computed: getComputedStyle(el).getPropertyValue(prop).trim(), winner: candidates[candidates.length - 1]};
+    const prop = target.prop;
+    const candidates = [];
+    for (const entry of rules) {
+      const value = entry.rule.style.getPropertyValue(prop);
+      if (!value) continue;
+      const matched = entry.selectors.filter(s => {
+        try { return el.matches(s); } catch (_) { return false; }
+      });
+      if (!matched.length) continue;
+      matched.sort((a, b) => {
+        const sa = specificity(a), sb = specificity(b);
+        for (let i = 0; i < 4; i++) if (sa[i] !== sb[i]) return sb[i] - sa[i];
+        return 0;
+      });
+      candidates.push({source: entry.source, selector: matched[0], value: value.trim(),
+        important: entry.rule.style.getPropertyPriority(prop) === 'important',
+        specificity: specificity(matched[0]), order: entry.order, layer: entry.layer});
+    }
+    const inline = el.style.getPropertyValue(prop);
+    if (inline) candidates.push({source: 'inline-style', selector: '<inline>', value: inline.trim(),
+      important: el.style.getPropertyPriority(prop) === 'important', specificity: [1, 0, 0, 0],
+      order: order + 1, layer: null, inline: true});
+    if (!candidates.length) return {unrealized: `no inspectable declaration for ${prop}`,
+      computed: getComputedStyle(el).getPropertyValue(prop).trim()};
+    candidates.sort((a, b) => {
+      if (a.important !== b.important) return a.important ? 1 : -1;
+      if (a.inline !== b.inline && (a.inline || b.inline)) return a.inline ? 1 : -1;
+      const aLayered = a.layer !== null, bLayered = b.layer !== null;
+      if (aLayered !== bLayered) {
+        if (a.important) return aLayered ? 1 : -1;
+        return aLayered ? -1 : 1;
+      }
+      if (aLayered && a.layer !== b.layer) return a.important ? b.layer - a.layer : a.layer - b.layer;
+      for (let i = 0; i < 4; i++) if (a.specificity[i] !== b.specificity[i]) return a.specificity[i] - b.specificity[i];
+      return a.order - b.order;
+    });
+    return {computed: getComputedStyle(el).getPropertyValue(prop).trim(), winner: candidates[candidates.length - 1]};
+  }
+
+  const results = (many ? input : [input]).map(probe);
+  return many ? results : results[0];
 }"""
+
+# Settled once web fonts are in and no finite animation or transition is still running; an
+# infinite one never ends, so it does not hold the measure back. getAnimations() flushes pending
+# style first, so a transition a viewport change just started is already listed.
+_SETTLED = """() => document.fonts.status === 'loaded'
+  && document.getAnimations().every(a => a.playState !== 'running'
+       || !a.effect || a.effect.getComputedTiming().endTime === Infinity)"""
 
 # JS injected to isolate the active .preview-frame by detaching non-active ones (P3).
 # Each breakpoint opens a fresh page, so detaching is safe and permanent for this measurement.
@@ -310,6 +337,18 @@ _ISOLATE_FRAME = """(v) => {
 }"""
 
 
+def _settle(page) -> None:
+    """Wait for _SETTLED, bounded: a page that never settles is measured as it stands."""
+    try:
+        page.wait_for_function(_SETTLED, timeout=SETTLE_TIMEOUT_MS)
+    except Exception:  # playwright TimeoutError; the pause was a best effort before too
+        pass
+
+
+def _viewport(bp: dict) -> dict:
+    return {"width": bp["width"], "height": bp["height"]}
+
+
 def _prepare_mockup(page, page_key, mockup_viewport):
     """Drive the SPA mockup: set its viewport mode + page, hide preview chrome,
     then isolate the active .preview-frame so querySelector targets the right DOM."""
@@ -320,13 +359,45 @@ def _prepare_mockup(page, page_key, mockup_viewport):
     page.evaluate("() => { const b = document.querySelector('.preview-bar'); if (b) b.style.display = 'none'; }")
     # Detach non-active frames so document.querySelector hits the right one (P3).
     page.evaluate(_ISOLATE_FRAME, mockup_viewport or "desktop")
-    page.wait_for_timeout(400)
+    page.wait_for_timeout(MOCKUP_SETTLE_MS)
 
 
 def _target_props(target: dict, props: list) -> list:
     """Props measured on one target: its own list replaces the global one; absent, the global
     list applies. Mirrors contract-schema § oracle.json (element props override the default)."""
     return target.get("props") or props
+
+
+class ConfigError(Exception):
+    """A config the oracle cannot run: an input error (exit 2), never a violation (exit 1)."""
+
+
+def load_config(path: str | Path) -> dict:
+    """Read and shape-check a measure config before any browser starts.
+
+    Shared with screenshot.py: one vocabulary, one validation, one exit code for a bad input.
+    """
+    try:
+        cfg = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ConfigError(f"config {path}: unreadable - {exc}") from exc
+    if not isinstance(cfg, dict):
+        raise ConfigError(f"config {path}: the root must be a JSON object")
+    targets = cfg.get("targets")
+    if not isinstance(targets, list) or not targets:
+        raise ConfigError(f"config {path}: 'targets' must be a non-empty list")
+    for i, target in enumerate(targets):
+        if not isinstance(target, dict) or not isinstance(target.get("name"), str):
+            raise ConfigError(f"config {path}: targets[{i}] must be an object with a string 'name'")
+    breakpoints = cfg.get("breakpoints")
+    if not isinstance(breakpoints, list) or not breakpoints:
+        raise ConfigError(f"config {path}: 'breakpoints' must be a non-empty list")
+    for i, bp in enumerate(breakpoints):
+        if not (isinstance(bp, dict) and isinstance(bp.get("name"), str)
+                and all(isinstance(bp.get(k), int) and bp[k] > 0 for k in ("width", "height"))):
+            raise ConfigError(f"config {path}: breakpoints[{i}] needs a string 'name' and "
+                              "positive integer 'width' and 'height'")
+    return cfg
 
 
 def _targets_without_props(cfg: dict) -> list:
@@ -415,162 +486,16 @@ def _resolve_url(raw: str, base_dir: Path) -> str:
 # Properties whose computed value is a colour, and only those. Everything else keeps raw string
 # equality: normalising a non-colour property would corrupt the comparison it is meant to protect.
 COLOR_PROPS = frozenset({
-    "color", "backgroundColor", "borderColor", "borderTopColor",
-    "outlineColor", "textDecorationColor",
+    "color", "backgroundColor", "borderColor", "borderTopColor", "borderRightColor",
+    "borderBottomColor", "borderLeftColor", "outlineColor", "textDecorationColor", "fill", "stroke",
 })
-
-_NAMED_COLORS = {
-    "transparent": (0, 0, 0, 0.0),
-    "black": (0, 0, 0, 1.0),
-    "white": (255, 255, 255, 1.0),
-}
-
-_RE_FUNC = re.compile(r"^(rgba?|color)\((.*)\)$", re.IGNORECASE | re.DOTALL)
-_RE_HEX = re.compile(r"^#([0-9a-f]{3,8})$", re.IGNORECASE)
-
-
-def _split_top_level(value: str) -> list[str]:
-    """Split a computed value on top-level whitespace, keeping parenthesised groups intact.
-
-    `borderColor` serialises as a shorthand of up to four colours, and each of those may itself be
-    `rgba(255, 255, 255, 0.7)` — full of spaces and commas. A naive split would shred it.
-    """
-    out, depth, cur = [], 0, []
-    for ch in value:
-        if ch == "(":
-            depth += 1
-        elif ch == ")":
-            depth = max(0, depth - 1)
-        if depth == 0 and ch.isspace():
-            if cur:
-                out.append("".join(cur))
-                cur = []
-            continue
-        cur.append(ch)
-    if cur:
-        out.append("".join(cur))
-    return out
-
-
-def _chan(tok: str, scale: float) -> float | None:
-    """One colour channel: a number, or a percentage of `scale`. None if it is neither."""
-    tok = tok.strip()
-    if not tok:
-        return None
-    try:
-        if tok.endswith("%"):
-            return float(tok[:-1]) * scale / 100.0
-        return float(tok)
-    except ValueError:
-        return None
-
-
-def _alpha(tok: str) -> float | None:
-    """Alpha as a 0-1 float; accepts `0.7` and `70%`."""
-    a = _chan(tok, 1.0)
-    return None if a is None else max(0.0, min(1.0, a))
-
-
-def _normalize_one(value: str) -> str | None:
-    """Canonicalise a single colour to `rgba(r, g, b, a)`; None when unparseable.
-
-    Handles `rgb()`/`rgba()` (comma or space separated), `color(srgb r g b / a)`, `#rgb`/`#rgba`/
-    `#rrggbb`/`#rrggbbaa`, and the `transparent`/`currentcolor` keywords. Channels are rounded to
-    integers 0-255 and alpha to 4 decimals, so this is an exact canonical form and never a
-    tolerance: `#FFFFFF` and `#FFFFEE` normalise to different strings, as do alpha 0.7 and 0.71.
-
-    LIMITATION: only the sRGB space folds. `color(display-p3 …)`, `lab()`, `lch()`, `oklab()`,
-    `oklch()` and `hsl()` are NOT converted — they return None and the caller falls back to string
-    equality, which is a false diff at worst, never a false match. `color-mix()` never reaches here:
-    the browser has already resolved it by the time getComputedStyle reports it (in srgb it
-    serialises as `color(srgb …)`, which is exactly the artefact this function exists to absorb).
-    """
-    v = value.strip()
-    if not v:
-        return None
-    low = v.lower()
-
-    if low == "currentcolor":
-        return "currentcolor"
-    if low in _NAMED_COLORS:
-        r, g, b, a = _NAMED_COLORS[low]
-        return f"rgba({r}, {g}, {b}, {round(a, 4):g})"
-
-    m = _RE_HEX.match(v)
-    if m:
-        h = m.group(1)
-        if len(h) in (3, 4):
-            h = "".join(c * 2 for c in h)
-        if len(h) not in (6, 8):
-            return None
-        r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
-        a = int(h[6:8], 16) / 255.0 if len(h) == 8 else 1.0
-        return f"rgba({r}, {g}, {b}, {round(a, 4):g})"
-
-    m = _RE_FUNC.match(v)
-    if not m:
-        return None
-    fn, body = m.group(1).lower(), m.group(2)
-
-    # Alpha is after a slash in the modern syntax, or the 4th comma-separated argument.
-    alpha_tok = None
-    if "/" in body:
-        body, _, alpha_tok = body.partition("/")
-
-    parts = [p for p in re.split(r"[,\s]+", body.strip()) if p]
-
-    if fn == "color":
-        if not parts or parts[0].lower() != "srgb":
-            return None          # display-p3, lab, … deliberately not folded
-        parts = parts[1:]
-        scale = 255.0            # color(srgb …) channels are 0-1
-    else:
-        scale = 255.0
-        if len(parts) == 4 and alpha_tok is None:
-            alpha_tok = parts[3]
-            parts = parts[:3]
-
-    if len(parts) != 3:
-        return None
-
-    chans = []
-    for p in parts:
-        c = _chan(p, 255.0)
-        if c is None:
-            return None
-        # color(srgb …) is 0-1 unless written as a percentage; rgb() is already 0-255.
-        if fn == "color" and not p.strip().endswith("%"):
-            c *= scale
-        chans.append(max(0, min(255, int(round(c)))))
-
-    a = 1.0 if alpha_tok is None else _alpha(alpha_tok)
-    if a is None:
-        return None
-    return f"rgba({chans[0]}, {chans[1]}, {chans[2]}, {round(a, 4):g})"
-
-
-def _normalize_color(value: str) -> str | None:
-    """Canonicalise a whole computed colour value, shorthand included; None when unparseable.
-
-    `borderColor` may carry 1-4 colours. Every component must parse, or the whole value is None and
-    the caller keeps string equality — a value we do not fully understand is never declared a match.
-    """
-    if not isinstance(value, str):
-        return None
-    toks = _split_top_level(value.strip())
-    if not toks:
-        return None
-    normed = [_normalize_one(t) for t in toks]
-    if any(n is None for n in normed):
-        return None
-    return " ".join(normed)
 
 
 def _color_match(prop: str, mockup, implementation) -> bool:
     """Compare one property. Colour-valued properties compare by canonical value, everything else
     by raw string. An unparseable colour falls back to string equality — never to True."""
     if prop in COLOR_PROPS:
-        m, i = _normalize_color(mockup), _normalize_color(implementation)
+        m, i = normalize_color(mockup), normalize_color(implementation)
         if m is not None and i is not None:
             return m == i
     return mockup == implementation
@@ -633,48 +558,52 @@ def _measure_ownership(browser, cfg: dict, base_dir: Path) -> dict:
         state_raw = os.environ.get(state_env, "") if state_env else ""
         hook = os.environ.get(hook_env, "") if hook_env else ""
         requires_auth = bool(surface.get("requires_auth"))
+        storage = None
+        if state_raw:
+            try:
+                storage = json.loads(state_raw)
+            except ValueError:
+                storage = str(Path(state_raw).expanduser())
+        logged_in = False  # a login hook ran: its session is in `storage`, later breakpoints reuse it
         for bp in cfg["breakpoints"]:
             if requires_auth and not state_raw and not hook:
                 measured[surface_name][bp["name"]] = _unrealized_ownership_rows(
                     targets, f"authenticated surface unavailable; set {state_env or hook_env}")
                 continue
-            context_args = {"viewport": {"width": bp["width"], "height": bp["height"]}}
-            if state_raw:
-                try:
-                    context_args["storage_state"] = json.loads(state_raw)
-                except ValueError:
-                    context_args["storage_state"] = str(Path(state_raw).expanduser())
+            context_args = {"viewport": _viewport(bp)}
+            if storage:
+                context_args["storage_state"] = storage
             ctx = browser.new_context(**context_args)
             try:
                 page = ctx.new_page()
-                page.goto(_resolve_url(surface["url"], base_dir), wait_until="networkidle", timeout=20000)
-                if hook:
-                    was_login = "wp-login.php" in page.url
+                page.goto(_resolve_url(surface["url"], base_dir), wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
+                was_login = "wp-login.php" in page.url
+                if hook and (was_login or not logged_in):
                     page.evaluate(hook)
-                    page.wait_for_timeout(750)
                     if was_login:
                         page.wait_for_url(re.compile(r"^(?!.*wp-login\.php).*$"),
-                                          wait_until="load", timeout=20000)
+                                          wait_until="load", timeout=NAV_TIMEOUT_MS)
+                        storage, logged_in = ctx.storage_state(), True
                     else:
-                        page.wait_for_load_state("load", timeout=20000)
-                    page.wait_for_timeout(300)
+                        page.wait_for_timeout(HOOK_SETTLE_MS)
+                        page.wait_for_load_state("load", timeout=NAV_TIMEOUT_MS)
+                _settle(page)
                 scope = page
                 frame_selector = surface.get("frame_selector")
                 if frame_selector:
-                    page.wait_for_selector(frame_selector, state="attached", timeout=20000)
+                    page.wait_for_selector(frame_selector, state="attached", timeout=NAV_TIMEOUT_MS)
                     handle = page.query_selector(frame_selector)
                     scope = handle.content_frame() if handle else None
                 if scope is None:
                     measured[surface_name][bp["name"]] = _unrealized_ownership_rows(
                         targets, f"editor canvas unavailable: {frame_selector}")
                     continue
-                rows = []
-                for target in targets:
-                    if target.get("unrealized_reason") or not target.get("prop"):
-                        rows.extend(_unrealized_ownership_rows([target], "no declared DS property"))
-                        continue
-                    rows.append(_classify_ownership(scope.evaluate(_OWNERSHIP, target), target))
-                measured[surface_name][bp["name"]] = rows
+                probed = [t for t in targets if t.get("prop") and not t.get("unrealized_reason")]
+                results = iter(scope.evaluate(_OWNERSHIP, probed) if probed else [])
+                measured[surface_name][bp["name"]] = [
+                    _classify_ownership(next(results), t) if t in probed
+                    else _unrealized_ownership_rows([t], "no declared DS property")[0]
+                    for t in targets]
             except Exception as exc:  # browser/navigation failures are evidence gaps, not tracebacks
                 measured[surface_name][bp["name"]] = _unrealized_ownership_rows(
                     targets, f"surface measurement failed: {exc}")
@@ -693,35 +622,43 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
     mock_headings = impl_headings = None
     mock_coll = impl_coll = None  # collected once across breakpoints (content is layout-independent)
 
+    from playwright.sync_api import sync_playwright  # lazy: pure helpers stay importable without it
+
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
+        impl_ctx = w = None
         try:
+            if mode == "B" or side == "implementation":
+                # One load for every breakpoint: media queries follow the resize.
+                impl_ctx = browser.new_context(viewport=_viewport(cfg["breakpoints"][0]))
+                w = impl_ctx.new_page()
+                w.goto(_resolve_url(cfg["implementation_url"], base_dir),
+                       wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
             for bp in cfg["breakpoints"]:
-                ctx = browser.new_context(viewport={"width": bp["width"], "height": bp["height"]})
-                try:
-                    mock = impl = None
-                    if mode == "B" or side == "mockup":
+                mock = impl = None
+                if mode == "B" or side == "mockup":
+                    # A fresh load per breakpoint: _ISOLATE_FRAME detaches the other frames for good.
+                    ctx = browser.new_context(viewport=_viewport(bp))
+                    try:
                         m = ctx.new_page()
                         m.goto(_resolve_url(cfg["reference_url"], base_dir),
-                               wait_until="networkidle", timeout=20000)
+                               wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
                         _prepare_mockup(m, cfg.get("reference_page"), bp.get("mockup_viewport"))
                         mock = _grab(m, targets, props, "mockup", check_text)
                         if mock_headings is None:
                             mock_headings = _headings(m, hsel.get("mockup", "h1, h2"))
                         if collections and mock_coll is None:
                             mock_coll = _collect(m, collections, "mockup")
-                    if mode == "B" or side == "implementation":
-                        w = ctx.new_page()
-                        w.goto(_resolve_url(cfg["implementation_url"], base_dir),
-                               wait_until="networkidle", timeout=20000)
-                        w.wait_for_timeout(300)
-                        impl = _grab(w, targets, props, "implementation", check_text)
-                        if impl_headings is None:
-                            impl_headings = _headings(w, hsel.get("implementation", "h1, h2"))
-                        if collections and impl_coll is None:
-                            impl_coll = _collect(w, collections, "implementation")
-                finally:
-                    ctx.close()
+                    finally:
+                        ctx.close()
+                if w is not None:
+                    w.set_viewport_size(_viewport(bp))
+                    _settle(w)
+                    impl = _grab(w, targets, props, "implementation", check_text)
+                    if impl_headings is None:
+                        impl_headings = _headings(w, hsel.get("implementation", "h1, h2"))
+                    if collections and impl_coll is None:
+                        impl_coll = _collect(w, collections, "implementation")
 
                 rows = []
                 for t in targets:
@@ -754,6 +691,8 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
             if mode == "B" and cfg.get("ownership"):
                 report["ownership"] = _measure_ownership(browser, cfg, base_dir)
         finally:
+            if impl_ctx is not None:
+                impl_ctx.close()
             browser.close()
 
     if mode == "B":
@@ -915,7 +854,6 @@ def _coverage(impl_headings: list, targets: list, ack) -> dict:
     if not under or ack_sections:
         cov["ok"] = True
         if ack_legacy:
-            cov["ok"] = True
             cov["warning"] = ("coverage_ack: upgrade to structured form "
                               '{"sections":[...],"reason":"..."} — bare true accepted but opaque')
     else:
@@ -1055,7 +993,11 @@ def main():
                          "with an expected value forces verdict=OPEN.")
     args = ap.parse_args()
 
-    cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    try:
+        cfg = load_config(args.config)
+    except ConfigError as exc:
+        print(f"config error: {exc}", file=sys.stderr)
+        sys.exit(2)
     unmeasurable = _targets_without_props(cfg)
     if unmeasurable:
         print("config error: no global 'props' and no per-target 'props' for: "

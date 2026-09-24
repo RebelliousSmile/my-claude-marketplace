@@ -27,9 +27,9 @@ seulement lint → corriger → re-lint sur la source.
 Les cibles se déduisent des extensions réellement présentes, pas d'une liste supposée :
 
 ```bash
-# Une invocation par fichier ; le linter lit un fichier de markup à la fois
+# Plusieurs fichiers par invocation : contrat lu une fois, un verdict par fichier
 find src -type f \( -name '*.html' -o -name '*.vue' -o -name '*.jsx' -o -name '*.tsx' \) \
-  -exec node design/lint/lint-core.mjs {} --contract design \;
+  -exec node design/lint/lint-core.mjs --contract design {} +
 ```
 
 Ce que la boucle corrige dépend de `policies.json § mode` :

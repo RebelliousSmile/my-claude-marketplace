@@ -360,6 +360,14 @@ if [ "$got" -eq 2 ] && [ ! -e "$OUT/overwrite.html" ]; then
 else
   echo "FAIL payload applicator overwrite gate: exit $got"; cat "$OUT/err"; fail=1
 fi
+printf '%s' '{"pages":{"page-1":"<main></main>"},"styles":".x { color: red; } </STYLE ><script>alert(1)</script><style>"}' >"$OUT/style-payload.json"
+"$PY" "$APPLIER" --harness "$OUT/s.html" --payload "$OUT/style-payload.json" --out "$OUT/style-applied.html" >"$OUT/out" 2>"$OUT/err"
+got=$?
+if [ "$got" -eq 2 ] && [ ! -e "$OUT/style-applied.html" ] && grep -q '</style>' "$OUT/err"; then
+  echo "ok   payload applicator refuses author CSS crossing the style boundary"
+else
+  echo "FAIL payload applicator style boundary: exit $got"; cat "$OUT/err"; fail=1
+fi
 
 : >"$OUT/empty.html"
 "$NODE" "$ANALYZER" "$OUT/empty.html" >"$OUT/analyze-empty.json" 2>"$OUT/err"
@@ -397,6 +405,23 @@ else
   echo "FAIL runtime rejects infinite script without timeout evidence"; cat "$OUT/err"; fail=1
 fi
 
+# The vm context holds no host object: each one exposes the host Function through
+# .constructor, and from there the host process. An escape exits 42 through that process;
+# a closed context throws inside the author script, which then evaluates normally.
+for x in Object encodeURIComponent console.log history.replaceState document.querySelector; do
+  sed "/function placeholder/i\\    try { const p = $x.constructor.constructor('return process')(); if (p \&\& p.exit) p.exit(42); } catch (e) {}" \
+    "$OUT/s.html" >"$OUT/escape.html"
+  if cmp -s "$OUT/s.html" "$OUT/escape.html"; then
+    echo "FAIL escape probe $x was not injected"; fail=1; continue
+  fi
+  "$NODE" "$RUNTIME" "$OUT/escape.html" >/dev/null 2>"$OUT/err"; rc=$?
+  if [ "$rc" -eq 0 ]; then
+    echo "ok   vm context closed to $x.constructor"
+  else
+    echo "FAIL vm escape through $x.constructor (exit $rc)"; cat "$OUT/err"; fail=1
+  fi
+done
+
 # ─── Three-branch page-key invariant ─────────────────────────────────────────
 # Registry, <option value> and the oracle's reference_page are one set written by three
 # hands. Asserting only that a conformant file passes proves nothing: each branch is
@@ -432,5 +457,7 @@ invariant "oracle-known"      pass "$OUT/m.html" --oracle-config "$OUT/oracle-ok
 invariant "oracle-unknown"    fail "$OUT/m.html" --oracle-config "$OUT/oracle-bad.json"
 invariant "oracle-null"       pass "$OUT/m.html" --oracle-config "$OUT/oracle-null.json"
 invariant "oracle-absent"     fail "$OUT/m.html" --oracle-config "$OUT/no-such-config.json"
+# A flag consumes its value wherever the file sits: the file is checked, never read as `home`.
+invariant "flag-before-file"  pass --expect-pages home,contact "$OUT/m.html"
 
 if [ "$fail" -eq 0 ]; then echo "ALL GREEN"; exit 0; else echo "SELFTEST FAILED"; exit 1; fi

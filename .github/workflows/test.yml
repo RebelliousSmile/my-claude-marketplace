@@ -18,3 +18,27 @@ jobs:
         run: node tools/eval/coverage.mjs
       - name: selftest (gardes)
         run: node tools/eval/selftest.mjs
+
+  design:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: deps Python design (runtime + tests)
+        run: pip install -r plugins/design/adapters/measure/requirements-dev.txt
+      - name: Chromium (Playwright)
+        run: python -m playwright install --with-deps chromium
+      - name: WIREFRAMES_CHROMIUM
+        run: |
+          path=$(python -c "from playwright.sync_api import sync_playwright; pw = sync_playwright().start(); print(pw.chromium.executable_path); pw.stop()")
+          echo "WIREFRAMES_CHROMIUM=$path" >> "$GITHUB_ENV"
+      - name: suites design
+        run: pnpm test:design

@@ -10,16 +10,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
-import sys
-import tempfile
 from pathlib import Path
 
-
-def fail(message: str) -> "NoReturn":
-    print(f"Error: {message}", file=sys.stderr)
-    raise SystemExit(2)
+from _common import abort as fail, atomic_write
 
 
 def js_string(value: str) -> str:
@@ -35,6 +29,12 @@ def raw_script(value: str, field: str) -> str:
     if re.search(r"</script", value, re.IGNORECASE):
         fail(f"{field} contains </script>; raw author JavaScript cannot cross the script boundary")
     return value.strip("\n")
+
+
+def raw_style(value: str, field: str) -> str:
+    if re.search(r"</\s*style", value, re.IGNORECASE):
+        fail(f"{field} contains </style>; author CSS cannot cross the style boundary")
+    return value
 
 
 def replace_zone(text: str, start: str, end: str, content: str) -> str:
@@ -103,7 +103,7 @@ def apply_payload(harness: str, payload: dict) -> str:
         result,
         "/* ===== AUTHOR PAGE STYLES — LLM MAY EDIT BETWEEN THESE MARKERS ===== */",
         "/* ===== END AUTHOR PAGE STYLES ===== */",
-        payload.get("styles", ""),
+        raw_style(payload.get("styles", ""), "styles"),
     )
     result = replace_zone(
         result,
@@ -142,21 +142,9 @@ def main() -> None:
         fail(f"cannot read harness {args.harness}: {error}")
 
     result = apply_payload(harness, load_payload(args.payload))
-    output.parent.mkdir(parents=True, exist_ok=True)
-    temp_name = None
     try:
-        with tempfile.NamedTemporaryFile(
-            "w", encoding="utf-8", dir=output.parent, prefix=f".{output.name}.", delete=False
-        ) as temp:
-            temp.write(result)
-            temp_name = temp.name
-        os.replace(temp_name, output)
+        atomic_write(output, result)
     except OSError as error:
-        if temp_name:
-            try:
-                os.unlink(temp_name)
-            except OSError:
-                pass
         fail(f"cannot write {output}: {error}")
     print(f"Harness author payload applied -> {output}")
 

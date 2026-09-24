@@ -9,16 +9,20 @@ Usage:
   python screenshot.py --config configs/<page>.json --out out/shots
 Outputs: <out>/<page>__<side>__<breakpoint>.png  (side is mockup | implementation,
 filenames NFC-normalized). Config keys are the ones config-gen.py emits: reference_url,
-reference_page, mockup_viewport, implementation_url — one vocabulary with measure.py.
+reference_page, mockup_viewport, implementation_url — one vocabulary with measure.py, loaded and
+checked by its load_config; a bare URL path resolves relative to the config file, as there.
+Exit 2 on an unreadable or malformed config, before any browser starts.
 """
 from __future__ import annotations
 
 import argparse
-import json
+import sys
 import unicodedata
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from measure import (  # noqa: E402
+    MOCKUP_SETTLE_MS, NAV_TIMEOUT_MS, SETTLE_MS, ConfigError, _resolve_url, load_config)
 
 # Strip preview chrome + neutralize the mobile phone-frame so fullPage is the bare page.
 _PREPARE = """() => {
@@ -41,10 +45,12 @@ def _slug(s: str) -> str:
     return unicodedata.normalize("NFC", s).replace("/", "-").strip("-") or "page"
 
 
-def capture(cfg: dict, out_dir: Path) -> list[Path]:
+def capture(cfg: dict, out_dir: Path, base_dir: Path) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     page_key = cfg.get("reference_page") or "page"
     written: list[Path] = []
+
+    from playwright.sync_api import sync_playwright  # lazy: a bad config exits 2 without it
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
@@ -57,13 +63,13 @@ def capture(cfg: dict, out_dir: Path) -> list[Path]:
                     ref_page = cfg.get("reference_page")
                     if ref_url:
                         m = ctx.new_page()
-                        m.goto(ref_url, wait_until="networkidle", timeout=20000)
+                        m.goto(_resolve_url(ref_url, base_dir), wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
                         if bp.get("mockup_viewport"):
                             m.evaluate("(v) => window.setViewport && window.setViewport(v)", bp["mockup_viewport"])
                         if ref_page:
                             m.evaluate("(k) => window.setPage && window.setPage(k)", ref_page)
                         m.evaluate(_PREPARE)
-                        m.wait_for_timeout(500)
+                        m.wait_for_timeout(MOCKUP_SETTLE_MS)
                         p = out_dir / f"{_slug(page_key)}__mockup__{bp['name']}.png"
                         m.screenshot(path=str(p), full_page=True)
                         written.append(p)
@@ -71,8 +77,8 @@ def capture(cfg: dict, out_dir: Path) -> list[Path]:
                     impl_url = cfg.get("implementation_url")
                     if impl_url:
                         w = ctx.new_page()
-                        w.goto(impl_url, wait_until="networkidle", timeout=20000)
-                        w.wait_for_timeout(300)
+                        w.goto(_resolve_url(impl_url, base_dir), wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
+                        w.wait_for_timeout(SETTLE_MS)
                         p = out_dir / f"{_slug(page_key)}__implementation__{bp['name']}.png"
                         w.screenshot(path=str(p), full_page=True)
                         written.append(p)
@@ -89,8 +95,12 @@ def main():
     ap.add_argument("--out", default="out/shots")
     args = ap.parse_args()
 
-    cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
-    shots = capture(cfg, Path(args.out))
+    try:
+        cfg = load_config(args.config)
+    except ConfigError as exc:
+        print(f"config error: {exc}", file=sys.stderr)
+        sys.exit(2)
+    shots = capture(cfg, Path(args.out), Path(args.config).resolve().parent)
     print(f"{len(shots)} screenshot(s) -> {Path(args.out)}")
     for s in shots:
         print(f"  {s.name}")

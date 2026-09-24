@@ -5,15 +5,17 @@ from __future__ import annotations
 import argparse
 import html
 import json
-import os
 import re
 import sys
-import tempfile
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+from _common import atomic_write  # noqa: E402
 
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 PILLARS = {"responsive", "representative-content", "existing-context", "brand"}
 CONTEXTS = {"responsive", "desktop", "mobile", "intrinsic"}
+LANG = re.compile(r"^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{1,8})*$")
 
 
 class InputError(ValueError):
@@ -32,7 +34,7 @@ def load_manifest(path: Path) -> dict:
 
 
 def validate_manifest(manifest: dict) -> None:
-    allowed = {"schemaVersion", "title", "pillars", "references", "units"}
+    allowed = {"schemaVersion", "title", "lang", "pillars", "references", "units"}
     unknown = sorted(set(manifest) - allowed)
     if unknown:
         raise InputError(f"unknown manifest field(s): {', '.join(unknown)}")
@@ -40,6 +42,8 @@ def validate_manifest(manifest: dict) -> None:
         raise InputError("schemaVersion must be 1")
     if not isinstance(manifest.get("title"), str) or not manifest["title"].strip():
         raise InputError("title must be a non-empty string")
+    if "lang" in manifest and not (isinstance(manifest["lang"], str) and LANG.match(manifest["lang"])):
+        raise InputError("lang must be a BCP 47 language tag such as fr or en-GB")
     pillars = manifest.get("pillars")
     if not isinstance(pillars, list) or len(pillars) != len(set(pillars)) or not set(pillars) <= PILLARS:
         raise InputError("pillars must be a unique list of known values")
@@ -131,7 +135,13 @@ def _frames(unit: dict, responsive: bool) -> list[tuple[str, str]]:
 
 def render(manifest: dict) -> str:
     title = html.escape(manifest["title"])
-    manifest_json = json.dumps(manifest, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    lang = html.escape(manifest.get("lang", "fr"))
+    # The manifest is agent-written and inlined in a <script> block: `</script>` in a title
+    # would close it. JSON escapes keep the value identical once parsed.
+    manifest_json = (
+        json.dumps(manifest, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        .replace("&", "\\u0026").replace("<", "\\u003c").replace(">", "\\u003e")
+    )
     sections: list[str] = []
     responsive = "responsive" in manifest["pillars"]
     for unit in manifest["units"]:
@@ -155,18 +165,18 @@ def render(manifest: dict) -> str:
             f'<h2>{html.escape(unit["title"])}</h2>{"".join(states)}</section>'
         )
     return f'''<!doctype html>
-<html lang="fr">
+<html lang="{lang}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{title}</title>
   <style>
-    :root{{--board-bg:#eef0f3;--ink:#20242a;--line:#aeb5bf;--paper:#fff}}
+    :root{{--board-bg:#eef0f3;--ink:#20242a;--line:#858d99;--paper:#fff}}
     *{{box-sizing:border-box}} html{{font-family:Arial,sans-serif;color:var(--ink);background:var(--board-bg)}}
     body{{margin:0;padding:24px}} header{{max-width:1440px;margin:0 auto 24px}} h1,h2,h3{{margin:0 0 12px}}
     .wireframe-unit{{max-width:1488px;margin:0 auto 32px;padding:16px;border:1px solid var(--line);background:var(--paper)}}
     .wireframe-state{{margin-top:20px}} .wireframe-frames{{display:flex;gap:20px;align-items:flex-start;overflow-x:auto}}
-    .wireframe-frame{{width:var(--wireframe-width);min-width:min(var(--wireframe-width),100%);max-width:100%;border:1px solid var(--line);background:#fff}}
+    .wireframe-frame{{width:var(--wireframe-width);min-width:min(var(--wireframe-width),100%);max-width:100%;border:1px solid var(--line);background:var(--paper)}}
     .wireframe-frame::before{{content:attr(data-wireframe-viewport);display:block;padding:6px 10px;border-bottom:1px solid var(--line);font-size:12px;text-transform:uppercase}}
     .wireframe-canvas{{width:100%;min-height:180px;padding:16px;overflow-x:hidden}} .wireframe-placeholder{{padding:32px;border:1px dashed var(--line);text-align:center;color:#68707a}}
     [data-wireframe-annotation]{{font-size:12px}}
@@ -185,21 +195,6 @@ def render(manifest: dict) -> str:
 </body>
 </html>
 '''
-
-
-def atomic_write(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
-            handle.write(content)
-        os.replace(tmp, path)
-    except Exception:
-        try:
-            os.unlink(tmp)
-        except OSError:
-            pass
-        raise
 
 
 def main() -> int:

@@ -28,15 +28,17 @@ Its absence is an environment error (exit 2), never a traceback — an uncaught 
 Exit:
   0  migrated, or already 2.0 (no-op)
   2  invocation error, missing runtime dependency, a structurally invalid artifact, or a
-     decision the tool refuses to guess (undeclared mode)
+     decision the tool refuses to guess (undeclared mode, a leftover .contract-1x backup)
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
+import tempfile
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -101,6 +103,19 @@ UNKNOWN_CONSUMER = "unknown"
 def fail(message: str) -> int:
     print(message, file=sys.stderr)
     return 2
+
+
+def write_atomic(path: Path, text: str) -> None:
+    """Write through a sibling temporary file and os.replace: an interrupted run leaves the old
+    file or the new one, never a truncated artifact."""
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
 
 
 def shape_of(value) -> str:
@@ -238,18 +253,11 @@ def split(manifest: dict, mode: str) -> tuple[dict, list[tuple[str, str]], list[
     return payload, mapping, anomalies
 
 
-def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -> int:
-    if not contract_dir.is_dir():
-        return fail(f"Contract directory not found: {contract_dir}")
-
-    if (contract_dir / RELEASE).is_file():
-        print(f"CONTRACT {contract_dir}\n"
-              f"NO-OP    {RELEASE} present - already 2.0, nothing to migrate.")
-        return 0
-
+def validate(contract_dir: Path, mode_arg: str | None):
+    """Read the 1.x manifest and settle the mode. Returns (manifest, mode, declared_mode), or the
+    exit code of the refusal, already printed."""
     manifest_path = contract_dir / COMPONENTS
-    tokens_path = contract_dir / TOKENS
-    for path in (tokens_path, manifest_path):
+    for path in (contract_dir / TOKENS, manifest_path):
         if not path.is_file():
             return fail(f"Not a 1.x contract: {path.name} missing in {contract_dir}")
     try:
@@ -274,7 +282,12 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         return fail(f"Undeclared mode in {manifest_path}. Pass --mode {'|'.join(MODES)}. "
                     "The tool refuses to guess it: the wrong mode leaves the vocabulary rules inert "
                     "and turns a green run into a verdict about nothing.")
+    return manifest, mode, declared_mode
 
+
+def build_release(contract_dir: Path, manifest: dict, mode: str, now: str):
+    """Split the manifest and describe the release. Returns (payload, release, charter, mapping,
+    adapters, anomalies), or the exit code of an unreadable contract."""
     payload, mapping, anomalies = split(manifest, mode)
     adapters, adapter_anomalies = adapter_table(contract_dir)
     anomalies += adapter_anomalies
@@ -282,7 +295,11 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         payload[POLICIES]["adapters"] = adapters
         mapping.append(("adapters/*", f"{POLICIES}.adapters"))
 
-    charter = status.read_charter(contract_dir)
+    try:
+        charter = status.read_charter(contract_dir)
+        observed = status.compute(status.observe(contract_dir))
+    except status.ContractReadError as exc:
+        return fail(str(exc))
     version = manifest.get("$version")
     if not version:
         version = charter["version"] or "0.0.0"
@@ -293,8 +310,8 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         anomalies.append(f'declared versions differ - {COMPONENTS} "{version}", charter "{charter["version"]}"; '
                          f"both are recorded in {RELEASE}, neither is a violation")
 
-    manifest_hash = sha256(manifest_path)
-    source_hash = {TOKENS: sha256(tokens_path)}
+    manifest_hash = sha256(contract_dir / COMPONENTS)
+    source_hash = {TOKENS: sha256(contract_dir / TOKENS)}
     release = {
         "$schema": f"{SCHEMA}#release",
         "$format": FORMAT,
@@ -304,14 +321,18 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         "charter": {"present": charter["present"], "path": charter["path"], "version": charter["version"]},
         "provenance": {"producedBy": Path(__file__).name, "producedAt": now, "from": "1.x contract"},
         "checks": None,
-        "status": status.compute(status.observe(contract_dir)),
+        "status": observed,
     }
 
     mapping = ([(TOKENS, f"{TOKENS} (unchanged)"),
                 ("$.$version", f"{RELEASE}.designSystem.version, artifacts.*.version")]
                + mapping
                + [(charter["path"], f"{RELEASE}.charter")])
+    return payload, release, charter, mapping, adapters, anomalies
 
+
+def render_report(contract_dir: Path, mode: str, declared_mode, release: dict,
+                  mapping: list, adapters: list, anomalies: list) -> list[str]:
     width = max(len(src) for src, _ in mapping)
     lines = [f"CONTRACT {contract_dir}",
              f"MODE     {mode} ({'declared' if declared_mode else '--mode'})",
@@ -322,25 +343,54 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
     lines += [f"  {e['artifact']}  ->  {e['consumer']}" for e in adapters] or ["  (none)"]
     lines.append("ANOMALIES")
     lines += [f"  {a}" for a in anomalies] or ["  (none)"]
+    return lines
 
-    if dry_run:
-        lines.append("DRY RUN  nothing written")
-        print("\n".join(lines))
-        return 0
 
+def write(contract_dir: Path, payload: dict, release: dict, charter_path: str) -> None:
     backup = contract_dir / BACKUP_DIR
-    backup.mkdir(exist_ok=True)
-    for name in (COMPONENTS, TOKENS, charter["path"]):
+    backup.mkdir()
+    for name in (COMPONENTS, TOKENS, charter_path):
         src = contract_dir / name
         if src.is_file():
             shutil.copy2(src, backup / Path(name).name)
 
     for name, obj in payload.items():
-        (contract_dir / name).write_text(dump(obj), encoding="utf-8")
-    (contract_dir / RELEASE).write_text(dump(release), encoding="utf-8")
+        write_atomic(contract_dir / name, dump(obj))
+    # release.json last: its presence is what marks the migration done.
+    write_atomic(contract_dir / RELEASE, dump(release))
 
-    lines.append(f"WRITTEN  {', '.join(list(payload) + [RELEASE])}")
-    lines.append(f"BACKUP   {BACKUP_DIR}/")
+
+def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -> int:
+    if not contract_dir.is_dir():
+        return fail(f"Contract directory not found: {contract_dir}")
+
+    if (contract_dir / RELEASE).is_file():
+        print(f"CONTRACT {contract_dir}\n"
+              f"NO-OP    {RELEASE} present - already 2.0, nothing to migrate.")
+        return 0
+
+    # A backup without release.json is an interrupted or undone migration. Overwriting it could
+    # replace the only copy of the 1.x contract with a half-migrated one: refuse, write nothing.
+    if (contract_dir / BACKUP_DIR).exists():
+        return fail(f"{contract_dir / BACKUP_DIR} already exists and {RELEASE} is absent: a previous "
+                    f"migration did not finish. Restore the 1.x files from it, remove it, then rerun.")
+
+    validated = validate(contract_dir, mode_arg)
+    if isinstance(validated, int):
+        return validated
+    manifest, mode, declared_mode = validated
+    built = build_release(contract_dir, manifest, mode, now)
+    if isinstance(built, int):
+        return built
+    payload, release, charter, mapping, adapters, anomalies = built
+    lines = render_report(contract_dir, mode, declared_mode, release, mapping, adapters, anomalies)
+
+    if dry_run:
+        lines.append("DRY RUN  nothing written")
+    else:
+        write(contract_dir, payload, release, charter["path"])
+        lines.append(f"WRITTEN  {', '.join(list(payload) + [RELEASE])}")
+        lines.append(f"BACKUP   {BACKUP_DIR}/")
     print("\n".join(lines))
     return 0
 
@@ -440,7 +490,7 @@ def migrate_ledger(ledger_dir: Path, dry_run: bool) -> int:
         print("\n".join(lines))
         return 0
 
-    (ledger_dir / DEVIATIONS).write_text(dump(payload), encoding="utf-8")
+    write_atomic(ledger_dir / DEVIATIONS, dump(payload))
     lines.append(f"WRITTEN  {DEVIATIONS}")
     print("\n".join(lines))
     return 0

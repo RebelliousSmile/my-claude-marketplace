@@ -23,23 +23,31 @@
 //                                                   [--oracle-config path.json]
 
 import { readFileSync } from 'node:fs';
+import { parseArgs } from 'node:util';
 import vm from 'node:vm';
 
-const argv = process.argv.slice(2);
-const file = argv.find((a) => !a.startsWith('--'));
-const valueAfter = (flag) => {
-  const i = argv.indexOf(flag);
-  return i === -1 ? null : argv[i + 1] || null;
-};
-const expectRaw = valueAfter('--expect-pages');
-const expectPages =
-  expectRaw === null ? [] : String(expectRaw).split(',').map((s) => s.trim()).filter(Boolean);
-const oracleConfig = valueAfter('--oracle-config');
-
-if (!file) {
-  console.error('usage: harness-runtime-check.mjs <file.html> [--expect-pages a,b] [--oracle-config c.json]');
+const USAGE = 'usage: harness-runtime-check.mjs <file.html> [--expect-pages a,b] [--oracle-config c.json]';
+// A flag consumes its value, wherever the positional sits: `--expect-pages home f.html`
+// checks f.html, never a file named `home`.
+let parsed;
+try {
+  parsed = parseArgs({
+    options: { 'expect-pages': { type: 'string' }, 'oracle-config': { type: 'string' } },
+    allowPositionals: true,
+  });
+} catch (e) {
+  console.error(`${e.message}
+${USAGE}`);
   process.exit(1);
 }
+const { values, positionals } = parsed;
+if (positionals.length !== 1) {
+  console.error(USAGE);
+  process.exit(1);
+}
+const [file] = positionals;
+const expectPages = (values['expect-pages'] ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+const oracleConfig = values['oracle-config'] ?? null;
 
 const fail = (msg) => {
   console.error(`FAIL runtime ${file}: ${msg}`);
@@ -72,68 +80,91 @@ if (bodies.length < 2) {
 // ─── DOM stub ────────────────────────────────────────────────────────────────
 // Exactly what the harness JS touches, and nothing more: an unstubbed API must throw so a
 // future addition to the control scripts fails loudly instead of passing unmeasured.
-const classList = () => {
-  const set = new Set();
-  return {
-    _set: set,
-    add: (...c) => c.forEach((x) => set.add(x)),
-    remove: (...c) => c.forEach((x) => set.delete(x)),
-    contains: (c) => set.has(c),
-    toggle: (c, on) => (on === undefined ? (set.has(c) ? set.delete(c) : set.add(c)) : on ? set.add(c) : set.delete(c)),
+//
+// The stub is SOURCE evaluated inside the context, never host objects handed in: every host
+// function exposes the host's Function through `.constructor`, and codeGeneration does not
+// apply to the host realm, so `console.log.constructor('return process')()` would reach the
+// host process. The context keeps its own intrinsics (Object, JSON, encodeURIComponent…);
+// only data crosses the boundary, as JSON strings. node:vm is still not a security boundary
+// (Node docs): this closes the known host-object escapes, nothing more.
+const STUB = `(() => {
+  const classList = () => {
+    const set = new Set();
+    return {
+      add: (...c) => c.forEach((x) => set.add(x)),
+      remove: (...c) => c.forEach((x) => set.delete(x)),
+      contains: (c) => set.has(c),
+      toggle: (c, on) => (on === undefined ? (set.has(c) ? set.delete(c) : set.add(c)) : on ? set.add(c) : set.delete(c)),
+    };
   };
+  const el = (extra = {}) => ({
+    innerHTML: '',
+    textContent: '',
+    scrollTop: 0,
+    dataset: {},
+    classList: classList(),
+    attributes: {},
+    setAttribute(n, v) { this.attributes[n] = v; },
+    getAttribute(n) { return this.attributes[n]; },
+    removeAttribute(n) { delete this.attributes[n]; },
+    addEventListener() {},
+    querySelector() { return null; },
+    querySelectorAll() { return []; },
+    ...extra,
+  });
+  const container = el();
+  const frame = el();
+  const stage = el();
+  const select = el({ value: '' });
+  const buttons = ['desktop', 'tablet', 'mobile'].map((v) => el({ dataset: { viewport: v } }));
+  const g = globalThis;
+  g.window = g;
+  g.location = { hash: '' };
+  g.history = { replaceState() {} };
+  g.console = { error() {}, warn() {}, log() {} };
+  g.document = {
+    getElementById(id) {
+      if (id === 'page-container') return container;
+      if (id === 'preview-frame') return frame;
+      if (id === 'page-select') return select;
+      throw new Error('unstubbed getElementById(' + JSON.stringify(id) + ')');
+    },
+    querySelector(sel) {
+      if (sel === '.preview-stage') return stage;
+      throw new Error('unstubbed querySelector(' + JSON.stringify(sel) + ')');
+    },
+    querySelectorAll(sel) {
+      if (sel === '.viewport-btn') return buttons;
+      throw new Error('unstubbed querySelectorAll(' + JSON.stringify(sel) + ')');
+    },
+  };
+  // The checker's probes, bound before any author script runs: they read the stub elements
+  // through a closure the author code cannot rebind.
+  const stringify = JSON.stringify;
+  const probe = {
+    container: () => stringify({ html: String(container.innerHTML), theme: container.getAttribute('data-theme') ?? null }),
+    frameMobile: () => stringify(frame.classList.contains('mobile')),
+    pressedSet: () => stringify(buttons.every((b) => b.getAttribute('aria-pressed') !== undefined)),
+    selectValue: () => stringify(String(select.value)),
+  };
+  Object.defineProperty(g, '__probe', { value: Object.freeze(probe) });
+})();`;
+
+const ctx = vm.createContext({}, { codeGeneration: { strings: false, wasm: false } });
+vm.runInContext(STUB, ctx, { filename: 'harness-runtime-check#stub', timeout: 1000 });
+
+// Evaluate a context expression that yields a JSON string; only the parsed data comes back.
+const read = (expr) => {
+  const out = vm.runInContext(expr, ctx, { timeout: 1000 });
+  if (typeof out !== 'string') throw new Error(`${expr} did not serialize`);
+  return JSON.parse(out);
 };
-const el = (extra = {}) => ({
-  innerHTML: '',
-  textContent: '',
-  scrollTop: 0,
-  dataset: {},
-  classList: classList(),
-  attributes: {},
-  setAttribute(n, v) { this.attributes[n] = v; },
-  getAttribute(n) { return this.attributes[n]; },
-  removeAttribute(n) { delete this.attributes[n]; },
-  addEventListener() {},
-  querySelector() { return null; },
-  querySelectorAll() { return []; },
-  ...extra,
-});
-
-const container = el();
-const frame = el();
-const stage = el();
-const select = el({ value: '' });
-const buttons = ['desktop', 'tablet', 'mobile'].map((v) => el({ dataset: { viewport: v } }));
-
-const document_ = {
-  getElementById(id) {
-    if (id === 'page-container') return container;
-    if (id === 'preview-frame') return frame;
-    if (id === 'page-select') return select;
-    throw new Error(`unstubbed getElementById(${JSON.stringify(id)})`);
-  },
-  querySelector(sel) {
-    if (sel === '.preview-stage') return stage;
-    throw new Error(`unstubbed querySelector(${JSON.stringify(sel)})`);
-  },
-  querySelectorAll(sel) {
-    if (sel === '.viewport-btn') return buttons;
-    throw new Error(`unstubbed querySelectorAll(${JSON.stringify(sel)})`);
-  },
-};
-
-const sandbox = {
-  document: document_,
-  location: { hash: '' },
-  history: { replaceState() {} },
-  console: { error() {}, warn() {}, log() {} },
-  encodeURIComponent,
-  decodeURIComponent,
-  String, Object, Array, JSON, Error, RegExp, Math, Set, Map,
-};
-sandbox.window = sandbox;         // window === the sandbox global, as in a browser
-sandbox.globalThis = sandbox;
-
-const ctx = vm.createContext(sandbox);
+const probe = (name) => read(`__probe.${name}()`);
+// Call a window function with data arguments; an exception comes back as its message.
+const call = (fn, ...args) => read(`(() => {
+  try { window[${JSON.stringify(fn)}](...${JSON.stringify(args)}); return 'null'; }
+  catch (e) { return JSON.stringify(String(e && e.name) + ': ' + String(e && e.message)); }
+})()`);
 
 bodies.forEach((body, i) => {
   try {
@@ -141,7 +172,7 @@ bodies.forEach((body, i) => {
   } catch (e) {
     // An unbalanced brace reports at end of input, with no useful position — the script
     // index is the locator that actually helps.
-    fail(`script ${i + 1} did not evaluate: ${e.name}: ${e.message}`);
+    fail(`script ${i + 1} did not evaluate: ${e?.name}: ${e?.message}`);
   }
 });
 
@@ -149,64 +180,58 @@ bodies.forEach((body, i) => {
 const check = (label, cond, detail = '') => {
   if (!cond) fail(`${label}${detail ? ` — ${detail}` : ''}`);
 };
+const container = () => probe('container');
 
-check('window.setPage is not a function', typeof sandbox.window.setPage === 'function');
-check('window.setViewport is not a function', typeof sandbox.window.setViewport === 'function');
-check('#page-container is empty after init()', container.innerHTML.length > 0);
+check('window.setPage is not a function', read("JSON.stringify(typeof window.setPage === 'function')"));
+check('window.setViewport is not a function', read("JSON.stringify(typeof window.setViewport === 'function')"));
+check('#page-container is empty after init()', container().html.length > 0);
 
-try {
-  sandbox.window.setViewport('mobile');
-} catch (e) {
-  fail(`setViewport('mobile') threw: ${e.name}: ${e.message}`);
-}
-check("setViewport('mobile') did not set the mobile class", frame.classList.contains('mobile'));
-check(
-  "setViewport('mobile') left an aria-pressed unset",
-  buttons.every((b) => b.getAttribute('aria-pressed') !== undefined),
-);
-sandbox.window.setViewport('desktop');
-check("setViewport('desktop') left the mobile class on the frame", !frame.classList.contains('mobile'));
+let err = call('setViewport', 'mobile');
+if (err) fail(`setViewport('mobile') threw: ${err}`);
+check("setViewport('mobile') did not set the mobile class", probe('frameMobile'));
+check("setViewport('mobile') left an aria-pressed unset", probe('pressedSet'));
+call('setViewport', 'desktop');
+check("setViewport('desktop') left the mobile class on the frame", !probe('frameMobile'));
 
 // An unknown key renders a state, never propagates an exception: measure.py calls
 // window.setPage(key) unguarded and must get a DOM back.
-try {
-  sandbox.window.setPage('a-key-no-page-declares');
-} catch (e) {
-  fail(`setPage(unknown) threw instead of rendering: ${e.name}: ${e.message}`);
-}
+err = call('setPage', 'a-key-no-page-declares');
+if (err) fail(`setPage(unknown) threw instead of rendering: ${err}`);
 check(
   'an unknown page key does not render the not-found state',
-  container.innerHTML.includes('Page introuvable'),
-  container.innerHTML.slice(0, 120),
+  container().html.includes('Page introuvable'),
+  container().html.slice(0, 120),
 );
 
 for (const key of expectPages) {
-  sandbox.window.setPage(key);
-  check(`page "${key}" renders nothing`, container.innerHTML.length > 0);
-  check(`page "${key}" did not sync the selector`, select.value === key, `select.value = ${select.value}`);
+  call('setPage', key);
+  check(`page "${key}" renders nothing`, container().html.length > 0);
+  const value = probe('selectValue');
+  check(`page "${key}" did not sync the selector`, value === key, `select.value = ${value}`);
 }
 
 // ─── The three-branch page-key invariant ─────────────────────────────────────
 // Branch 1 — the registry, read from the LEXICAL scope: `const pages` at a script's top
 // level lands in the context's global declarative record, shared across runInContext
 // calls (which is how script 2 reads it), but it is never a property of the global
-// object — sandbox.pages is undefined. Evaluating in the context is the only reading.
+// object. Evaluating in the context is the only reading.
 let registryKeys;
 try {
-  registryKeys = vm.runInContext('Object.keys(pages)', ctx, { timeout: 1000 });
+  registryKeys = read('JSON.stringify(Object.keys(pages))');
 } catch (e) {
-  fail(`the pages registry is not readable: ${e.name}: ${e.message}`);
+  fail(`the pages registry is not readable: ${e?.name}: ${e?.message}`);
 }
-check('the pages registry is empty', registryKeys.length > 0);
+check('the pages registry is empty', Array.isArray(registryKeys) && registryKeys.length > 0);
 
 // Page grounding is a registry too: every rendered page must have exactly one metadata
 // entry so a renamed key cannot silently keep the source or theme of another page.
 let metadata;
 try {
-  metadata = vm.runInContext('pageMetadata', ctx, { timeout: 1000 });
+  metadata = read('JSON.stringify(pageMetadata)');
 } catch (e) {
-  fail(`the pageMetadata registry is not readable: ${e.name}: ${e.message}`);
+  fail(`the pageMetadata registry is not readable: ${e?.name}: ${e?.message}`);
 }
+if (metadata === null || typeof metadata !== 'object') fail('the pageMetadata registry is not an object');
 const metadataKeys = Object.keys(metadata);
 const missingMetadata = registryKeys.filter((k) => !metadataKeys.includes(k));
 const orphanMetadata = metadataKeys.filter((k) => !registryKeys.includes(k));
@@ -215,19 +240,16 @@ check('metadata key(s) with no page', orphanMetadata.length === 0, orphanMetadat
 
 const themedKey = registryKeys.find((k) => metadata[k] && metadata[k].theme);
 if (themedKey) {
-  sandbox.window.setPage(themedKey);
+  call('setPage', themedKey);
   check(
     `page "${themedKey}" did not apply its contract theme`,
-    container.getAttribute('data-theme') === metadata[themedKey].theme,
-    `data-theme = ${container.getAttribute('data-theme')}`,
+    container().theme === metadata[themedKey].theme,
+    `data-theme = ${container().theme}`,
   );
   const unthemedKey = registryKeys.find((k) => !metadata[k] || !metadata[k].theme);
   if (unthemedKey) {
-    sandbox.window.setPage(unthemedKey);
-    check(
-      `page "${unthemedKey}" retained the prior page theme`,
-      container.getAttribute('data-theme') === undefined,
-    );
+    call('setPage', unthemedKey);
+    check(`page "${unthemedKey}" retained the prior page theme`, container().theme === null);
   }
 }
 

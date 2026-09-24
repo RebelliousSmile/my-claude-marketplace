@@ -2,7 +2,7 @@
 name: detail
 description: Explains the design capabilities or routes an explicit end-to-end design-system request without executing it. Use when the user asks what to run, how the workflow fits together, or which path matches the project state.
 author: François-Xavier Guillois
-version: 2.14.0
+version: 2.14.1
 vibe_version: ">=1.0.0"
 permissions:
   - files

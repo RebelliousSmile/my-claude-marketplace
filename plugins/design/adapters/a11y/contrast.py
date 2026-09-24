@@ -38,7 +38,8 @@ not the same as safe; it is unexamined, and the report says so in those terms.
 
 Usage:  python contrast.py --contract <dir> [--json] [--allow-unpaired]
 Exit:   0  computed, at least one pair compared (verdicts on stdout)
-        2  unusable contract: no tokens.json, unparsable, dangling path, alias cycle
+        2  unusable contract: no tokens.json, unparsable, dangling path, alias cycle,
+           translucent background (what shows through it is unknown)
         3  read, but nothing to compare: no component declares `.foregrounds`, and no role name
            matched under `color.semantic`. Not a pass — the contract declares colours this tool
            has no way to reach. Fixed by declaring the pairing, not by renaming tokens.
@@ -55,6 +56,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "_shared"))
+from colors import resolve_alias, to_rgba  # noqa: E402
+
 TOKENS_FILE = "tokens.json"
 COMPONENTS_FILE = "components.json"
 AA = 4.5  # WCAG 2.x AA, normal text
@@ -62,7 +66,6 @@ DEFAULT_THEME = "default"
 
 _FG_ROLE = re.compile(r"^(text|foreground|on[-A-Z])")
 _SURFACE_ROLE = re.compile(r"^(background|surface|base)$")
-_ALIAS = re.compile(r"^\{([^}]+)\}$")
 
 
 def is_token(node) -> bool:
@@ -97,40 +100,35 @@ def lookup(tree: dict, dotted: str):
 
 def resolve(tree: dict, raw: str) -> str:
     """Follow `{a.b.c}` aliases within one theme's tree until a literal, guarding cycles."""
-    seen: set[str] = set()
-    value = raw
-    while isinstance(value, str):
-        match = _ALIAS.match(value.strip())
-        if not match:
-            return value
-        ref = match.group(1)
-        if ref in seen:
-            raise ValueError(f"alias cycle at {{{ref}}}")
-        seen.add(ref)
-        value = lookup(tree, ref).get("$value")
-    raise ValueError(f"alias resolves to a non-string value: {raw}")
+    value, error = resolve_alias(tree, raw)
+    if error is not None:
+        raise ValueError(error)
+    if not isinstance(value, str):
+        raise ValueError(f"alias resolves to a non-string value: {raw}")
+    return value
 
 
-def to_rgb(value: str) -> tuple[int, int, int]:
-    hexstr = value.strip().lstrip("#")
-    if len(hexstr) == 3:
-        hexstr = "".join(ch * 2 for ch in hexstr)
-    if len(hexstr) not in (6, 8) or any(c not in "0123456789abcdefABCDEF" for c in hexstr):
-        raise ValueError(f"not a hex color: {value}")
-    return tuple(int(hexstr[i:i + 2], 16) for i in (0, 2, 4))  # alpha, if any, ignored
+def over(fg: tuple[int, int, int, float], bg: tuple[int, int, int]) -> tuple[float, float, float]:
+    """Source-over compositing of a translucent foreground on an opaque background.
+
+    Dropping the alpha instead would read `#00000020` on white as pure black, 21:1, while the
+    screen shows a faint grey: a false pass.
+    """
+    a = fg[3]
+    return tuple(a * f + (1 - a) * b for f, b in zip(fg[:3], bg))
 
 
-def _linear(channel: int) -> float:
+def _linear(channel: float) -> float:
     c = channel / 255
     return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
 
 
-def luminance(rgb: tuple[int, int, int]) -> float:
+def luminance(rgb: tuple[float, float, float]) -> float:
     r, g, b = (_linear(c) for c in rgb)
     return 0.2126 * r + 0.7152 * g + 0.0722 * b
 
 
-def ratio(fg: tuple[int, int, int], bg: tuple[int, int, int]) -> float:
+def ratio(fg: tuple[float, float, float], bg: tuple[float, float, float]) -> float:
     hi, lo = sorted((luminance(fg), luminance(bg)), reverse=True)
     return (hi + 0.05) / (lo + 0.05)
 
@@ -231,7 +229,12 @@ def evaluate(tokens: dict, components: dict | None = None) -> list[dict]:
 
 def _pair(theme: str, source: str, fg: str, bg: str, tree: dict, component: str | None) -> dict:
     fg_value, bg_value = value_at(tree, fg), value_at(tree, bg)
-    r = ratio(to_rgb(fg_value), to_rgb(bg_value))
+    fg_rgba, bg_rgba = to_rgba(fg_value), to_rgba(bg_value)
+    if bg_rgba[3] < 1:
+        # What shows through a translucent background is not in the contract: no ratio is honest.
+        raise ValueError(f"[{theme}] {fg} on {bg}: background {bg_value} is translucent; "
+                         "the colour beneath it is unknown, so the contrast cannot be computed")
+    r = ratio(over(fg_rgba, bg_rgba[:3]), bg_rgba[:3])
     return {
         "theme": theme,
         "source": source,          # `declared` — a component says so; `role` — the name suggests it
@@ -306,7 +309,7 @@ def main(argv: list[str] | None = None) -> int:
                   "foreground/surface role name matched under color.semantic.")
         # The coverage line is not a footnote: it says whether the verdict above means anything.
         print(f"coverage: {cov['paired']}/{cov['declared']} color leaves paired"
-              + (f" — unpaired by branch: "
+              + (" — unpaired by branch: "
                  + ", ".join(f"{b} {n}" for b, n in cov["unpairedByBranch"].items())
                  if cov["unpaired"] else ""))
     return code

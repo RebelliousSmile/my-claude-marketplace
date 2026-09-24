@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import os
 import re
 import sys
-import tempfile
 from pathlib import Path
+
+from _common import atomic_write, sha256_hex
 
 
 class ApplyError(ValueError):
@@ -40,7 +39,7 @@ def validate_inventory(path: Path) -> None:
         value = json.loads(read(path))
         source = Path(value["source"]["path"])
         expected = value["source"]["sha256"]
-        actual = hashlib.sha256(source.read_bytes()).hexdigest()
+        actual = sha256_hex(source)
     except (KeyError, TypeError, OSError, json.JSONDecodeError) as exc:
         raise ApplyError(f"invalid migration inventory: {exc}") from exc
     if value.get("canNormalize") is not True or value.get("classification") == "ambiguous":
@@ -110,21 +109,6 @@ def apply(shell: str, payload: dict) -> str:
         "author interactions",
     )
     return output
-
-
-def atomic_write(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
-            handle.write(content)
-        os.replace(tmp, path)
-    except Exception:
-        try:
-            os.unlink(tmp)
-        except OSError:
-            pass
-        raise
 
 
 def main() -> int:

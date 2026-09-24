@@ -8,6 +8,8 @@ In the project's normal, persistent Python environment (not a `--target /tmp` in
 
 ```
 pip install -r plugins/design/adapters/measure/requirements.txt
+# to run the design test suites (pnpm test:design) as well:
+pip install -r plugins/design/adapters/measure/requirements-dev.txt
 python -m playwright install chromium
 ```
 

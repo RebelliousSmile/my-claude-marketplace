@@ -1,0 +1,33 @@
+{
+  "$schema": "design/references/contract-schema#oracle",
+  "components": {
+    "btn": {
+      "elements": {
+        "label": {
+          "check_text": true,
+          "props": [
+            "fontSize",
+            "color"
+          ]
+        }
+      }
+    },
+    "card": {
+      "elements": {
+        "title": {
+          "check_text": true
+        }
+      },
+      "collections": [
+        {
+          "name": "card · items",
+          "item_selector": "card__item",
+          "ack": {
+            "id": "DEV-001",
+            "reason": "contenu piloté par les données, divergence attendue"
+          }
+        }
+      ]
+    }
+  }
+}

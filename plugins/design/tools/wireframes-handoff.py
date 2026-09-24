@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import re
@@ -11,12 +10,11 @@ import sys
 import tempfile
 from pathlib import Path
 
+from _common import sha256_hex
+from wireframes_common import green, targets_artifact
+
 
 class HandoffError(ValueError): pass
-
-
-def sha(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def load_json(path: Path) -> dict:
@@ -24,15 +22,6 @@ def load_json(path: Path) -> dict:
     except (OSError, UnicodeError, json.JSONDecodeError) as exc: raise HandoffError(f"cannot read {path}: {exc}") from exc
     if not isinstance(value, dict): raise HandoffError(f"{path} must contain a JSON object")
     return value
-
-
-def green(static: dict, rendered: dict) -> bool:
-    return static.get("summary", {}).get("valid") is True and rendered.get("static", {}).get("status") == "passed" and rendered.get("rendered", {}).get("status") == "passed" and rendered.get("summary", {}).get("validCandidate") is True
-
-
-def targets_artifact(report: dict, artifact: Path) -> bool:
-    try: return Path(report["file"]).resolve() == artifact.resolve()
-    except (KeyError, TypeError): return False
 
 
 def extract_manifest(html: str) -> dict:
@@ -60,7 +49,7 @@ def verify_receipt(receipt: dict, artifact: Path, static_path: Path, rendered_pa
     if receipt.get("status") != "accepted": raise HandoffError("review receipt is absent, revoked, or not accepted")
     for key, path in (("artifact", artifact), ("staticReport", static_path), ("renderedReport", rendered_path)):
         expected = receipt.get(key, {}).get("sha256")
-        if not expected or expected != sha(path): raise HandoffError(f"review receipt is stale for {key}")
+        if not expected or expected != sha256_hex(path): raise HandoffError(f"review receipt is stale for {key}")
 
 
 def build(manifest: dict, html: str, artifact_digest: str, tablet: str) -> tuple[dict, dict, dict]:

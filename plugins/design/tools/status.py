@@ -49,13 +49,19 @@ def meets_threshold(status: str) -> bool:
     return LADDER.index(status) >= LADDER.index(THRESHOLD)
 
 
+class ContractReadError(Exception):
+    """A contract file exists but cannot be read. Never a `None`: an unreadable file read as
+    absent turns a corrupt `components.json` into `allPass: true`, a green built on nothing."""
+
+
 def _read_json(path: Path) -> dict | None:
+    """None when the file is absent; ContractReadError when it is present but unreadable."""
     if not path.is_file():
         return None
     try:
         return json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return None
+    except (OSError, ValueError) as exc:
+        raise ContractReadError(f"{path}: unreadable - {exc}") from exc
 
 
 def read_release(contract_dir: Path) -> dict | None:
@@ -175,10 +181,14 @@ def main(argv: list[str] | None = None) -> int:
     # unciteable as evidence, but `adjust/02-freeze.md` copies stdout verbatim into
     # `release.json § status` — anything added to that line would land in the contract.
     print(f"CONTRACT {contract_dir}", file=sys.stderr)
-    if args.states:
-        print(json.dumps(check_states(contract_dir), indent=2, sort_keys=True))
-    else:
-        print(compute(observe(contract_dir)))
+    try:
+        if args.states:
+            print(json.dumps(check_states(contract_dir), indent=2, sort_keys=True))
+        else:
+            print(compute(observe(contract_dir)))
+    except ContractReadError as exc:
+        print(exc, file=sys.stderr)
+        return 2
     return 0
 
 

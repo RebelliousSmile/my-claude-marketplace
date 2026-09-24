@@ -1,0 +1,61 @@
+{
+  "$schema": "design/references/manifest-schema#",
+  "$version": "1.2.0",
+  "mode": "bem",
+  "$utilityPrefixes": ["u-"],
+  "components": {
+    "btn": {
+      "base": "btn",
+      "elements": {
+        "icon":  "btn__icon",
+        "label": "btn__label"
+      },
+      "modifiers": {
+        "primary": "btn--primary"
+      },
+      "backgrounds": ["color.semantic.background", "color.semantic.surface"],
+      "a11y": { "role": "button", "requires": [] },
+      "oracle": {
+        "elements": {
+          "label": { "check_text": true, "props": ["fontSize", "color"] }
+        }
+      }
+    },
+    "card": {
+      "base": "card",
+      "elements": {
+        "media": "card__media",
+        "body":  "card__body",
+        "title": "card__title"
+      },
+      "modifiers": {
+        "featured": "card--featured"
+      },
+      "backgrounds": ["color.semantic.surface"],
+      "a11y": { "role": "article", "requires": ["aria-label"] },
+      "oracle": {
+        "elements": {
+          "title": { "check_text": true }
+        },
+        "collections": [
+          {
+            "name": "card · items",
+            "item_selector": "card__item",
+            "ack": { "id": "DEV-001", "reason": "contenu piloté par les données, divergence attendue" }
+          }
+        ]
+      }
+    }
+  },
+  "usage": {
+    "rawHexForbidden": true,
+    "colorUtilityPrefixes": ["bg", "text"],
+    "rules": [
+      {
+        "id": "state-colour-icon",
+        "description": "Un badge d'état doit porter un token couleur ET une icône — jamais la couleur seule.",
+        "enforcement": "pivot-only"
+      }
+    ]
+  }
+}

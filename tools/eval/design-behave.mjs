@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
+const python = process.env.DESIGN_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
 const skills = ['detail', 'define', 'destructure', 'adjust', 'enforce', 'diffuse', 'wireframes', 'harness'];
 const failures = [];
 const fail = (message) => failures.push(message);
@@ -27,29 +28,32 @@ for (const skill of skills) {
   if (scenarioIds.length < 4) fail(`${skill}: ${scenarioIds.length} scénarios, minimum 4`);
   if (!suite.includes('Authority:') || !suite.includes('§'))
     fail(`${skill}: autorité fichier + section absente`);
-  const runHeaders = [...suite.matchAll(/^### (\d{4}-\d{2}-\d{2}) — run \d+ \((initial|post-fix|regression|generality), dry-run,[^\n]*\) — \*\*(\d+)\/(\d+) PASS\*\*$/gm)];
-  if (!runHeaders.length) fail(`${skill}: run Behave structuré absent`);
+  // Structural check of the `## Results log`: it proves the log is well-formed and consistent
+  // with the scenario table, not that the skill behaves. Behavioural evidence is the run-gates
+  // spawns below.
+  const logHeaders = [...suite.matchAll(/^### (\d{4}-\d{2}-\d{2}) — run \d+ \((initial|post-fix|regression|generality), dry-run,[^\n]*\) — \*\*(\d+)\/(\d+) PASS\*\*$/gm)];
+  if (!logHeaders.length) fail(`${skill}: Results log (structure) sans en-tête de run conforme`);
   else {
-    const latest = runHeaders.at(-1);
+    const latest = logHeaders.at(-1);
     const afterHeader = latest.index + latest[0].length;
     const nextHeader = suite.indexOf('\n### ', afterHeader);
     const latestBlock = suite.slice(latest.index, nextHeader === -1 ? suite.length : nextHeader);
     const verdictRows = [...latestBlock.matchAll(/^\| (S\d+) \|[^\n]*\| (PASS|FAIL|N\/A) \|/gm)];
     const verdictById = new Map();
     for (const [, id, verdict] of verdictRows) {
-      if (verdictById.has(id)) fail(`${skill}: dernier run duplique ${id}`);
+      if (verdictById.has(id)) fail(`${skill}: Results log (structure) : dernier run duplique ${id}`);
       verdictById.set(id, verdict);
     }
     for (const id of scenarioIds) {
-      if (!verdictById.has(id)) fail(`${skill}: dernier run sans verdict individuel pour ${id}`);
-      else if (verdictById.get(id) !== 'PASS') fail(`${skill}: dernier run non vert pour ${id}`);
+      if (!verdictById.has(id)) fail(`${skill}: Results log (structure) : dernier run sans verdict individuel pour ${id}`);
+      else if (verdictById.get(id) !== 'PASS') fail(`${skill}: Results log (structure) : dernier run non consigné PASS pour ${id}`);
     }
     for (const id of verdictById.keys())
-      if (!scenarioIds.includes(id)) fail(`${skill}: dernier run contient un scénario inconnu ${id}`);
+      if (!scenarioIds.includes(id)) fail(`${skill}: Results log (structure) : dernier run contient un scénario inconnu ${id}`);
     const expected = scenarioIds.length;
     if (Number(latest[3]) !== expected || Number(latest[4]) !== expected
         || !latestBlock.includes(`**Tally:** ${expected}/${expected} PASS`))
-      fail(`${skill}: tally du dernier run incohérent avec ${expected} scénarios`);
+      fail(`${skill}: Results log (structure) : tally du dernier run incohérent avec ${expected} scénarios`);
   }
   if (!suite.includes('Do not activate') && !suite.includes('Do not activate this skill'))
     fail(`${skill}: aucun NO-GO de déclenchement`);
@@ -68,35 +72,39 @@ for (const path of ['plugins/design/skills', 'plugins/design/agents', 'plugins/d
     fail(`portabilité: variable hôte encore utilisée dans ${path}`);
 }
 
-const copycatFanout = readFileSync('plugins/design/skills/define/actions/05-copycat-fanout.md', 'utf8');
+// Prose guards compare whitespace-normalized text, so re-wrapping a paragraph keeps its meaning
+// and its verdict.
+const norm = (text) => text.replace(/\s+/g, ' ');
+const readProse = (path) => norm(readFileSync(path, 'utf8'));
+const copycatFanout = readProse('plugins/design/skills/define/actions/05-copycat-fanout.md');
 for (const hostSpecific of ['Sonnet', 'Haiku', 'Opus', '`Agent`', '`Workflow`'])
-  if (copycatFanout.includes(hostSpecific)) fail(`copycat: primitive hôte encore imposée (${hostSpecific})`);
+  if (copycatFanout.includes(norm(hostSpecific))) fail(`copycat: primitive hôte encore imposée (${hostSpecific})`);
 for (const required of ['hôte', 'modèle par défaut', 'séquentiellement', 'agents/copycat.md'])
   if (!copycatFanout.toLowerCase().includes(required.toLowerCase())) fail(`copycat: fallback portable absent (${required})`);
-const copycatContract = readFileSync('plugins/design/agents/copycat.md', 'utf8');
+const copycatContract = readProse('plugins/design/agents/copycat.md');
 for (const required of ['Greenfield bulk', 'not** run `config-gen.py`', 'Mode B', 'Drift mode only'])
-  if (!copycatContract.includes(required)) fail(`copycat: séparation brouillon/contrat absente (${required})`);
+  if (!copycatContract.includes(norm(required))) fail(`copycat: séparation brouillon/contrat absente (${required})`);
 for (const required of ['element_map:', 'mockup_url:', 'EVERY target of your config'])
-  if (!copycatContract.includes(required)) fail(`copycat: carte des éléments absente des Outputs (${required})`);
-const correspondence = readFileSync('plugins/design/references/correspondence-table-template.md', 'utf8');
+  if (!copycatContract.includes(norm(required))) fail(`copycat: carte des éléments absente des Outputs (${required})`);
+const correspondence = readProse('plugins/design/references/correspondence-table-template.md');
 for (const required of ['## Carte des éléments', 'Mockup URL', 'Carte des éléments revue', 'two different mockup selectors'])
-  if (!correspondence.includes(required)) fail(`table de correspondance: carte des éléments absente (${required})`);
+  if (!correspondence.includes(norm(required))) fail(`table de correspondance: carte des éléments absente (${required})`);
 if (!copycatFanout.includes('element_map'))
   fail('define: agrégation de la carte des éléments absente');
-const freeze = readFileSync('plugins/design/skills/adjust/actions/02-freeze.md', 'utf8');
+const freeze = readProse('plugins/design/skills/adjust/actions/02-freeze.md');
 for (const required of ['### Prouver le gate de fidélité', 'config-gen.py --components design/components.json --tokens design/tokens.json --oracle design/oracle.json --check', '--expect-pages', '--mode A --side mockup', 'UNPLACED', '**sans objet**', 'renvoi à `define`', 'confirmation de l\'utilisateur'])
-  if (!freeze.includes(required)) fail(`adjust: gate de fidélité non prouvé au gel (${required})`);
+  if (!freeze.includes(norm(required))) fail(`adjust: gate de fidélité non prouvé au gel (${required})`);
 if (freeze.indexOf('### Prouver le gate de fidélité') > freeze.indexOf('## Étape 2bis'))
   fail('adjust: la preuve du gate doit précéder l\'Étape 2bis');
 for (const forbidden of ['override the `mockup` or `implementation` field', 'cue to override'])
-  if (copycatContract.includes(forbidden)) fail(`copycat: surcharge de sélecteur réapparue en dérive (${forbidden})`);
+  if (copycatContract.includes(norm(forbidden))) fail(`copycat: surcharge de sélecteur réapparue en dérive (${forbidden})`);
 for (const required of ['never edit, the generated mapping', 'never drop a generated target', 'regenerated from the contract'])
-  if (!copycatContract.includes(required)) fail(`copycat: mapping généré non imposé en dérive (${required})`);
-const fidelityGate = readFileSync('plugins/design/skills/enforce/actions/05-fidelity-gate.md', 'utf8');
+  if (!copycatContract.includes(norm(required))) fail(`copycat: mapping généré non imposé en dérive (${required})`);
+const fidelityGate = readProse('plugins/design/skills/enforce/actions/05-fidelity-gate.md');
 if (fidelityGate.includes('le compléter')) fail('enforce: 05-fidelity-gate demande encore de compléter le config');
-for (const required of ['Le config généré ne s\'édite pas', '`oracle.json` sans `pages`', 'renvoie à\n`adjust`'])
-  if (!fidelityGate.includes(required)) fail(`enforce: gate figé non appliqué (${JSON.stringify(required)})`);
-if (!readFileSync('plugins/design/references/gate-natures.md', 'utf8').includes('un élément non mappé est un défaut refusé au gel'))
+for (const required of ['Le config généré ne s\'édite pas', 'cibles propres à la page **en ajout**', '`oracle.json` sans `pages`', 'renvoie à `adjust`'])
+  if (!fidelityGate.includes(norm(required))) fail(`enforce: gate figé non appliqué (${JSON.stringify(required)})`);
+if (!readProse('plugins/design/references/gate-natures.md').includes('un élément non mappé est un défaut refusé au gel'))
   fail('gate-natures: « non mappé » doit être un défaut de gel, pas une limite');
 
 const portability = readFileSync('plugins/design/references/host-portability.md', 'utf8');
@@ -113,7 +121,38 @@ if (wireGates.includes('porter l\'instruction dans le `SKILL.md`'))
   fail('wire-gates: ne doit jamais modifier une skill installée pour persister une règle projet');
 if (wireGates.includes('/design:')) fail('wire-gates: invocation slash Claude encore persistée');
 
-const runGate = (config) => spawnSync('python3', [
+// Copied alone into a project's design/lint/, where tools/_common.py does not exist.
+for (const copied of ['run-gates.py', 'status.py', 'migrate-contract.py'])
+  if (/^\s*(from|import)\s+(_common|wireframes_common)\b/m.test(readFileSync(`plugins/design/tools/${copied}`, 'utf8')))
+    fail(`trio copié: ${copied} importe un module partagé absent de design/lint/`);
+
+// One copy per schema: components.json lives in adjust/references/manifest-schema.md, oracle.json in
+// adjust/actions/02-freeze.md. contract-schema.md points at them and must not grow a second copy.
+const contractSchema = readFileSync('plugins/design/references/contract-schema.md', 'utf8');
+for (const artifact of ['components', 'oracle'])
+  if (new RegExp(String.raw`"\$schema":\s*"[^"]*contract-schema#${artifact}"`).test(contractSchema))
+    fail(`contract-schema: bloc JSON ${artifact} recopié, le schéma a un seul exemplaire`);
+if (!existsSync('plugins/design/adapters/measure/README.md'))
+  fail('measure: README absent, renvoyé par enforce/05-fidelity-gate et define/05-copycat-fanout');
+
+// Every ${DESIGN_PLUGIN_ROOT}/ path and every relative markdown link in the plugin's prose resolves.
+const markdownUnder = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+  const path = join(dir, entry.name);
+  if (entry.isDirectory())
+    return entry.name.startsWith('.') || ['__pycache__', 'node_modules', 'out', 'fixtures'].includes(entry.name) ? [] : markdownUnder(path);
+  return entry.name.endsWith('.md') ? [path] : [];
+});
+for (const file of markdownUnder('plugins/design')) {
+  const text = readFileSync(file, 'utf8');
+  for (const [, target] of text.matchAll(/\$\{DESIGN_PLUGIN_ROOT\}\/([^`\s§*<>{}]+)/g)) {
+    const path = target.replace(/[.,;:)]+$/, '');
+    if (!existsSync(join('plugins/design', path))) fail(`${file}: \${DESIGN_PLUGIN_ROOT}/${path} ne résout pas`);
+  }
+  for (const [, target] of text.matchAll(/\]\(([^)#\s]+)(?:#[^)]*)?\)/g))
+    if (!/^[a-z]+:/.test(target) && !existsSync(join(file, '..', target))) fail(`${file}: lien ${target} ne résout pas`);
+}
+
+const runGate = (config) => spawnSync(python, [
   'plugins/design/tools/run-gates.py', '--config',
   `plugins/design/skills/enforce/fixtures/${config}`,
 ], { encoding: 'utf8' });
@@ -134,7 +173,26 @@ const maturity = runGate('gates.below-threshold.config.json');
 if (maturity.status !== 4)
   fail('maturité: le code public 4 doit rester stable');
 
-const dualHost = spawnSync('python3', [
+const funnelRow = (verb) => (readFileSync('plugins/design/skills/detail/references/funnel-map.md', 'utf8')
+  .split('\n').find((line) => line.startsWith(`| **${verb}**`)) || '');
+if (!funnelRow('define') || /components\.json|policies\.json/.test(funnelRow('define')))
+  fail('funnel-map: define n\'écrit ni components.json ni policies.json (04-write-material)');
+if (!funnelRow('destructure').includes('lecture seule') || /components\.json|→ brouillon/.test(funnelRow('destructure')))
+  fail('funnel-map: destructure est une critique en lecture seule, contrat inchangé');
+
+const varFallback = spawnSync(process.execPath, [
+  'plugins/design/skills/enforce/adapters/lint-core.mjs',
+  'plugins/design/skills/enforce/fixtures/utility-var-fallback.html',
+  '--contract', 'plugins/design/skills/enforce/fixtures/utility', '--json',
+], { encoding: 'utf8' });
+{
+  const errors = varFallback.stdout ? JSON.parse(varFallback.stdout).errors : [];
+  for (const token of ['--inconnu', '--inconnu-espace'])
+    if (!errors.includes(`Unknown token reference var(${token}) — no matching token in tokens.json`))
+      fail(`token-reference: var(${token}) avec fallback ou espaces doit être une violation`);
+}
+
+const dualHost = spawnSync(python, [
   'plugins/design/skills/enforce/fixtures/dual-host/design/lint/run-gates.py', '--config',
   'plugins/design/skills/enforce/fixtures/dual-host/design/lint/gates.config.json',
 ], { encoding: 'utf8' });
@@ -167,7 +225,7 @@ const writePivotConfig = (pivotReports) => writeFileSync(pivotConfig, JSON.strin
   targets: [resolve('plugins/design/skills/enforce/fixtures/utility-clean.html')],
   pivotReports,
 }), 'utf8');
-const runTempGate = () => spawnSync('python3', [
+const runTempGate = () => spawnSync(python, [
   'plugins/design/tools/run-gates.py', '--config', pivotConfig,
 ], { encoding: 'utf8' });
 
@@ -292,4 +350,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`✓ design-behave — ${skills.length}/${skills.length} suites structurées, autonomie + P0/P1/P2 vérifiées`);
+console.log(`✓ design-behave — ${skills.length}/${skills.length} Results log structurellement cohérents ; P0/P1/P2 vérifiés par run-gates`);

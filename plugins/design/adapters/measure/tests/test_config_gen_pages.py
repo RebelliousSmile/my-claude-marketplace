@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "contract-pages"
@@ -77,6 +79,7 @@ def test_ownership_targets_follow_the_page(tmp_path):
     assert {"site-header", "card"} <= classes
 
 
+@pytest.mark.browser
 def test_mockup_only_config_runs_in_mode_a(tmp_path):
     cfg_path = tmp_path / "a.config.json"
     cfg = _config(tmp_path, "a")
@@ -117,3 +120,30 @@ def test_check_without_pages_is_a_defect():
     result = _gen("--check", "--oracle", str(FIXTURE / "oracle-legacy.json"))
     assert result.returncode == 1
     assert "pages absent" in result.stdout
+
+
+def _oracle_copy(tmp_path: Path, mutate) -> Path:
+    oracle = json.loads((FIXTURE / "oracle.json").read_text(encoding="utf-8"))
+    mutate(oracle)
+    path = tmp_path / "oracle.json"
+    path.write_text(json.dumps(oracle), encoding="utf-8")
+    return path
+
+
+def test_check_and_page_agree_on_a_non_selector_collection(tmp_path):
+    def skip_collection(oracle):
+        oracle["pages"]["a"]["components"]["card"]["collections"]["cards"] = {"skip": "x"}
+    oracle = _oracle_copy(tmp_path, skip_collection)
+    result = _gen("--check", "--oracle", str(oracle))
+    assert result.returncode == 1
+    assert "a / card / collection cards : aucun sélecteur maquette" in result.stdout
+
+
+def test_null_page_is_invalid_input(tmp_path):
+    def null_page(oracle):
+        oracle["pages"]["a"] = None
+    oracle = _oracle_copy(tmp_path, null_page)
+    result = _gen("--oracle", str(oracle), "--page", "a", "--reference-url", "http://x",
+                  "--out", str(tmp_path / "a.config.json"))
+    assert result.returncode == 2, result.stderr
+    assert "Traceback" not in result.stderr
