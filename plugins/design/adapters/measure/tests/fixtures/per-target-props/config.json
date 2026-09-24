@@ -1,0 +1,12 @@
+{
+  "reference_url": "mockup.html",
+  "reference_page": null,
+  "implementation_url": "impl.html",
+  "breakpoints": [{ "name": "desktop", "width": 1280, "height": 800 }],
+  "props": ["fontSize", "color"],
+  "targets": [
+    { "name": "Grid · root", "mockup": ".grid", "implementation": ".grid", "props": ["display", "gridTemplateColumns"] },
+    { "name": "Title", "mockup": ".title", "implementation": ".title" }
+  ],
+  "headings_sel": { "mockup": "h1", "implementation": "h1" }
+}

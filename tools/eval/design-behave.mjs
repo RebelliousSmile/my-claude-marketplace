@@ -76,6 +76,28 @@ for (const required of ['hôte', 'modèle par défaut', 'séquentiellement', 'ag
 const copycatContract = readFileSync('plugins/design/agents/copycat.md', 'utf8');
 for (const required of ['Greenfield bulk', 'not** run `config-gen.py`', 'Mode B', 'Drift mode only'])
   if (!copycatContract.includes(required)) fail(`copycat: séparation brouillon/contrat absente (${required})`);
+for (const required of ['element_map:', 'mockup_url:', 'EVERY target of your config'])
+  if (!copycatContract.includes(required)) fail(`copycat: carte des éléments absente des Outputs (${required})`);
+const correspondence = readFileSync('plugins/design/references/correspondence-table-template.md', 'utf8');
+for (const required of ['## Carte des éléments', 'Mockup URL', 'Carte des éléments revue', 'two different mockup selectors'])
+  if (!correspondence.includes(required)) fail(`table de correspondance: carte des éléments absente (${required})`);
+if (!copycatFanout.includes('element_map'))
+  fail('define: agrégation de la carte des éléments absente');
+const freeze = readFileSync('plugins/design/skills/adjust/actions/02-freeze.md', 'utf8');
+for (const required of ['### Prouver le gate de fidélité', 'config-gen.py --components design/components.json --tokens design/tokens.json --oracle design/oracle.json --check', '--expect-pages', '--mode A --side mockup', 'UNPLACED', '**sans objet**', 'renvoi à `define`', 'confirmation de l\'utilisateur'])
+  if (!freeze.includes(required)) fail(`adjust: gate de fidélité non prouvé au gel (${required})`);
+if (freeze.indexOf('### Prouver le gate de fidélité') > freeze.indexOf('## Étape 2bis'))
+  fail('adjust: la preuve du gate doit précéder l\'Étape 2bis');
+for (const forbidden of ['override the `mockup` or `implementation` field', 'cue to override'])
+  if (copycatContract.includes(forbidden)) fail(`copycat: surcharge de sélecteur réapparue en dérive (${forbidden})`);
+for (const required of ['never edit, the generated mapping', 'never drop a generated target', 'regenerated from the contract'])
+  if (!copycatContract.includes(required)) fail(`copycat: mapping généré non imposé en dérive (${required})`);
+const fidelityGate = readFileSync('plugins/design/skills/enforce/actions/05-fidelity-gate.md', 'utf8');
+if (fidelityGate.includes('le compléter')) fail('enforce: 05-fidelity-gate demande encore de compléter le config');
+for (const required of ['Le config généré ne s\'édite pas', '`oracle.json` sans `pages`', 'renvoie à\n`adjust`'])
+  if (!fidelityGate.includes(required)) fail(`enforce: gate figé non appliqué (${JSON.stringify(required)})`);
+if (!readFileSync('plugins/design/references/gate-natures.md', 'utf8').includes('un élément non mappé est un défaut refusé au gel'))
+  fail('gate-natures: « non mappé » doit être un défaut de gel, pas une limite');
 
 const portability = readFileSync('plugins/design/references/host-portability.md', 'utf8');
 if (!portability.includes('Path(SKILL_FILE).resolve().parent.parent.parent'))

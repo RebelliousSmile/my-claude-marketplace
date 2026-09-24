@@ -1,6 +1,6 @@
 # Contract schema — cinq artefacts, une racine
 
-Le contrat est un répertoire d'artefacts adressables et d'une **racine** qui les identifie. Trois artefacts sont requis (`tokens.json`, `components.json`, `policies.json`) ; `oracle.json` et `deviations.json` sont optionnels — un contrat sans cible de mesure n'écrit pas le premier, un contrat sans écart toléré n'écrit pas le second.
+Le contrat est un répertoire d'artefacts adressables et d'une **racine** qui les identifie. Trois artefacts sont requis (`tokens.json`, `components.json`, `policies.json`) ; `oracle.json` et `deviations.json` sont conditionnels — un contrat sans référence mesurable n'écrit pas le premier, un contrat sans écart toléré n'écrit pas le second.
 
 | Fichier | Rôle | Écrit par | Lu par |
 |---|---|---|---|
@@ -8,7 +8,7 @@ Le contrat est un répertoire d'artefacts adressables et d'une **racine** qui le
 | `tokens.json` | Valeurs (couleurs, espacements, typographie, breakpoints…) au format W3C DTCG | `adjust/02-freeze.md` | `lint-core.mjs` Règles 2/4, `config-gen.py`, générateurs d'adapters |
 | `components.json` | Anatomie des composants — nomenclature déclarée, rien d'autre | `adjust/02-freeze.md` | `lint-core.mjs` Règles 1/5, `config-gen.py` |
 | `policies.json` | Politiques transverses — mode, usage des tokens, préfixes utilitaires, table des adapters | `adjust/02-freeze.md` | `lint-core.mjs` Règles 1/3/4, pivots `sc-*` |
-| `oracle.json` | Cibles de mesure — hints par composant | `adjust/02-freeze.md` | `config-gen.py` |
+| `oracle.json` | Cibles de mesure — hints par composant, gate figé par page | `adjust/02-freeze.md` | `config-gen.py` |
 | `deviations.json` | Écarts sanctionnés — la source structurée des tolérances de fidélité | `tools/migrate-contract.py --ledger`, main | `adapters/measure/measure.py`, `tools/generate.py` (vue Markdown) |
 
 `design-system.md` (charte prose) n'est **pas** un artefact du contrat : c'est une **entrée** dont `release.json § charter` enregistre la présence et la version. Aucun outil ne la lit ; `status.py` observe seulement qu'elle existe ou non.
@@ -221,19 +221,34 @@ Règle d'émission d'un adapter : `write-system-procedure.md § Adapter emission
 
 ## `oracle.json`
 
-Inerte pour le lint. Seul `config-gen.py` le lit. **Fichier optionnel** : un contrat sans cible de mesure ne l'écrit pas et ne le déclare pas dans `release.json § artifacts`.
+Inerte pour le lint. Seul `config-gen.py` le lit. **Requis quand la référence est mesurable** (maquette servie avec DOM, harness `setPage`) : il porte alors `pages`, le gate de fidélité figé par `adjust`. Sans référence mesurable (brief seul, maquette-image), le contrat ne l'écrit pas et ne le déclare pas dans `release.json § artifacts` — la fidélité y est sans objet.
 
 ```json
 {
   "$schema": "design/references/contract-schema#oracle",
   "components": {
     "<canonical-name>": {
+      "props": ["display", "gridTemplateColumns", "gap"],
       "elements": {
         "<element-label>": { "check_text": true, "props": ["fontSize", "color"] }
       },
       "collections": [
         { "name": "<label>", "item_selector": "<BEM-element>", "ack": { "id": "DEV-xxx", "reason": "<prose>" } }
       ]
+    }
+  },
+  "pages": {
+    "<page-key>": {
+      "components": {
+        "<canonical-name>": {
+          "root": "<mockup selector>",
+          "elements": {
+            "<element-label>": "<mockup selector>",
+            "<other-label>": { "skip": "<raison>" }
+          },
+          "collections": { "<collection-name>": "<mockup item selector>" }
+        }
+      }
     }
   }
 }
@@ -243,13 +258,21 @@ Inerte pour le lint. Seul `config-gen.py` le lit. **Fichier optionnel** : un con
 |---|---|---|---|
 | `$schema` | oui | informationnel | Toujours `"design/references/contract-schema#oracle"` |
 | `components.<name>.elements.<label>.check_text` | non | exécutable · `config-gen.py` | `true` sur les éléments dont le texte doit correspondre à la référence. Interdit sur les cibles en prose |
-| `components.<name>.elements.<label>.props` | non | exécutable · `config-gen.py` | Surcharge la liste de props token-dérivées pour cet élément |
+| `components.<name>.props` | non | exécutable · `config-gen.py`, `measure.py` | Props de la cible racine (mise en page : `display`, `gridTemplateColumns`, `gap`…). Remplace la liste token-dérivée pour cette cible |
+| `components.<name>.elements.<label>.props` | non | exécutable · `config-gen.py`, `measure.py` | Surcharge la liste de props token-dérivées pour cet élément : la remplace, sans union. Absente, la liste globale s'applique |
+| `pages` | oui si référence mesurable | exécutable · `config-gen.py --page`, `config-gen.py --check` | Gate figé. Clés = clés `setPage` du harness (la valeur que `--page` pose en `reference_page`) |
+| `pages.<page>.components.<name>` | — | exécutable · `config-gen.py` | Composant présent sur la page. Seuls ceux-là sont mesurés sur cette page |
+| `pages.<page>.components.<name>.root` | oui | exécutable · `config-gen.py` | Sélecteur maquette de la racine ; le côté implémentation reste la classe `base` |
+| `pages.<page>.components.<name>.elements.<label>` | oui, par élément | exécutable · `config-gen.py` | Sélecteur maquette de l'élément, ou `{ "skip": "<raison>" }` : exclusion explicite, non mesurée, reportée. Tout élément de `components.<name>.elements` a l'un ou l'autre |
+| `pages.<page>.components.<name>.collections.<collection>` | oui, par collection | exécutable · `config-gen.py` | Sélecteur maquette de l'item répété ; le côté implémentation reste `item_selector` |
 | `components.<name>.collections[].name` | — | exécutable · `config-gen.py` | Libellé de la structure répétée |
 | `components.<name>.collections[].item_selector` | — | exécutable · `config-gen.py` | Classe de l'item répété |
 | `components.<name>.collections[].ack` | non | exécutable · `adapters/measure/measure.py` | Pré-sanction d'une divergence attendue : `{ "id": "…", "reason": "…" }` |
 | `contract` | non | informationnel | Hints de mesure de portée contrat, hérités d'un `components.json § oracle` 1.x. Aucun consommateur ne les lit — seule la forme par composant en a un. Conservés pour ne rien perdre à la migration, à reventiler à la main |
 
 Les clés de `oracle.json § components` sont les noms canoniques de `components.json § components` ; les libellés d'élément sont ceux de `components.<name>.elements`. Un composant sans hint n'a pas d'entrée — `config-gen.py` génère quand même une cible par élément, sans `check_text` et avec les props par défaut.
+
+**Gate complet.** `config-gen.py --check` (sans URL) refuse (exit 1) : `pages` absent, page sans composant, composant inconnu, racine sans sélecteur, élément sans sélecteur ni `skip`, collection sans sélecteur, libellé inconnu. Il rapporte les exclusions et les composants présents sur aucune page — ceux-ci ne bloquent pas : aucune référence ne les montre, le lint seul les couvre. La config de mesure est un dérivé (`config-gen.py --page` + URLs) : elle ne se complète pas à la main ; un sélecteur faux se corrige ici, via `adjust`. Un `oracle.json` sans `pages` (contrat 2.x antérieur) reste lisible — mockup = classe DS, avec avertissement — mais `enforce` le refuse sur une référence mesurable.
 
 ## `deviations.json`
 

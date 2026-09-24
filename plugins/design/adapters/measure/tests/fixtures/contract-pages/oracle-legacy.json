@@ -1,0 +1,9 @@
+{
+  "$schema": "design/references/contract-schema#oracle",
+  "components": {
+    "card": {
+      "elements": { "title": { "check_text": true, "props": ["fontSize"] } },
+      "collections": [{ "name": "cards", "item_selector": "card" }]
+    }
+  }
+}

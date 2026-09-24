@@ -1,0 +1,23 @@
+{
+  "$schema": "design/references/contract-schema#oracle",
+  "components": {
+    "card": {
+      "props": ["display", "gap"],
+      "elements": { "title": { "check_text": true, "props": ["fontSize"] } },
+      "collections": [{ "name": "cards", "item_selector": "card" }]
+    }
+  },
+  "pages": {
+    "a": {
+      "components": {
+        "header": { "root": ".hdr", "elements": { "logo": ".hdr .logo", "nav": { "skip": "mockup nav is a flat image" } } },
+        "card": { "root": ".tile", "elements": { "title": ".tile h3", "body": ".tile p" }, "collections": { "cards": ".tile" } }
+      }
+    },
+    "b": {
+      "components": {
+        "footer": { "root": "footer", "elements": { "copy": "footer small" } }
+      }
+    }
+  }
+}

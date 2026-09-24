@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  body { margin: 0; font: 16px sans-serif; color: #111; }
+  .page { display: none; } .page.on { display: block; }
+  .tile { display: grid; gap: 12px; padding: 8px; }
+  .tile h3 { font-size: 24px; margin: 0; }
+</style></head><body>
+<section class="page" data-page="a">
+  <header class="hdr"><span class="logo">Logo</span><nav>Nav</nav></header>
+  <article class="tile"><h3>Card title</h3><p>Card body</p></article>
+</section>
+<section class="page" data-page="b"><footer><small>(c) 2026</small></footer></section>
+<script>
+  window.setPage = (k) => document.querySelectorAll('.page')
+    .forEach((s) => s.classList.toggle('on', s.dataset.page === k));
+  window.setPage('a');
+</script>
+</body></html>

@@ -35,7 +35,7 @@ Une wireframe est d’abord faite pour être regardée et commentée, pas pour d
 | `tokens.json` | valeurs nommées (W3C DTCG), source unique | ✓ | `lint-core.mjs`, adapters |
 | `components.json` | anatomie des composants | ✓ | `lint-core.mjs` |
 | `policies.json` | `mode`, préfixes utilitaires, usage, liste d'émission | ✓ | `lint-core.mjs`, `generate.py` |
-| `oracle.json` | cibles de mesure de fidélité | — | `config-gen.py` |
+| `oracle.json` | cibles de mesure et gate de fidélité figé par page | si référence mesurable | `config-gen.py` |
 | `deviations.json` | registre des écarts tolérés | — | `measure.py`, `generate.py` |
 
 `release.json` n'est pas un sixième artefact : c'est la **racine** qui déclare les autres, porte leurs versions, leurs empreintes, la provenance et le statut de maturité. Un dossier `design/` sans `release.json` est un contrat au format 1.x — le linter ne le parse pas, il sort en 3 et nomme la commande de migration.

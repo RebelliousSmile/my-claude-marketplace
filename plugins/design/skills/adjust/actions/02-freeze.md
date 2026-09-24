@@ -4,7 +4,7 @@
 
 Figer le contrat. Prend le brief d'arbitrage produit par `01-arbitrate` et :
 1. Canonise `design/tokens.json` (déduplique, vérifie les groupes requis).
-2. Écrit les artefacts dérivés — `components.json`, `policies.json`, et `oracle.json` seulement si le brief produit des cibles de mesure — conformes à `${DESIGN_PLUGIN_ROOT}/references/contract-schema.md`.
+2. Écrit les artefacts dérivés — `components.json`, `policies.json`, et `oracle.json` quand la référence est mesurable — conformes à `${DESIGN_PLUGIN_ROOT}/references/contract-schema.md`, puis prouve le gate de fidélité côté maquette.
 3. Marque `design/design-system.md` comme figé et bumpe la version.
 4. Écrit la racine `design/release.json` : versions par artefact, empreintes, provenance, statut.
 
@@ -79,15 +79,34 @@ Construire les artefacts à partir des composants résolus dans le brief d'arbit
 }
 ```
 
-`design/oracle.json` — cibles de mesure, écrit seulement si le brief en produit :
+`design/oracle.json` — cibles de mesure et gate de fidélité figé par page, écrit quand la référence est mesurable (§ Prouver le gate de fidélité) — même forme que `references/contract-schema.md § oracle.json` :
 
 ```json
 {
   "$schema": "design/references/contract-schema#oracle",
   "components": {
     "<canonical-name>": {
-      "elements": { "<label>": { "check_text": true, "props": [] } },
-      "collections": [{ "name": "", "item_selector": "", "ack": { } }]
+      "props": ["display", "gridTemplateColumns", "gap"],
+      "elements": {
+        "<element-label>": { "check_text": true, "props": ["fontSize", "color"] }
+      },
+      "collections": [
+        { "name": "<label>", "item_selector": "<BEM-element>", "ack": { "id": "DEV-xxx", "reason": "<prose>" } }
+      ]
+    }
+  },
+  "pages": {
+    "<page-key>": {
+      "components": {
+        "<canonical-name>": {
+          "root": "<mockup selector>",
+          "elements": {
+            "<element-label>": "<mockup selector>",
+            "<other-label>": { "skip": "<raison>" }
+          },
+          "collections": { "<collection-name>": "<mockup item selector>" }
+        }
+      }
     }
   }
 }
@@ -169,6 +188,19 @@ Si un volet ne peut pas être calculé — pas de tokens couleur résolubles, ou
 
 Une charte absente est elle-même un gap `charter-absent` (plafond `extracted`), enregistré ici avec `charter.present: false`.
 
+### Sous-étape — Écrire `oracle.json § pages` (référence mesurable)
+
+**Portée.** La référence est mesurable quand c'est une maquette servie avec un DOM (harness `setPage`, jeu d'URLs). Brief seul ou maquette-image seule : sous-étape et § Prouver le gate de fidélité **sans objet** — ni `--check` ni mesure, `release.json` ne déclare aucun gate de fidélité, et la sortie le dit.
+
+**Source.** La table de correspondance signée par `define` (checkpoint P2), section *Carte des éléments*, et l'URL de maquette de son en-tête. Référence mesurable sans carte signée : refus de figer, renvoi à `define`.
+
+1. **Rapprocher** chaque entrée de la carte du nom canonique de `components.json` et du libellé d'élément final (un composant renommé ou re-découpé par `destructure` se rattache, il ne bloque pas). Entrée orpheline — composant supprimé ou fusionné sans cible — listée dans la sortie, jamais écrite.
+2. **Couvrir** chaque élément canonique de chaque composant placé sur une page. Élément sans sélecteur dans la carte :
+   - proposer un sélecteur maquette, le prouver en Mode A (`measure.py --mode A --side mockup` sur une config réduite à cette cible : l'élément est trouvé, pas `missing`), et le soumettre à l'utilisateur avec les autres décisions de gel ;
+   - refusé ou non prouvable : `{ "skip": "<raison>" }`.
+   Aucun sélecteur hors carte n'entre dans `oracle.json` sans preuve Mode A et confirmation de l'utilisateur.
+3. **Écrire** `oracle.json § pages` (forme : § Structure minimale requise) et le déclarer dans `release.json § artifacts`. Un composant de `components.json` placé sur aucune page n'est pas écrit : il est listé `UNPLACED` dans la sortie, non bloquant.
+
 ### Écrire la racine `design/release.json`
 
 Dernière écriture de l'Étape 2 : sans elle il n'y a pas de contrat lisible, et l'Étape 2bis ne peut pas s'exécuter. Champs et sémantique : `${DESIGN_PLUGIN_ROOT}/references/contract-schema.md § release.json`.
@@ -192,6 +224,29 @@ python ${DESIGN_PLUGIN_ROOT}/tools/generate.py --contract design/
 Un artefact dérivé n'est jamais écrit à la main, ici ni ailleurs. La commande émet une entrée par `policies.json § adapters[]` déclarant un `consumer`, et grave dans `release.json § generated` l'empreinte de chaque source lue — le repère que `--check` opposera aux sources. Sans figeage, une source périmée est invisible.
 
 Exit 2 ⇒ contrat structurellement invalide : corriger l'artefact nommé, ne pas poursuivre le figeage.
+
+### Prouver le gate de fidélité
+
+Sans objet si la référence n'est pas mesurable (§ Écrire `oracle.json § pages`) : le dire, ne rien lancer. Sinon, avec `<maquette>` = l'URL de l'en-tête de la table signée :
+
+1. Complétude statique :
+   ```
+   python ${DESIGN_PLUGIN_ROOT}/adapters/measure/config-gen.py --components design/components.json --tokens design/tokens.json --oracle design/oracle.json --check
+   ```
+   Exit 1 ⇒ refus de figer : rapporter les lignes `DEFECT` telles quelles, corriger `oracle.json` et recommencer. Exit 2 ⇒ entrée invalide. Les lignes `SKIP` et `UNPLACED` sont rapportées, non bloquantes.
+2. Clés de page, une fois, quand la maquette est un fichier harness local :
+   ```
+   node ${DESIGN_PLUGIN_ROOT}/tools/harness-runtime-check.mjs <fichier maquette> --expect-pages <clé1,clé2,…>
+   ```
+   Exit ≠ 0 ⇒ refus de figer. Maquette servie par URL : une clé inconnue se révèle par des cibles `missing` au pas 3.
+3. Résolution côté maquette, pour chaque clé de `pages` :
+   ```
+   python ${DESIGN_PLUGIN_ROOT}/adapters/measure/config-gen.py --components design/components.json --tokens design/tokens.json --oracle design/oracle.json --page <clé> --reference-url <maquette> --out <tmp>/<clé>.config.json
+   python ${DESIGN_PLUGIN_ROOT}/adapters/measure/measure.py --config <tmp>/<clé>.config.json --mode A --side mockup --ledger-registry design/deviations.json --out <tmp>/<clé>.report.json
+   ```
+   Sans `--implementation-url` : seule la maquette est mesurée, et le registre n'est pas lu en Mode A. Toute ligne `missing` ⇒ refus de figer : le sélecteur figé ne résout pas, corriger `oracle.json` (ou `skip` motivé) et reprendre au pas 1.
+
+**Interdiction de figer** : ne pas passer à l'Étape 2bis ni à l'Étape 3 tant que `--check` ≠ 0, qu'une clé de page manque au harness ou qu'une cible maquette est `missing`.
 
 ## Étape 2bis — Réconciliation avec le code réel (retrofit)
 
@@ -265,7 +320,7 @@ Annoncer à l'utilisateur :
 > - `design/tokens.json` — {N} tokens canoniques, {X} alias créés, {Y} groupes complétés
 > - `design/components.json` — {M} composants ({P} ajouts, {Q} modifications, {R} suppressions)
 > - `design/policies.json` — mode {mode}, {A} adapters
-> - `design/oracle.json` — {O} composants ciblés *(ligne omise si le fichier n'a pas été écrit)*
+> - `design/oracle.json` — {Pg} pages, {T} cibles, {S} exclusions (`skip`), {Pr} sélecteurs proposés par `adjust` et confirmés ; orphelins : {liste} ; composants présents sur aucune page (`UNPLACED`) : {liste} *(référence non mesurable : « gate de fidélité sans objet — brief seul | maquette-image »)*
 > - `design/release.json` — statut {statut}, charte v{version charte}
 > - `design/design-system.md` — status: figé, version bumped {ancien} → {nouveau}
 >
@@ -275,7 +330,7 @@ Annoncer à l'utilisateur :
 
 Avant d'annoncer la complétion, vérifier mentalement :
 
-- [ ] `release.json` existe, `$format` vaut `2.0`, et déclare `tokens.json`, `components.json` et `policies.json`, plus `oracle.json` si le brief en a produit un ; chaque artefact déclaré est présent sur disque, aucun artefact non déclaré ne traîne à côté
+- [ ] `release.json` existe, `$format` vaut `2.0`, et déclare `tokens.json`, `components.json` et `policies.json`, plus `oracle.json` si la référence est mesurable ; chaque artefact déclaré est présent sur disque, aucun artefact non déclaré ne traîne à côté
 - [ ] `release.json § status` provient de `tools/status.py`, jamais écrit à la main
 - [ ] `contrast.py` n'a pas rendu exit 3 — ou une dérogation est enregistrée dans `deviations.json § active[]` et `--allow-unpaired` a été passé explicitement. Un contrat sans paire comparable ne se fige pas en silence
 - [ ] `release.json § checks` porte le résultat de `contrast.py` et de `status.py --states` (ou `null` si aucun contrôle n'a tourné) ; `checks.contrast` porte `pairs` à côté d'`allPass`, jamais `allPass` seul ; chaque paire de contraste échouée et chaque déclaration `.states` partielle a un `gap` correspondant, jamais une simple note en prose
@@ -289,5 +344,6 @@ Avant d'annoncer la complétion, vérifier mentalement :
 - [ ] `policies.json § mode` est écrit explicitement dans les deux modes ; chaque namespace visé par `usage.colorUtilityPrefixes` correspond à un groupe existant sous `tokens.json § color.*`
 - [ ] `policies.json § adapters` déclare chaque artefact dérivé attendu, sans consommateur `unknown` restant
 - [ ] `tools/generate.py --contract design/` a tourné après `release.json` ; `§ generated` porte une entrée par artefact émis, aucun dérivé écrit à la main
+- [ ] Référence mesurable : `config-gen.py --check` a rendu exit 0, `harness-runtime-check.mjs --expect-pages` exit 0 si la maquette est un harness local, et aucune cible `missing` dans les rapports Mode A `--side mockup` de chaque page ; chaque sélecteur hors carte a sa preuve Mode A et la confirmation de l'utilisateur. Référence non mesurable : ni `--check` ni mesure, dit dans la sortie
 - [ ] **Réconciliation Étape 2bis** : le scan mode-aware du code réel (via `lint-core.mjs`) ne remonte aucune divergence code→manifeste bloquante sur le glob concerné ; les divergences manifeste→code (le cas échéant) sont documentées en warning/ledger, jamais bloquantes ; comportement always-on confirmé (greenfield → scan vide → non-bloquant, rien à coder à part)
 - [ ] `design-system.md status:` == `figé`

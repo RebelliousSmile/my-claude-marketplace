@@ -2,10 +2,10 @@
 
 | Champ | Valeur |
 |---|---|
-| Version courante | 2.10.0 |
-| Dernière release | 2026-08-05 |
+| Version courante | 2.17.0 |
+| Dernière release | 2026-09-24 |
 
-> Cette mémoire couvre 2.6.0 puis saute à 2.10.0 : **2.7.x / 2.8.0 / 2.9.x ne sont pas résumés ici**, `plugins/design/CHANGELOG.md` fait foi pour eux.
+> Cette mémoire couvre 2.6.0 puis saute à 2.10.0 : **2.7.x / 2.8.0 / 2.9.x ne sont pas résumés ici**, `plugins/design/CHANGELOG.md` fait foi pour eux. De 2.10.0 à 2.17.0, seules les sections datées ci-dessous sont résumées.
 
 ## Architecture — verbe 0 + entonnoir 5 verbes
 
@@ -28,7 +28,7 @@
 | `design/tokens.json` (W3C DTCG) | valeurs nommées, source unique | `lint-core.mjs`, adapters |
 | `design/components.json` | anatomie seule | `lint-core.mjs` |
 | `design/policies.json` | `mode`, `$utilityPrefixes`, `usage`, liste d'émission des adapters | `lint-core.mjs`, `tools/generate.py` |
-| `design/oracle.json` | cibles de mesure de fidélité | `config-gen.py` |
+| `design/oracle.json` | cibles de mesure de fidélité + gate figé par page (`pages`, 2.17.0) | `config-gen.py` |
 
 `design/design-system.md` est une **entrée**, pas un artefact : `release.json § charter` constate sa présence et sa version.
 
@@ -203,3 +203,16 @@ Mode `utility-first` de 1ʳᵉ classe dans `lint-core.mjs` (vocabulaire fermé =
 - **Ne pas outiller un contournement ad hoc** : l'issue #21 demandait un install Chromium vers `/tmp` — retenu comme contournement de l'auteur, pas une contrainte de l'outillage ; résolu en documentant l'install standard (`pip install -r adapters/measure/requirements.txt` + `WIREFRAMES_CHROMIUM`) plutôt qu'en scriptant `/tmp`.
 
 Plan complet : `aidd_docs/tasks/2026_09/2026_09_01_wireframes-milestone-followups/`.
+
+## Gate de fidélité figé par adjust (2.17.0, 2026-09-24)
+
+- **Invariant** : le gate de fidélité est figé et prouvé par `adjust`, jamais complété par `enforce`. `oracle.json § pages.<clé setPage>.components.<canonique>` porte `root`, `elements` (sélecteur maquette ou `{skip: raison}`) et `collections` ; `config-gen.py --check` doit sortir 0 et chaque page doit résoudre en Mode A `--side mockup` avant l'Étape 2bis. Référence non mesurable (brief, maquette-image) : sans objet, dit explicitement.
+- Source des sélecteurs maquette : la *Carte des éléments* de la table de correspondance signée (P2), alimentée par l'`element_map` de chaque fragment `copycat`. Sélecteur hors carte = preuve Mode A + confirmation utilisateur.
+- `enforce` n'ajoute au config généré que URLs, auth `ownership`, `ledger`, `coverage_ack`. Contrat mesurable sans `pages` = refus renvoyant à `adjust`. `copycat` en dérive ne surcharge ni ne retire une cible.
+- `measure.py` : les `props` d'une cible remplacent la liste globale — des `props` d'élément dormantes dans un ancien `oracle.json` peuvent changer un verdict.
+- ⚠ Un bump + push ne met pas à jour le cache installé : réinstaller le plugin avant toute vérification en session.
+- ⚠ `adapters/lint-core.mjs` a une copie dans `skills/enforce/fixtures/dual-host/design/lint/lint-core.mjs` que `design-behave.mjs` exige identique octet pour octet : toute édition de la source (même un commentaire) se recopie dans la fixture.
+- `evals/scenarios.json` ne teste que le **routage** (`prompt → expect_action`) : un refus de gel ou de gate n'y est pas vérifié. Ces comportements sont gardés par présence de chaînes dans `tools/eval/design-behave.mjs` — une garde s'y prouve en la cassant (mutation) avant de la croire.
+- `pnpm test` est une chaîne `&&` : un eval rouge (ex. `debrief-contract`, déjà rouge sur `main` au 2026-09-24) masque tous les suivants, `design-behave` compris. Lancer les scripts restants un par un avant de conclure.
+
+Plan complet : `aidd_docs/tasks/2026_09/2026_09_24_fidelity-gate-frozen-by-adjust/`.

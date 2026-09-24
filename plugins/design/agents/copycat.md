@@ -94,7 +94,10 @@ is always the consumer's path; it is never plugin-relative.
 - Bulk: mutable `design/tokens.json` plus the candidate component inventory in
   `design/design-system.md`; these are inputs only and remain unfrozen.
 - Drift: the frozen contract rooted by `design/release.json`.
-- The breakpoint set, and a selector mapping (mockup selector ↔ target selector) per element.
+- The breakpoint set.
+- Bulk: a selector mapping (mockup selector ↔ target selector) per element. Drift: the mapping is
+  the one `config-gen.py --page` derives from the frozen `oracle.json § pages` — never supplied
+  or hand-written.
 - The deviation-ledger (read) to know which deltas are already sanctioned.
 
 # Method
@@ -146,15 +149,19 @@ is always the consumer's path; it is never plugin-relative.
    ```
    This gives you targets (one per component element from `.elements.*`), props (token-group
    → CSS), breakpoints (`tokens.breakpoint.*`), and any `check_text`/`collections` hints
-   declared in `oracle.json § components`. **Then extend/validate** by inspecting both DOMs:
-   confirm generated selectors resolve on both sides (`measure.py` reports them `missing` if
-   not, which is your cue to override the `mockup` or `implementation` field). Add page-specific targets for
-   elements not covered by the manifest (discovered in §2 or from visual zones in §4). The
+   declared in `oracle.json § components`. **Then apply, never edit, the generated mapping**: targets, selectors and props come from the
+   frozen contract. A target `missing` on the **mockup** side is a contract defect — report it to
+   `adjust` (the `enforce`→`adjust` loop of boundary 1); a target `missing` on the **implementation**
+   side is markup to correct toward the class in `components.json`. Never override a generated
+   selector field and never drop a generated target. Page-specific targets (elements discovered in
+   §2 or from visual zones in §4) may be **added**, never substituted, and are reported as
+   candidates for `oracle.json § pages`. The only other additions are environment data: URLs,
+   `ownership` auth, `ledger` ids from `deviations.json`, `coverage_ack`.
    In both modes, the config is project data, not a plugin asset — always write it to the project's QA tree by
    absolute path. In drift mode, **prefer classes declared in `components.json`** over ad-hoc or
    utility selectors so the mapping survives edits. In bulk, label selectors as candidates and
    never claim they are contract-governed. The config selectors and the markup are **coupled**:
-   if a later fix changes a class/element, you MUST reconcile the config in the same step (§10)
+   if a later fix changes a class/element, you MUST reconcile in the same step (§10)
    — a stale selector resolves to nothing and the oracle reports it `missing`, which silently
    *hides* your own fix instead of confirming it.
    **Mandatory in every Mode B config, in both modes (not optional, not "when relevant"):**
@@ -230,9 +237,10 @@ is always the consumer's path; it is never plugin-relative.
    If no `sc-<language>` exists, use the baseline and say so — but never hand-drive the stack to
    skip the pivot. Resolve `missing_sections` here too: a missing section is rebuilt from the
    mockup's content at the source, not faked.
-10. If a fix changed a class/selector/element, **reconcile the measure config** (§3) so its
-    selectors still resolve on both sides. An unreconciled config turns your fix into a
-    `missing` row, which reads as "unverified", not "done".
+10. If a fix changed a class/selector/element, **reconcile** so the selectors still resolve on both
+    sides. Bulk: update your own config. Drift: correct the markup toward `components.json`; the
+    config is only ever regenerated from the contract (`config-gen.py --page`). An unreconciled
+    selector turns your fix into a `missing` row, which reads as "unverified", not "done".
 11. Escalate to `adjust` **only** for a genuine contract gap (the needed token/component doesn't
     exist): extend + refreeze, then let `enforce` re-derive its rules from the new contract.
 12. Re-run the oracle and repeat 9–11 until the unit passes the **closure invariants** below at
@@ -286,6 +294,7 @@ Return a correspondence-table fragment for this page (per `${DESIGN_PLUGIN_ROOT}
 
 ```yaml
 page: <setPage key | URL>
+mockup_url: <URL of the mockup measured — adjust re-measures the frozen gate against it>
 breakpoints_measured: { desktop: measured, mobile: measured, tablet: derived }
 oracle_report: <project-qa-dir>/fidelity/<page>-<mode>.json   # project tree, gitignored — never plugin-relative
 missing_sections: []        # in mockup, absent in target — the DOMINANT delta, resolved/ledgered first
@@ -306,6 +315,11 @@ rows:
     confidence: high | medium | low        # visual rows only; omit on measured/derived rows
     action: align | extend | add-component | add-content
     routed_layer: tokens | markup | components | charter | content
+element_map:                # EVERY target of your config, diverging or not — not only the rows
+  - component: <candidate component name, draft label>
+    element: <candidate element label | root>
+    mockup_selector: <selector that resolved on the mockup>
+    collection: <collection name>   # only for a repeated-structure item selector
 proposed_extensions:        # action=extend / add-component — each justified (DS-prime)
   - { target: <…>, why: <why the contract grows rather than the mockup aligning> }
 conflicts_for_define: []    # cross-page disagreements you noticed — surfaced, not resolved
@@ -313,6 +327,12 @@ visual_noise: []            # confidence:low visual zones — surfaced for human
 proposed_ledger_entries: [] # tolerated DRY/SOLID deviations to record (P3)
 checklist_update: { page: <…>, status: measured|proposed }
 ```
+
+`element_map` is the source of the frozen fidelity gate: `adjust` reconciles its draft labels
+with the canonical names and writes each selector into `oracle.json § pages`. An element you
+measured but left out of the map is an element the gate will not measure. One entry per target
+and per collection of your config (§3: every candidate section has at least one), with the
+mockup selector exactly as it resolved.
 
 In **bulk** you stop here: `define` aggregates fragments, the human signs off the aggregated
 table (P2), `adjust` freezes — you never proceed past your own page. In **drift** the fragment

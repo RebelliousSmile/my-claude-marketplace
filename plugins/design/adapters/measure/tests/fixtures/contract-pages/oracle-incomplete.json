@@ -1,0 +1,16 @@
+{
+  "$schema": "design/references/contract-schema#oracle",
+  "components": {
+    "card": { "collections": [{ "name": "cards", "item_selector": "card" }] }
+  },
+  "pages": {
+    "a": {
+      "components": {
+        "header": { "elements": { "logo": ".hdr .logo", "nav": ".hdr nav" } },
+        "card": { "root": ".tile", "elements": { "title": ".tile h3" } },
+        "ghost": { "root": ".ghost" }
+      }
+    },
+    "b": { "components": {} }
+  }
+}
