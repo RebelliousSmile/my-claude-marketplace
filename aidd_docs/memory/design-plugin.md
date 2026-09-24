@@ -211,5 +211,8 @@ Plan complet : `aidd_docs/tasks/2026_09/2026_09_01_wireframes-milestone-followup
 - `enforce` n'ajoute au config généré que URLs, auth `ownership`, `ledger`, `coverage_ack`. Contrat mesurable sans `pages` = refus renvoyant à `adjust`. `copycat` en dérive ne surcharge ni ne retire une cible.
 - `measure.py` : les `props` d'une cible remplacent la liste globale — des `props` d'élément dormantes dans un ancien `oracle.json` peuvent changer un verdict.
 - ⚠ Un bump + push ne met pas à jour le cache installé : réinstaller le plugin avant toute vérification en session.
+- ⚠ `adapters/lint-core.mjs` a une copie dans `skills/enforce/fixtures/dual-host/design/lint/lint-core.mjs` que `design-behave.mjs` exige identique octet pour octet : toute édition de la source (même un commentaire) se recopie dans la fixture.
+- `evals/scenarios.json` ne teste que le **routage** (`prompt → expect_action`) : un refus de gel ou de gate n'y est pas vérifié. Ces comportements sont gardés par présence de chaînes dans `tools/eval/design-behave.mjs` — une garde s'y prouve en la cassant (mutation) avant de la croire.
+- `pnpm test` est une chaîne `&&` : un eval rouge (ex. `debrief-contract`, déjà rouge sur `main` au 2026-09-24) masque tous les suivants, `design-behave` compris. Lancer les scripts restants un par un avant de conclure.
 
 Plan complet : `aidd_docs/tasks/2026_09/2026_09_24_fidelity-gate-frozen-by-adjust/`.
