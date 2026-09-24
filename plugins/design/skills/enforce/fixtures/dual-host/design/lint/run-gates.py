@@ -192,34 +192,57 @@ def lint_markup(config: dict, config_path: Path, contract_dir: Path,
                     "  Install Node.js 18+, or remove the markup targets from "
                     f"{config_path}.")
 
+    # One process for every target: the linter reads the contract once and prints one JSON line
+    # per file, in argument order. Batches only split an argv that would exceed the Windows
+    # command-line limit (32 767 characters), well above an ordinary target list.
+    argv = ["node", str(linter), "--contract", str(contract_dir), "--json"]
+    if config.get("strict"):
+        argv.append("--strict")
+    batches: list[list[Path]] = [[]]
+    budget = 30000 - sum(len(a) + 3 for a in argv)
+    used = 0
     for target in targets:
-        argv = ["node", str(linter), str(target), "--contract", str(contract_dir), "--json"]
-        if config.get("strict"):
-            argv.append("--strict")
-        proc = subprocess.run(argv, capture_output=True, text=True, encoding="utf-8")
+        cost = len(str(target)) + 3
+        if batches[-1] and used + cost > budget:
+            batches.append([])
+            used = 0
+        batches[-1].append(target)
+        used += cost
+
+    for batch in batches:
+        proc = subprocess.run(argv + [str(t) for t in batch],
+                              capture_output=True, text=True, encoding="utf-8")
         if proc.returncode in (2, 3):
             # The linter already diagnosed it; its code is the run's code.
             sys.stderr.write(proc.stderr)
             raise GateError(proc.returncode)
         if proc.returncode not in (0, 1):
-            raise abort(f"{target}: linter returned unsupported exit {proc.returncode}; "
+            raise abort(f"{linter}: linter returned unsupported exit {proc.returncode}; "
                         "allowed protocol exits are 0, 1, 2 and 3.")
-        try:
-            report = json.loads(proc.stdout) if proc.stdout.strip() else {}
-        except json.JSONDecodeError as exc:
-            raise abort(f"{target}: linter returned invalid JSON: {exc}")
-        if not isinstance(report, dict):
-            raise abort(f"{target}: linter JSON root must be an object.")
-        report_realized = report.get("realized") or []
-        report_errors = report.get("errors") or []
-        if (not isinstance(report_realized, list)
-                or not all(isinstance(item, str) for item in report_realized)
-                or not isinstance(report_errors, list)
-                or not all(isinstance(item, str) for item in report_errors)):
-            raise abort(f"{target}: linter JSON needs string arrays `realized` and `errors`.")
-        realized.update(report_realized)
-        for message in report_errors:
-            violations.append(f"{target}: {message}")
+        lines = proc.stdout.splitlines() if proc.stdout.strip() else []
+        if lines and len(lines) != len(batch):
+            raise abort(f"{linter}: linter returned {len(lines)} JSON line(s) for "
+                        f"{len(batch)} target(s); one per target is expected.")
+        for target, line in zip(batch, lines):
+            try:
+                report = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise abort(f"{target}: linter returned invalid JSON: {exc}")
+            if not isinstance(report, dict):
+                raise abort(f"{target}: linter JSON root must be an object.")
+            if report.get("file", str(target)) != str(target):
+                raise abort(f"{target}: linter report names {report.get('file')!r}; "
+                            "reports must follow the argument order.")
+            report_realized = report.get("realized") or []
+            report_errors = report.get("errors") or []
+            if (not isinstance(report_realized, list)
+                    or not all(isinstance(item, str) for item in report_realized)
+                    or not isinstance(report_errors, list)
+                    or not all(isinstance(item, str) for item in report_errors)):
+                raise abort(f"{target}: linter JSON needs string arrays `realized` and `errors`.")
+            realized.update(report_realized)
+            for message in report_errors:
+                violations.append(f"{target}: {message}")
     return violations, realized
 
 

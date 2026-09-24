@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // lint-core.mjs — portable design-system linter
-// Usage: node lint-core.mjs <markup-file> [--contract <dir>] [--strict] [--report-unused]
-//        The contract directory is also accepted as a second positional, kept for the hooks
-//        already installed; new invocations are written in the named form.
+// Usage: node lint-core.mjs <markup-file>... [--contract <dir>] [--strict] [--report-unused]
+//        The contract directory is also accepted as a second positional after a single file,
+//        kept for the hooks already installed; new invocations are written in the named form.
 // Exit 0 = no error, 1 = at least one error, 2 = invocation/environment error,
 //      3 = contract in the 1.x format, migration required.
 //
 // PERIMETER — what a green run does and does not establish.
-//   Scans ONE markup file as text. Five rules, all derived at runtime from tokens.json +
+//   Scans each markup file as text, independently. Five rules, all derived at runtime from tokens.json +
 //   components.json + policies.json; no hard-coded value, no AST, no CSS, no cross-file state.
 //   In scope : literal class="…"/className="…", var(--…) references, raw hex inside
 //              style="…" and inline <style>, shaded colour-utility namespaces.
@@ -21,12 +21,13 @@
 //   Every run states the contract it resolved and by which route; a guessed contract that is
 //   not the only one of its tree is refused (exit 2) rather than picked.
 //
-// Also invoked, unmodified and per-file, by `adjust/02-freeze.md § Étape 2bis` over the
-// mode-derived glob, so code-vs-contract has one scanning implementation. Rules 1 and 4 carry
+// Several files per call share one read of the contract and get one verdict each; the exit code
+// is 1 when any of them has an error. Also invoked, unmodified, by `adjust/02-freeze.md § Étape
+// 2bis` over the mode-derived glob, so code-vs-contract has one scanning implementation. Rules 1 and 4 carry
 // the blocking code → manifest direction; the manifest → code direction is --report-unused,
 // which never affects the exit code.
 
-import { readFileSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
 import { resolve, dirname, relative } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -39,13 +40,13 @@ const rawArgs = process.argv.slice(2);
 const strict = rawArgs.includes('--strict');
 const reportUnused = rawArgs.includes('--report-unused');
 // Machine-readable report for tools/run-gates.py. Under --json, stdout is either empty or
-// exactly one JSON object: every diagnostic path already writes to stderr, so nothing else
+// one JSON object per markup file, one per line: every diagnostic path already writes to stderr, so nothing else
 // can reach it. Adds no rule and changes no exit code — it is a second rendering of the run.
 const jsonOut = rawArgs.includes('--json');
 
 const usageBanner =
-  'Usage: node lint-core.mjs <markup-file> [--contract <dir>] [<contract-dir>] [--strict] [--report-unused] [--json]\n' +
-  '  Scans ONE markup file as text. Five rules, one file at a time, no state between runs:\n' +
+  'Usage: node lint-core.mjs <markup-file>... [--contract <dir>] [<contract-dir>] [--strict] [--report-unused] [--json]\n' +
+  '  Scans each markup file as text. Five rules, one file at a time, no state between files:\n' +
   '  class vocabulary (BEM mode), var(--…) references, raw hex in style="…"/<style>,\n' +
   '  colour-utility namespaces (utility-first mode), unused manifest entries (--report-unused).\n' +
   '  Not covered: CSS, dynamic bindings, stored content, contrast, ARIA, cross-file checks.\n' +
@@ -74,9 +75,16 @@ for (let i = 0; i < rawArgs.length; i++) {
   positional.push(a);
 }
 
-const [htmlFile, positionalContract] = positional;
+// The trailing contract positional is only recognised in its historical shape: exactly two
+// positionals, the second a directory, or a missing path when no --contract is given (the
+// historical "Contract not found" diagnosis). Every other positional is a markup file.
+const legacyContract = positional.length === 2 && (existsSync(positional[1])
+  ? statSync(positional[1]).isDirectory()
+  : !namedContract);
+const htmlFiles = legacyContract ? positional.slice(0, 1) : positional;
+const positionalContract = legacyContract ? positional[1] : undefined;
 
-if (!htmlFile) {
+if (!htmlFiles.length) {
   console.error(usageBanner);
   process.exit(2);
 }
@@ -90,9 +98,6 @@ if (namedContract && positionalContract && resolve(namedContract) !== resolve(po
 }
 
 const contractDirArg = namedContract || positionalContract;
-
-const htmlPath = resolve(htmlFile);
-const htmlDir = dirname(htmlPath);
 const cwd = process.cwd();
 
 // Resolve contract dir:
@@ -161,7 +166,11 @@ function refuseAmbiguous(root, nested, origin) {
   process.exit(2);
 }
 
-function findContractDir() {
+// A guess is made per markup directory, and a directory is walked once whatever the number of
+// files it holds.
+const guessed = new Map();
+
+function findContractDir(htmlDir) {
   if (contractDirArg) {
     const d = resolve(contractDirArg);
     const origin = namedContract ? '--contract' : 'the positional argument';
@@ -170,6 +179,11 @@ function findContractDir() {
     console.error(`Contract not found in provided dir: ${contractDirArg}`);
     process.exit(2);
   }
+  if (!guessed.has(htmlDir)) guessed.set(htmlDir, guessContractDir(htmlDir));
+  return guessed.get(htmlDir);
+}
+
+function guessContractDir(htmlDir) {
   if (isContractDir(htmlDir)) {
     const nested = nestedContractDirs(htmlDir);
     if (nested.length) refuseAmbiguous(htmlDir, nested, 'the markup directory');
@@ -192,12 +206,10 @@ function findContractDir() {
   process.exit(2);
 }
 
-const { dir: contractDir, origin: contractOrigin } = findContractDir();
-
 // Read the artifacts release.json declares. An artifact declared but absent, or unparseable, is
 // an environment error (exit 2) — never a silent fallback: every rule below is derived from one
 // of these files, and a missing file would leave rules inert and return a green run over nothing.
-function readArtifact(name) {
+function readArtifact(contractDir, name) {
   const path = resolve(contractDir, name);
   if (!existsSync(path)) {
     console.error(`Artifact declared by release.json but missing: ${path}`);
@@ -211,12 +223,6 @@ function readArtifact(name) {
   }
 }
 
-const release = readArtifact('release.json');
-const declared = Object.keys(release.artifacts || {});
-if (!declared.length) {
-  console.error(`release.json declares no artifact: ${resolve(contractDir, 'release.json')}`);
-  process.exit(2);
-}
 // The five rules derive from these three. An undeclared one is not a smaller contract, it is a
 // disabled rule: components.json missing leaves Rule 1 with an empty vocabulary and every class
 // valid, policies.json missing leaves Rules 3 and 4 inert, and the run still returns 0. Since
@@ -225,37 +231,28 @@ if (!declared.length) {
 // measurable (the frozen fidelity gate), config-gen.py --check proves it at freeze, and no lint
 // rule below reads it.
 const REQUIRED = ['tokens.json', 'components.json', 'policies.json'];
-const undeclared = REQUIRED.filter((name) => !declared.includes(name));
-if (undeclared.length) {
-  console.error(
-    `release.json declares no ${undeclared.join(', ')}: ${resolve(contractDir, 'release.json')}\n` +
-    `  Declared: ${declared.join(', ') || '(none)'}\n` +
-    '  The five lint rules derive from tokens.json, components.json and policies.json.\n' +
-    '  Undeclared, they would go inert and the run would return 0 over nothing.'
-  );
-  process.exit(2);
-}
-// Presence and parseability are checked for every declared artifact, including those no rule
-// below consumes (oracle.json is read by the measure adapter, not by these five rules).
-const artifacts = Object.fromEntries(declared.map((name) => [name, readArtifact(name)]));
-const tokens = artifacts['tokens.json'] || {};
-const manifest = artifacts['components.json'] || {};
-const policies = artifacts['policies.json'] || {};
-// An absent or unreadable markup file is an invocation error (exit 2), not a violation: left
-// unguarded, the throw exits 1 and a mistyped path reads in CI as a failed lint on real markup.
-let html;
-try {
-  html = readFileSync(htmlPath, 'utf8');
-} catch (e) {
-  console.error(`Unreadable markup file ${htmlPath}: ${e.message}`);
-  process.exit(2);
-}
 
-// Build valid class sets from the component anatomy — no hard-coded values
-const components = manifest.components || {};
-const validClasses = new Set();
-const knownBases = new Set();
-const utilityPrefixes = policies.$utilityPrefixes || [];
+function readArtifacts(contractDir) {
+  const release = readArtifact(contractDir, 'release.json');
+  const declared = Object.keys(release.artifacts || {});
+  if (!declared.length) {
+    console.error(`release.json declares no artifact: ${resolve(contractDir, 'release.json')}`);
+    process.exit(2);
+  }
+  const undeclared = REQUIRED.filter((name) => !declared.includes(name));
+  if (undeclared.length) {
+    console.error(
+      `release.json declares no ${undeclared.join(', ')}: ${resolve(contractDir, 'release.json')}\n` +
+      `  Declared: ${declared.join(', ') || '(none)'}\n` +
+      '  The five lint rules derive from tokens.json, components.json and policies.json.\n' +
+      '  Undeclared, they would go inert and the run would return 0 over nothing.'
+    );
+    process.exit(2);
+  }
+  // Presence and parseability are checked for every declared artifact, including those no rule
+  // below consumes (oracle.json is read by the measure adapter, not by these five rules).
+  return Object.fromEntries(declared.map((name) => [name, readArtifact(contractDir, name)]));
+}
 
 // Shape refusal. An artifact whose shape does not match its declaration is an environment error
 // (exit 2), never a violation and never a pass. The sites below are taken on faith otherwise, and
@@ -273,7 +270,7 @@ function shapeOf(v) {
   return /^[aeiou]/.test(t) ? `an ${t}` : `a ${t}`;
 }
 
-function refuseShape(artifact, fieldPath, expected, got) {
+function refuseShape(contractDir, artifact, fieldPath, expected, got) {
   // The value is shown, not just its type: on `"btn"` or `42` the type alone leaves the reader
   // hunting for which entry is wrong. Truncated, because a malformed field is often a whole
   // object pasted at the wrong depth, and an untruncated dump buries the message it carries.
@@ -290,58 +287,39 @@ function refuseShape(artifact, fieldPath, expected, got) {
 
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
-if (manifest.components !== undefined && !isPlainObject(manifest.components)) {
-  refuseShape('components.json', 'components', 'an object', manifest.components);
-}
-for (const [name, comp] of Object.entries(components)) {
-  if (!isPlainObject(comp)) refuseShape('components.json', `components.${name}`, 'an object', comp);
-  if (typeof comp.base !== 'string' || !comp.base) {
-    refuseShape('components.json', `components.${name}.base`, 'a non-empty string', comp.base);
+function checkShapes(contractDir, manifest, policies) {
+  const refuse = (...args) => refuseShape(contractDir, ...args);
+  if (manifest.components !== undefined && !isPlainObject(manifest.components)) {
+    refuse('components.json', 'components', 'an object', manifest.components);
   }
-  for (const sub of ['elements', 'modifiers']) {
-    if (comp[sub] === undefined) continue;
-    if (!isPlainObject(comp[sub])) {
-      refuseShape('components.json', `components.${name}.${sub}`, 'an object', comp[sub]);
+  for (const [name, comp] of Object.entries(manifest.components || {})) {
+    if (!isPlainObject(comp)) refuse('components.json', `components.${name}`, 'an object', comp);
+    if (typeof comp.base !== 'string' || !comp.base) {
+      refuse('components.json', `components.${name}.base`, 'a non-empty string', comp.base);
     }
-    for (const [key, cls] of Object.entries(comp[sub])) {
-      if (typeof cls !== 'string' || !cls) {
-        refuseShape('components.json', `components.${name}.${sub}.${key}`, 'a non-empty string', cls);
+    for (const sub of ['elements', 'modifiers']) {
+      if (comp[sub] === undefined) continue;
+      if (!isPlainObject(comp[sub])) {
+        refuse('components.json', `components.${name}.${sub}`, 'an object', comp[sub]);
+      }
+      for (const [key, cls] of Object.entries(comp[sub])) {
+        if (typeof cls !== 'string' || !cls) {
+          refuse('components.json', `components.${name}.${sub}.${key}`, 'a non-empty string', cls);
+        }
       }
     }
   }
-}
-if (policies.$utilityPrefixes !== undefined) {
-  if (!Array.isArray(policies.$utilityPrefixes)) {
-    refuseShape('policies.json', '$utilityPrefixes', 'an array of strings', policies.$utilityPrefixes);
-  }
-  policies.$utilityPrefixes.forEach((p, i) => {
-    if (typeof p !== 'string') {
-      refuseShape('policies.json', `$utilityPrefixes[${i}]`, 'a string', p);
+  if (policies.$utilityPrefixes !== undefined) {
+    if (!Array.isArray(policies.$utilityPrefixes)) {
+      refuse('policies.json', '$utilityPrefixes', 'an array of strings', policies.$utilityPrefixes);
     }
-  });
+    policies.$utilityPrefixes.forEach((p, i) => {
+      if (typeof p !== 'string') {
+        refuse('policies.json', `$utilityPrefixes[${i}]`, 'a string', p);
+      }
+    });
+  }
 }
-
-for (const comp of Object.values(components)) {
-  validClasses.add(comp.base);
-  knownBases.add(comp.base);
-  for (const cls of Object.values(comp.elements || {})) validClasses.add(cls);
-  for (const cls of Object.values(comp.modifiers || {})) validClasses.add(cls);
-}
-
-// Mode is declared, never inferred. Inferring it from an empty component set turned an
-// unwritten contract into a green utility-first run; a 2.0 contract always carries it.
-const mode = policies.mode;
-if (mode !== 'bem' && mode !== 'utility-first') {
-  console.error(
-    `policies.json declares no usable mode (${JSON.stringify(mode)}): ${resolve(contractDir, 'policies.json')}\n` +
-    '  Expected "bem" or "utility-first". The tool does not infer it.'
-  );
-  process.exit(2);
-}
-
-// Additive `usage` block; absent on BEM-only contracts, which leaves Rules 3/4 inert.
-// Shape: references/contract-schema.md § policies.json.
-const usage = policies.usage || null;
 
 // Flatten token paths from tokens.json — no hard-coded paths
 function flattenTokenPaths(obj, prefix) {
@@ -357,36 +335,74 @@ function flattenTokenPaths(obj, prefix) {
   return paths;
 }
 
-const { themes: _themes, ...baseTokens } = tokens;
-const tokenPaths = flattenTokenPaths(baseTokens, '');
+// Everything the rules read, derived once per contract. Called after the first markup file of
+// that contract is read: an unreadable file is reported before a malformed contract, as it was
+// when the tool took a single file.
+function deriveContract(contractDir, artifacts) {
+  const tokens = artifacts['tokens.json'] || {};
+  const manifest = artifacts['components.json'] || {};
+  const policies = artifacts['policies.json'] || {};
+  checkShapes(contractDir, manifest, policies);
 
-// Forward-map each token path to the CSS custom property the generator emits: `--` + path,
-// `.` → `-`. Forward only — reversing var → path is ambiguous when a segment already contains
-// a hyphen. Must mirror references/token-schema.md § Adapter: design/adapters/tokens.css.
-// A theme overlay re-declares the SAME var name in its own selector block, and may only
-// override a path already present in the base tree, so `themes` is excluded from the flatten
-// and themed references need no handling here.
-const validVars = new Set([...tokenPaths].map((p) => '--' + p.replace(/\./g, '-')));
+  // Build valid class sets from the component anatomy — no hard-coded values
+  const components = manifest.components || {};
+  const validClasses = new Set();
+  const knownBases = new Set();
+  for (const comp of Object.values(components)) {
+    validClasses.add(comp.base);
+    knownBases.add(comp.base);
+    for (const cls of Object.values(comp.elements || {})) validClasses.add(cls);
+    for (const cls of Object.values(comp.modifiers || {})) validClasses.add(cls);
+  }
 
-const errors = [];
-const warnings = [];
-// Which of the five rules actually ran, marked at the rule site so the list cannot drift from
-// the guards. A rule left inert by `mode` or by an absent `usage` block is absent here: a green
-// run says nothing about a rule that never executed, and the runner must be able to see that.
-const realized = [];
+  // Mode is declared, never inferred. Inferring it from an empty component set turned an
+  // unwritten contract into a green utility-first run; a 2.0 contract always carries it.
+  const mode = policies.mode;
+  if (mode !== 'bem' && mode !== 'utility-first') {
+    console.error(
+      `policies.json declares no usable mode (${JSON.stringify(mode)}): ${resolve(contractDir, 'policies.json')}\n` +
+      '  Expected "bem" or "utility-first". The tool does not infer it.'
+    );
+    process.exit(2);
+  }
+
+  const { themes: _themes, ...baseTokens } = tokens;
+  const tokenPaths = flattenTokenPaths(baseTokens, '');
+  return {
+    components,
+    validClasses,
+    knownBases,
+    utilityPrefixes: policies.$utilityPrefixes || [],
+    mode,
+    // Additive `usage` block; absent on BEM-only contracts, which leaves Rules 3/4 inert.
+    // Shape: references/contract-schema.md § policies.json.
+    usage: policies.usage || null,
+    colorNamespaces: new Set(Object.keys(baseTokens.color || {})),
+    // Forward-map each token path to the CSS custom property the generator emits: `--` + path,
+    // `.` → `-`. Forward only — reversing var → path is ambiguous when a segment already contains
+    // a hyphen. Must mirror references/token-schema.md § Adapter: design/adapters/tokens.css.
+    // A theme overlay re-declares the SAME var name in its own selector block, and may only
+    // override a path already present in the base tree, so `themes` is excluded from the flatten
+    // and themed references need no handling here.
+    validVars: new Set([...tokenPaths].map((p) => '--' + p.replace(/\./g, '-'))),
+  };
+}
+
+const classAttrs = (html) => html.matchAll(/class(?:Name)?\s*=\s*["']([^"']+)["']/g);
 
 // Rule 1: class vocabulary (ERROR) — BEM mode only; Rules 3/4 carry utility-first instead.
 // Flags only classes whose block part is a declared base. Literal `class="…"`/`className="…"`
 // only — dynamic bindings are an accepted gap, covered by the sc-<language>:design-bridge pivot.
-if (mode !== 'utility-first') {
-  realized.push('class-vocabulary');
-  for (const match of html.matchAll(/class(?:Name)?\s*=\s*["']([^"']+)["']/g)) {
+function ruleClassVocabulary(html, c, out) {
+  if (c.mode === 'utility-first') return;
+  out.realized.push('class-vocabulary');
+  for (const match of classAttrs(html)) {
     for (const cls of match[1].trim().split(/\s+/)) {
       if (!cls) continue;
       const blockPart = cls.split('__')[0].split('--')[0];
-      if (knownBases.has(blockPart)) {
-        if (!validClasses.has(cls)) {
-          errors.push(`Unknown design-system class "${cls}" (block "${blockPart}" is declared but this element/modifier is not)`);
+      if (c.knownBases.has(blockPart)) {
+        if (!c.validClasses.has(cls)) {
+          out.errors.push(`Unknown design-system class "${cls}" (block "${blockPart}" is declared but this element/modifier is not)`);
         }
         continue;
       }
@@ -396,8 +412,8 @@ if (mode !== 'utility-first') {
       if (!strict) continue;
       const isBemShaped = cls.includes('__') || cls.includes('--');
       if (!isBemShaped) continue;
-      if (utilityPrefixes.some((p) => cls.startsWith(p))) continue;
-      warnings.push(`BEM-shaped class "${cls}" has no declared block "${blockPart}" — typo, or add "${blockPart}" to components.json, or its prefix to policies.json § $utilityPrefixes`);
+      if (c.utilityPrefixes.some((p) => cls.startsWith(p))) continue;
+      out.warnings.push(`BEM-shaped class "${cls}" has no declared block "${blockPart}" — typo, or add "${blockPart}" to components.json, or its prefix to policies.json § $utilityPrefixes`);
     }
   }
 }
@@ -406,11 +422,13 @@ if (mode !== 'utility-first') {
 // Catches var(--token-name) references to non-existent tokens, including `var( --x )` and the
 // fallback form `var(--x, #000)`: a fallback hides the unknown token on screen, it does not
 // make it declared.
-realized.push('token-reference');
-for (const match of html.matchAll(/var\(\s*(--[\w-]+)\s*[,)]/g)) {
-  const varName = match[1];
-  if (!validVars.has(varName)) {
-    errors.push(`Unknown token reference var(${varName}) — no matching token in tokens.json`);
+function ruleTokenReference(html, c, out) {
+  out.realized.push('token-reference');
+  for (const match of html.matchAll(/var\(\s*(--[\w-]+)\s*[,)]/g)) {
+    const varName = match[1];
+    if (!c.validVars.has(varName)) {
+      out.errors.push(`Unknown token reference var(${varName}) — no matching token in tokens.json`);
+    }
   }
 }
 
@@ -418,17 +436,18 @@ for (const match of html.matchAll(/var\(\s*(--[\w-]+)\s*[,)]/g)) {
 // Scoped to `style="…"` and inline `<style>` only: both are unambiguous CSS-value contexts, so
 // hex-shaped strings elsewhere (`href="#cafe"`, hash routes) cannot false-positive. Generated
 // adapters are never lint targets, so they need no path exclusion.
-if (usage && usage.rawHexForbidden) {
-  realized.push('raw-hex');
+function ruleRawHex(html, c, out) {
+  if (!(c.usage && c.usage.rawHexForbidden)) return;
+  out.realized.push('raw-hex');
   const hexRe = /#[0-9a-fA-F]{3,8}\b/g;
   for (const match of html.matchAll(/style\s*=\s*["']([^"']*)["']/g)) {
     for (const hex of match[1].matchAll(hexRe)) {
-      errors.push(`Raw hex colour "${hex[0]}" in style="…" is forbidden by usage.rawHexForbidden — use a design token (var(--…)) instead`);
+      out.errors.push(`Raw hex colour "${hex[0]}" in style="…" is forbidden by usage.rawHexForbidden — use a design token (var(--…)) instead`);
     }
   }
   for (const match of html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)) {
     for (const hex of match[1].matchAll(hexRe)) {
-      errors.push(`Raw hex colour "${hex[0]}" in <style> block is forbidden by usage.rawHexForbidden — use a design token (var(--…)) instead`);
+      out.errors.push(`Raw hex colour "${hex[0]}" in <style> block is forbidden by usage.rawHexForbidden — use a design token (var(--…)) instead`);
     }
   }
 }
@@ -440,13 +459,14 @@ if (usage && usage.rawHexForbidden) {
 // Shape constraint: those prefixes are dual-purpose (`text-lg`, `border-2`, `ring-offset-2` are
 // not colours), and only `<prefix>-<namespace>-<2-3 digit shade>` is treated as a colour
 // reference. Trade-off: unshaded keywords (`bg-white`) escape the check.
-if (mode === 'utility-first' && usage && Array.isArray(usage.colorUtilityPrefixes) && usage.colorUtilityPrefixes.length) {
-  realized.push('colour-namespace');
-  const colorNamespaces = new Set(Object.keys(baseTokens.color || {}));
-  const escaped = usage.colorUtilityPrefixes.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+function ruleColourNamespace(html, c, out) {
+  const prefixes = c.usage && c.usage.colorUtilityPrefixes;
+  if (c.mode !== 'utility-first' || !Array.isArray(prefixes) || !prefixes.length) return;
+  out.realized.push('colour-namespace');
+  const escaped = prefixes.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   const classRe = new RegExp(`^(?:${escaped.join('|')})-(.+)$`);
   const shadedRe = /^([a-z][a-z0-9]*)-(\d{2,3})$/;
-  for (const match of html.matchAll(/class(?:Name)?\s*=\s*["']([^"']+)["']/g)) {
+  for (const match of classAttrs(html)) {
     for (const cls of match[1].trim().split(/\s+/)) {
       if (!cls) continue;
       const m = classRe.exec(cls);
@@ -454,8 +474,8 @@ if (mode === 'utility-first' && usage && Array.isArray(usage.colorUtilityPrefixe
       const shaded = shadedRe.exec(m[1]);
       if (!shaded) continue;
       const namespace = shaded[1];
-      if (!colorNamespaces.has(namespace)) {
-        errors.push(`Colour utility class "${cls}" uses namespace "${namespace}" not declared under tokens.json § color.* (allowed: ${[...colorNamespaces].join(', ') || '(none declared)'})`);
+      if (!c.colorNamespaces.has(namespace)) {
+        out.errors.push(`Colour utility class "${cls}" uses namespace "${namespace}" not declared under tokens.json § color.* (allowed: ${[...c.colorNamespaces].join(', ') || '(none declared)'})`);
       }
     }
   }
@@ -464,51 +484,82 @@ if (mode === 'utility-first' && usage && Array.isArray(usage.colorUtilityPrefixe
 // Rule 5: `--report-unused` (REPORT-ONLY) — the manifest → code direction. Lists manifest entries
 // with no literal occurrence in this file. Deliberately outside `errors`/`warnings`: it never
 // changes the exit code, since an entry may be declared ahead of its first use.
-// A single run only proves "unused in this file"; `adjust/02-freeze.md § Étape 2bis` concludes
+// A single file only proves "unused in this file"; `adjust/02-freeze.md § Étape 2bis` concludes
 // "unused in the project" only when every file of the glob reports it.
 // Limit: literal substring search, no AST — a dynamically assembled class name is a false
 // positive, which is why this direction never blocks.
-const unused = [];
-if (reportUnused) {
-  realized.push('unused-declaration');
-  for (const comp of Object.values(components)) {
+function ruleUnused(html, c, out) {
+  if (!reportUnused) return;
+  out.realized.push('unused-declaration');
+  for (const comp of Object.values(c.components)) {
     const entries = [comp.base, ...Object.values(comp.elements || {}), ...Object.values(comp.modifiers || {})];
     for (const entry of entries) {
-      if (entry && !html.includes(entry)) unused.push(entry);
+      if (entry && !html.includes(entry)) out.unused.push(entry);
     }
   }
 }
 
-// Report. The resolved contract is stated on every run, pass or fail: a verdict is only
+const RULES = [ruleClassVocabulary, ruleTokenReference, ruleRawHex, ruleColourNamespace, ruleUnused];
+
+// Report. The resolved contract is stated for every file, pass or fail: a verdict is only
 // meaningful against a named contract, and a reader must never have to infer which one.
-const label = `[lint-core] ${htmlFile}`;
-
-if (jsonOut) {
-  process.stdout.write(JSON.stringify({
-    tool: 'lint-core',
-    file: htmlFile,
-    contract: contractDir,
-    contractOrigin,
-    mode,
-    strict,
-    realized,
-    errors,
-    warnings,
-    unused,
-    exit: errors.length ? 1 : 0,
-  }) + '\n');
-  process.exit(errors.length ? 1 : 0);
+function report(htmlFile, contractDir, contractOrigin, c, out) {
+  const { errors, warnings, unused } = out;
+  if (jsonOut) {
+    process.stdout.write(JSON.stringify({
+      tool: 'lint-core',
+      file: htmlFile,
+      contract: contractDir,
+      contractOrigin,
+      mode: c.mode,
+      strict,
+      realized: out.realized,
+      errors,
+      warnings,
+      unused,
+      exit: errors.length ? 1 : 0,
+    }) + '\n');
+    return;
+  }
+  const label = `[lint-core] ${htmlFile}`;
+  console.log(`  CONTRACT ${contractDir} (${contractOrigin}), mode ${c.mode}`);
+  for (const w of warnings) console.warn(`  WARN  ${w}`);
+  for (const e of errors) console.error(`  ERROR ${e}`);
+  for (const u of unused) console.log(`  UNUSED ${u} — declared in manifest, no literal occurrence in ${htmlFile} (report-only, never blocking)`);
+  if (errors.length) {
+    console.error(`${label}: ${errors.length} error(s), ${warnings.length} warning(s) — FAIL`);
+  } else {
+    console.log(`${label}: ${warnings.length} warning(s)${reportUnused ? `, ${unused.length} unused (report-only)` : ''} — OK`);
+  }
 }
 
-console.log(`  CONTRACT ${contractDir} (${contractOrigin}), mode ${mode}`);
-for (const w of warnings) console.warn(`  WARN  ${w}`);
-for (const e of errors) console.error(`  ERROR ${e}`);
-for (const u of unused) console.log(`  UNUSED ${u} — declared in manifest, no literal occurrence in ${htmlFile} (report-only, never blocking)`);
+const artifactsByDir = new Map();
+const derivedByDir = new Map();
+let failed = false;
 
-if (errors.length) {
-  console.error(`${label}: ${errors.length} error(s), ${warnings.length} warning(s) — FAIL`);
-  process.exit(1);
-} else {
-  console.log(`${label}: ${warnings.length} warning(s)${reportUnused ? `, ${unused.length} unused (report-only)` : ''} — OK`);
-  process.exit(0);
+for (const htmlFile of htmlFiles) {
+  const htmlPath = resolve(htmlFile);
+  const { dir: contractDir, origin: contractOrigin } = findContractDir(dirname(htmlPath));
+  if (!artifactsByDir.has(contractDir)) artifactsByDir.set(contractDir, readArtifacts(contractDir));
+  // An absent or unreadable markup file is an invocation error (exit 2), not a violation: left
+  // unguarded, the throw exits 1 and a mistyped path reads in CI as a failed lint on real markup.
+  let html;
+  try {
+    html = readFileSync(htmlPath, 'utf8');
+  } catch (e) {
+    console.error(`Unreadable markup file ${htmlPath}: ${e.message}`);
+    process.exit(2);
+  }
+  if (!derivedByDir.has(contractDir)) {
+    derivedByDir.set(contractDir, deriveContract(contractDir, artifactsByDir.get(contractDir)));
+  }
+  // Which of the five rules actually ran, marked at the rule site so the list cannot drift from
+  // the guards. A rule left inert by `mode` or by an absent `usage` block is absent here: a green
+  // run says nothing about a rule that never executed, and the runner must be able to see that.
+  const out = { realized: [], errors: [], warnings: [], unused: [] };
+  for (const rule of RULES) rule(html, derivedByDir.get(contractDir), out);
+  report(htmlFile, contractDir, contractOrigin, derivedByDir.get(contractDir), out);
+  if (out.errors.length) failed = true;
 }
+
+process.exit(failed ? 1 : 0);

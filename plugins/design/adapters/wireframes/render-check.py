@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
-import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
@@ -39,8 +39,13 @@ def request_allowed(url: str, root: Path) -> bool:
 
 
 def _static_lint(path: Path, report_path: Path) -> int:
+    """Runs the static lint in this interpreter: same arguments, report and exit code as its
+    command line, without paying a second Python start-up per board."""
     script = Path(__file__).resolve().parents[2] / "tools" / "wireframes-lint.py"
-    return subprocess.run([sys.executable, str(script), str(path), "--report", str(report_path)], check=False).returncode
+    spec = importlib.util.spec_from_file_location("wireframes_lint", script)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.main([str(path), "--report", str(report_path)])
 
 
 def _browser_check(path: Path, executable: str | None) -> tuple[list[dict], list[str]]:

@@ -158,9 +158,10 @@ from colors import normalize_color  # noqa: E402
 
 # Browser waits, in ms. NAV bounds a navigation or load; the settles let late layout land.
 NAV_TIMEOUT_MS = 20000
-SETTLE_MS = 300
-MOCKUP_SETTLE_MS = 500   # the SPA mockup re-renders on setViewport/setPage
-HOOK_SETTLE_MS = 750     # a login hook submits a form before the navigation starts
+SETTLE_MS = 300          # screenshot.py: fixed pause before a capture
+SETTLE_TIMEOUT_MS = 5000  # cap on the _SETTLED wait; past it the page is measured as it stands
+MOCKUP_SETTLE_MS = 500   # the SPA mockup re-renders on setViewport/setPage: no signal to wait on
+HOOK_SETTLE_MS = 750     # a hook off the login page may navigate: no signal says whether it will
 
 # JS injected to read getComputedStyle for each target on the current page.
 # When check_text is true, also captures __text (normalised textContent) for P7 text-parity.
@@ -202,20 +203,10 @@ _COLLECT = """(args) => {
 # match the measured node, and applies the author-cascade dimensions relevant to a DS/platform
 # conflict (importance, inline style, specificity, then source order). The returned winner is
 # classified in Python so the same provenance rule is unit-testable without Chromium.
-_OWNERSHIP = """(target) => {
-  const el = document.querySelector(target.selector);
-  if (!el) {
-    const nearby = target.diagnostic_selector ? Array.from(document.querySelectorAll(target.diagnostic_selector))
-      .slice(0, 5).map(node => {
-        const chain = []; let current = node;
-        for (let i = 0; current && i < 5; i++, current = current.parentElement)
-          chain.push({tag: current.tagName.toLowerCase(), classes: Array.from(current.classList || [])});
-        return chain;
-      }) : undefined;
-    return {unrealized: `missing element: ${target.selector}`, nearby};
-  }
-  const prop = target.prop;
-  const candidates = [];
+_OWNERSHIP = """(input) => {
+  // One target or a list of them: the author rules are walked once, then matched per target.
+  const many = Array.isArray(input);
+  const rules = [];
   let order = 0;
   let layerOrder = 0;
 
@@ -251,24 +242,11 @@ _OWNERSHIP = """(target) => {
     return [0, ids, classes, types + pseudoElements];
   }
 
-  function visit(rules, source, layer = null) {
-    for (const rule of Array.from(rules || [])) {
+  function visit(list, source, layer = null) {
+    for (const rule of Array.from(list || [])) {
       order += 1;
       if (rule.type === 1 && rule.selectorText) {
-        const matched = splitSelectors(rule.selectorText).filter(s => {
-          try { return el.matches(s); } catch (_) { return false; }
-        });
-        const value = rule.style.getPropertyValue(prop);
-        if (matched.length && value) {
-          matched.sort((a, b) => {
-            const sa = specificity(a), sb = specificity(b);
-            for (let i = 0; i < 4; i++) if (sa[i] !== sb[i]) return sb[i] - sa[i];
-            return 0;
-          });
-          candidates.push({source, selector: matched[0], value: value.trim(),
-            important: rule.style.getPropertyPriority(prop) === 'important',
-            specificity: specificity(matched[0]), order, layer});
-        }
+        rules.push({rule, source, order, layer, selectors: splitSelectors(rule.selectorText)});
       } else if (rule.styleSheet && rule.styleSheet.cssRules) {
         visit(rule.styleSheet.cssRules, rule.styleSheet.href || source, layer);
       } else if (rule.cssRules) {
@@ -284,26 +262,68 @@ _OWNERSHIP = """(target) => {
     const source = sheet.href || `inline:${order}`;
     try { visit(sheet.cssRules, source); } catch (_) { /* cross-origin sheet: not inspectable */ }
   }
-  const inline = el.style.getPropertyValue(prop);
-  if (inline) candidates.push({source: 'inline-style', selector: '<inline>', value: inline.trim(),
-    important: el.style.getPropertyPriority(prop) === 'important', specificity: [1, 0, 0, 0],
-    order: ++order, layer: null, inline: true});
-  if (!candidates.length) return {unrealized: `no inspectable declaration for ${prop}`,
-    computed: getComputedStyle(el).getPropertyValue(prop).trim()};
-  candidates.sort((a, b) => {
-    if (a.important !== b.important) return a.important ? 1 : -1;
-    if (a.inline !== b.inline && (a.inline || b.inline)) return a.inline ? 1 : -1;
-    const aLayered = a.layer !== null, bLayered = b.layer !== null;
-    if (aLayered !== bLayered) {
-      if (a.important) return aLayered ? 1 : -1;
-      return aLayered ? -1 : 1;
+
+  function probe(target) {
+    const el = document.querySelector(target.selector);
+    if (!el) {
+      const nearby = target.diagnostic_selector ? Array.from(document.querySelectorAll(target.diagnostic_selector))
+        .slice(0, 5).map(node => {
+          const chain = []; let current = node;
+          for (let i = 0; current && i < 5; i++, current = current.parentElement)
+            chain.push({tag: current.tagName.toLowerCase(), classes: Array.from(current.classList || [])});
+          return chain;
+        }) : undefined;
+      return {unrealized: `missing element: ${target.selector}`, nearby};
     }
-    if (aLayered && a.layer !== b.layer) return a.important ? b.layer - a.layer : a.layer - b.layer;
-    for (let i = 0; i < 4; i++) if (a.specificity[i] !== b.specificity[i]) return a.specificity[i] - b.specificity[i];
-    return a.order - b.order;
-  });
-  return {computed: getComputedStyle(el).getPropertyValue(prop).trim(), winner: candidates[candidates.length - 1]};
+    const prop = target.prop;
+    const candidates = [];
+    for (const entry of rules) {
+      const value = entry.rule.style.getPropertyValue(prop);
+      if (!value) continue;
+      const matched = entry.selectors.filter(s => {
+        try { return el.matches(s); } catch (_) { return false; }
+      });
+      if (!matched.length) continue;
+      matched.sort((a, b) => {
+        const sa = specificity(a), sb = specificity(b);
+        for (let i = 0; i < 4; i++) if (sa[i] !== sb[i]) return sb[i] - sa[i];
+        return 0;
+      });
+      candidates.push({source: entry.source, selector: matched[0], value: value.trim(),
+        important: entry.rule.style.getPropertyPriority(prop) === 'important',
+        specificity: specificity(matched[0]), order: entry.order, layer: entry.layer});
+    }
+    const inline = el.style.getPropertyValue(prop);
+    if (inline) candidates.push({source: 'inline-style', selector: '<inline>', value: inline.trim(),
+      important: el.style.getPropertyPriority(prop) === 'important', specificity: [1, 0, 0, 0],
+      order: order + 1, layer: null, inline: true});
+    if (!candidates.length) return {unrealized: `no inspectable declaration for ${prop}`,
+      computed: getComputedStyle(el).getPropertyValue(prop).trim()};
+    candidates.sort((a, b) => {
+      if (a.important !== b.important) return a.important ? 1 : -1;
+      if (a.inline !== b.inline && (a.inline || b.inline)) return a.inline ? 1 : -1;
+      const aLayered = a.layer !== null, bLayered = b.layer !== null;
+      if (aLayered !== bLayered) {
+        if (a.important) return aLayered ? 1 : -1;
+        return aLayered ? -1 : 1;
+      }
+      if (aLayered && a.layer !== b.layer) return a.important ? b.layer - a.layer : a.layer - b.layer;
+      for (let i = 0; i < 4; i++) if (a.specificity[i] !== b.specificity[i]) return a.specificity[i] - b.specificity[i];
+      return a.order - b.order;
+    });
+    return {computed: getComputedStyle(el).getPropertyValue(prop).trim(), winner: candidates[candidates.length - 1]};
+  }
+
+  const results = (many ? input : [input]).map(probe);
+  return many ? results : results[0];
 }"""
+
+# Settled once web fonts are in and no finite animation or transition is still running; an
+# infinite one never ends, so it does not hold the measure back. getAnimations() flushes pending
+# style first, so a transition a viewport change just started is already listed.
+_SETTLED = """() => document.fonts.status === 'loaded'
+  && document.getAnimations().every(a => a.playState !== 'running'
+       || !a.effect || a.effect.getComputedTiming().endTime === Infinity)"""
 
 # JS injected to isolate the active .preview-frame by detaching non-active ones (P3).
 # Each breakpoint opens a fresh page, so detaching is safe and permanent for this measurement.
@@ -315,6 +335,18 @@ _ISOLATE_FRAME = """(v) => {
     if (!isActive && f.parentNode) f.parentNode.removeChild(f);
   });
 }"""
+
+
+def _settle(page) -> None:
+    """Wait for _SETTLED, bounded: a page that never settles is measured as it stands."""
+    try:
+        page.wait_for_function(_SETTLED, timeout=SETTLE_TIMEOUT_MS)
+    except Exception:  # playwright TimeoutError; the pause was a best effort before too
+        pass
+
+
+def _viewport(bp: dict) -> dict:
+    return {"width": bp["width"], "height": bp["height"]}
 
 
 def _prepare_mockup(page, page_key, mockup_viewport):
@@ -526,31 +558,36 @@ def _measure_ownership(browser, cfg: dict, base_dir: Path) -> dict:
         state_raw = os.environ.get(state_env, "") if state_env else ""
         hook = os.environ.get(hook_env, "") if hook_env else ""
         requires_auth = bool(surface.get("requires_auth"))
+        storage = None
+        if state_raw:
+            try:
+                storage = json.loads(state_raw)
+            except ValueError:
+                storage = str(Path(state_raw).expanduser())
+        logged_in = False  # a login hook ran: its session is in `storage`, later breakpoints reuse it
         for bp in cfg["breakpoints"]:
             if requires_auth and not state_raw and not hook:
                 measured[surface_name][bp["name"]] = _unrealized_ownership_rows(
                     targets, f"authenticated surface unavailable; set {state_env or hook_env}")
                 continue
-            context_args = {"viewport": {"width": bp["width"], "height": bp["height"]}}
-            if state_raw:
-                try:
-                    context_args["storage_state"] = json.loads(state_raw)
-                except ValueError:
-                    context_args["storage_state"] = str(Path(state_raw).expanduser())
+            context_args = {"viewport": _viewport(bp)}
+            if storage:
+                context_args["storage_state"] = storage
             ctx = browser.new_context(**context_args)
             try:
                 page = ctx.new_page()
                 page.goto(_resolve_url(surface["url"], base_dir), wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
-                if hook:
-                    was_login = "wp-login.php" in page.url
+                was_login = "wp-login.php" in page.url
+                if hook and (was_login or not logged_in):
                     page.evaluate(hook)
-                    page.wait_for_timeout(HOOK_SETTLE_MS)
                     if was_login:
                         page.wait_for_url(re.compile(r"^(?!.*wp-login\.php).*$"),
                                           wait_until="load", timeout=NAV_TIMEOUT_MS)
+                        storage, logged_in = ctx.storage_state(), True
                     else:
+                        page.wait_for_timeout(HOOK_SETTLE_MS)
                         page.wait_for_load_state("load", timeout=NAV_TIMEOUT_MS)
-                    page.wait_for_timeout(SETTLE_MS)
+                _settle(page)
                 scope = page
                 frame_selector = surface.get("frame_selector")
                 if frame_selector:
@@ -561,13 +598,12 @@ def _measure_ownership(browser, cfg: dict, base_dir: Path) -> dict:
                     measured[surface_name][bp["name"]] = _unrealized_ownership_rows(
                         targets, f"editor canvas unavailable: {frame_selector}")
                     continue
-                rows = []
-                for target in targets:
-                    if target.get("unrealized_reason") or not target.get("prop"):
-                        rows.extend(_unrealized_ownership_rows([target], "no declared DS property"))
-                        continue
-                    rows.append(_classify_ownership(scope.evaluate(_OWNERSHIP, target), target))
-                measured[surface_name][bp["name"]] = rows
+                probed = [t for t in targets if t.get("prop") and not t.get("unrealized_reason")]
+                results = iter(scope.evaluate(_OWNERSHIP, probed) if probed else [])
+                measured[surface_name][bp["name"]] = [
+                    _classify_ownership(next(results), t) if t in probed
+                    else _unrealized_ownership_rows([t], "no declared DS property")[0]
+                    for t in targets]
             except Exception as exc:  # browser/navigation failures are evidence gaps, not tracebacks
                 measured[surface_name][bp["name"]] = _unrealized_ownership_rows(
                     targets, f"surface measurement failed: {exc}")
@@ -590,12 +626,20 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
+        impl_ctx = w = None
         try:
+            if mode == "B" or side == "implementation":
+                # One load for every breakpoint: media queries follow the resize.
+                impl_ctx = browser.new_context(viewport=_viewport(cfg["breakpoints"][0]))
+                w = impl_ctx.new_page()
+                w.goto(_resolve_url(cfg["implementation_url"], base_dir),
+                       wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
             for bp in cfg["breakpoints"]:
-                ctx = browser.new_context(viewport={"width": bp["width"], "height": bp["height"]})
-                try:
-                    mock = impl = None
-                    if mode == "B" or side == "mockup":
+                mock = impl = None
+                if mode == "B" or side == "mockup":
+                    # A fresh load per breakpoint: _ISOLATE_FRAME detaches the other frames for good.
+                    ctx = browser.new_context(viewport=_viewport(bp))
+                    try:
                         m = ctx.new_page()
                         m.goto(_resolve_url(cfg["reference_url"], base_dir),
                                wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
@@ -605,18 +649,16 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
                             mock_headings = _headings(m, hsel.get("mockup", "h1, h2"))
                         if collections and mock_coll is None:
                             mock_coll = _collect(m, collections, "mockup")
-                    if mode == "B" or side == "implementation":
-                        w = ctx.new_page()
-                        w.goto(_resolve_url(cfg["implementation_url"], base_dir),
-                               wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
-                        w.wait_for_timeout(SETTLE_MS)
-                        impl = _grab(w, targets, props, "implementation", check_text)
-                        if impl_headings is None:
-                            impl_headings = _headings(w, hsel.get("implementation", "h1, h2"))
-                        if collections and impl_coll is None:
-                            impl_coll = _collect(w, collections, "implementation")
-                finally:
-                    ctx.close()
+                    finally:
+                        ctx.close()
+                if w is not None:
+                    w.set_viewport_size(_viewport(bp))
+                    _settle(w)
+                    impl = _grab(w, targets, props, "implementation", check_text)
+                    if impl_headings is None:
+                        impl_headings = _headings(w, hsel.get("implementation", "h1, h2"))
+                    if collections and impl_coll is None:
+                        impl_coll = _collect(w, collections, "implementation")
 
                 rows = []
                 for t in targets:
@@ -649,6 +691,8 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
             if mode == "B" and cfg.get("ownership"):
                 report["ownership"] = _measure_ownership(browser, cfg, base_dir)
         finally:
+            if impl_ctx is not None:
+                impl_ctx.close()
             browser.close()
 
     if mode == "B":

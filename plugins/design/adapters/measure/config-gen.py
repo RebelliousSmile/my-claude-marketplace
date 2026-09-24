@@ -380,14 +380,18 @@ def _derive_ownership_targets(components: dict, oracle_hints: dict,
     found: dict[tuple[str, str, str], dict] = {}
     seen_classes: set[str] = set()
     sources = [Path(path).name for path in stylesheets]
+    # A selector's classes are read once, then intersected with the contract's. A class counts
+    # only as a whole token after a dot that follows no word character (`a.btn` is not `.btn`),
+    # and matches keep the contract's order so the targets come out in a stable order.
+    rank = {cls: index for index, cls in enumerate(classes)}
     for stylesheet in stylesheets:
         text = Path(stylesheet).read_text(encoding="utf-8")
         for selector_group, body in _css_rules(text):
             declared = _declarations(body)
             for selector in (part.strip() for part in selector_group.split(",")):
-                for cls, (label, hinted) in classes.items():
-                    if not re.search(rf"(?<![\w-])\.{re.escape(cls)}(?![\w-])", selector):
-                        continue
+                hits = set(re.findall(r"(?<![\w-])\.([\w-]+)", selector)) & rank.keys()
+                for cls in sorted(hits, key=rank.__getitem__):
+                    label, hinted = classes[cls]
                     seen_classes.add(cls)
                     props = [prop for prop in declared if not hinted or prop in hinted]
                     for prop in props:

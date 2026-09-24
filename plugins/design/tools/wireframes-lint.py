@@ -223,13 +223,13 @@ def safe_fix(text: str, result: dict, manifest: dict) -> tuple[str, list[str]]:
     return fixed, applied
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Static lint for canonical design wireframes")
     parser.add_argument("file")
     parser.add_argument("--report")
     parser.add_argument("--fix", action="store_true")
     parser.add_argument("--fix-out")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     path = Path(args.file).resolve()
     try:
         text = path.read_text(encoding="utf-8")
