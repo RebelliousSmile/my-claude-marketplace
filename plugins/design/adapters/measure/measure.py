@@ -45,8 +45,11 @@ Config (JSON):
     # A value with no scheme is a path RELATIVE TO THE CONFIG FILE, resolved to a file:// URL —
     # so a self-contained fixture stays portable across machines (no baked absolute path).
     "breakpoints": [{"name":"desktop","width":1440,"height":900,"mockup_viewport":"desktop"}],
-    "props": ["fontSize", ...],
-    "targets": [{"name":"Hero · title","mockup":"<sel>","implementation":"<sel>"}],
+    "props": ["fontSize", ...],                  # global list; optional only when every target
+                                                  # declares its own "props"
+    "targets": [{"name":"Hero · title","mockup":"<sel>","implementation":"<sel>",
+                 "props": ["display", ...]}],     # optional per-target props REPLACE the global
+                                                  # list for that target (contract-schema § oracle)
     "headings_sel": {"mockup":"h1, h2","implementation":"h1, h2"},  # optional — completeness scope
     "coverage_ack": {"sections":["..."],"reason":"..."},  # optional — justify which sections
                                                           # are deliberately unmeasured (non-empty
@@ -163,7 +166,7 @@ _GRAB = """(args) => {
     if (!el) { out[t.name] = { __missing: sel || null }; continue; }
     const cs = getComputedStyle(el);
     const o = {};
-    for (const p of props) o[p] = cs[p];
+    for (const p of (t.props && t.props.length ? t.props : props)) o[p] = cs[p];
     const do_text = t.check_text !== undefined ? t.check_text : check_text;
     if (do_text) o['__text'] = (el.textContent || '').replace(/\\s+/g, ' ').trim();
     out[t.name] = o;
@@ -318,6 +321,19 @@ def _prepare_mockup(page, page_key, mockup_viewport):
     # Detach non-active frames so document.querySelector hits the right one (P3).
     page.evaluate(_ISOLATE_FRAME, mockup_viewport or "desktop")
     page.wait_for_timeout(400)
+
+
+def _target_props(target: dict, props: list) -> list:
+    """Props measured on one target: its own list replaces the global one; absent, the global
+    list applies. Mirrors contract-schema § oracle.json (element props override the default)."""
+    return target.get("props") or props
+
+
+def _targets_without_props(cfg: dict) -> list:
+    """Target names left with no prop to measure: no own list and no global fallback."""
+    if cfg.get("props"):
+        return []
+    return [t["name"] for t in cfg.get("targets", []) if not t.get("props")]
 
 
 def _grab(page, targets, props, side, check_text=False):
@@ -669,7 +685,7 @@ def _measure_ownership(browser, cfg: dict, base_dir: Path) -> dict:
 
 def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
     report: dict = {"mode": mode, "mockup_page": cfg.get("reference_page"), "breakpoints": {}}
-    props = cfg["props"]
+    props = cfg.get("props") or []
     targets = cfg["targets"]
     check_text = cfg.get("check_text", False)
     collections = cfg.get("collections", [])
@@ -725,7 +741,7 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
                                      "searched": {"mockup": t.get("mockup"),
                                                   "implementation": t.get("implementation")}})
                         continue
-                    for p in props:
+                    for p in _target_props(t, props):
                         rows.append({"element": name, "prop": p,
                                      "mockup": m_v[p], "implementation": i_v[p],
                                      "match": _color_match(p, m_v[p], i_v[p])})
@@ -1040,6 +1056,11 @@ def main():
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    unmeasurable = _targets_without_props(cfg)
+    if unmeasurable:
+        print("config error: no global 'props' and no per-target 'props' for: "
+              + ", ".join(unmeasurable), file=sys.stderr)
+        sys.exit(2)
     base_dir = Path(args.config).resolve().parent
     report = measure(cfg, args.mode, args.side, base_dir)
 

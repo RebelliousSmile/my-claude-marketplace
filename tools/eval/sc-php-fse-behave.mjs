@@ -93,11 +93,11 @@ const pytestTmp = mkdtempSync(join(tempRoot, 'fse-ownership-'));
 const python = process.platform === 'win32' ? 'python' : 'python3';
 try {
   const tested = spawnSync(python, ['-m', 'pytest',
-    'plugins/design/adapters/measure/tests/test_cascade_ownership.py', '-q', '--basetemp', pytestTmp],
-  { encoding: 'utf8' });
+    'plugins/design/adapters/measure/tests', '-q', '--basetemp', pytestTmp],
+  { encoding: 'utf8', env: { ...process.env, PYTHONUTF8: '1' } });
   if (tested.stdout) process.stdout.write(tested.stdout);
   if (tested.stderr) process.stderr.write(tested.stderr);
-  if (tested.status !== 0) fail(`oracle ownership: pytest exit ${tested.status}`);
+  if (tested.status !== 0) fail(`oracle measure tests: pytest exit ${tested.status}`);
 } finally {
   rmSync(pytestTmp, { recursive: true, force: true });
 }

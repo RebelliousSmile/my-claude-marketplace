@@ -10,7 +10,8 @@
   "props": ["fontSize", "fontWeight", "lineHeight", "color"],
   "targets": [
     { "name": "Header · title", "mockup": ".header__title", "implementation": ".header__title", "check_text": true },
-    { "name": "Header · lede", "mockup": ".header__lede", "implementation": ".header__lede" }
+    { "name": "Header · lede", "mockup": ".header__lede", "implementation": ".header__lede" },
+    { "name": "Header · layout", "mockup": ".header", "implementation": ".header", "props": ["display", "gridTemplateColumns", "gap"] }
   ],
   "headings_sel": { "mockup": "h1, h2, h3", "implementation": "h1, h2, h3" },
   "ownership": {
