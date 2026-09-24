@@ -1,6 +1,6 @@
 ---
 objective: "Les constats de la review du gate figé et de l'audit design du 2026-09-24 sont corrigés ou écartés avec une raison, et les suites design tournent en local comme en CI."
-status: in-progress
+status: implemented
 ---
 
 # Plan: corrections review + audit design
