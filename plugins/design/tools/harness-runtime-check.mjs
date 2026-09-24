@@ -23,23 +23,31 @@
 //                                                   [--oracle-config path.json]
 
 import { readFileSync } from 'node:fs';
+import { parseArgs } from 'node:util';
 import vm from 'node:vm';
 
-const argv = process.argv.slice(2);
-const file = argv.find((a) => !a.startsWith('--'));
-const valueAfter = (flag) => {
-  const i = argv.indexOf(flag);
-  return i === -1 ? null : argv[i + 1] || null;
-};
-const expectRaw = valueAfter('--expect-pages');
-const expectPages =
-  expectRaw === null ? [] : String(expectRaw).split(',').map((s) => s.trim()).filter(Boolean);
-const oracleConfig = valueAfter('--oracle-config');
-
-if (!file) {
-  console.error('usage: harness-runtime-check.mjs <file.html> [--expect-pages a,b] [--oracle-config c.json]');
+const USAGE = 'usage: harness-runtime-check.mjs <file.html> [--expect-pages a,b] [--oracle-config c.json]';
+// A flag consumes its value, wherever the positional sits: `--expect-pages home f.html`
+// checks f.html, never a file named `home`.
+let parsed;
+try {
+  parsed = parseArgs({
+    options: { 'expect-pages': { type: 'string' }, 'oracle-config': { type: 'string' } },
+    allowPositionals: true,
+  });
+} catch (e) {
+  console.error(`${e.message}
+${USAGE}`);
   process.exit(1);
 }
+const { values, positionals } = parsed;
+if (positionals.length !== 1) {
+  console.error(USAGE);
+  process.exit(1);
+}
+const [file] = positionals;
+const expectPages = (values['expect-pages'] ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+const oracleConfig = values['oracle-config'] ?? null;
 
 const fail = (msg) => {
   console.error(`FAIL runtime ${file}: ${msg}`);

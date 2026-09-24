@@ -432,5 +432,7 @@ invariant "oracle-known"      pass "$OUT/m.html" --oracle-config "$OUT/oracle-ok
 invariant "oracle-unknown"    fail "$OUT/m.html" --oracle-config "$OUT/oracle-bad.json"
 invariant "oracle-null"       pass "$OUT/m.html" --oracle-config "$OUT/oracle-null.json"
 invariant "oracle-absent"     fail "$OUT/m.html" --oracle-config "$OUT/no-such-config.json"
+# A flag consumes its value wherever the file sits: the file is checked, never read as `home`.
+invariant "flag-before-file"  pass --expect-pages home,contact "$OUT/m.html"
 
 if [ "$fail" -eq 0 ]; then echo "ALL GREEN"; exit 0; else echo "SELFTEST FAILED"; exit 1; fi

@@ -14,16 +14,16 @@ PAGE = Path(__file__).resolve().parent / "fixtures" / "screenshot" / "page.html"
 def test_both_sides_are_captured_full_page(tmp_path):
     from PIL import Image
 
-    # screenshot.py imports playwright at module level: loaded here, under the browser marker.
     spec = importlib.util.spec_from_file_location("design_screenshot", ROOT / "screenshot.py")
     screenshot = importlib.util.module_from_spec(spec)
     assert spec.loader
     spec.loader.exec_module(screenshot)
 
-    url = PAGE.as_uri()
-    cfg = {"reference_page": "fixture", "reference_url": url, "implementation_url": url,
+    # One side absolute, one side relative to the config directory, as measure.py accepts.
+    cfg = {"reference_page": "fixture", "reference_url": PAGE.as_uri(),
+           "implementation_url": PAGE.name,
            "breakpoints": [{"name": "desktop", "width": 320, "height": 240}]}
-    shots = screenshot.capture(cfg, tmp_path)
+    shots = screenshot.capture(cfg, tmp_path / "shots", PAGE.parent)
 
     assert [p.name for p in shots] == ["fixture__mockup__desktop.png",
                                       "fixture__implementation__desktop.png"]

@@ -327,6 +327,38 @@ def _target_props(target: dict, props: list) -> list:
     return target.get("props") or props
 
 
+class ConfigError(Exception):
+    """A config the oracle cannot run: an input error (exit 2), never a violation (exit 1)."""
+
+
+def load_config(path: str | Path) -> dict:
+    """Read and shape-check a measure config before any browser starts.
+
+    Shared with screenshot.py: one vocabulary, one validation, one exit code for a bad input.
+    """
+    try:
+        cfg = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ConfigError(f"config {path}: unreadable - {exc}") from exc
+    if not isinstance(cfg, dict):
+        raise ConfigError(f"config {path}: the root must be a JSON object")
+    targets = cfg.get("targets")
+    if not isinstance(targets, list) or not targets:
+        raise ConfigError(f"config {path}: 'targets' must be a non-empty list")
+    for i, target in enumerate(targets):
+        if not isinstance(target, dict) or not isinstance(target.get("name"), str):
+            raise ConfigError(f"config {path}: targets[{i}] must be an object with a string 'name'")
+    breakpoints = cfg.get("breakpoints")
+    if not isinstance(breakpoints, list) or not breakpoints:
+        raise ConfigError(f"config {path}: 'breakpoints' must be a non-empty list")
+    for i, bp in enumerate(breakpoints):
+        if not (isinstance(bp, dict) and isinstance(bp.get("name"), str)
+                and all(isinstance(bp.get(k), int) and bp[k] > 0 for k in ("width", "height"))):
+            raise ConfigError(f"config {path}: breakpoints[{i}] needs a string 'name' and "
+                              "positive integer 'width' and 'height'")
+    return cfg
+
+
 def _targets_without_props(cfg: dict) -> list:
     """Target names left with no prop to measure: no own list and no global fallback."""
     if cfg.get("props"):
@@ -1055,7 +1087,11 @@ def main():
                          "with an expected value forces verdict=OPEN.")
     args = ap.parse_args()
 
-    cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    try:
+        cfg = load_config(args.config)
+    except ConfigError as exc:
+        print(f"config error: {exc}", file=sys.stderr)
+        sys.exit(2)
     unmeasurable = _targets_without_props(cfg)
     if unmeasurable:
         print("config error: no global 'props' and no per-target 'props' for: "

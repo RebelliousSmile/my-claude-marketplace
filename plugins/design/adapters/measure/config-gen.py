@@ -146,6 +146,41 @@ class GateError(ValueError):
     """Entrée invalide, ou gate incomplet pour la page demandée (exit 2)."""
 
 
+def _read_object(path: Path, name: str) -> dict:
+    """Charge un artefact JSON dont la racine doit être un objet ; sinon GateError (exit 2)."""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise GateError(f"{name} : la racine doit être un objet JSON")
+    return data
+
+
+def _require_objects(mapping, where: str, nullable: bool = False) -> dict:
+    """`mapping` est un objet dont chaque valeur est un objet (ou null si `nullable`)."""
+    if not isinstance(mapping, dict):
+        raise GateError(f"{where} : objet attendu")
+    for key, value in mapping.items():
+        if not (isinstance(value, dict) or (nullable and value is None)):
+            raise GateError(f"{where}.{key} : objet attendu")
+    return mapping
+
+
+def _check_shape(components: dict, oracle: dict) -> None:
+    """Valide la forme des objets que la dérivation parcourt, avant de les parcourir."""
+    for name, comp in _require_objects(components.get("components", {}),
+                                       "components.json § components").items():
+        if not isinstance(comp.get("elements", {}), dict):
+            raise GateError(f"components.json § components.{name}.elements : objet attendu")
+    for name, hint in _require_objects(oracle.get("components", {}),
+                                       "oracle.json § components").items():
+        _require_objects(hint.get("elements", {}), f"oracle.json § components.{name}.elements")
+    raw_pages = oracle.get("pages")
+    pages = _require_objects({} if raw_pages is None else raw_pages, "oracle.json § pages",
+                             nullable=True)
+    for page, page_def in pages.items():
+        _require_objects((page_def or {}).get("components", {}),
+                         f"oracle.json § pages.{page}.components", nullable=True)
+
+
 def _is_skip(sel) -> bool:
     return isinstance(sel, dict) and bool(sel.get("skip"))
 
@@ -392,7 +427,7 @@ def _load_oracle(components_path: str, oracle_path: str | None) -> dict:
     # les targets se dérivent de la seule anatomie, sans check_text ni collections.
     oracle_file = Path(oracle_path) if oracle_path else Path(components_path).with_name("oracle.json")
     if oracle_file.is_file():
-        return json.loads(oracle_file.read_text(encoding="utf-8"))
+        return _read_object(oracle_file, "oracle.json")
     return {}
 
 
@@ -406,9 +441,10 @@ def generate(
     ownership_stylesheets: list[str] | None = None,
     editor_url: str | None = None,
 ) -> dict:
-    components = json.loads(Path(components_path).read_text(encoding="utf-8"))
-    tokens = json.loads(Path(tokens_path).read_text(encoding="utf-8"))
+    components = _read_object(components_path, "components.json")
+    tokens = _read_object(tokens_path, "tokens.json")
     oracle = _load_oracle(components_path, oracle_path)
+    _check_shape(components, oracle)
     oracle_hints: dict = oracle.get("components", {})
 
     # Gate figé : la page choisit les composants et porte le sélecteur maquette de chacun.
@@ -460,8 +496,10 @@ def generate(
 
 
 def run_check(components_path: str, oracle_path: str | None) -> int:
-    components = json.loads(Path(components_path).read_text(encoding="utf-8"))
-    report = check_gate(components, _load_oracle(components_path, oracle_path))
+    components = _read_object(components_path, "components.json")
+    oracle = _load_oracle(components_path, oracle_path)
+    _check_shape(components, oracle)
+    report = check_gate(components, oracle)
     for d in report["defects"]:
         print(f"DEFECT   {d}")
     for e in report["excluded"]:
@@ -512,7 +550,7 @@ def main():
         cfg = generate(args.components, args.tokens,
                        args.reference_url, args.implementation_url, args.page, args.oracle,
                        args.ownership_stylesheet, args.editor_url)
-    except (GateError, OSError, json.JSONDecodeError) as exc:
+    except (OSError, ValueError) as exc:
         print(f"config-gen error: {exc}", file=sys.stderr)
         sys.exit(2)
 

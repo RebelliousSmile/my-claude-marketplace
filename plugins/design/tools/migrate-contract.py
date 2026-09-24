@@ -28,15 +28,17 @@ Its absence is an environment error (exit 2), never a traceback — an uncaught 
 Exit:
   0  migrated, or already 2.0 (no-op)
   2  invocation error, missing runtime dependency, a structurally invalid artifact, or a
-     decision the tool refuses to guess (undeclared mode)
+     decision the tool refuses to guess (undeclared mode, a leftover .contract-1x backup)
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
+import tempfile
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -101,6 +103,19 @@ UNKNOWN_CONSUMER = "unknown"
 def fail(message: str) -> int:
     print(message, file=sys.stderr)
     return 2
+
+
+def write_atomic(path: Path, text: str) -> None:
+    """Write through a sibling temporary file and os.replace: an interrupted run leaves the old
+    file or the new one, never a truncated artifact."""
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
 
 
 def shape_of(value) -> str:
@@ -247,6 +262,12 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
               f"NO-OP    {RELEASE} present - already 2.0, nothing to migrate.")
         return 0
 
+    # A backup without release.json is an interrupted or undone migration. Overwriting it could
+    # replace the only copy of the 1.x contract with a half-migrated one: refuse, write nothing.
+    if (contract_dir / BACKUP_DIR).exists():
+        return fail(f"{contract_dir / BACKUP_DIR} already exists and {RELEASE} is absent: a previous "
+                    f"migration did not finish. Restore the 1.x files from it, remove it, then rerun.")
+
     manifest_path = contract_dir / COMPONENTS
     tokens_path = contract_dir / TOKENS
     for path in (tokens_path, manifest_path):
@@ -333,15 +354,16 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         return 0
 
     backup = contract_dir / BACKUP_DIR
-    backup.mkdir(exist_ok=True)
+    backup.mkdir()
     for name in (COMPONENTS, TOKENS, charter["path"]):
         src = contract_dir / name
         if src.is_file():
             shutil.copy2(src, backup / Path(name).name)
 
     for name, obj in payload.items():
-        (contract_dir / name).write_text(dump(obj), encoding="utf-8")
-    (contract_dir / RELEASE).write_text(dump(release), encoding="utf-8")
+        write_atomic(contract_dir / name, dump(obj))
+    # release.json last: its presence is what marks the migration done.
+    write_atomic(contract_dir / RELEASE, dump(release))
 
     lines.append(f"WRITTEN  {', '.join(list(payload) + [RELEASE])}")
     lines.append(f"BACKUP   {BACKUP_DIR}/")
@@ -444,7 +466,7 @@ def migrate_ledger(ledger_dir: Path, dry_run: bool) -> int:
         print("\n".join(lines))
         return 0
 
-    (ledger_dir / DEVIATIONS).write_text(dump(payload), encoding="utf-8")
+    write_atomic(ledger_dir / DEVIATIONS, dump(payload))
     lines.append(f"WRITTEN  {DEVIATIONS}")
     print("\n".join(lines))
     return 0

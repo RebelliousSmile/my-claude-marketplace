@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: contrat d'entrée, exit 2 et écritures sûres

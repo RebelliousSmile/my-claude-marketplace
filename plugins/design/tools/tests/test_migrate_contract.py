@@ -69,3 +69,26 @@ def test_a_second_migration_is_a_no_op(tmp_path):
     run = _run("migrate-contract.py", "--contract", str(contract), "--now", "2027-01-01T00:00:00+00:00")
     assert run.returncode == 0, run.stderr
     assert (contract / "release.json").read_bytes() == before
+
+
+def test_a_leftover_backup_is_refused_and_kept(tmp_path):
+    contract = tmp_path / "contract"
+    shutil.copytree(FIXTURES / "contract-1x", contract)
+    backup = contract / ".contract-1x"
+    backup.mkdir()
+    (backup / "components.json").write_text('{"only": "copy"}', encoding="utf-8")
+    before = sorted((p.relative_to(contract), p.read_bytes()) for p in contract.rglob("*")
+                    if p.is_file())
+
+    run = _run("migrate-contract.py", "--contract", str(contract), "--now", NOW)
+
+    assert run.returncode == 2, run.stdout + run.stderr
+    assert ".contract-1x" in run.stderr
+    after = sorted((p.relative_to(contract), p.read_bytes()) for p in contract.rglob("*")
+                   if p.is_file())
+    assert after == before
+
+
+def test_no_temporary_file_is_left_behind(tmp_path):
+    contract = _migrated(tmp_path)
+    assert not list(contract.glob(".*.tmp"))

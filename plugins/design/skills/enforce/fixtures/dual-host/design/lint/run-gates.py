@@ -80,18 +80,15 @@ def abort(message: str, code: int = 2) -> GateError:
     return GateError(code)
 
 
-def fail(message: str) -> int:
-    print(message, file=sys.stderr)
-    return 2
-
-
 def read_json(path: Path):
+    """None for an absent file, the caller names what it means; any other unreadable file -
+    permission, directory, bad encoding, bad JSON - is an input error, exit 2."""
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError:
         return None
-    except json.JSONDecodeError as exc:
-        raise SystemExit(fail(f"{path}: invalid JSON - {exc}"))
+    except (OSError, ValueError) as exc:
+        raise abort(f"{path}: unreadable JSON - {exc}") from exc
 
 
 def expand(base: Path, patterns) -> list[Path]:
