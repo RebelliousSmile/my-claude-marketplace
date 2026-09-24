@@ -38,7 +38,8 @@ not the same as safe; it is unexamined, and the report says so in those terms.
 
 Usage:  python contrast.py --contract <dir> [--json] [--allow-unpaired]
 Exit:   0  computed, at least one pair compared (verdicts on stdout)
-        2  unusable contract: no tokens.json, unparsable, dangling path, alias cycle
+        2  unusable contract: no tokens.json, unparsable, dangling path, alias cycle,
+           translucent background (what shows through it is unknown)
         3  read, but nothing to compare: no component declares `.foregrounds`, and no role name
            matched under `color.semantic`. Not a pass — the contract declares colours this tool
            has no way to reach. Fixed by declaring the pairing, not by renaming tokens.
@@ -111,26 +112,38 @@ def resolve(tree: dict, raw: str) -> str:
     raise ValueError(f"alias resolves to a non-string value: {raw}")
 
 
-def to_rgb(value: str) -> tuple[int, int, int]:
+def to_rgba(value: str) -> tuple[int, int, int, float]:
+    """`#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa` → channels plus alpha in [0, 1]."""
     hexstr = value.strip().lstrip("#")
-    if len(hexstr) == 3:
+    if len(hexstr) in (3, 4):
         hexstr = "".join(ch * 2 for ch in hexstr)
     if len(hexstr) not in (6, 8) or any(c not in "0123456789abcdefABCDEF" for c in hexstr):
         raise ValueError(f"not a hex color: {value}")
-    return tuple(int(hexstr[i:i + 2], 16) for i in (0, 2, 4))  # alpha, if any, ignored
+    alpha = int(hexstr[6:8], 16) / 255 if len(hexstr) == 8 else 1.0
+    return int(hexstr[0:2], 16), int(hexstr[2:4], 16), int(hexstr[4:6], 16), alpha
 
 
-def _linear(channel: int) -> float:
+def over(fg: tuple[int, int, int, float], bg: tuple[int, int, int]) -> tuple[float, float, float]:
+    """Source-over compositing of a translucent foreground on an opaque background.
+
+    Dropping the alpha instead would read `#00000020` on white as pure black, 21:1, while the
+    screen shows a faint grey: a false pass.
+    """
+    a = fg[3]
+    return tuple(a * f + (1 - a) * b for f, b in zip(fg[:3], bg))
+
+
+def _linear(channel: float) -> float:
     c = channel / 255
     return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
 
 
-def luminance(rgb: tuple[int, int, int]) -> float:
+def luminance(rgb: tuple[float, float, float]) -> float:
     r, g, b = (_linear(c) for c in rgb)
     return 0.2126 * r + 0.7152 * g + 0.0722 * b
 
 
-def ratio(fg: tuple[int, int, int], bg: tuple[int, int, int]) -> float:
+def ratio(fg: tuple[float, float, float], bg: tuple[float, float, float]) -> float:
     hi, lo = sorted((luminance(fg), luminance(bg)), reverse=True)
     return (hi + 0.05) / (lo + 0.05)
 
@@ -231,7 +244,12 @@ def evaluate(tokens: dict, components: dict | None = None) -> list[dict]:
 
 def _pair(theme: str, source: str, fg: str, bg: str, tree: dict, component: str | None) -> dict:
     fg_value, bg_value = value_at(tree, fg), value_at(tree, bg)
-    r = ratio(to_rgb(fg_value), to_rgb(bg_value))
+    fg_rgba, bg_rgba = to_rgba(fg_value), to_rgba(bg_value)
+    if bg_rgba[3] < 1:
+        # What shows through a translucent background is not in the contract: no ratio is honest.
+        raise ValueError(f"[{theme}] {fg} on {bg}: background {bg_value} is translucent; "
+                         "the colour beneath it is unknown, so the contrast cannot be computed")
+    r = ratio(over(fg_rgba, bg_rgba[:3]), bg_rgba[:3])
     return {
         "theme": theme,
         "source": source,          # `declared` — a component says so; `role` — the name suggests it

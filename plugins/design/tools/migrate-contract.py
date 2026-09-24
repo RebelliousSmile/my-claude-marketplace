@@ -282,7 +282,11 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         payload[POLICIES]["adapters"] = adapters
         mapping.append(("adapters/*", f"{POLICIES}.adapters"))
 
-    charter = status.read_charter(contract_dir)
+    try:
+        charter = status.read_charter(contract_dir)
+        observed = status.compute(status.observe(contract_dir))
+    except status.ContractReadError as exc:
+        return fail(str(exc))
     version = manifest.get("$version")
     if not version:
         version = charter["version"] or "0.0.0"
@@ -304,7 +308,7 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         "charter": {"present": charter["present"], "path": charter["path"], "version": charter["version"]},
         "provenance": {"producedBy": Path(__file__).name, "producedAt": now, "from": "1.x contract"},
         "checks": None,
-        "status": status.compute(status.observe(contract_dir)),
+        "status": observed,
     }
 
     mapping = ([(TOKENS, f"{TOKENS} (unchanged)"),

@@ -134,6 +134,25 @@ const maturity = runGate('gates.below-threshold.config.json');
 if (maturity.status !== 4)
   fail('maturité: le code public 4 doit rester stable');
 
+const funnelRow = (verb) => (readFileSync('plugins/design/skills/detail/references/funnel-map.md', 'utf8')
+  .split('\n').find((line) => line.startsWith(`| **${verb}**`)) || '');
+if (!funnelRow('define') || /components\.json|policies\.json/.test(funnelRow('define')))
+  fail('funnel-map: define n\'écrit ni components.json ni policies.json (04-write-material)');
+if (!funnelRow('destructure').includes('lecture seule') || /components\.json|→ brouillon/.test(funnelRow('destructure')))
+  fail('funnel-map: destructure est une critique en lecture seule, contrat inchangé');
+
+const varFallback = spawnSync(process.execPath, [
+  'plugins/design/skills/enforce/adapters/lint-core.mjs',
+  'plugins/design/skills/enforce/fixtures/utility-var-fallback.html',
+  '--contract', 'plugins/design/skills/enforce/fixtures/utility', '--json',
+], { encoding: 'utf8' });
+{
+  const errors = varFallback.stdout ? JSON.parse(varFallback.stdout).errors : [];
+  for (const token of ['--inconnu', '--inconnu-espace'])
+    if (!errors.includes(`Unknown token reference var(${token}) — no matching token in tokens.json`))
+      fail(`token-reference: var(${token}) avec fallback ou espaces doit être une violation`);
+}
+
 const dualHost = spawnSync('python3', [
   'plugins/design/skills/enforce/fixtures/dual-host/design/lint/run-gates.py', '--config',
   'plugins/design/skills/enforce/fixtures/dual-host/design/lint/gates.config.json',

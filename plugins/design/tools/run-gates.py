@@ -43,7 +43,7 @@ from pathlib import Path
 # The status computation lives in one place. run-gates imports THRESHOLD and the compute
 # path from it rather than repeating either the literal or the ladder logic.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from status import THRESHOLD, compute, meets_threshold, observe  # noqa: E402
+from status import THRESHOLD, ContractReadError, compute, meets_threshold, observe  # noqa: E402
 
 POLICIES = "policies.json"
 RELEASE = "release.json"
@@ -402,7 +402,10 @@ def render_verdict(contract_dir: Path, targets: list[Path], realized_markup: set
     # Oppose the maturity threshold last, once every violation is already on the report. Below
     # it, conformity cannot be asserted whatever the violation count - so exit 4 supersedes
     # both the 1 of a violation and the 0 of a clean run, and the report keeps the violations.
-    status_value = compute(observe(contract_dir))
+    try:
+        status_value = compute(observe(contract_dir))
+    except ContractReadError as exc:
+        raise abort(str(exc)) from exc
     if not meets_threshold(status_value):
         print(f"BELOW THRESHOLD status \"{status_value}\" is under \"{THRESHOLD}\"; "
               "conformity is not asserted.")

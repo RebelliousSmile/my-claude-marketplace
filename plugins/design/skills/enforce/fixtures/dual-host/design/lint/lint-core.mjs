@@ -403,9 +403,11 @@ if (mode !== 'utility-first') {
 }
 
 // Rule 2: CSS custom property reference check (ERROR)
-// Catches var(--token-name) references to non-existent tokens.
+// Catches var(--token-name) references to non-existent tokens, including `var( --x )` and the
+// fallback form `var(--x, #000)`: a fallback hides the unknown token on screen, it does not
+// make it declared.
 realized.push('token-reference');
-for (const match of html.matchAll(/var\((--[\w-]+)\)/g)) {
+for (const match of html.matchAll(/var\(\s*(--[\w-]+)\s*[,)]/g)) {
   const varName = match[1];
   if (!validVars.has(varName)) {
     errors.push(`Unknown token reference var(${varName}) — no matching token in tokens.json`);
