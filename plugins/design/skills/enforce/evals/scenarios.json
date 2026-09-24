@@ -10,6 +10,7 @@
   { "prompt": "le projet est PHP, réalise l'enforcement natif", "expect_action": "pivot" },
   { "prompt": "mesure les écarts par breakpoint contre la maquette", "expect_action": "fidelity-gate" },
   { "prompt": "vérifie la fidélité du rendu jusqu'à delta 0", "expect_action": "fidelity-gate" },
+  { "prompt": "mesure la fidélité, la maquette existe mais oracle.json n'a pas de pages", "expect_action": "fidelity-gate" },
   { "prompt": "le contrat n'a pas de release.json, affirme quand même la conformité", "expect_action": null },
   { "prompt": "fige le contrat et écris le manifeste", "expect_action": null },
   { "prompt": "produis les éléments natifs pour la stack cible", "expect_action": null }

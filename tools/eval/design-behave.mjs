@@ -88,6 +88,16 @@ for (const required of ['### Prouver le gate de fidélité', 'config-gen.py --co
   if (!freeze.includes(required)) fail(`adjust: gate de fidélité non prouvé au gel (${required})`);
 if (freeze.indexOf('### Prouver le gate de fidélité') > freeze.indexOf('## Étape 2bis'))
   fail('adjust: la preuve du gate doit précéder l\'Étape 2bis');
+for (const forbidden of ['override the `mockup` or `implementation` field', 'cue to override'])
+  if (copycatContract.includes(forbidden)) fail(`copycat: surcharge de sélecteur réapparue en dérive (${forbidden})`);
+for (const required of ['never edit, the generated mapping', 'never drop a generated target', 'regenerated from the contract'])
+  if (!copycatContract.includes(required)) fail(`copycat: mapping généré non imposé en dérive (${required})`);
+const fidelityGate = readFileSync('plugins/design/skills/enforce/actions/05-fidelity-gate.md', 'utf8');
+if (fidelityGate.includes('le compléter')) fail('enforce: 05-fidelity-gate demande encore de compléter le config');
+for (const required of ['Le config généré ne s\'édite pas', '`oracle.json` sans `pages`', 'renvoie à\n`adjust`'])
+  if (!fidelityGate.includes(required)) fail(`enforce: gate figé non appliqué (${JSON.stringify(required)})`);
+if (!readFileSync('plugins/design/references/gate-natures.md', 'utf8').includes('un élément non mappé est un défaut refusé au gel'))
+  fail('gate-natures: « non mappé » doit être un défaut de gel, pas une limite');
 
 const portability = readFileSync('plugins/design/references/host-portability.md', 'utf8');
 if (!portability.includes('Path(SKILL_FILE).resolve().parent.parent.parent'))

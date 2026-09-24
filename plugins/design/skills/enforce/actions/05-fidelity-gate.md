@@ -27,9 +27,15 @@ n'établit pas est énoncé une seule fois dans `${DESIGN_PLUGIN_ROOT}/reference
 - L'oracle installé : `${DESIGN_PLUGIN_ROOT}/adapters/measure/` (voir son README ; `python -m playwright install chromium`).
   Sous OD-1 le chemin Python est validé ; à défaut, mesure MCP en interactif — mais **le gate
   CI reste Python** (un gate automatisable ne peut pas dépendre d'un agent).
-- **L'oracle par propriété câblé** : un config de mesure (cibles, propriétés, breakpoints — via
-  `config-gen.py`) *et* le registre `deviations.json`, passé en argument requis `--ledger-registry`.
-  Schéma du registre : `${DESIGN_PLUGIN_ROOT}/references/deviations-schema.md`.
+- **L'oracle par propriété câblé** : un config de mesure par page, généré depuis le contrat figé —
+  `config-gen.py --components … --tokens … --oracle design/oracle.json --page <clé>
+  --reference-url <maquette> --implementation-url <rendu>` — *et* le registre `deviations.json`,
+  passé en argument requis `--ledger-registry`. Schéma du registre :
+  `${DESIGN_PLUGIN_ROOT}/references/deviations-schema.md`.
+- **Le config généré ne s'édite pas** : cibles, sélecteurs et props viennent de
+  `oracle.json § pages`, figé et prouvé par `adjust`. Seuls ajouts permis, liste fermée : les URLs,
+  l'authentification `ownership` (environnement), les `ledger` (ids de `deviations.json`) et
+  `coverage_ack`. Un défaut de cible se corrige dans le contrat, via `adjust`, jamais dans ce fichier.
 - Pour FSE, `config-gen.py --ownership-stylesheet <component.css> --ownership-stylesheet
   <fse-bindings.css>` dérive les propriétés des déclarations réelles. La session éditeur vient de
   `WP_EDITOR_STORAGE_STATE` ou du hook `WP_EDITOR_AUTH_HOOK`, jamais du config ni du dépôt.
@@ -38,8 +44,10 @@ n'établit pas est énoncé une seule fois dans `${DESIGN_PLUGIN_ROOT}/reference
 
 Quand une référence externe existe mais que l'oracle par propriété **n'est pas câblé** (pas de
 config de mesure, ou pas de `deviations.json` à valider), le gate **n'affirme pas la conformité** —
-il **refuse** et nomme l'étape de câblage : générer le config (`config-gen.py`), le compléter,
-écrire `deviations.json`, puis mesurer avec `measure.py --ledger-registry`. Un rendu non mesuré
+il **refuse** et nomme l'étape de câblage : générer le config (`config-gen.py --page`), écrire
+`deviations.json`, puis mesurer avec `measure.py --ledger-registry`. Une référence mesurable avec
+un `oracle.json` sans `pages` (contrat figé avant le gate de fidélité) est un **refus** qui renvoie à
+`adjust` : le gate n'est pas figé, `enforce` ne l'invente pas. Un rendu non mesuré
 par propriété n'est jamais déclaré conforme, et **aucun diff pixel global ne tient lieu de preuve**
 à sa place (cf. `## Le diff pixel est un détecteur`). Le refus est un état distinct du vert et du
 rouge : rien n'est prouvé tant que l'oracle n'est pas câblé.
@@ -53,7 +61,8 @@ rouge : rien n'est prouvé tant que l'oracle n'est pas câblé.
        --ledger-registry <projet>/<contrat>/deviations.json \
        --out <projet>/<qa-dir>/fidelity/<page>-B.json   # Mode B (rendu vs référence)
    ```
-   Le mapping de sélecteurs et les cibles viennent de la table de correspondance (P2). Le rapport
+   Le mapping de sélecteurs et les cibles viennent de `oracle.json § pages` (via `config-gen.py
+   --page`), jamais d'une saisie à la main. Le rapport
    et la config sont des **données projet** (gitignored), pas des assets du plugin — le `out/` du
    plugin ne sert qu'à ses propres fixtures de self-test.
 2. **Classer chaque delta** à sa couche (token / markup / composant / contenu) — déléguer ce
@@ -69,9 +78,10 @@ rouge : rien n'est prouvé tant que l'oracle n'est pas câblé.
    **Corriger la source, jamais le magasin de contenu seul** : tout contenu généré ou seedé s'édite à
    sa **source**, puis se réécrit depuis elle. Une édition directe du magasin est écrasée à la
    prochaine génération et n'existe pas dans l'historique — le correctif disparaît sans rien signaler.
-5. **Réconcilier le config si le markup change** : modifier une classe/un sélecteur désynchronise la
-   table de correspondance → l'oracle ressort `missing` (= non vérifié), ce qui *masque* le correctif au
-   lieu de le confirmer. Mettre à jour les sélecteurs (ou cibler des classes DS stables) dans le même geste.
+5. **Un `missing` se corrige, il ne se retire pas** : côté implémentation, c'est une dérive — le
+   markup ne porte pas la classe de `components.json` ; corriger le markup, jamais retirer la cible ni
+   réécrire son sélecteur. Côté maquette, c'est un défaut du contrat : renvoi à `adjust`. Le config
+   n'est régénéré que depuis le contrat.
 6. **Re-mesurer pour clore** : la clôture est le **verdict par propriété du script**
    `summary.verdict == "CLOSED"` (calculé : 0 diff ET 0 missing ET aucune section absente de la cible
    ET `coverage.ok` ET toute exception validée contre `deviations.json` ET, lorsqu'elle est configurée,
@@ -86,7 +96,7 @@ rouge : rien n'est prouvé tant que l'oracle n'est pas câblé.
 ## Le diff pixel est un détecteur
 
 La comparaison pixel globale (`screenshot.py` + `pixeldiff.py`) **pointe** des zones divergentes que
-les styles calculés ne couvrent pas (layout, effets composites, éléments non mappés). Elle n'est
+les styles calculés ne couvrent pas (layout, effets composites, éléments hors du gate figé). Elle n'est
 **jamais** une preuve de conformité : un diff pixel à zéro ne clôt pas le gate, et un diff non nul ne
 le fait pas échouer par lui-même — il alimente le classement (§2). La clôture vient du verdict par
 propriété (§6). Protocole d'analyse des zones : `${DESIGN_PLUGIN_ROOT}/references/visual-diff-procedure.md`.
@@ -125,9 +135,8 @@ Le gate de fidélité s'arme **à côté** du lint vocabulaire (cf. `${DESIGN_PL
 - Ne pas confondre les deux gates : un lint vert ne dispense pas du gate de fidélité.
 - Un diff pixel vert n'est pas une clôture ; un oracle non câblé ne se rabat jamais sur le diff pixel
   comme preuve — il refuse (cf. `## Refus d'affirmer la conformité`).
-- Un `missing` au rapport n'est **pas** un pass : c'est un sélecteur qui ne résout pas (souvent
-  un config désynchronisé après une modif de markup). Le résoudre avant de clore — jamais le lire
-  comme « rien à corriger ».
+- Un `missing` au rapport n'est **pas** un pass : c'est un sélecteur qui ne résout pas. Le résoudre
+  avant de clore (§5) — jamais le lire comme « rien à corriger », jamais retirer la cible.
 - Ne jamais revendiquer une clôture sur la foi d'une édition non re-mesurée (cf. étape 6).
 
 ## Chemin construction-depuis-brief — pas de gate de fidélité
@@ -163,4 +172,6 @@ n'existe ; ici, une référence existe mais l'oracle n'est pas encore câblé.
 
 > Gate fidélité : N unités mesurées sur B breakpoints, M deltas résolus, K écarts couverts.
 > [vert : tous à delta 0 ou couverts / rouge : liste des dérives non sanctionnées /
-> refus : oracle non câblé, étape de câblage nommée].
+> refus : oracle non câblé ou `oracle.json` sans `pages`, étape nommée / sans objet : pas de
+> référence mesurable].
+> Exclusions `skip` du contrat : listées par nom et raison.

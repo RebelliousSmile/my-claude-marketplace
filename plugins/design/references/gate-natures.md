@@ -9,7 +9,7 @@ Leur poids suit `control-priorities.md` : la fidélité rendue et les comporteme
 | Gate | Oracle | Référence | Établit | N'établit pas |
 |---|---|---|---|---|
 | **Vocabulaire** | `lint-core.mjs` (Node, 5 règles dérivées du contrat) + import de la feuille de tokens | `tokens.json` · `components.json` · `policies.json` — **interne** | aucune classe ni référence de token hors contrat, **dans le markup effectivement passé au linter** | CSS, liaisons dynamiques, contenu stocké, fichiers de thème de plateforme, couverture des fichiers, rendu calculé |
-| **Fidélité** | `measure.py` (`getComputedStyle` + provenance de cascade, par breakpoint/surface) | la référence visuelle résolue par `adjust` — **externe** ; feuilles DS attendues pour la provenance | style calculé conforme **sur les éléments mappés** ; en FSE, déclaration gagnante issue d'une feuille DS/binding et d'un sélecteur portant la classe DS, sur front + éditeur | tout élément non mappé, tout breakpoint ou surface non mesuré |
+| **Fidélité** | `measure.py` (`getComputedStyle` + provenance de cascade, par breakpoint/surface) | la référence visuelle résolue par `adjust` — **externe** ; feuilles DS attendues pour la provenance | style calculé conforme **sur chaque élément du gate figé** (`oracle.json § pages`, complet par construction : un élément non mappé est un défaut refusé au gel par `adjust`) ; en FSE, déclaration gagnante issue d'une feuille DS/binding et d'un sélecteur portant la classe DS, sur front + éditeur | les exclusions `skip` du contrat, nommées avec leur raison ; tout breakpoint ou surface non mesuré |
 
 Le gate de vocabulaire est **aveugle au rendu calculé**. On peut être lint-vert et visuellement faux :
 
