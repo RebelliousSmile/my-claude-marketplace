@@ -7,7 +7,12 @@ import { spawnSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
 
 const python = process.env.DESIGN_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
-const suites = ['plugins/design/adapters/measure/tests', 'plugins/design/adapters/wireframes/tests'];
+const suites = [
+  'plugins/design/adapters/measure/tests',
+  'plugins/design/adapters/wireframes/tests',
+  'plugins/design/adapters/a11y/tests',
+  'plugins/design/tools/tests',
+];
 
 const tempRoot = resolve('.tmp');
 mkdirSync(tempRoot, { recursive: true });
@@ -25,4 +30,4 @@ if (tested.status !== 0) {
   console.error(`✗ design-pytest — ${python} -m pytest exit ${tested.status ?? tested.error?.message}`);
   process.exit(1);
 }
-console.log('✓ design-pytest — adapters measure + wireframes');
+console.log('✓ design-pytest — adapters measure + wireframes + a11y, tools');

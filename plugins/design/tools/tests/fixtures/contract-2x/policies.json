@@ -1,0 +1,27 @@
+{
+  "$schema": "design/references/contract-schema#policies",
+  "mode": "bem",
+  "$utilityPrefixes": [
+    "u-"
+  ],
+  "usage": {
+    "rawHexForbidden": true,
+    "colorUtilityPrefixes": [
+      "bg",
+      "text"
+    ],
+    "rules": [
+      {
+        "id": "state-colour-icon",
+        "description": "Un badge d'état doit porter un token couleur ET une icône — jamais la couleur seule.",
+        "enforcement": "unrealized"
+      }
+    ]
+  },
+  "adapters": [
+    {
+      "artifact": "adapters/tokens.css",
+      "consumer": "stylesheet"
+    }
+  ]
+}

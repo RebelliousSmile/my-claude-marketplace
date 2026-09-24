@@ -1,0 +1,11 @@
+/* GENERATED — do not edit. Source: tokens.json */
+:root {
+  --color-brand-primary: #2563eb;
+  --color-neutral-50: #f7f8fa;
+  --color-neutral-900: #11151c;
+  --color-semantic-background: var(--color-neutral-50);
+  --color-semantic-surface: #ffffff;
+  --color-semantic-text: var(--color-neutral-900);
+  --font-size-body: 1rem;
+  --space-4: 1rem;
+}
