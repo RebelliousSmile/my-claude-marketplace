@@ -4,7 +4,7 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,6 +71,7 @@ def test_config_derives_properties_from_actual_ds_declarations(tmp_path):
     assert absent["unrealized_reason"] == "DS class has no inspectable declaration"
 
 
+@pytest.mark.browser
 def test_browser_probe_handles_layers_important_inline_and_nested_selectors():
     markup = """
     <style>
@@ -88,6 +89,8 @@ def test_browser_probe_handles_layers_important_inline_and_nested_selectors():
     <div id="inline" class="layer-normal" style="color: rgb(1, 2, 3)"></div>
     <nav><div class="site-nav__lien"><a id="nested">Link</a></div></nav>
     """
+    from playwright.sync_api import sync_playwright
+
     with sync_playwright() as pw:
         browser = pw.chromium.launch(args=["--allow-file-access-from-files"])
         try:
@@ -103,11 +106,14 @@ def test_browser_probe_handles_layers_important_inline_and_nested_selectors():
             browser.close()
 
 
+@pytest.mark.browser
 def test_fse_front_fixtures_flip_ownership_even_with_equal_values():
     button = {"name": "Button", "selector": ".btn-pinceau > .wp-block-button__link",
               "class": "btn-pinceau", "prop": "background-color", "sources": ["design.css"]}
     nav = {"name": "Navigation", "selector": ".site-nav__lien > .wp-block-navigation-item__content",
            "class": "site-nav__lien", "prop": "color", "sources": ["design.css"]}
+    from playwright.sync_api import sync_playwright
+
     with sync_playwright() as pw:
         browser = pw.chromium.launch(args=["--allow-file-access-from-files"])
         try:

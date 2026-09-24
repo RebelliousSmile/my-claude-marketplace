@@ -23,7 +23,8 @@ HILITE = (255, 0, 128)  # magenta for divergent pixels
 
 
 def _load_rgb(path: Path) -> Image.Image:
-    return Image.open(path).convert("RGB")
+    # PNG only: screenshots are PNG, and every other decoder is attack surface for no gain.
+    return Image.open(path, formats=["PNG"]).convert("RGB")
 
 
 def diff(a_path: Path, b_path: Path, out_base: Path, threshold: int = 12) -> float:

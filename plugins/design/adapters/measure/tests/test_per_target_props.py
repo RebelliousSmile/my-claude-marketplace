@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "per-target-props"
@@ -28,6 +30,7 @@ def _config(tmp_path: Path, **overrides) -> Path:
     return path
 
 
+@pytest.mark.browser
 def test_target_props_replace_global_list(tmp_path):
     out = tmp_path / "report.json"
     result = _run(_config(tmp_path), out)
@@ -42,6 +45,7 @@ def test_target_props_replace_global_list(tmp_path):
     assert title == {"fontSize", "color"}
 
 
+@pytest.mark.browser
 def test_mode_a_extracts_target_props_on_mockup_side(tmp_path):
     out = tmp_path / "report.json"
     result = _run(_config(tmp_path, implementation_url=None), out, "--mode", "A", "--side", "mockup")

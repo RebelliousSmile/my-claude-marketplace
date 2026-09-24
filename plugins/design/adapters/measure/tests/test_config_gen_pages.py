@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "contract-pages"
@@ -77,6 +79,7 @@ def test_ownership_targets_follow_the_page(tmp_path):
     assert {"site-header", "card"} <= classes
 
 
+@pytest.mark.browser
 def test_mockup_only_config_runs_in_mode_a(tmp_path):
     cfg_path = tmp_path / "a.config.json"
     cfg = _config(tmp_path, "a")

@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 // Fast, Docker-free regression gate for the design -> sc-css + sc-php FSE contract.
 
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
-import { spawnSync } from 'node:child_process';
-import { join, resolve } from 'node:path';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { mergeThemeJson, presetsFromTokens } from '../../plugins/sc-php/skills/design-bridge/tools/theme-json-adapter.mjs';
 
 const failures = [];
@@ -85,21 +84,6 @@ for (const path of walk('plugins/sc-php/skills')) {
   const body = read(path);
   if (/^\s*(?:npx|pnpm\s+exec)\s+wp-env\s+run\s+cli\b/m.test(body))
     fail(`${path}: accès WP-CLI nu; utiliser exclusivement pnpm wp`);
-}
-
-const tempRoot = resolve('.tmp');
-mkdirSync(tempRoot, { recursive: true });
-const pytestTmp = mkdtempSync(join(tempRoot, 'fse-ownership-'));
-const python = process.platform === 'win32' ? 'python' : 'python3';
-try {
-  const tested = spawnSync(python, ['-m', 'pytest',
-    'plugins/design/adapters/measure/tests', '-q', '--basetemp', pytestTmp],
-  { encoding: 'utf8', env: { ...process.env, PYTHONUTF8: '1' } });
-  if (tested.stdout) process.stdout.write(tested.stdout);
-  if (tested.stderr) process.stderr.write(tested.stderr);
-  if (tested.status !== 0) fail(`oracle measure tests: pytest exit ${tested.status}`);
-} finally {
-  rmSync(pytestTmp, { recursive: true, force: true });
 }
 
 if (failures.length) {

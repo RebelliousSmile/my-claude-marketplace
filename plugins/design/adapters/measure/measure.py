@@ -153,8 +153,6 @@ from datetime import date, datetime, timezone
 from difflib import SequenceMatcher
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
-
 # JS injected to read getComputedStyle for each target on the current page.
 # When check_text is true, also captures __text (normalised textContent) for P7 text-parity.
 _GRAB = """(args) => {
@@ -692,6 +690,8 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
     hsel = cfg.get("headings_sel", {"mockup": "h1, h2", "implementation": "h1, h2"})
     mock_headings = impl_headings = None
     mock_coll = impl_coll = None  # collected once across breakpoints (content is layout-independent)
+
+    from playwright.sync_api import sync_playwright  # lazy: pure helpers stay importable without it
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
