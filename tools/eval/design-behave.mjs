@@ -94,7 +94,7 @@ for (const required of ['never edit, the generated mapping', 'never drop a gener
   if (!copycatContract.includes(required)) fail(`copycat: mapping généré non imposé en dérive (${required})`);
 const fidelityGate = readFileSync('plugins/design/skills/enforce/actions/05-fidelity-gate.md', 'utf8');
 if (fidelityGate.includes('le compléter')) fail('enforce: 05-fidelity-gate demande encore de compléter le config');
-for (const required of ['Le config généré ne s\'édite pas', '`oracle.json` sans `pages`', 'renvoie à\n`adjust`'])
+for (const required of ['Le config généré ne s\'édite pas', 'cibles propres à la page **en ajout**', '`oracle.json` sans `pages`', 'renvoie à\n`adjust`'])
   if (!fidelityGate.includes(required)) fail(`enforce: gate figé non appliqué (${JSON.stringify(required)})`);
 if (!readFileSync('plugins/design/references/gate-natures.md', 'utf8').includes('un élément non mappé est un défaut refusé au gel'))
   fail('gate-natures: « non mappé » doit être un défaut de gel, pas une limite');

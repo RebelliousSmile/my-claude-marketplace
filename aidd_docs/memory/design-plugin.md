@@ -2,7 +2,7 @@
 
 | Champ | Valeur |
 |---|---|
-| Version courante | 2.17.0 |
+| Version courante | 2.17.1 |
 | Dernière release | 2026-09-24 |
 
 > Cette mémoire couvre 2.6.0 puis saute à 2.10.0 : **2.7.x / 2.8.0 / 2.9.x ne sont pas résumés ici**, `plugins/design/CHANGELOG.md` fait foi pour eux. De 2.10.0 à 2.17.0, seules les sections datées ci-dessous sont résumées.

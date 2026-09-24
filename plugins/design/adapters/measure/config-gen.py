@@ -150,12 +150,19 @@ def _is_skip(sel) -> bool:
     return isinstance(sel, dict) and bool(sel.get("skip"))
 
 
+def _is_selector(sel) -> bool:
+    return isinstance(sel, str) and bool(sel.strip())
+
+
 def _page_components(oracle: dict, page: str) -> dict:
     pages = oracle.get("pages", {})
     if page not in pages:
         raise GateError(f"page '{page}' absente de oracle.json § pages "
                         f"(pages connues : {', '.join(sorted(pages)) or 'aucune'})")
-    return pages[page].get("components", {})
+    placed = (pages[page] or {}).get("components", {})
+    if not placed:
+        raise GateError(f"page '{page}' sans composant dans oracle.json § pages (lancer --check)")
+    return placed
 
 
 def _derive_targets_and_collections(
@@ -184,7 +191,7 @@ def _derive_targets_and_collections(
         def mockup_of(frozen, impl_sel: str, what: str) -> str:
             if placed is None:
                 return impl_sel
-            if not isinstance(frozen, str) or not frozen.strip():
+            if not _is_selector(frozen):
                 raise GateError(f"{comp_name} / {what} : aucun sélecteur maquette (lancer --check)")
             return frozen
 
@@ -259,7 +266,7 @@ def check_gate(components: dict, oracle: dict) -> dict:
                 continue
             placed_anywhere.add(comp_name)
             entry = entry or {}
-            if not isinstance(entry.get("root"), str) or not entry["root"].strip():
+            if not _is_selector(entry.get("root")):
                 defects.append(f"{where} / root : aucun sélecteur maquette")
             declared = all_comps[comp_name].get("elements", {})
             frozen = entry.get("elements", {})
@@ -268,14 +275,14 @@ def check_gate(components: dict, oracle: dict) -> dict:
                 if _is_skip(sel):
                     excluded.append({"page": page, "component": comp_name, "element": label,
                                      "reason": sel["skip"]})
-                elif not isinstance(sel, str) or not sel.strip():
+                elif not _is_selector(sel):
                     defects.append(f"{where} / {label} : aucun sélecteur maquette ni skip")
             defects += [f"{where} / {label} : élément inconnu de components.json"
                         for label in frozen if label not in declared]
             coll_names = [c.get("name") for c in hints.get(comp_name, {}).get("collections", [])]
             frozen_colls = entry.get("collections", {})
             defects += [f"{where} / collection {name} : aucun sélecteur maquette"
-                        for name in coll_names if not frozen_colls.get(name)]
+                        for name in coll_names if not _is_selector(frozen_colls.get(name))]
             defects += [f"{where} / collection {name} : collection inconnue de oracle.json"
                         for name in frozen_colls if name not in coll_names]
     unplaced = [c for c in all_comps if c not in placed_anywhere]

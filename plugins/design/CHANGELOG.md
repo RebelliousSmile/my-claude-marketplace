@@ -1,5 +1,16 @@
 # Changelog — design
 
+## [2.17.1] — 2026-09-24
+
+### Fixed
+
+- `config-gen.py --check` refuse une collection dont la valeur n'est pas un sélecteur (ex. `{ "skip": … }`),
+  comme `--page` le faisait déjà : les deux ne divergent plus sur un gate déclaré complet.
+- `config-gen.py --page` sur une page `null` ou sans composant sort en exit 2 nommant la page, au lieu
+  d'une trace d'erreur ou d'une config sans cible.
+- `enforce fidelity-gate` inclut dans sa liste fermée d'ajouts les cibles propres à la page, en ajout
+  seulement, comme le permet `copycat` en dérive.
+
 ## [2.17.0] — 2026-09-24
 
 ### Added

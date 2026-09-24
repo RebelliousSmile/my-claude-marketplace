@@ -34,8 +34,10 @@ n'établit pas est énoncé une seule fois dans `${DESIGN_PLUGIN_ROOT}/reference
   `${DESIGN_PLUGIN_ROOT}/references/deviations-schema.md`.
 - **Le config généré ne s'édite pas** : cibles, sélecteurs et props viennent de
   `oracle.json § pages`, figé et prouvé par `adjust`. Seuls ajouts permis, liste fermée : les URLs,
-  l'authentification `ownership` (environnement), les `ledger` (ids de `deviations.json`) et
-  `coverage_ack`. Un défaut de cible se corrige dans le contrat, via `adjust`, jamais dans ce fichier.
+  l'authentification `ownership` (environnement), les `ledger` (ids de `deviations.json`),
+  `coverage_ack`, et des cibles propres à la page **en ajout** — jamais en remplacement ni en retrait
+  d'une cible générée — signalées candidates à `oracle.json § pages`. Un défaut de cible se corrige
+  dans le contrat, via `adjust`, jamais dans ce fichier.
 - Pour FSE, `config-gen.py --ownership-stylesheet <component.css> --ownership-stylesheet
   <fse-bindings.css>` dérive les propriétés des déclarations réelles. La session éditeur vient de
   `WP_EDITOR_STORAGE_STATE` ou du hook `WP_EDITOR_AUTH_HOOK`, jamais du config ni du dépôt.
