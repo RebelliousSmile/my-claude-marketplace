@@ -1,6 +1,6 @@
 ---
 objective: "Au gel, adjust produit et vérifie un gate de fidélité complet par page depuis le contrat, et enforce ne fait que l'appliquer."
-status: in-progress
+status: implemented
 ---
 
 # Plan: gate de fidélité figé par adjust
