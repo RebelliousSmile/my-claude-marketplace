@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
-import os
 import re
 import sys
-import tempfile
 from html.parser import HTMLParser
 from pathlib import Path
+
+from _common import atomic_json
 
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 GENERIC_CLASS_TOKENS = {"container", "wrapper", "row", "col", "column"}
@@ -110,20 +109,6 @@ class InventoryParser(HTMLParser):
                 index, text = self._annotation_stack.pop()
                 self.annotation_records.append((index, text))
         self._analyze_siblings(self._stack[0]["children"])
-
-
-def atomic_json(path: Path, value: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
-            json.dump(value, handle, ensure_ascii=False, indent=2, sort_keys=True)
-            handle.write("\n")
-        os.replace(temporary, path)
-    except Exception:
-        try: os.unlink(temporary)
-        except OSError: pass
-        raise
 
 
 def main() -> int:

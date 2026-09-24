@@ -10,16 +10,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
-import sys
-import tempfile
 from pathlib import Path
 
-
-def fail(message: str) -> "NoReturn":
-    print(f"Error: {message}", file=sys.stderr)
-    raise SystemExit(2)
+from _common import abort as fail, atomic_write
 
 
 def js_string(value: str) -> str:
@@ -148,21 +142,9 @@ def main() -> None:
         fail(f"cannot read harness {args.harness}: {error}")
 
     result = apply_payload(harness, load_payload(args.payload))
-    output.parent.mkdir(parents=True, exist_ok=True)
-    temp_name = None
     try:
-        with tempfile.NamedTemporaryFile(
-            "w", encoding="utf-8", dir=output.parent, prefix=f".{output.name}.", delete=False
-        ) as temp:
-            temp.write(result)
-            temp_name = temp.name
-        os.replace(temp_name, output)
+        atomic_write(output, result)
     except OSError as error:
-        if temp_name:
-            try:
-                os.unlink(temp_name)
-            except OSError:
-                pass
         fail(f"cannot write {output}: {error}")
     print(f"Harness author payload applied -> {output}")
 

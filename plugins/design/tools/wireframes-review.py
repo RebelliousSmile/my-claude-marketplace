@@ -3,39 +3,17 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import os
 import sys
-import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+from _common import atomic_json, sha256_hex
+from wireframes_common import green, targets_artifact
+
 
 def digest(path: Path) -> dict:
-    return {"path": str(path.resolve()), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
-
-
-def atomic_json(path: Path, value: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
-            json.dump(value, handle, ensure_ascii=False, indent=2, sort_keys=True); handle.write("\n")
-        os.replace(temporary, path)
-    except Exception:
-        try: os.unlink(temporary)
-        except OSError: pass
-        raise
-
-
-def green(static: dict, rendered: dict) -> bool:
-    return static.get("summary", {}).get("valid") is True and rendered.get("static", {}).get("status") == "passed" and rendered.get("rendered", {}).get("status") == "passed" and rendered.get("summary", {}).get("validCandidate") is True
-
-
-def targets_artifact(report: dict, artifact: Path) -> bool:
-    try: return Path(report["file"]).resolve() == artifact.resolve()
-    except (KeyError, TypeError): return False
+    return {"path": str(path.resolve()), "sha256": sha256_hex(path)}
 
 
 def main() -> int:

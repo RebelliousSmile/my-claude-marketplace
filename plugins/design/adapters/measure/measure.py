@@ -13,13 +13,13 @@ in UTF-8 (avoids console encoding loss); a short summary is printed to stdout.
 
 Colour normalisation (introduced in design 2.7.0 — this file carries no version constant of its
 own; its version is the plugin's, in .claude-plugin/plugin.json). Properties listed in COLOR_PROPS
-are compared through _normalize_color(), which folds a computed colour to a canonical
+are compared through colors.normalize_color(), which folds a computed colour to a canonical
 `rgba(r, g, b, a)` tuple (channels rounded to 0-255, alpha to 4 decimals) before the equality test.
 Without it the oracle reported `rgba(255, 255, 255, 0.7)` and `color(srgb 1 1 1 / 0.7)` — the same
 colour, serialised two ways by Chromium depending on whether the author wrote rgba() or
 color-mix(in srgb, …) — as a style difference. This is a canonical form, NOT a tolerance: two
 genuinely different colours still differ, and a value that fails to parse falls back to raw string
-equality rather than being treated as a match. Only sRGB folds; see _normalize_one's docstring for
+equality rather than being treated as a match. Only sRGB folds; see colors.normalize_one's docstring for
 the colour spaces deliberately left out.
 
 --ledger-registry is REQUIRED — the oracle asserts conformity from the per-property comparison
@@ -152,6 +152,15 @@ import sys
 from datetime import date, datetime, timezone
 from difflib import SequenceMatcher
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "_shared"))
+from colors import normalize_color  # noqa: E402
+
+# Browser waits, in ms. NAV bounds a navigation or load; the settles let late layout land.
+NAV_TIMEOUT_MS = 20000
+SETTLE_MS = 300
+MOCKUP_SETTLE_MS = 500   # the SPA mockup re-renders on setViewport/setPage
+HOOK_SETTLE_MS = 750     # a login hook submits a form before the navigation starts
 
 # JS injected to read getComputedStyle for each target on the current page.
 # When check_text is true, also captures __text (normalised textContent) for P7 text-parity.
@@ -318,7 +327,7 @@ def _prepare_mockup(page, page_key, mockup_viewport):
     page.evaluate("() => { const b = document.querySelector('.preview-bar'); if (b) b.style.display = 'none'; }")
     # Detach non-active frames so document.querySelector hits the right one (P3).
     page.evaluate(_ISOLATE_FRAME, mockup_viewport or "desktop")
-    page.wait_for_timeout(400)
+    page.wait_for_timeout(MOCKUP_SETTLE_MS)
 
 
 def _target_props(target: dict, props: list) -> list:
@@ -445,162 +454,16 @@ def _resolve_url(raw: str, base_dir: Path) -> str:
 # Properties whose computed value is a colour, and only those. Everything else keeps raw string
 # equality: normalising a non-colour property would corrupt the comparison it is meant to protect.
 COLOR_PROPS = frozenset({
-    "color", "backgroundColor", "borderColor", "borderTopColor",
-    "outlineColor", "textDecorationColor",
+    "color", "backgroundColor", "borderColor", "borderTopColor", "borderRightColor",
+    "borderBottomColor", "borderLeftColor", "outlineColor", "textDecorationColor", "fill", "stroke",
 })
-
-_NAMED_COLORS = {
-    "transparent": (0, 0, 0, 0.0),
-    "black": (0, 0, 0, 1.0),
-    "white": (255, 255, 255, 1.0),
-}
-
-_RE_FUNC = re.compile(r"^(rgba?|color)\((.*)\)$", re.IGNORECASE | re.DOTALL)
-_RE_HEX = re.compile(r"^#([0-9a-f]{3,8})$", re.IGNORECASE)
-
-
-def _split_top_level(value: str) -> list[str]:
-    """Split a computed value on top-level whitespace, keeping parenthesised groups intact.
-
-    `borderColor` serialises as a shorthand of up to four colours, and each of those may itself be
-    `rgba(255, 255, 255, 0.7)` — full of spaces and commas. A naive split would shred it.
-    """
-    out, depth, cur = [], 0, []
-    for ch in value:
-        if ch == "(":
-            depth += 1
-        elif ch == ")":
-            depth = max(0, depth - 1)
-        if depth == 0 and ch.isspace():
-            if cur:
-                out.append("".join(cur))
-                cur = []
-            continue
-        cur.append(ch)
-    if cur:
-        out.append("".join(cur))
-    return out
-
-
-def _chan(tok: str, scale: float) -> float | None:
-    """One colour channel: a number, or a percentage of `scale`. None if it is neither."""
-    tok = tok.strip()
-    if not tok:
-        return None
-    try:
-        if tok.endswith("%"):
-            return float(tok[:-1]) * scale / 100.0
-        return float(tok)
-    except ValueError:
-        return None
-
-
-def _alpha(tok: str) -> float | None:
-    """Alpha as a 0-1 float; accepts `0.7` and `70%`."""
-    a = _chan(tok, 1.0)
-    return None if a is None else max(0.0, min(1.0, a))
-
-
-def _normalize_one(value: str) -> str | None:
-    """Canonicalise a single colour to `rgba(r, g, b, a)`; None when unparseable.
-
-    Handles `rgb()`/`rgba()` (comma or space separated), `color(srgb r g b / a)`, `#rgb`/`#rgba`/
-    `#rrggbb`/`#rrggbbaa`, and the `transparent`/`currentcolor` keywords. Channels are rounded to
-    integers 0-255 and alpha to 4 decimals, so this is an exact canonical form and never a
-    tolerance: `#FFFFFF` and `#FFFFEE` normalise to different strings, as do alpha 0.7 and 0.71.
-
-    LIMITATION: only the sRGB space folds. `color(display-p3 …)`, `lab()`, `lch()`, `oklab()`,
-    `oklch()` and `hsl()` are NOT converted — they return None and the caller falls back to string
-    equality, which is a false diff at worst, never a false match. `color-mix()` never reaches here:
-    the browser has already resolved it by the time getComputedStyle reports it (in srgb it
-    serialises as `color(srgb …)`, which is exactly the artefact this function exists to absorb).
-    """
-    v = value.strip()
-    if not v:
-        return None
-    low = v.lower()
-
-    if low == "currentcolor":
-        return "currentcolor"
-    if low in _NAMED_COLORS:
-        r, g, b, a = _NAMED_COLORS[low]
-        return f"rgba({r}, {g}, {b}, {round(a, 4):g})"
-
-    m = _RE_HEX.match(v)
-    if m:
-        h = m.group(1)
-        if len(h) in (3, 4):
-            h = "".join(c * 2 for c in h)
-        if len(h) not in (6, 8):
-            return None
-        r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
-        a = int(h[6:8], 16) / 255.0 if len(h) == 8 else 1.0
-        return f"rgba({r}, {g}, {b}, {round(a, 4):g})"
-
-    m = _RE_FUNC.match(v)
-    if not m:
-        return None
-    fn, body = m.group(1).lower(), m.group(2)
-
-    # Alpha is after a slash in the modern syntax, or the 4th comma-separated argument.
-    alpha_tok = None
-    if "/" in body:
-        body, _, alpha_tok = body.partition("/")
-
-    parts = [p for p in re.split(r"[,\s]+", body.strip()) if p]
-
-    if fn == "color":
-        if not parts or parts[0].lower() != "srgb":
-            return None          # display-p3, lab, … deliberately not folded
-        parts = parts[1:]
-        scale = 255.0            # color(srgb …) channels are 0-1
-    else:
-        scale = 255.0
-        if len(parts) == 4 and alpha_tok is None:
-            alpha_tok = parts[3]
-            parts = parts[:3]
-
-    if len(parts) != 3:
-        return None
-
-    chans = []
-    for p in parts:
-        c = _chan(p, 255.0)
-        if c is None:
-            return None
-        # color(srgb …) is 0-1 unless written as a percentage; rgb() is already 0-255.
-        if fn == "color" and not p.strip().endswith("%"):
-            c *= scale
-        chans.append(max(0, min(255, int(round(c)))))
-
-    a = 1.0 if alpha_tok is None else _alpha(alpha_tok)
-    if a is None:
-        return None
-    return f"rgba({chans[0]}, {chans[1]}, {chans[2]}, {round(a, 4):g})"
-
-
-def _normalize_color(value: str) -> str | None:
-    """Canonicalise a whole computed colour value, shorthand included; None when unparseable.
-
-    `borderColor` may carry 1-4 colours. Every component must parse, or the whole value is None and
-    the caller keeps string equality — a value we do not fully understand is never declared a match.
-    """
-    if not isinstance(value, str):
-        return None
-    toks = _split_top_level(value.strip())
-    if not toks:
-        return None
-    normed = [_normalize_one(t) for t in toks]
-    if any(n is None for n in normed):
-        return None
-    return " ".join(normed)
 
 
 def _color_match(prop: str, mockup, implementation) -> bool:
     """Compare one property. Colour-valued properties compare by canonical value, everything else
     by raw string. An unparseable colour falls back to string equality — never to True."""
     if prop in COLOR_PROPS:
-        m, i = _normalize_color(mockup), _normalize_color(implementation)
+        m, i = normalize_color(mockup), normalize_color(implementation)
         if m is not None and i is not None:
             return m == i
     return mockup == implementation
@@ -677,21 +540,21 @@ def _measure_ownership(browser, cfg: dict, base_dir: Path) -> dict:
             ctx = browser.new_context(**context_args)
             try:
                 page = ctx.new_page()
-                page.goto(_resolve_url(surface["url"], base_dir), wait_until="networkidle", timeout=20000)
+                page.goto(_resolve_url(surface["url"], base_dir), wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
                 if hook:
                     was_login = "wp-login.php" in page.url
                     page.evaluate(hook)
-                    page.wait_for_timeout(750)
+                    page.wait_for_timeout(HOOK_SETTLE_MS)
                     if was_login:
                         page.wait_for_url(re.compile(r"^(?!.*wp-login\.php).*$"),
-                                          wait_until="load", timeout=20000)
+                                          wait_until="load", timeout=NAV_TIMEOUT_MS)
                     else:
-                        page.wait_for_load_state("load", timeout=20000)
-                    page.wait_for_timeout(300)
+                        page.wait_for_load_state("load", timeout=NAV_TIMEOUT_MS)
+                    page.wait_for_timeout(SETTLE_MS)
                 scope = page
                 frame_selector = surface.get("frame_selector")
                 if frame_selector:
-                    page.wait_for_selector(frame_selector, state="attached", timeout=20000)
+                    page.wait_for_selector(frame_selector, state="attached", timeout=NAV_TIMEOUT_MS)
                     handle = page.query_selector(frame_selector)
                     scope = handle.content_frame() if handle else None
                 if scope is None:
@@ -735,7 +598,7 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
                     if mode == "B" or side == "mockup":
                         m = ctx.new_page()
                         m.goto(_resolve_url(cfg["reference_url"], base_dir),
-                               wait_until="networkidle", timeout=20000)
+                               wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
                         _prepare_mockup(m, cfg.get("reference_page"), bp.get("mockup_viewport"))
                         mock = _grab(m, targets, props, "mockup", check_text)
                         if mock_headings is None:
@@ -745,8 +608,8 @@ def measure(cfg: dict, mode: str, side: str, base_dir: Path) -> dict:
                     if mode == "B" or side == "implementation":
                         w = ctx.new_page()
                         w.goto(_resolve_url(cfg["implementation_url"], base_dir),
-                               wait_until="networkidle", timeout=20000)
-                        w.wait_for_timeout(300)
+                               wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
+                        w.wait_for_timeout(SETTLE_MS)
                         impl = _grab(w, targets, props, "implementation", check_text)
                         if impl_headings is None:
                             impl_headings = _headings(w, hsel.get("implementation", "h1, h2"))
@@ -947,7 +810,6 @@ def _coverage(impl_headings: list, targets: list, ack) -> dict:
     if not under or ack_sections:
         cov["ok"] = True
         if ack_legacy:
-            cov["ok"] = True
             cov["warning"] = ("coverage_ack: upgrade to structured form "
                               '{"sections":[...],"reason":"..."} — bare true accepted but opaque')
     else:

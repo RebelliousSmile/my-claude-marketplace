@@ -37,14 +37,13 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+from _common import fail as _fail, read_json  # noqa: E402
+
 
 # ─── Exit-code space ─────────────────────────────────────────────────────────
 # 0 / 2 / 3 for the whole program — never 1, never 4 (references/harness-contract.md).
-
-def _fail(message):
-    """Print to stderr and return the invocation/invalid-artifact code (2)."""
-    print(message, file=sys.stderr)
-    return 2
+# _fail, from tools/_common.py, prints and returns the 2.
 
 
 # ─── Page parsing ────────────────────────────────────────────────────────────
@@ -614,12 +613,9 @@ def resolve_tokens_style(contract):
                            "not 1.x — fix the artifact or re-freeze the contract.")
 
     policies_path = cdir / POLICIES
-    if not policies_path.is_file():
-        return None, None, _fail(f"Missing artifact: {policies_path.resolve()}")
-    try:
-        policies = json.loads(policies_path.read_text(encoding="utf-8"))
-    except (ValueError, OSError) as exc:
-        return None, None, _fail(f"Unreadable {POLICIES}: {exc}\n  {policies_path.resolve()}")
+    policies, code = read_json(policies_path)
+    if code is not None:
+        return None, None, code
     if not isinstance(policies, dict):
         return None, None, _fail(f"{POLICIES} is not an object: {policies_path.resolve()}")
 

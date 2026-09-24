@@ -11,6 +11,8 @@ from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import url2pathname
 
+NAV_TIMEOUT_MS = 20000
+
 
 def intersects(a: dict, b: dict, tolerance: float = 0.5) -> bool:
     return min(a["right"], b["right"]) - max(a["left"], b["left"]) > tolerance and min(a["bottom"], b["bottom"]) - max(a["top"], b["top"]) > tolerance
@@ -69,7 +71,7 @@ def _browser_check(path: Path, executable: str | None) -> tuple[list[dict], list
         try:
             page = browser.new_page(viewport={"width": 1920, "height": 1080})
             page.route("**/*", guard)
-            page.goto(path.as_uri(), wait_until="load", timeout=20000)
+            page.goto(path.as_uri(), wait_until="load", timeout=NAV_TIMEOUT_MS)
             page.add_style_tag(content="*,*::before,*::after{animation:none!important;transition:none!important}")
             page.evaluate("() => document.fonts && document.fonts.ready")
             observed = page.evaluate("""() => {

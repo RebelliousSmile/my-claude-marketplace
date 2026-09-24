@@ -5,11 +5,12 @@ from __future__ import annotations
 import argparse
 import html
 import json
-import os
 import re
 import sys
-import tempfile
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+from _common import atomic_write  # noqa: E402
 
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 PILLARS = {"responsive", "representative-content", "existing-context", "brand"}
@@ -194,21 +195,6 @@ def render(manifest: dict) -> str:
 </body>
 </html>
 '''
-
-
-def atomic_write(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
-            handle.write(content)
-        os.replace(tmp, path)
-    except Exception:
-        try:
-            os.unlink(tmp)
-        except OSError:
-            pass
-        raise
 
 
 def main() -> int:

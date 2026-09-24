@@ -402,8 +402,6 @@ def _derive_ownership_targets(components: dict, oracle_hints: dict,
     # alternatives into one query-selector list so an absent variant does not become a false gap.
     merged: dict[tuple[str, str], dict] = {}
     for row in found.values():
-        if not row.get("prop"):
-            continue
         key = (row["class"], row["prop"])
         target = merged.setdefault(key, {**row, "selector": "", "sources": []})
         selectors = [part.strip() for part in target["selector"].split(",") if part.strip()]

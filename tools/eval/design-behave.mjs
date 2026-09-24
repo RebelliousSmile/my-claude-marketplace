@@ -121,6 +121,11 @@ if (wireGates.includes('porter l\'instruction dans le `SKILL.md`'))
   fail('wire-gates: ne doit jamais modifier une skill installée pour persister une règle projet');
 if (wireGates.includes('/design:')) fail('wire-gates: invocation slash Claude encore persistée');
 
+// Copied alone into a project's design/lint/, where tools/_common.py does not exist.
+for (const copied of ['run-gates.py', 'status.py', 'migrate-contract.py'])
+  if (/^\s*(from|import)\s+(_common|wireframes_common)\b/m.test(readFileSync(`plugins/design/tools/${copied}`, 'utf8')))
+    fail(`trio copié: ${copied} importe un module partagé absent de design/lint/`);
+
 const runGate = (config) => spawnSync(python, [
   'plugins/design/tools/run-gates.py', '--config',
   `plugins/design/skills/enforce/fixtures/${config}`,

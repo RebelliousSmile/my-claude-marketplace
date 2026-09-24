@@ -21,7 +21,8 @@ import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from measure import ConfigError, _resolve_url, load_config  # noqa: E402
+from measure import (  # noqa: E402
+    MOCKUP_SETTLE_MS, NAV_TIMEOUT_MS, SETTLE_MS, ConfigError, _resolve_url, load_config)
 
 # Strip preview chrome + neutralize the mobile phone-frame so fullPage is the bare page.
 _PREPARE = """() => {
@@ -62,13 +63,13 @@ def capture(cfg: dict, out_dir: Path, base_dir: Path) -> list[Path]:
                     ref_page = cfg.get("reference_page")
                     if ref_url:
                         m = ctx.new_page()
-                        m.goto(_resolve_url(ref_url, base_dir), wait_until="networkidle", timeout=20000)
+                        m.goto(_resolve_url(ref_url, base_dir), wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
                         if bp.get("mockup_viewport"):
                             m.evaluate("(v) => window.setViewport && window.setViewport(v)", bp["mockup_viewport"])
                         if ref_page:
                             m.evaluate("(k) => window.setPage && window.setPage(k)", ref_page)
                         m.evaluate(_PREPARE)
-                        m.wait_for_timeout(500)
+                        m.wait_for_timeout(MOCKUP_SETTLE_MS)
                         p = out_dir / f"{_slug(page_key)}__mockup__{bp['name']}.png"
                         m.screenshot(path=str(p), full_page=True)
                         written.append(p)
@@ -76,8 +77,8 @@ def capture(cfg: dict, out_dir: Path, base_dir: Path) -> list[Path]:
                     impl_url = cfg.get("implementation_url")
                     if impl_url:
                         w = ctx.new_page()
-                        w.goto(_resolve_url(impl_url, base_dir), wait_until="networkidle", timeout=20000)
-                        w.wait_for_timeout(300)
+                        w.goto(_resolve_url(impl_url, base_dir), wait_until="networkidle", timeout=NAV_TIMEOUT_MS)
+                        w.wait_for_timeout(SETTLE_MS)
                         p = out_dir / f"{_slug(page_key)}__implementation__{bp['name']}.png"
                         w.screenshot(path=str(p), full_page=True)
                         written.append(p)

@@ -56,6 +56,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "_shared"))
+from colors import resolve_alias, to_rgba  # noqa: E402
+
 TOKENS_FILE = "tokens.json"
 COMPONENTS_FILE = "components.json"
 AA = 4.5  # WCAG 2.x AA, normal text
@@ -63,7 +66,6 @@ DEFAULT_THEME = "default"
 
 _FG_ROLE = re.compile(r"^(text|foreground|on[-A-Z])")
 _SURFACE_ROLE = re.compile(r"^(background|surface|base)$")
-_ALIAS = re.compile(r"^\{([^}]+)\}$")
 
 
 def is_token(node) -> bool:
@@ -98,29 +100,12 @@ def lookup(tree: dict, dotted: str):
 
 def resolve(tree: dict, raw: str) -> str:
     """Follow `{a.b.c}` aliases within one theme's tree until a literal, guarding cycles."""
-    seen: set[str] = set()
-    value = raw
-    while isinstance(value, str):
-        match = _ALIAS.match(value.strip())
-        if not match:
-            return value
-        ref = match.group(1)
-        if ref in seen:
-            raise ValueError(f"alias cycle at {{{ref}}}")
-        seen.add(ref)
-        value = lookup(tree, ref).get("$value")
-    raise ValueError(f"alias resolves to a non-string value: {raw}")
-
-
-def to_rgba(value: str) -> tuple[int, int, int, float]:
-    """`#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa` → channels plus alpha in [0, 1]."""
-    hexstr = value.strip().lstrip("#")
-    if len(hexstr) in (3, 4):
-        hexstr = "".join(ch * 2 for ch in hexstr)
-    if len(hexstr) not in (6, 8) or any(c not in "0123456789abcdefABCDEF" for c in hexstr):
-        raise ValueError(f"not a hex color: {value}")
-    alpha = int(hexstr[6:8], 16) / 255 if len(hexstr) == 8 else 1.0
-    return int(hexstr[0:2], 16), int(hexstr[2:4], 16), int(hexstr[4:6], 16), alpha
+    value, error = resolve_alias(tree, raw)
+    if error is not None:
+        raise ValueError(error)
+    if not isinstance(value, str):
+        raise ValueError(f"alias resolves to a non-string value: {raw}")
+    return value
 
 
 def over(fg: tuple[int, int, int, float], bg: tuple[int, int, int]) -> tuple[float, float, float]:
@@ -324,7 +309,7 @@ def main(argv: list[str] | None = None) -> int:
                   "foreground/surface role name matched under color.semantic.")
         # The coverage line is not a footnote: it says whether the verdict above means anything.
         print(f"coverage: {cov['paired']}/{cov['declared']} color leaves paired"
-              + (f" — unpaired by branch: "
+              + (" — unpaired by branch: "
                  + ", ".join(f"{b} {n}" for b, n in cov["unpairedByBranch"].items())
                  if cov["unpaired"] else ""))
     return code

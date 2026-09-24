@@ -97,3 +97,15 @@ def test_allow_unpaired_downgrades_3_to_0_and_says_so(tmp_path):
     assert code == 0
     assert report["results"] == []
     assert report["unpairedAllowed"] is True
+
+
+def test_an_rgb_token_is_read_like_its_hex_spelling(tmp_path):
+    code, report = contrast.run(_contract(tmp_path, {"text": "rgb(0 0 0)", "background": "#ffffff"}))
+    assert code == 0
+    assert _ratios(report) == {"default": 21.0}
+
+
+def test_an_alias_cycle_is_an_unusable_contract(tmp_path):
+    code, _ = contrast.run(_contract(tmp_path, {"text": "{color.semantic.background}",
+                                                "background": "{color.semantic.text}"}))
+    assert code == 2

@@ -26,11 +26,15 @@ Exit:   0  every artifact written, or --check found no drift
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import sys
 from pathlib import Path
+
+from _common import fail, fail_shape, read_json, sha256
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "adapters" / "_shared"))
+from colors import alias_target, resolve_alias  # noqa: E402
 
 TOKENS = "tokens.json"
 POLICIES = "policies.json"
@@ -48,53 +52,10 @@ def source_for(role: str) -> str:
     """The artifact a role derives from. Roles read tokens.json; the ledger reads its own."""
     return DEVIATIONS if role in LEDGER_ROLES else TOKENS
 
-ALIAS_RE = re.compile(r"^\{([^}]+)\}$")
 # A theme name lands in a CSS selector and a value in a declaration: neither may close the
 # block it sits in or open markup around an inlined stylesheet.
 THEME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 CSS_BREAKOUT = ("{", "}", ";", "<")
-
-
-def fail(message: str) -> int:
-    print(message, file=sys.stderr)
-    return 2
-
-
-def shape_of(value) -> str:
-    if value is None:
-        return "null"
-    return {dict: "an object", list: "an array", str: "a string",
-            bool: "a boolean", int: "a number", float: "a number"}.get(
-        type(value), f"a {type(value).__name__}")
-
-
-def fail_shape(path: Path, field: str, expected: str, got) -> int:
-    """A structurally invalid artifact is an environment error, never a drift.
-
-    Same contract as migrate-contract.py: name the artifact, the field and the value, and
-    never let an exception reach the user. An emission over a malformed source would write
-    files that look generated and carry nothing the contract declares.
-    """
-    seen = json.dumps(got, ensure_ascii=False)
-    if len(seen) > 120:
-        seen = seen[:117] + "..."
-    return fail(f"{path.name} {field} is {shape_of(got)}, expected {expected}: {path.resolve()}\n"
-                f"  Got: {seen}\n"
-                "  The emission derives from this field. Fix the artifact, or re-run its generator.")
-
-
-def sha256(path: Path) -> str:
-    return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def read_json(path: Path):
-    """Parse an artifact, or return an exit code. Never raises."""
-    if not path.is_file():
-        return None, fail(f"Missing artifact: {path.resolve()}")
-    try:
-        return json.loads(path.read_text(encoding="utf-8")), None
-    except ValueError as exc:
-        return None, fail(f"Unreadable {path.name}: {exc}")
 
 
 # --- token tree -------------------------------------------------------------------------
@@ -119,24 +80,6 @@ def flatten(tree: dict, prefix: tuple = ()) -> list:
 def var_name(path: tuple) -> str:
     """The canonical path-to-variable transform. One way only, never inverted."""
     return "--" + "-".join(path)
-
-
-def resolve_literal(value, base: dict, seen: tuple = ()) -> tuple:
-    """Follow {alias} chains to a literal. Returns (value, error) - error names the cycle."""
-    match = ALIAS_RE.match(value) if isinstance(value, str) else None
-    if match is None:
-        return value, None
-    target = match.group(1)
-    if target in seen:
-        return None, " -> ".join(seen + (target,))
-    node = base
-    for segment in target.split("."):
-        if not isinstance(node, dict) or segment not in node:
-            return None, f"{target} (no such path)"
-        node = node[segment]
-    if not isinstance(node, dict) or "$value" not in node:
-        return None, f"{target} (not a token)"
-    return resolve_literal(node["$value"], base, seen + (target,))
 
 
 # --- emitters ---------------------------------------------------------------------------
@@ -205,15 +148,15 @@ def css_value(value, base: dict):
         if rendered is None:
             return None, f"object $value is missing a shadow field {{color, offsetX, offsetY, blur, spread}}: {value!r}"
         return rendered, None
-    match = ALIAS_RE.match(value) if isinstance(value, str) else None
-    if match is None:
+    target = alias_target(value)
+    if target is None:
         return value, None
     node = base
-    for segment in match.group(1).split("."):
+    for segment in target.split("."):
         if not isinstance(node, dict) or segment not in node:
-            return None, f"{match.group(1)} (no such path)"
+            return None, f"{target} (no such path)"
         node = node[segment]
-    return f"var({var_name(tuple(match.group(1).split('.')))})", None
+    return f"var({var_name(tuple(target.split('.')))})", None
 
 
 def css_declaration(path: tuple, value, base: dict) -> tuple:
@@ -256,7 +199,7 @@ def emit_css(tokens: dict, sources: list) -> tuple:
 def flat_map(tree: dict, base: dict) -> tuple:
     out = {}
     for path, value in flatten(tree):
-        literal, err = resolve_literal(value, base)
+        literal, err = resolve_alias(base, value)
         if err:
             return None, err
         out["-".join(path)] = literal

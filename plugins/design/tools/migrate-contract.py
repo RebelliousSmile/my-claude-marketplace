@@ -253,24 +253,11 @@ def split(manifest: dict, mode: str) -> tuple[dict, list[tuple[str, str]], list[
     return payload, mapping, anomalies
 
 
-def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -> int:
-    if not contract_dir.is_dir():
-        return fail(f"Contract directory not found: {contract_dir}")
-
-    if (contract_dir / RELEASE).is_file():
-        print(f"CONTRACT {contract_dir}\n"
-              f"NO-OP    {RELEASE} present - already 2.0, nothing to migrate.")
-        return 0
-
-    # A backup without release.json is an interrupted or undone migration. Overwriting it could
-    # replace the only copy of the 1.x contract with a half-migrated one: refuse, write nothing.
-    if (contract_dir / BACKUP_DIR).exists():
-        return fail(f"{contract_dir / BACKUP_DIR} already exists and {RELEASE} is absent: a previous "
-                    f"migration did not finish. Restore the 1.x files from it, remove it, then rerun.")
-
+def validate(contract_dir: Path, mode_arg: str | None):
+    """Read the 1.x manifest and settle the mode. Returns (manifest, mode, declared_mode), or the
+    exit code of the refusal, already printed."""
     manifest_path = contract_dir / COMPONENTS
-    tokens_path = contract_dir / TOKENS
-    for path in (tokens_path, manifest_path):
+    for path in (contract_dir / TOKENS, manifest_path):
         if not path.is_file():
             return fail(f"Not a 1.x contract: {path.name} missing in {contract_dir}")
     try:
@@ -295,7 +282,12 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         return fail(f"Undeclared mode in {manifest_path}. Pass --mode {'|'.join(MODES)}. "
                     "The tool refuses to guess it: the wrong mode leaves the vocabulary rules inert "
                     "and turns a green run into a verdict about nothing.")
+    return manifest, mode, declared_mode
 
+
+def build_release(contract_dir: Path, manifest: dict, mode: str, now: str):
+    """Split the manifest and describe the release. Returns (payload, release, charter, mapping,
+    adapters, anomalies), or the exit code of an unreadable contract."""
     payload, mapping, anomalies = split(manifest, mode)
     adapters, adapter_anomalies = adapter_table(contract_dir)
     anomalies += adapter_anomalies
@@ -318,8 +310,8 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
         anomalies.append(f'declared versions differ - {COMPONENTS} "{version}", charter "{charter["version"]}"; '
                          f"both are recorded in {RELEASE}, neither is a violation")
 
-    manifest_hash = sha256(manifest_path)
-    source_hash = {TOKENS: sha256(tokens_path)}
+    manifest_hash = sha256(contract_dir / COMPONENTS)
+    source_hash = {TOKENS: sha256(contract_dir / TOKENS)}
     release = {
         "$schema": f"{SCHEMA}#release",
         "$format": FORMAT,
@@ -336,7 +328,11 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
                 ("$.$version", f"{RELEASE}.designSystem.version, artifacts.*.version")]
                + mapping
                + [(charter["path"], f"{RELEASE}.charter")])
+    return payload, release, charter, mapping, adapters, anomalies
 
+
+def render_report(contract_dir: Path, mode: str, declared_mode, release: dict,
+                  mapping: list, adapters: list, anomalies: list) -> list[str]:
     width = max(len(src) for src, _ in mapping)
     lines = [f"CONTRACT {contract_dir}",
              f"MODE     {mode} ({'declared' if declared_mode else '--mode'})",
@@ -347,15 +343,13 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
     lines += [f"  {e['artifact']}  ->  {e['consumer']}" for e in adapters] or ["  (none)"]
     lines.append("ANOMALIES")
     lines += [f"  {a}" for a in anomalies] or ["  (none)"]
+    return lines
 
-    if dry_run:
-        lines.append("DRY RUN  nothing written")
-        print("\n".join(lines))
-        return 0
 
+def write(contract_dir: Path, payload: dict, release: dict, charter_path: str) -> None:
     backup = contract_dir / BACKUP_DIR
     backup.mkdir()
-    for name in (COMPONENTS, TOKENS, charter["path"]):
+    for name in (COMPONENTS, TOKENS, charter_path):
         src = contract_dir / name
         if src.is_file():
             shutil.copy2(src, backup / Path(name).name)
@@ -365,8 +359,38 @@ def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -
     # release.json last: its presence is what marks the migration done.
     write_atomic(contract_dir / RELEASE, dump(release))
 
-    lines.append(f"WRITTEN  {', '.join(list(payload) + [RELEASE])}")
-    lines.append(f"BACKUP   {BACKUP_DIR}/")
+
+def migrate(contract_dir: Path, mode_arg: str | None, dry_run: bool, now: str) -> int:
+    if not contract_dir.is_dir():
+        return fail(f"Contract directory not found: {contract_dir}")
+
+    if (contract_dir / RELEASE).is_file():
+        print(f"CONTRACT {contract_dir}\n"
+              f"NO-OP    {RELEASE} present - already 2.0, nothing to migrate.")
+        return 0
+
+    # A backup without release.json is an interrupted or undone migration. Overwriting it could
+    # replace the only copy of the 1.x contract with a half-migrated one: refuse, write nothing.
+    if (contract_dir / BACKUP_DIR).exists():
+        return fail(f"{contract_dir / BACKUP_DIR} already exists and {RELEASE} is absent: a previous "
+                    f"migration did not finish. Restore the 1.x files from it, remove it, then rerun.")
+
+    validated = validate(contract_dir, mode_arg)
+    if isinstance(validated, int):
+        return validated
+    manifest, mode, declared_mode = validated
+    built = build_release(contract_dir, manifest, mode, now)
+    if isinstance(built, int):
+        return built
+    payload, release, charter, mapping, adapters, anomalies = built
+    lines = render_report(contract_dir, mode, declared_mode, release, mapping, adapters, anomalies)
+
+    if dry_run:
+        lines.append("DRY RUN  nothing written")
+    else:
+        write(contract_dir, payload, release, charter["path"])
+        lines.append(f"WRITTEN  {', '.join(list(payload) + [RELEASE])}")
+        lines.append(f"BACKUP   {BACKUP_DIR}/")
     print("\n".join(lines))
     return 0
 

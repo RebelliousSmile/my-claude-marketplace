@@ -63,3 +63,30 @@ def test_target_without_any_props_exits_2(tmp_path):
     assert "Title" in result.stderr
     assert "Grid · root" not in result.stderr
     assert not out.exists()
+
+
+@pytest.mark.browser
+@pytest.mark.parametrize("mockup, implementation, match", [
+    ("rgb(0, 0, 0)", "rgb(255, 0, 0)", False),
+    # Two spellings of one colour: a string comparison would report a gap.
+    ("color(srgb 0 0 0 / 0.5)", "rgba(0, 0, 0, 0.5)", True),
+])
+def test_border_left_colour_is_measured_as_a_colour(tmp_path, mockup, implementation, match):
+    page = ('<!doctype html><html><head><style>.box {{ border-left: 2px solid {}; }}</style>'
+            '</head><body><h1>T</h1><div class="box">x</div></body></html>')
+    (tmp_path / "mockup.html").write_text(page.format(mockup), encoding="utf-8")
+    (tmp_path / "impl.html").write_text(page.format(implementation), encoding="utf-8")
+    config = tmp_path / "config.json"
+    config.write_text(json.dumps({
+        "reference_url": "mockup.html", "reference_page": None, "implementation_url": "impl.html",
+        "breakpoints": [{"name": "desktop", "width": 1280, "height": 800}],
+        "props": ["borderLeftColor"],
+        "targets": [{"name": "Box", "mockup": ".box", "implementation": ".box"}],
+        "headings_sel": {"mockup": "h1", "implementation": "h1"},
+    }), encoding="utf-8")
+    out = tmp_path / "report.json"
+    result = _run(config, out)
+    assert result.returncode in (0, 1), result.stderr
+    rows = json.loads(out.read_text(encoding="utf-8"))["breakpoints"]["desktop"]
+    row = next(r for r in rows if r["element"] == "Box" and r["prop"] == "borderLeftColor")
+    assert row["match"] is match
