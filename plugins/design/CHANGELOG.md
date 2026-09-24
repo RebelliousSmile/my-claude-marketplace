@@ -1,5 +1,37 @@
 # Changelog — design
 
+## [2.17.0] — 2026-09-24
+
+### Added
+
+- `oracle.json § pages` : le gate de fidélité figé par page (`root`, `elements` avec sélecteur maquette
+  ou `{ "skip": raison }`, `collections`), source unique des sélecteurs maquette du gate.
+- `config-gen.py --check` : complétude statique du gate (exit 0 complet, 1 défauts listés, 2 entrée
+  invalide) ; `--page` filtre les cibles et la propriété sur les composants de la page ;
+  `--implementation-url` devient optionnel pour mesurer la maquette seule.
+- `adjust freeze` écrit `oracle.json § pages` depuis la carte signée, rapproche les libellés du
+  brouillon des noms canoniques et refuse de figer tant que `--check` échoue, qu'une clé de page manque
+  au harness ou qu'une cible maquette est `missing` en Mode A. Référence non mesurable : étape sans objet.
+- Carte des éléments dans la table de correspondance : `copycat` rend un `element_map` couvrant chaque
+  cible mesurée, `define` la fusionne par page et le sign-off P2 la couvre.
+
+### Changed
+
+- `measure.py` lit les `props` déclarées par cible, en remplacement de la liste globale pour cette cible.
+- `enforce fidelity-gate` applique le config généré sans le compléter : seuls ajouts permis, les URLs,
+  l'authentification `ownership`, les `ledger` et `coverage_ack`. `copycat` en dérive ne surcharge ni ne
+  retire plus une cible générée ; un `missing` côté maquette remonte à `adjust`.
+- `gate-natures.md` : un élément non mappé n'est plus une limite admise mais un défaut refusé au gel ;
+  seules les exclusions `skip` restent hors mesure, nommées.
+
+### Migration
+
+- Un contrat à référence mesurable dont `oracle.json` n'a pas de `pages` est refusé par
+  `enforce fidelity-gate` jusqu'au re-gel par `adjust`. `config-gen.py` sans `pages` produit encore
+  l'ancienne config, avec un avertissement.
+- Les `props` d'élément déjà présentes dans un `oracle.json`, ignorées jusqu'ici par `measure.py`,
+  s'appliquent désormais : un verdict peut changer sans modification du contrat.
+
 ## [2.16.0] — 2026-09-23
 
 ### Added

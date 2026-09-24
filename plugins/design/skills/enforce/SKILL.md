@@ -2,7 +2,7 @@
 name: enforce
 description: Inspects design quality without a contract or enforces a frozen contract through measurable gates and native pivots. Use when the user wants an audit, conformity check, lint wiring, accessibility evidence, or fidelity verification.
 author: François-Xavier Guillois
-version: 2.14.0
+version: 2.15.0
 vibe_version: ">=1.0.0"
 permissions:
   - files

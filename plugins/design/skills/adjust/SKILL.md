@@ -2,7 +2,7 @@
 name: adjust
 description: Freezes a draft or a scoped delta into the versioned design contract and migrates legacy contracts. Use when the user wants to arbitrate, canonicalize, freeze, re-freeze, or migrate design-system decisions.
 author: François-Xavier Guillois
-version: 2.13.1
+version: 2.14.0
 vibe_version: ">=1.0.0"
 permissions:
   - files
