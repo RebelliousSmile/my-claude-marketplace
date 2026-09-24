@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: adjust fige et vérifie le gate

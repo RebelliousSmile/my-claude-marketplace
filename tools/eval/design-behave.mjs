@@ -83,6 +83,11 @@ for (const required of ['## Carte des éléments', 'Mockup URL', 'Carte des él�
   if (!correspondence.includes(required)) fail(`table de correspondance: carte des éléments absente (${required})`);
 if (!copycatFanout.includes('element_map'))
   fail('define: agrégation de la carte des éléments absente');
+const freeze = readFileSync('plugins/design/skills/adjust/actions/02-freeze.md', 'utf8');
+for (const required of ['### Prouver le gate de fidélité', 'config-gen.py --components design/components.json --tokens design/tokens.json --oracle design/oracle.json --check', '--expect-pages', '--mode A --side mockup', 'UNPLACED', '**sans objet**', 'renvoi à `define`', 'confirmation de l\'utilisateur'])
+  if (!freeze.includes(required)) fail(`adjust: gate de fidélité non prouvé au gel (${required})`);
+if (freeze.indexOf('### Prouver le gate de fidélité') > freeze.indexOf('## Étape 2bis'))
+  fail('adjust: la preuve du gate doit précéder l\'Étape 2bis');
 
 const portability = readFileSync('plugins/design/references/host-portability.md', 'utf8');
 if (!portability.includes('Path(SKILL_FILE).resolve().parent.parent.parent'))
