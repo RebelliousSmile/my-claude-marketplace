@@ -45,12 +45,18 @@ unique soumise au **checkpoint humain (P2)**. Variante à l'échelle de `02-extr
 6. **FAIRE REMONTER les conflits inter-pages** (page A radius 8px vs page B 10px) dans la section
    *Conflicts* de la table — **ne pas trancher** : l'arbitrage (motif dominant) est le rôle de
    `adjust`. De même, regrouper les `proposed_extensions` (DS-prime : étendre seulement si justifié).
+6bis. **Fusionner les `element_map`** dans la section *Carte des éléments*, un bloc par clé de page
+   `setPage`, et porter l'URL de la maquette (`mockup_url`) dans l'en-tête. Un même élément avec deux
+   sélecteurs sur une même page = conflit dans *Conflicts*, pas tranché. Un fragment sans
+   `element_map` est incomplet : relancer la page.
 7. **Émettre l'inventaire agrégé** comme livrable du **checkpoint P2** et mettre à jour la checklist.
 
 ## Outputs
 
 - Une **table de correspondance agrégée** (`references/correspondence-table-template.md`) : lignes
-  par page, section Conflicts inter-pages, extensions proposées justifiées, lignes `derived` flaggées.
+  par page, carte des éléments par page, section Conflicts inter-pages, extensions proposées
+  justifiées, lignes `derived` flaggées. Le sign-off couvre la carte (« Carte des éléments revue ») :
+  `adjust` en tire le gate de fidélité.
 - La **checklist** mise à jour (pages → `aggregated`).
 - **STOP au checkpoint P2** : présenter la table, attendre la validation humaine. Rien n'est figé
   ni écrit dans le contrat avant sign-off. Après validation, recommander d'invoquer `adjust`
@@ -78,5 +84,6 @@ n'opère qu'**après figeage**, sur une unité à la fois — d'où l'absence de
 - Un fragment par page non `signed-off` a été produit en parallèle ; relancer est idempotent
   (seules les pages non traitées repassent).
 - Les conflits inter-pages sont **listés, pas auto-résolus** ; les extensions sont justifiées.
+- La carte des éléments couvre chaque page ; deux sélecteurs pour un même élément d'une page sont en Conflicts.
 - Aucune écriture dans `tokens.json`/`components.json` ni aucun figeage : la sortie est une
   table soumise au checkpoint humain, consommée ensuite par `adjust`.

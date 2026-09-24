@@ -12,6 +12,7 @@
 ## Header
 
 - **Page / mockup key**: `<setPage key or URL>`
+- **Mockup URL**: `<URL of the mockup measured>` — `adjust` re-measures the frozen gate against it
 - **Breakpoints measured**: `<mobile 375 / tablet 834 / desktop 1440>` (note any DERIVED band)
 - **Oracle report**: `<path to measure.py JSON>`
 - **Date / agent run**: `<…>`
@@ -32,10 +33,25 @@ Columns:
 - **Action**: `align` (bend to existing contract value), `extend` (new/changed token or component — requires justification), `add component`, `add content`.
 - **Routed layer**: `tokens` · `components` · `charter` · `markup` · `content` (P1: content never hard-coded into markup).
 
+## Carte des éléments
+
+Every element measured on the mockup, diverging or not — one block per `setPage` page key. It
+is the single source of the mockup selectors that `adjust` freezes into `oracle.json § pages`.
+Labels are draft labels: `adjust` reconciles them with the canonical names of `components.json`.
+
+### Page `<setPage key>`
+
+| Component (draft) | Element (draft label · `root`) | Mockup selector | Collection |
+|-------------------|--------------------------------|-----------------|------------|
+| hero | root | `.page-hero` | |
+| hero | title | `.page-hero__title` | |
+| services | item | `.service-card` | services |
+
 ## Conflicts (cross-page — surfaced, NOT auto-resolved)
 
 `define` lists here any element where pages disagree (page A radius 8px vs page B 10px).
-These go to `adjust` (dominant motif wins) — the agent does not pick.
+These go to `adjust` (dominant motif wins) — the agent does not pick. Same for an element
+given two different mockup selectors on the same page in the element map.
 
 | Element / token | Page A value | Page B value | … | Proposed resolution (for adjust) |
 |-----------------|--------------|--------------|---|----------------------------------|
@@ -50,6 +66,7 @@ the contract grows rather than the mockup aligning to it (DS-prime default).
 - [ ] Human reviewed the aggregated table.
 - [ ] Extensions approved (or sent back to `align`).
 - [ ] Derived (inferred) rows reviewed — kept / corrected / sent to the deviation ledger.
+- [ ] Carte des éléments revue — every element measured has its mockup selector.
 - Approver: `<name>` — Date: `<…>`
 
 > Until this block is checked, `adjust` does not freeze and no DS/markup edit proceeds.

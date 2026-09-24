@@ -76,6 +76,13 @@ for (const required of ['hôte', 'modèle par défaut', 'séquentiellement', 'ag
 const copycatContract = readFileSync('plugins/design/agents/copycat.md', 'utf8');
 for (const required of ['Greenfield bulk', 'not** run `config-gen.py`', 'Mode B', 'Drift mode only'])
   if (!copycatContract.includes(required)) fail(`copycat: séparation brouillon/contrat absente (${required})`);
+for (const required of ['element_map:', 'mockup_url:', 'EVERY target of your config'])
+  if (!copycatContract.includes(required)) fail(`copycat: carte des éléments absente des Outputs (${required})`);
+const correspondence = readFileSync('plugins/design/references/correspondence-table-template.md', 'utf8');
+for (const required of ['## Carte des éléments', 'Mockup URL', 'Carte des éléments revue', 'two different mockup selectors'])
+  if (!correspondence.includes(required)) fail(`table de correspondance: carte des éléments absente (${required})`);
+if (!copycatFanout.includes('element_map'))
+  fail('define: agrégation de la carte des éléments absente');
 
 const portability = readFileSync('plugins/design/references/host-portability.md', 'utf8');
 if (!portability.includes('Path(SKILL_FILE).resolve().parent.parent.parent'))

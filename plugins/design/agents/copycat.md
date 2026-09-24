@@ -286,6 +286,7 @@ Return a correspondence-table fragment for this page (per `${DESIGN_PLUGIN_ROOT}
 
 ```yaml
 page: <setPage key | URL>
+mockup_url: <URL of the mockup measured — adjust re-measures the frozen gate against it>
 breakpoints_measured: { desktop: measured, mobile: measured, tablet: derived }
 oracle_report: <project-qa-dir>/fidelity/<page>-<mode>.json   # project tree, gitignored — never plugin-relative
 missing_sections: []        # in mockup, absent in target — the DOMINANT delta, resolved/ledgered first
@@ -306,6 +307,11 @@ rows:
     confidence: high | medium | low        # visual rows only; omit on measured/derived rows
     action: align | extend | add-component | add-content
     routed_layer: tokens | markup | components | charter | content
+element_map:                # EVERY target of your config, diverging or not — not only the rows
+  - component: <candidate component name, draft label>
+    element: <candidate element label | root>
+    mockup_selector: <selector that resolved on the mockup>
+    collection: <collection name>   # only for a repeated-structure item selector
 proposed_extensions:        # action=extend / add-component — each justified (DS-prime)
   - { target: <…>, why: <why the contract grows rather than the mockup aligning> }
 conflicts_for_define: []    # cross-page disagreements you noticed — surfaced, not resolved
@@ -313,6 +319,12 @@ visual_noise: []            # confidence:low visual zones — surfaced for human
 proposed_ledger_entries: [] # tolerated DRY/SOLID deviations to record (P3)
 checklist_update: { page: <…>, status: measured|proposed }
 ```
+
+`element_map` is the source of the frozen fidelity gate: `adjust` reconciles its draft labels
+with the canonical names and writes each selector into `oracle.json § pages`. An element you
+measured but left out of the map is an element the gate will not measure. One entry per target
+and per collection of your config (§3: every candidate section has at least one), with the
+mockup selector exactly as it resolved.
 
 In **bulk** you stop here: `define` aggregates fragments, the human signs off the aggregated
 table (P2), `adjust` freezes — you never proceed past your own page. In **drift** the fragment
