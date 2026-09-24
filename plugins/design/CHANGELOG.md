@@ -1,6 +1,32 @@
 # Changelog — design
 
-## [2.17.1] — 2026-09-24
+## [2.18.0] — 2026-09-24
+
+### Added
+
+- Manifeste wireframes : champ `lang` validé (défaut `fr`) porté sur le document rendu.
+- `adapters/measure/requirements-dev.txt` (pytest) et `pnpm test:design` : pytest measure, wireframes,
+  a11y et tools, `design-behave`, `design-harness`, selftest wireframes. Lancé en tête de `pnpm test`.
+- Job CI `design` : pnpm, Python 3.13, Chromium Playwright, `WIREFRAMES_CHROMIUM`.
+- Tests de `contrast.py`, `generate.py`, `migrate-contract.py`, `pixeldiff.py`, `screenshot.py` et du
+  runner `run-gates.py`.
+- `lint-core.mjs` accepte plusieurs fichiers de markup par appel : contrat lu une fois, un verdict par
+  fichier (une ligne JSON chacun sous `--json`), exit 1 si l'un d'eux est en erreur. Un appel
+  mono-fichier rend la même sortie qu'avant.
+
+### Changed
+
+- `run-gates.py` lint toutes les cibles markup par un seul processus `node` (par lots au-delà de
+  30 000 caractères de ligne de commande).
+- `measure.py` : ownership en une évaluation par breakpoint, session de login réutilisée, page
+  d'implémentation unique redimensionnée, attente de stabilité sur condition plutôt que délai fixe
+  (run avec login ~2× plus court).
+- `render-check.py` lance le lint statique dans son interpréteur, sans second processus Python.
+- Helpers partagés (`tools/_common.py`, `tools/wireframes_common.py`, `adapters/_shared/colors.py`) ;
+  `contrast.py` lit aussi les tokens `rgb()` / `color(srgb …)`. `run-gates.py`, `status.py` et
+  `migrate-contract.py` gardent leurs copies locales : ils sont copiés seuls dans `design/lint/`.
+- Une seule copie par schéma : `contract-schema.md` renvoie à `manifest-schema.md` et à
+  `adjust/02-freeze.md` ; la limite « brief seul » est énoncée une fois dans `gate-natures.md`.
 
 ### Fixed
 
@@ -10,6 +36,35 @@
   d'une trace d'erreur ou d'une config sans cible.
 - `enforce fidelity-gate` inclut dans sa liste fermée d'ajouts les cibles propres à la page, en ajout
   seulement, comme le permet `copycat` en dérive.
+- Quatre faux verts : `contrast.py` compose un premier plan translucide sur son fond (un fond
+  translucide sort en 2) ; `lint-core.mjs` vérifie un `var()` avec fallback ou espaces internes contre
+  `tokens.json` ; `COLOR_PROPS` couvre `borderRight/Bottom/LeftColor`, `fill` et `stroke` ;
+  `funnel-map` n'attribue plus à `define` ni à `destructure` des écritures qu'ils ne font pas.
+- Exit 2 sur toute entrée inutilisable, jamais une trace : contrat JSON illisible (`status`,
+  `run-gates`, `migrate-contract`), config `measure` / `screenshot` absente ou mal formée,
+  `components.json` / `oracle.json` mal formés pour `config-gen`, drapeau placé avant le fichier dans
+  `harness-runtime-check.mjs`.
+- Écritures sûres : `migrate-contract.py` écrit par fichier temporaire + `os.replace`, `release.json` en
+  dernier, et refuse une sauvegarde `.contract-1x` résiduelle ; `harness-apply` écrit en LF.
+
+### Security
+
+- `harness-runtime-check` évalue le harness dans un contexte `node:vm` sans génération de code par
+  chaîne, derrière un DOM factice qui n'expose qu'une sonde gelée ; aucun objet hôte dans le contexte.
+  Risque résiduel : `node:vm` n'est pas une frontière de sécurité, un harness hostile reste à relire
+  avant exécution.
+- Chemins confinés : `generate.py` refuse un artefact résolu hors `--out`, `run-gates.py` un rapport de
+  pivot hors du dossier de config (avant toute suppression).
+- Échappements : noms de thème en slug, valeurs de token sans `{ } ; <`, CSS auteur sans `</style>`
+  dans `harness-apply`, JSON du manifeste wireframes échappé à l'inlining.
+- `render-check.py` lance Chromium sans `--allow-file-access-from-files` ni `--no-sandbox` et bloque
+  toute requête hors du dossier de la planche (`data:`, `blob:`, `about:` exceptés).
+- pillow 12.3.0 ; `pixeldiff.py` n'ouvre que du PNG.
+
+### Migration
+
+- Un contrat vert peut passer au rouge : alpha pris en compte au contraste, `var()` avec fallback
+  vérifié, `COLOR_PROPS` complété. Ce sont des faux verts corrigés : le rouge est le vrai verdict.
 
 ## [2.17.0] — 2026-09-24
 
