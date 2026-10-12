@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+## [5.11.1] — 2026-10-12
+
+### Fixed
+
+- `service verify` ne signale plus une requête Firestore sans `limit()` quand elle ne sert qu'à une
+  agrégation, et classe explicitement un `limit()` client au-delà de 100.
+- La règle Klaviyo de chargement client sépare routes authentifiées (interdites) et routes publiques
+  (périmètre explicite, exclusion motivée), et couvre tout appelant du chargeur.
+- Un appel Clarity gardé par `typeof` vaut l'optional chaining ; l'exemple de rapport ne le signale plus.
+- Les références Firebase, Klaviyo, GTM et Clarity ne présupposent plus un framework, un store ni des
+  noms de fichiers ou de listes.
+
 ## [5.11.0] — 2026-10-12
 
 ### Added
