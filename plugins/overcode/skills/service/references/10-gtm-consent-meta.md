@@ -129,18 +129,20 @@ shouldLoadGtm = categories.analytics || categories.advertising
 shouldLoadClarity = categories.behavior
 ```
 
-## Ordre des plugins (Nuxt)
+## Ordre d'initialisation
 
-Nommer les plugins avec des préfixes numériques pour garantir l'ordre d'exécution :
+L'ordre est garanti par le mécanisme du framework (préfixe numérique, dépendance déclarée), jamais laissé à l'ordre alphabétique fortuit :
 
-1. `01-cookie-consent.client.js` — émet `gtag('consent', 'default', {...})` → état denied par défaut
-2. `lazy-analytics.client.js` — charge GTM/Clarity après consentement
+1. Initialisation du consentement — émet `gtag('consent', 'default', {...})` → état denied par défaut
+2. Chargement des scripts de mesure — charge GTM/Clarity après consentement
 
 `syncConsentToDataLayer()` doit être appelé :
 - Juste avant l'injection du script GTM (pour envoyer l'état courant)
 - Dans le callback `onload` du script GTM (GTM relit le consent à l'initialisation)
 
 ## Taxonomie des fonctions de push
+
+Deux fonctions distinctes ; les noms sont indicatifs.
 
 | Fonction | Gate consent | Clarity | Usage |
 |---|---|---|---|

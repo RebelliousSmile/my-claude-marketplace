@@ -19,7 +19,7 @@ Search the project for signals of each supported service:
 | Klaviyo | `klaviyo`, `KLAVIYO`, `createKlaviyoClient`, `klaviyoClient` |
 | GTM / gtag | `GTM-`, `window.gtag`, `dataLayer`, `consent.*update` |
 | Meta Pixel | `fbq`, `MetaPixel`, `ad_storage`, `pixel` |
-| Clarity | `clarity.ms`, `window.clarity`, `NUXT_PUBLIC_ENABLE_CLARITY`, `initClarityQueue` |
+| Clarity | `clarity.ms`, `window.clarity`, `ENABLE_CLARITY`, `initClarityQueue` |
 | Stripe | `stripe` dependency or import, `STRIPE_`, `constructEvent`, `checkout.sessions`, `billingPortal` |
 | PageSpeed / Perf | Explicit only — activate via `services=perf`; not auto-detected |
 
@@ -43,16 +43,18 @@ Read the corresponding reference file for each detected service:
 For each service, search the project files for violations of the rules. Focus on:
 
 **Firebase**
-- Queries without `limit()` — search `query(collection(` not followed by `limit(`
-- `getDocs` followed by `.length` — anti-pattern for counting
+- Queries without `limit()` — search `query(collection(` not followed by `limit(`, then keep only those reaching `getDocs` or `onSnapshot`; a query passed only to an aggregation is compliant
+- Client `limit()` above 100 — a violation even when commented; server-side, a warning unless unbounded
+- `getDocs` followed by `.length` or `.size` — anti-pattern for counting
 - Queries inside loops (`for`, `forEach`, `map`) — N+1 reads
-- `onSnapshot` without cleanup in `onUnmounted`
+- `onSnapshot` without unsubscribe at consumer teardown
 
 **Klaviyo**
 - Single-call subscribe with profile data mixed in (400-prone)
 - Missing 409 → PATCH fallback on profile creation
 - `double_opt_in` list setting references in comments or config
-- Klaviyo script loaded eagerly (not via `requestIdleCallback`)
+- Klaviyo script loaded eagerly (not via `requestIdleCallback`) — check every caller of the loader, not only the entry point
+- Klaviyo script loaded on an authenticated route (violation), or a public route excluded from loading without a stated reason (warning)
 - Client-side `_learnq` usage without server-side guarantee
 
 **GTM / gtag**
@@ -63,9 +65,9 @@ For each service, search the project files for violations of the rules. Focus on
 - Missing `gtm_ga4_enabled` variable in `cookie_consent_updated` push
 
 **Clarity**
-- `window.clarity` called without checking `typeof window.clarity === 'function'` — crashes if script blocked
-- `window.clarity('set', 'userId', <email_or_pii>)` — PII in Clarity sessions (RGPD violation)
-- Clarity script loaded eagerly (not via lazy plugin + `app:mounted` hook)
+- `window.clarity` called with neither a `typeof window.clarity === 'function'` check nor optional chaining — crashes if script blocked
+- `window.clarity('set', 'userId', <email_or_pii>)` — PII in Clarity sessions (RGPD violation); caller-supplied params serialized as-is are a warning
+- Clarity script loaded eagerly (not deferred to consent change and application mount)
 - Missing `initClarityQueue()` call before injecting the Clarity script
 - Conversion events sent to Clarity (they should go via `pushGtmEvent` only, no Clarity push)
 
@@ -132,12 +134,12 @@ Services detected: firebase, klaviyo, gtm
 ✅ Compliant — initClarityQueue called before script injection
   plugins/lazy-analytics.client.js:28
 
-🟡 Warning — window.clarity called without optional chaining
+🔴 Violation — conversion event sent to Clarity
   composables/useTrackEvent.js:55
-  `window.clarity('event', name)` — use `window.clarity?.('event', name)`
+  `pushClarityEvent('signup_completed')` — conversion events go through pushGtmEvent only
 
 ---
-Violations: 2  |  Warnings: 2  |  Compliant: 2
+Violations: 3  |  Warnings: 1  |  Compliant: 2
 Fix violations before shipping. Warnings are advisory.
 ```
 

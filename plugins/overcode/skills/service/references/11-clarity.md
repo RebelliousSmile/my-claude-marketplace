@@ -28,9 +28,9 @@ function initClarityQueue() {
 Deux concerns distincts à ne pas confondre :
 
 - **Idempotence (guard dans `initClarityQueue`)** : `typeof window.clarity === 'function'` empêche d'écraser la fonction native si le script externe a déjà été chargé et a remplacé la stub. C'est le seul rôle de ce guard.
-- **Call-safety (au site d'appel)** : ce guard ne protège PAS contre `window.clarity` indéfini au moment de l'appel. Toujours utiliser l'optional chaining `window.clarity?.('event', name)` lors de chaque appel — le script peut être bloqué par un ad blocker même si le consentement a été accordé.
+- **Call-safety (au site d'appel)** : ce guard ne protège PAS contre `window.clarity` indéfini au moment de l'appel. Chaque appel est gardé, par optional chaining `window.clarity?.('event', name)` ou par un test `typeof window.clarity === 'function'` — le script peut être bloqué par un ad blocker même si le consentement a été accordé.
 
-## Chargement conditionnel (Nuxt plugin)
+## Chargement conditionnel
 
 ```js
 const loadClarity = () => {
@@ -46,8 +46,8 @@ const loadClarity = () => {
 }
 ```
 
-- Chargement lazy : dans `onConsentChange` + hook `app:mounted` (pour les visiteurs de retour dont le consentement est déjà dans localStorage)
-- La variable d'environnement `NUXT_PUBLIC_ENABLE_CLARITY=true` active Clarity en dehors de la production (dev, staging)
+- Chargement lazy : au changement de consentement, et une fois l'application montée (pour les visiteurs de retour dont le consentement est déjà stocké)
+- Une variable d'environnement publique (ex. `NUXT_PUBLIC_ENABLE_CLARITY=true`) active Clarity en dehors de la production (dev, staging)
 - En production, Clarity est toujours activé si le consentement `behavior` est accordé
 
 ## Pattern de push dual (GTM + Clarity)
@@ -66,7 +66,7 @@ function trackCustomEvent(name, params = {}) {
 }
 ```
 
-Clarity reçoit uniquement le nom de l'event (`window.clarity('event', name)`). Ne pas passer de PII (email, uid) — les sessions Clarity sont publiques dans le dashboard.
+Clarity reçoit uniquement le nom de l'event (`window.clarity('event', name)`). Ne pas passer de PII (email, uid) — les sessions Clarity sont publiques dans le dashboard. Des paramètres transmis par `window.clarity('set', …)` passent par une liste blanche de clés, jamais l'objet de l'appelant sérialisé tel quel.
 
 ## Taxonomie des fonctions de push
 
@@ -77,15 +77,15 @@ Clarity reçoit uniquement le nom de l'event (`window.clarity('event', name)`). 
 
 Clarity ne reçoit **jamais** les events de conversion — ils passent par `pushGtmEvent` qui ne fait pas de push Clarity.
 
-## Contrôle par feature flag (Nuxt)
+## Contrôle par feature flag
 
 ```js
 const isProd = process.env.NODE_ENV === 'production'
-const clarityEnabled = process.env.NUXT_PUBLIC_ENABLE_CLARITY === 'true'
+const clarityEnabled = process.env.NUXT_PUBLIC_ENABLE_CLARITY === 'true' // nom selon le framework
 const shouldLoadClarity = isProd || clarityEnabled
 ```
 
-En développement, Clarity est désactivé par défaut pour éviter du bruit dans les replays. Activer avec `NUXT_PUBLIC_ENABLE_CLARITY=true` dans `.env.local` pour valider l'intégration.
+En développement, Clarity est désactivé par défaut pour éviter du bruit dans les replays. Activer le flag dans l'environnement local pour valider l'intégration.
 
 ## Tests E2E
 
@@ -180,4 +180,4 @@ test('garde-fou perf: blocage Clarity toléré', async ({ browser }) => {
 - Ne jamais appeler `window.clarity('set', 'userId', email)` — PII dans les sessions = RGPD violation
 - Clarity ne remplace pas GTM/GA4 pour les metrics de conversion
 - `window.clarity` peut être `undefined` même avec consentement accordé (script bloqué) — toujours appeler via optional chaining `window.clarity?.(...)` ou vérifier `typeof window.clarity === 'function'`
-- Les tests Playwright de chargement utilisent `expect.poll` avec un timeout (8s) car le script est chargé via `requestIdleCallback` / `app:mounted` hook — pas immédiatement disponible après `page.goto`
+- Les tests Playwright de chargement utilisent `expect.poll` avec un timeout (8s) car le script est chargé en différé — pas immédiatement disponible après `page.goto`

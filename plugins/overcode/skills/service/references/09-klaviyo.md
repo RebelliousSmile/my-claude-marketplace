@@ -2,7 +2,7 @@
 
 ## API authentication
 
-- Private API key côté serveur uniquement (Cloud Functions / Nitro) — jamais dans le bundle client
+- Private API key côté serveur uniquement — jamais dans le bundle client
 - Header obligatoire sur chaque requête : `revision: 2024-10-15`
 - Authorization : `Klaviyo-API-Key <private_key>`
 - Base URL : `https://a.klaviyo.com/api`
@@ -14,8 +14,8 @@
 `/profile-subscription-bulk-create-jobs` n'accepte que `email` + `subscriptions`.
 Envoyer `first_name`, `last_name`, ou `properties` → 400 error.
 
-Toujours séparer en 2 appels séquentiels côté Cloud Function :
-1. POST `/profiles` — créer/mettre à jour le profil avec name, properties, userType
+Toujours séparer en 2 appels séquentiels côté serveur :
+1. POST `/profiles` — créer/mettre à jour le profil avec name, properties
 2. POST `/profile-subscription-bulk-create-jobs` — abonner avec email + consent uniquement
 
 ```js
@@ -65,9 +65,7 @@ GET /profiles?filter=equals(email,"user@example.com")
 
 ### Listes séparées par type d'utilisateur
 
-Utiliser deux listes distinctes — ne pas utiliser une liste unique avec un champ `userType` :
-- `KLAVIYO_LIST_CANDIDATES` — candidats
-- `KLAVIYO_LIST_RECRUITERS` — recruteurs
+Une liste distincte par type d'utilisateur — jamais une liste unique discriminée par une propriété de profil. Les identifiants de liste se lisent dans la configuration.
 
 Tous les utilisateurs sont ajoutés à leur liste à l'inscription, quelle que soit la préférence newsletter.
 
@@ -95,12 +93,14 @@ await request(`/profiles/${profileId}`, {
 })
 ```
 
-## Chargement côté client (plugin Nuxt)
+## Chargement côté client
 
 - Charger le script Klaviyo en lazy via `requestIdleCallback` (fallback : `setTimeout(fn, 1200)`)
-- Restreindre aux routes marketing — ne jamais charger sur les routes authentifiées (`/moncompte`, `/admin`, etc.)
+- Un seul point d'entrée injecte le script : tout appelant passe par lui, aucun ne l'injecte immédiatement hors d'une action de l'utilisateur
+- Ne jamais charger sur les routes authentifiées
+- Sur les routes publiques, le périmètre de chargement est une liste explicite ; une route publique exclue porte sa raison en commentaire
 - Rendre le chargement idempotent : vérifier l'existence du script tag avant injection
-- Les appels Firebase Functions doivent être lazy-importés pour éviter le coût bundle au démarrage
+- Le SDK des appels serveur est importé à la demande, pas au démarrage
 
 ## Tests E2E
 

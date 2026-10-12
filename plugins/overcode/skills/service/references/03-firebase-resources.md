@@ -2,12 +2,14 @@
 
 ## Firestore query rules (MUST follow)
 
-- Every `query()` MUST include `limit()` — a query without limit can read thousands of documents and explode quota
+- Every query that returns documents (`getDocs`, `onSnapshot`) MUST include `limit()` — a query without limit can read thousands of documents and explode quota
+- A query passed only to an aggregation (`getAggregateFromServer`, `getCountFromServer`) returns no document and needs no `limit()`
 - Use `getAggregateFromServer()` with `count()` for totals — free up to 1M/day, never use `getDocs().length`
 - Paginate with cursors (`startAfter` + `limit`) for lists > 50 items
 - No Firestore queries inside loops — batch with `documentId()` `in` clause (max 30 per batch, chunk larger arrays)
-- Cache static/reference data in Pinia store with TTL (5min default) — avoid redundant reads
-- `limit()` value should stay ≤ 100 for client queries; higher values need justification
+- Cache static/reference data in the application's client store with TTL (5min default) — avoid redundant reads
+- `limit()` value stays ≤ 100 for client queries; a higher value is a violation even when commented — paginate or aggregate instead
+- Server-side queries (server routes, back-end functions) may exceed 100 with a stated reason, never unbounded
 
 ## Security rules
 
@@ -20,7 +22,7 @@
 
 - **Spark plan free tier:** 50,000 reads/day, 20,000 writes/day, 1GB storage
 - **Blaze plan:** $0.06/100K reads, $0.18/100K writes
-- `onSnapshot` (Firestore data listeners) count 1 read per document on initial load + 1 read per changed document — unsubscribe in component `onUnmounted`. Auth listeners (`onAuthStateChanged`) are covered by the auth-listeners rule
+- `onSnapshot` (Firestore data listeners) count 1 read per document on initial load + 1 read per changed document — unsubscribe when the consumer is torn down (component unmount hook or equivalent). Auth listeners (`onAuthStateChanged`) are covered by the auth-listeners rule
 - Cloud Functions invocations and egress have separate quotas — keep function payloads small
 
 ## Anti-patterns
@@ -48,7 +50,7 @@ function isAdmin() {
 // ✅ Always limit
 const q = query(collection(db, "users"), limit(50))
 
-// ✅ count() for totals
+// ✅ count() for totals — the aggregated query needs no limit()
 const { totalCount } = (await getAggregateFromServer(q, { totalCount: count() })).data()
 
 // ✅ Batch read (client-side — max 30 per in clause, chunk larger arrays)
