@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+## [5.11.0] — 2026-10-12
+
+### Added
+
+- `service` couvre Stripe : la référence `13-stripe.md` (clé restreinte, Checkout Sessions, webhook
+  signé et idempotent, état relu chez Stripe, résiliation, effacement de compte, tests) est installée
+  par `install`, auditée par `verify` et servie par `help stripe`.
+
 ## [5.10.0] — 2026-09-23
 
 ### Added
