@@ -29,7 +29,7 @@ Les choix restent natifs à la stack : pnpm côté JavaScript, façade racine ex
 |---|---|---|
 | `sc-js:audit`, `sc-php:audit`, `sc-python:audit`, `sc-rust:audit` | `aidd-dev:04-audit`, pilier `code-quality` | Les pivots de stack deviennent des critères supplémentaires du rapport AIDD. |
 | `sc-*:cd automata` | `overcode:deploy automata` | La stack conserve la façade applicative ; `overcode:deploy` possède seulement l'enveloppe fournisseur ou CI. |
-| Projet avec Firebase, Klaviyo, GTM/Meta, Clarity ou PSI | `overcode:service` | Installe, vérifie ou explique les règles de consommation de ces services. |
+| Projet avec Firebase, Klaviyo, GTM/Meta, Clarity, PSI ou Stripe | `overcode:service` | Installe, vérifie ou explique les règles de consommation de ces services. |
 | `overcode:alias mirror` | `design/agents/copycat.md` | `copycat` est un contrat de sous-agent interne, pas une skill publique. |
 | `obs:project` (projet logiciel) | `aidd-context:01-bootstrap` | Le cadrage d'architecture logicielle reste dans AIDD ; `obs` gère uniquement les notes de projet. |
 | `overcode:extract-pdf` | aucune cible implicite | L'extraction s'arrête sous `sources/`; aucun ancien rôle RPG/TTRPG n'est invoqué. |

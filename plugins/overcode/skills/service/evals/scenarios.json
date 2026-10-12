@@ -10,6 +10,7 @@
   { "prompt": "check compliance with SaaS consumption rules", "expect_action": "verify" },
   { "prompt": "audit this project's GTM consent implementation", "expect_action": "verify" },
   { "prompt": "validate our Clarity integration", "expect_action": "verify" },
+  { "prompt": "audit the Stripe webhook and checkout code", "expect_action": "verify" },
   {
     "prompt": "services=perf verify",
     "expect_action": "verify",
@@ -24,6 +25,7 @@
   { "prompt": "PageSpeed Insights best practices", "expect_action": "help" },
   { "prompt": "overcode service help klaviyo", "expect_action": "help" },
   { "prompt": "overcode service help firebase", "expect_action": "help" },
+  { "prompt": "rules for Stripe", "expect_action": "help" },
   { "prompt": "configure a local provider emulator", "expect_action": "local" },
   { "prompt": "configure the production server target", "expect_action": "server" },
   {

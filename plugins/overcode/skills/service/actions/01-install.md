@@ -20,9 +20,10 @@ Install third-party SaaS consumption guidance using the active host's native pro
 | `references/10-gtm-consent-meta.md` | `.agents/rules/03-frameworks-and-libraries/10-gtm-consent-meta.md` |
 | `references/11-clarity.md` | `.agents/rules/03-frameworks-and-libraries/11-clarity.md` |
 | `references/12-pagespeed-insights.md` | `.agents/rules/07-quality/12-pagespeed-insights.md` |
+| `references/13-stripe.md` | `.agents/rules/03-frameworks-and-libraries/13-stripe.md` |
 | `references/08-data-pivots-firebase.md` | `.agents/rules/07-quality/data-pivots-firebase.md` |
 
-The `AGENTS.md` index must map Firebase, Playwright/Firebase auth, Klaviyo, GTM/Meta, Clarity, and PageSpeed/Lighthouse to these files and say to read the relevant file before implementing or reviewing that integration.
+The `AGENTS.md` index must map Firebase, Playwright/Firebase auth, Klaviyo, GTM/Meta, Clarity, PageSpeed/Lighthouse, and Stripe to these files and say to read the relevant file before implementing or reviewing that integration.
 
 ### Claude Code targets
 
@@ -36,6 +37,7 @@ The `AGENTS.md` index must map Firebase, Playwright/Firebase auth, Klaviyo, GTM/
 | `references/10-gtm-consent-meta.md` | `.claude/rules/03-frameworks-and-libraries/10-gtm-consent-meta.md` |
 | `references/11-clarity.md` | `.claude/rules/03-frameworks-and-libraries/11-clarity.md` |
 | `references/12-pagespeed-insights.md` | `.claude/rules/07-quality/12-pagespeed-insights.md` |
+| `references/13-stripe.md` | `.claude/rules/03-frameworks-and-libraries/13-stripe.md` |
 | `references/08-data-pivots-firebase.md` | `.claude/rules/07-quality/data-pivots-firebase.md` |
 
 Only stacks with a source above are covered. If a source is absent, report it and do not invent content or a target.

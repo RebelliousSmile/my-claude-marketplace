@@ -5,7 +5,7 @@ Provide integration context for a specific third-party service. Designed to be c
 ## Inputs
 
 - `service` (required): name of the service to get help for.
-  Accepted values: `firebase`, `klaviyo`, `gtm`, `gtag`, `meta-pixel`, `meta`, `clarity`, `pagespeed`, `psi`, `lighthouse`, `perf`.
+  Accepted values: `firebase`, `klaviyo`, `gtm`, `gtag`, `meta-pixel`, `meta`, `clarity`, `pagespeed`, `psi`, `lighthouse`, `perf`, `stripe`.
 
 ## Service → reference mapping
 
@@ -16,6 +16,7 @@ Provide integration context for a specific third-party service. Designed to be c
 | `gtm`, `gtag`, `meta-pixel`, `meta` | `references/10-gtm-consent-meta.md` | Consent Mode v2, ensureGtag, cookie_consent_updated, Meta Pixel, push taxonomy |
 | `clarity` | `references/11-clarity.md` | Best-effort model, consent-gated, queue init, dual push, E2E patterns |
 | `pagespeed`, `psi`, `lighthouse`, `perf` | `references/12-pagespeed-insights.md` | PSI variance, deterministic metrics, Nuxt 3 perf checklist, anti-patterns |
+| `stripe` | `references/13-stripe.md` | Restricted key, Checkout Sessions, signed idempotent webhook, state re-read from Stripe, cancellation, account erasure, tests |
 
 If multiple related services are requested (e.g. `gtm,meta-pixel`), serve the same reference file once.
 
@@ -78,6 +79,13 @@ Before submitting code that uses <service>, verify:
 - [ ] Above-fold hero uses `<img :src="webp">` directly — no `<picture>` wrapper (ERR_ABORTED risk)
 - [ ] `<link rel="preload" as="font">` points to a stable public URL (`/fonts/...`), not a hashed `/_nuxt/` path
 - [ ] Third-party scripts (GTM, Klaviyo, Clarity) loaded lazily, not in `<head>` synchronously
+
+**stripe**
+- [ ] Restricted key (`rk_`) in the platform secrets vault, one client module, pinned `apiVersion`
+- [ ] No `payment_method_types`; Checkout Sessions, not Charges/Sources/Tokens/Card Element
+- [ ] Webhook verifies the signature on the raw body, is idempotent by `event.id`, answers 500 on failure
+- [ ] State is re-read from Stripe by a single writer — never copied from the event, never granted from the return page
+- [ ] Scheduled cancellation checks `cancel_at_period_end` **and** `cancel_at`
 
 ## Usage by other skills
 

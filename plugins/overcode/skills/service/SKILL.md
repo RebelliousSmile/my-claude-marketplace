@@ -52,6 +52,7 @@ Trigger-to-action mapping:
 - `references/10-gtm-consent-meta.md` — GTM Consent Mode v2 : format gtag() vs Array, ensureGtag(), Meta Pixel consent, taxonomie pushEvent/pushGtmEvent, déduplication sessionStorage
 - `references/11-clarity.md` — Microsoft Clarity : modèle best-effort, consent behavior, queue init, dual push GTM+Clarity, tests E2E (smoke, résilience, garde-fou perf)
 - `references/12-pagespeed-insights.md` — PSI / Lighthouse : variance ±29 pts, signal déterministe, protocole 5 runs, checklist Nuxt 3 (LCP/CLS/INP/TBT/bundle/cache/SSR), anti-patterns
+- `references/13-stripe.md` — Stripe : clé restreinte, Checkout Sessions, webhook signé et idempotent, synchronisation d'état relue chez Stripe, résiliation, effacement de compte, tests
 
 ### Data pivots (consumed by `data-optimize`)
 

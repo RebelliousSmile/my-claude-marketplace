@@ -20,6 +20,7 @@ Search the project for signals of each supported service:
 | GTM / gtag | `GTM-`, `window.gtag`, `dataLayer`, `consent.*update` |
 | Meta Pixel | `fbq`, `MetaPixel`, `ad_storage`, `pixel` |
 | Clarity | `clarity.ms`, `window.clarity`, `NUXT_PUBLIC_ENABLE_CLARITY`, `initClarityQueue` |
+| Stripe | `stripe` dependency or import, `STRIPE_`, `constructEvent`, `checkout.sessions`, `billingPortal` |
 | PageSpeed / Perf | Explicit only — activate via `services=perf`; not auto-detected |
 
 Only audit services that are detected (or explicitly requested via `services` argument).
@@ -34,6 +35,7 @@ Read the corresponding reference file for each detected service:
 | Klaviyo | `references/09-klaviyo.md` |
 | GTM / gtag / Meta Pixel | `references/10-gtm-consent-meta.md` |
 | Clarity | `references/11-clarity.md` |
+| Stripe | `references/13-stripe.md` |
 | PageSpeed / Perf | `references/12-pagespeed-insights.md` |
 
 ### Step 3 — Scan the project
@@ -66,6 +68,23 @@ For each service, search the project files for violations of the rules. Focus on
 - Clarity script loaded eagerly (not via lazy plugin + `app:mounted` hook)
 - Missing `initClarityQueue()` call before injecting the Clarity script
 - Conversion events sent to Clarity (they should go via `pushGtmEvent` only, no Clarity push)
+
+**Stripe**
+- Key value (`sk_live_…`, `rk_live_…`, `sk_test_…`, `rk_test_…` followed by the key body) in source, or a full secret key where a restricted key fits — a bare prefix used to refuse a key is compliant
+- Global key pattern (`stripe.api_key =`, `Stripe.setApiKey`) or client instantiated in more than one application module (standalone scripts excepted); `apiVersion` not pinned or not shared
+- `payment_method_types` passed outside Terminal
+- `checkout.sessions.create` without `integration_identifier`, or with a label lacking the 8-random-letter suffix
+- Charges, Sources, Tokens API or Card Element
+- Webhook event built from a parsed body, or processed without `constructEvent` signature verification
+- Webhook without `event.id` idempotence, or swallowing a processing failure with a 2xx
+- Subscription state copied from the event payload instead of re-read from Stripe
+- Fulfillment or entitlement granted from the success/return page
+- Return URL taken from client input without an origin allow-list
+- Scheduled cancellation read from `cancel_at_period_end` alone (ignores `cancel_at`)
+- `current_period_end` read on the subscription instead of the item
+- Stripe error message returned to the client, or event body / key logged
+- Hard-coded price identifiers
+- Account deletion that leaves the Stripe customer in place
 
 **PageSpeed / Perf** *(explicit only — run with `services=perf`)*
 - `<picture>` wrapper on above-fold hero `<img>` — causes ERR_ABORTED + Inspector Issue `(*.vue)`
@@ -127,3 +146,4 @@ Fix violations before shipping. Warnings are advisory.
 - Read only — does not modify any file.
 - If no violations found for a service, print `✅ <Service> — no violations found`.
 - Ignore `node_modules/`, `.git/`, `coverage/`, `dist/`.
+- A detection signal counts only in source code, a dependency manifest, or configuration — never in documentation, installed rule files, or a skill's own references.

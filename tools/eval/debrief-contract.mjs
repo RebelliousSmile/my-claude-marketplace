@@ -109,7 +109,7 @@ else {
     writeFileSync(join(transcriptDir, 'session.jsonl'), `${rows.map(JSON.stringify).join('\n')}\n`);
     const run = spawnSync('python3', [scriptPath, '/work/project', '30', '8', 'project'], {
       encoding: 'utf8',
-      env: { ...process.env, HOME: temp },
+      env: { ...process.env, HOME: temp, USERPROFILE: temp },
       timeout: 5000,
     });
     if (run.status !== 0) failures.push(`extractor: fixture exit ${run.status} (${run.stderr.trim()})`);

@@ -24,7 +24,7 @@ Les skills s'invoquent sous la forme `/overcode:<skill>`.
 | « la mémoire projet est en vrac » | [`harvest`](#maintenance) puis [`reconcile-normative`](#maintenance) |
 | « il faut un README / un CHANGELOG » | [`readme`](#documentation) · [`changelog`](#documentation) |
 | « ce chantier est trop gros » | [`decompose`](#planification--decompose) |
-| « configure ou vérifie Firebase, Klaviyo, GTM, Clarity ou PSI » | [`service`](#services-tiers--service) |
+| « configure ou vérifie Firebase, Klaviyo, GTM, Clarity, PSI ou Stripe » | [`service`](#services-tiers--service) |
 | « il me faut une recherche documentaire sourcée » | [`research`](#recherche-documentaire--research) |
 | « je veux extraire un gros PDF en plusieurs sessions » | [`extract-pdf`](#extraction-pdf--extract-pdf) |
 | « je veux enchaîner plusieurs skills » | [`alias`](aliases.md) |
@@ -160,7 +160,7 @@ Méthode Mikado : décompose un objectif en graphe de dépendances par questions
 
 ## Services tiers — `service`
 
-Installe les règles de consommation de Firebase, Klaviyo, GTM/Meta, Clarity et PageSpeed/Lighthouse dans la surface d’instructions du projet, les vérifie en lecture seule, ou fournit les contraintes d’un service avant son intégration.
+Installe les règles de consommation de Firebase, Klaviyo, GTM/Meta, Clarity, PageSpeed/Lighthouse et Stripe dans la surface d’instructions du projet, les vérifie en lecture seule, ou fournit les contraintes d’un service avant son intégration.
 
 ## Recherche documentaire — `research`
 
