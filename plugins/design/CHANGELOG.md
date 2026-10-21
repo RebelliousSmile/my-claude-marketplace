@@ -1,5 +1,19 @@
 # Changelog — design
 
+## [2.19.0] — 2026-10-21
+
+### Added
+
+- `define` : le dossier exporté par un outil de design (planches HTML, index JSON, jetons CSS, note de
+  passation) est une source d'extraction reconnue par `01-intake`, avec sa règle de lecture dans
+  `02-extract` : jetons CSS = valeurs, planches = évidence de rendu lue sans exécution, index = liaison,
+  note de passation = intention en Open questions. Scénario de routage ajouté.
+
+### Notes
+
+- Ce format n'est documenté par aucun éditeur : la règle ne nomme ni outil ni fichier et ne suppose rien
+  de la structure, pour ne pas périmer avec la version de l'outil.
+
 ## [2.18.0] — 2026-09-24
 
 ### Added

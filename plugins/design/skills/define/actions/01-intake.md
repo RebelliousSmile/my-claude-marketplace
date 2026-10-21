@@ -6,6 +6,7 @@ Détecter la nature de la source de design et router vers le bon chemin : extrac
 
 - `source` (required) — ce que l'utilisateur fournit. Peut être :
   - un visuel : chemin d'image / screenshot, URL live, export Figma (JSON/CSS/images), CSS ou feuille de style existante
+  - un dossier exporté par un outil de design : planches HTML, index JSON, jetons CSS, note de passation
   - un rendu ou une base de code existante : page locale, composant, markup ou styles dont le rendu fait foi
   - un besoin écrit : brief client, positionnement produit, user story — sans visuel à copier
 - La grille de détection : `references/intake-questions.md`.
@@ -13,7 +14,7 @@ Détecter la nature de la source de design et router vers le bon chemin : extrac
 ## Process
 
 1. **Classer la source** :
-   - Présence d'un artefact visuel exploitable (image, URL, Figma, CSS) ou d'un rendu/code existant → chemin **extraction** (`02-extract`).
+   - Présence d'un artefact visuel exploitable (image, URL, Figma, CSS, dossier d'export d'outil de design) ou d'un rendu/code existant → chemin **extraction** (`02-extract`).
    - Seulement du texte décrivant un besoin, sans visuel → chemin **construction** (`03-construct`).
 2. **Lever l'ambiguïté** quand les deux coexistent :
    - Un brief qui *mentionne* un visuel mais ne le fournit pas → demander le visuel ; s'il n'arrive pas, basculer en construction et noter l'hypothèse.

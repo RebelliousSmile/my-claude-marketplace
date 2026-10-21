@@ -6,7 +6,7 @@ Grille d'aiguillage et de clarification pour `define`. Deux usages : détecter l
 
 | Signal | Chemin | Action |
 |---|---|---|
-| Image, screenshot, URL live, export Figma, CSS/feuille de style fournis | **extraction** | `02-extract` |
+| Image, screenshot, URL live, export Figma, dossier d'export d'outil de design, CSS/feuille de style fournis | **extraction** | `02-extract` |
 | Brief / positionnement / user story, **sans** visuel exploitable | **construction** | `03-construct` |
 | Brief qui *mentionne* un visuel non fourni | ambigu | demander le visuel ; sinon construction + hypothèse notée |
 | Visuel **et** brief | **extraction** | le visuel fait foi pour les valeurs ; le brief informe l'intention (Foundations / Open questions) |

@@ -31,7 +31,7 @@ Le pipeline compte **cinq verbes**. Le point de bascule est `adjust` : avant lui
 | Skill | Capability | Description |
 |-------|-----------|-------------|
 | `detail` | `design:detail` | **Verbe 0, lecture seule, aucun artefact.** `explain` : la carte des verbes. `route` : la séquence exécutable pour l'une des six classes de cas, étendue par le workflow de plateforme du pivot `sc-*` installé. |
-| `define` | `design:define` | Extraction depuis références/brief → tokens + inventaire + charte brouillon. Profil mobile-first optionnel. |
+| `define` | `design:define` | Extraction depuis références (image, URL, CSS, dossier d'export d'outil de design) ou brief → tokens + inventaire + charte brouillon. Profil mobile-first optionnel. |
 | `destructure` | `design:destructure` | Challenge la direction design — critique multi-angles + pistes alternatives. |
 | `adjust` | `design:adjust` | Arbitrage maquettes + figeage du contrat + migration 1.x → 2.0. |
 | `enforce` | `design:enforce` | Linter portable dérivé du contrat · 4 gates de vocabulaire + 1 gate de fidélité · pivot par langage. |
