@@ -1,5 +1,13 @@
 # Changelog — design
 
+## [2.19.1] — 2026-10-21
+
+### Changed
+
+- `define/02-extract` : une couleur présente dans les planches d'un dossier d'export mais absente de la
+  feuille de jetons va en Open questions avec son nombre d'occurrences, hors du token set ; les graisses
+  employées sont comparées aux graisses chargées, l'écart (graisse synthétisée) va en Open questions.
+
 ## [2.19.0] — 2026-10-21
 
 ### Added
