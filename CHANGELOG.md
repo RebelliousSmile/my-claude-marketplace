@@ -4,6 +4,23 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
+## [Unreleased]
+
+### Removed
+
+- Plugin `obs` (0.38.1) retiré du marketplace : ses skills vivent désormais dans `~/.claude/skills/` (`obs-filler`, `obs-project`, `obs-mail` + socle partagé `_obs/`), accessibles aussi en ACP. Historique du plugin : `git log -- plugins/obs`.
+- `obs-tree` abandonnée avec le plugin (plus de `tree.py`, de `tree-convention.md`, de `destinations-template.md` ni de `bank-yml.md`) : l'arborescence `Documents/` relève de `FILING.md` et des scripts `perso-filing`.
+
+### Changed
+
+- `email-note-to-block` rejoint `obs-mail` (commande `convert`) ; `obs-mail` devient auto-invocable.
+- Les scripts lisent les notes de courriel sous les deux formes (frontmatter héritée ou bloc ```` ```email ````).
+
+### Added
+
+- `obs-mail compose` : ouvre une fenêtre de composition Thunderbird depuis le bloc d'une note validée ; ne l'envoie jamais.
+- Suites de comportement `obs-mail/evals/{triage,compose,convert}-scenarios.md` (`overcode:behave`, 45 scénarios, non encore exécutés).
+
 ## [4.6.1] - 2026-09-24
 
 ### Fixed

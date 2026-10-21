@@ -15,7 +15,6 @@ Le **détail des skills de chaque plugin vit dans son propre README** — ce tab
 | [`sc-css`](plugins/sc-css/README.md) | [README](plugins/sc-css/README.md) · [CHANGELOG](plugins/sc-css/CHANGELOG.md) | — | Couche CSS pure : architecture (BEM, utility-first, CSS Modules, ITCSS), audit, modernisation |
 | [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) · [CHANGELOG](plugins/sc-python/CHANGELOG.md) | — | Stack Python : Django / FastAPI / Flask / Celery |
 | [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) · [CHANGELOG](plugins/sc-rust/CHANGELOG.md) | — | Stack Rust : Axum / Actix-web |
-| [`obs`](plugins/obs/README.md) | [README](plugins/obs/README.md) · [CHANGELOG](plugins/obs/CHANGELOG.md) | — | Notes Obsidian — projets Pro, tri d'emails et organisation de l'arborescence |
 
 ### Livraison homogène avec `sc-*:cd` et `overcode:deploy`
 
@@ -31,7 +30,6 @@ Les choix restent natifs à la stack : pnpm côté JavaScript, façade racine ex
 | `sc-*:cd automata` | `overcode:deploy automata` | La stack conserve la façade applicative ; `overcode:deploy` possède seulement l'enveloppe fournisseur ou CI. |
 | Projet avec Firebase, Klaviyo, GTM/Meta, Clarity, PSI ou Stripe | `overcode:service` | Installe, vérifie ou explique les règles de consommation de ces services. |
 | `overcode:alias mirror` | `design/agents/copycat.md` | `copycat` est un contrat de sous-agent interne, pas une skill publique. |
-| `obs:project` (projet logiciel) | `aidd-context:01-bootstrap` | Le cadrage d'architecture logicielle reste dans AIDD ; `obs` gère uniquement les notes de projet. |
 | `overcode:extract-pdf` | aucune cible implicite | L'extraction s'arrête sous `sources/`; aucun ancien rôle RPG/TTRPG n'est invoqué. |
 
 ## Installation
@@ -47,7 +45,7 @@ codex plugin add aidd-refine@aidd-framework
 codex plugin add design@my-marketplace
 ```
 
-La dernière commande s'exécute après l'enregistrement de `my-marketplace` depuis `.agents/plugins/marketplace.json`. Répéter avec `overcode`, `obs` ou un plugin `sc-*` selon les besoins, puis ouvrir une nouvelle session Codex.
+La dernière commande s'exécute après l'enregistrement de `my-marketplace` depuis `.agents/plugins/marketplace.json`. Répéter avec `overcode` ou un plugin `sc-*` selon les besoins, puis ouvrir une nouvelle session Codex.
 
 ### 1. Enregistrer le marketplace (une seule fois, global)
 
@@ -98,7 +96,6 @@ Par projet — `.claude/settings.json` du projet, ou via commande :
 | Web Python | `sc-python` |
 | Web Rust | `sc-rust` |
 | SaaS tiers (Firebase, Klaviyo, GTM…) | `overcode` (`service`) |
-| Notes Obsidian | `obs` |
 | Extraction de sources PDF | `overcode` (`extract-pdf`) |
 
 ## Licence

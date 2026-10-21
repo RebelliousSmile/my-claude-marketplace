@@ -1,5 +1,0 @@
-# Communication — [Projet]
-
-## Journal
-### <sujet>
-- 

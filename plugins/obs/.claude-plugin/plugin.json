@@ -1,9 +1,0 @@
-{
-  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "obs",
-  "version": "0.38.1",
-  "description": "Personal Obsidian notes management, driven by deterministic Python scripts (no model call): the Documents/ organiser tree (cache-based index, check, fix, sort, destinations); filler (survey, sort, index, merge, clean); project (create, invoice, export-rag); mail (rules-based triage of exported mail).",
-  "author": {
-    "name": "fxgui"
-  }
-}

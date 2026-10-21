@@ -27,10 +27,6 @@
     {
       "id": "sc-rust",
       "name": "sc-rust"
-    },
-    {
-      "id": "obs",
-      "name": "obs"
     }
   ]
 }

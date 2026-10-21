@@ -1,6 +1,0 @@
-interface:
-  display_name: "Mail"
-  short_description: "Triage exported mail against configured rules"
-  default_prompt: "Use $obs:mail to triage this mail branch."
-policy:
-  allow_implicit_invocation: false

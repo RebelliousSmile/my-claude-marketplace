@@ -1,6 +1,0 @@
-interface:
-  display_name: "Obsidian Project"
-  short_description: "Manage structured Obsidian project notes"
-  default_prompt: "Use $obs:project to update these project notes."
-policy:
-  allow_implicit_invocation: false

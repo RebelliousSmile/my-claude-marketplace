@@ -55,13 +55,6 @@
       "source": "./plugins/sc-rust",
       "description": "Rust stack skills with target-isolated reversible releases, schema delivery, and one facade shared by server and automata modes.",
       "recommended": false
-    },
-    {
-      "name": "obs",
-      "version": "0.38.1",
-      "source": "./plugins/obs",
-      "description": "Personal Obsidian notes management, driven by deterministic Python scripts (no model call): the Documents/ organiser tree (cache-based index, check, fix, sort, destinations); filler (survey, sort, index, merge, clean); project (create, invoice, export-rag); mail (rules-based triage of exported mail).",
-      "recommended": false
     }
   ]
 }
