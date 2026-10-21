@@ -2,10 +2,10 @@
 
 | Champ | Valeur |
 |---|---|
-| Version courante | 2.18.0 |
-| Dernière release | 2026-09-24 |
+| Version courante | 2.19.0 |
+| Dernière release | 2026-10-21 |
 
-> Cette mémoire couvre 2.6.0 puis saute à 2.10.0 : **2.7.x / 2.8.0 / 2.9.x ne sont pas résumés ici**, `plugins/design/CHANGELOG.md` fait foi pour eux. De 2.10.0 à 2.18.0, seules les sections datées ci-dessous sont résumées.
+> Cette mémoire couvre 2.6.0 puis saute à 2.10.0 : **2.7.x / 2.8.0 / 2.9.x ne sont pas résumés ici**, `plugins/design/CHANGELOG.md` fait foi pour eux. De 2.10.0 à 2.19.0, seules les sections datées ci-dessous sont résumées.
 
 ## Architecture — verbe 0 + entonnoir 5 verbes
 
@@ -14,7 +14,7 @@
 | Verbe | Rôle |
 |---|---|
 | `detail` | **Verbe 0, lecture seule, aucun artefact** : `explain` (carte des verbes) + `route` (séquence exécutable pour une des 6 classes de cas). Voir `### Verbe 0 detail (Lot 6, 2.5.0)` |
-| `define` | Extraction depuis référence/brief → tokens + inventaire composants + charte brouillon |
+| `define` | Extraction depuis référence (image, URL, CSS, dossier d'export d'outil de design) ou brief → tokens + inventaire composants + charte brouillon |
 | `destructure` | Challenge multi-angles avant figeage |
 | `adjust` | Arbitrage + figeage du contrat + **génération des dérivés** + **migration 1.x → 2.0** |
 | `enforce` | Linter portable borné + runner d'agrégation + 4 gates + pivot par **langage** |
@@ -230,3 +230,9 @@ Plan complet : `aidd_docs/tasks/2026_09/2026_09_24_fidelity-gate-frozen-by-adjus
   - Hors plan, à planifier à part : WordPress sorti de `measure` vers `sc-php`, découpage de `measure.py` / `harness.py` / `02-freeze.md`, module unique de chargement du contrat ; montée Playwright / numpy, lockfile avec hashes, fusion `screenshot.py` → `measure.py` (changer Playwright change le Chromium qui rend).
 
 Plan complet : `aidd_docs/tasks/2026_09/2026_09_24_design-review-audit-fixes/`.
+
+## Source « dossier d'export d'outil de design » (2.19.0, 2026-10-21)
+
+- `define/01-intake` route un dossier exporté par un outil de design (planches HTML, index JSON, jetons CSS, note de passation) vers `02-extract`, qui en fixe la lecture : jetons CSS = valeurs ; planches = évidence de rendu, jamais exécutée, ni leurs scripts ou fichiers de support repris ; index = liaison seule ; note de passation = intention en Open questions, jamais en tokens ; planche dépendant d'un fichier absent = non mesurable.
+- Aucun éditeur ne documente ce format (vérifié le 2026-10-21 : l'aide Anthropic liste les exports sans en décrire la structure ; les structures décrites par des tiers divergent). Le skill ne nomme donc ni outil ni fichier et ne suppose rien de la structure. Ne pas y inscrire de noms de fichiers sans documentation publiée.
+- `harness/03-normalize` ne couvre pas ce cas : un fichier à la fois, et il s'arrête (exit 2) quand un script applicatif pilote le contenu visible.
