@@ -1,0 +1,16 @@
+[
+  { "prompt": "will this script run on Windows PowerShell 5.1?", "expect_action": "scan" },
+  { "prompt": "find PowerShell 7-only syntax in my scripts", "expect_action": "scan" },
+  { "prompt": "make these scripts compatible with PowerShell 5.1", "expect_action": "scan" },
+  { "prompt": "this script uses ?? and breaks on the old PowerShell", "expect_action": "scan" },
+  { "prompt": "detect deprecated PowerShell constructs before upgrading", "expect_action": "scan" },
+  { "prompt": "-Encoding Byte fails after moving to pwsh", "expect_action": "scan" },
+  { "prompt": "ce script ne tourne pas sous Windows PowerShell 5.1", "expect_action": "scan" },
+  { "prompt": "trouver la syntaxe réservée à PowerShell 7", "expect_action": "scan" },
+  { "prompt": "migrer mes scripts vers PowerShell 7", "expect_action": "scan" },
+  { "prompt": "detect my PowerShell stack", "expect_action": null },
+  { "prompt": "audit this script for style problems", "expect_action": null },
+  { "prompt": "explain the difference between PowerShell 5.1 and 7", "expect_action": null },
+  { "prompt": "teach the project's PowerShell conventions", "expect_action": null },
+  { "prompt": "modernize this Rust code", "expect_action": null }
+]

@@ -55,6 +55,13 @@
       "source": "./plugins/sc-rust",
       "description": "Rust stack skills with target-isolated reversible releases, schema delivery, and one facade shared by server and automata modes.",
       "recommended": false
+    },
+    {
+      "name": "sc-pwsh",
+      "version": "0.1.0",
+      "source": "./plugins/sc-pwsh",
+      "description": "PowerShell stack skills that detect the target host (Windows PowerShell 5.1 or PowerShell 7), audit scripts, find host-specific legacy, and teach the divergences.",
+      "recommended": false
     }
   ]
 }

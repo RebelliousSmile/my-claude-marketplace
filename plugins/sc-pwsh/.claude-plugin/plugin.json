@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "sc-pwsh",
+  "version": "0.1.0",
+  "description": "PowerShell stack skills that detect the target host (Windows PowerShell 5.1 or PowerShell 7), audit scripts, find host-specific legacy, and teach the divergences.",
+  "author": {
+    "name": "François-Xavier Guillois"
+  }
+}

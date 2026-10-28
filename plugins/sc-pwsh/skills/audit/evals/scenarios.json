@@ -1,0 +1,16 @@
+[
+  { "prompt": "audit my PowerShell scripts", "expect_action": "audit" },
+  { "prompt": "review the code quality of these .ps1 files", "expect_action": "audit" },
+  { "prompt": "check PowerShell best practices", "expect_action": "audit" },
+  { "prompt": "is this script idiomatic PowerShell?", "expect_action": "audit" },
+  { "prompt": "look for Invoke-Expression and silent error handling", "expect_action": "audit" },
+  { "prompt": "does this function support -WhatIf correctly?", "expect_action": "audit" },
+  { "prompt": "audite mes scripts PowerShell", "expect_action": "audit" },
+  { "prompt": "vérifier les bonnes pratiques de ce script .ps1", "expect_action": "audit" },
+  { "prompt": "mon script gère-t-il bien les erreurs ?", "expect_action": "audit" },
+  { "prompt": "detect my PowerShell stack", "expect_action": null },
+  { "prompt": "which PowerShell host do these scripts target?", "expect_action": null },
+  { "prompt": "migrate this script from PowerShell 7 to 5.1", "expect_action": null },
+  { "prompt": "explain how Pester mocks work", "expect_action": null },
+  { "prompt": "audit my Rust code", "expect_action": null }
+]
