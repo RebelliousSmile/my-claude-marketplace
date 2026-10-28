@@ -4,7 +4,7 @@ Journal au niveau du marketplace : ajout/retrait de plugins et changements trans
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnement du marketplace en SemVer (`marketplace.json`).
 
-## [Unreleased]
+## [4.7.0] - 2026-10-28
 
 ### Removed
 
@@ -21,6 +21,13 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnemen
 - Plugin `sc-pwsh` (0.1.0) : scripts PowerShell, hôte visé lu par fichier (Windows PowerShell 5.1 ou PowerShell 7), audit délégué à `aidd-dev:04-audit`, compatibilité entre versions, enseignement. Règles mesurées sur les deux hôtes ; pas de pivot testing/perf/data ni de `cd`/`log-analysis`.
 - `obs-mail compose` : ouvre une fenêtre de composition Thunderbird depuis le bloc d'une note validée ; ne l'envoie jamais.
 - Suites de comportement `obs-mail/evals/{triage,compose,convert}-scenarios.md` (`overcode:behave`, 45 scénarios, non encore exécutés).
+- `design:define` accepte un dossier d'export d'un outil de design comme source d'extraction (`design` 2.19.0).
+- `overcode:service` : règles de consommation Stripe (`overcode` 5.11.0).
+
+### Fixed
+
+- `design:define` range les couleurs absentes de la feuille et les graisses de police non chargées dans les questions ouvertes (`design` 2.19.1).
+- `overcode:service` : règles de vérification de Firebase, Klaviyo et Clarity précisées (`overcode` 5.11.1).
 
 ## [4.6.1] - 2026-09-24
 
