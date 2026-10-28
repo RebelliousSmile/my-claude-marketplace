@@ -1,0 +1,25 @@
+{
+  "name": "sc-pwsh",
+  "version": "0.1.0",
+  "description": "PowerShell stack skills that detect the target host (Windows PowerShell 5.1 or PowerShell 7), audit scripts, find host-specific legacy, and teach the divergences.",
+  "author": {
+    "name": "François-Xavier Guillois"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SC PowerShell",
+    "shortDescription": "Audit and modernize PowerShell scripts",
+    "longDescription": "Detect the PowerShell host a script targets, audit scripts against measured idioms, find constructs that break on one host, and explain the 5.1 versus 7 divergences.",
+    "developerName": "François-Xavier Guillois",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Detect the PowerShell host these scripts target",
+      "Audit these PowerShell scripts",
+      "Which constructs break on Windows PowerShell 5.1?"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+[
+  { "prompt": "explain non-terminating errors in PowerShell", "expect_action": "explain" },
+  { "prompt": "why does my catch block not fire?", "expect_action": "explain" },
+  { "prompt": "how does the PowerShell pipeline pass objects?", "expect_action": "explain" },
+  { "prompt": "what is the difference between Write-Host and Write-Output?", "expect_action": "explain" },
+  { "prompt": "show me how ShouldProcess and -WhatIf work", "expect_action": "explain" },
+  { "prompt": "what is the default encoding of Set-Content?", "expect_action": "explain" },
+  { "prompt": "explique la différence entre erreur terminante et non terminante", "expect_action": "explain" },
+  { "prompt": "c'est quoi $LASTEXITCODE ?", "expect_action": "explain" },
+  { "prompt": "je ne comprends pas la portée des variables en PowerShell", "expect_action": "explain" },
+  { "prompt": "pourquoi mon script affiche des caractères corrompus ?", "expect_action": "explain" },
+  { "prompt": "give me a practice exercise on error handling", "expect_action": "practice" },
+  { "prompt": "quiz me on the PowerShell pipeline", "expect_action": "practice" },
+  { "prompt": "challenge me on ShouldProcess", "expect_action": "practice" },
+  { "prompt": "exercice sur la portée des variables", "expect_action": "practice" },
+  { "prompt": "test me on PowerShell encoding", "expect_action": "practice" },
+  { "prompt": "audit this script for style problems", "expect_action": null },
+  { "prompt": "debug this PowerShell error", "expect_action": null },
+  { "prompt": "migrate my scripts to PowerShell 7", "expect_action": null }
+]

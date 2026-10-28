@@ -15,6 +15,7 @@ Le **détail des skills de chaque plugin vit dans son propre README** — ce tab
 | [`sc-css`](plugins/sc-css/README.md) | [README](plugins/sc-css/README.md) · [CHANGELOG](plugins/sc-css/CHANGELOG.md) | — | Couche CSS pure : architecture (BEM, utility-first, CSS Modules, ITCSS), audit, modernisation |
 | [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) · [CHANGELOG](plugins/sc-python/CHANGELOG.md) | — | Stack Python : Django / FastAPI / Flask / Celery |
 | [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) · [CHANGELOG](plugins/sc-rust/CHANGELOG.md) | — | Stack Rust : Axum / Actix-web |
+| [`sc-pwsh`](plugins/sc-pwsh/README.md) | [README](plugins/sc-pwsh/README.md) · [CHANGELOG](plugins/sc-pwsh/CHANGELOG.md) | — | Scripts PowerShell : hôte visé (5.1 / 7), audit, compatibilité entre versions |
 
 ### Livraison homogène avec `sc-*:cd` et `overcode:deploy`
 
@@ -26,7 +27,7 @@ Les choix restent natifs à la stack : pnpm côté JavaScript, façade racine ex
 
 | Appelant | Cible vérifiée | Contrat |
 |---|---|---|
-| `sc-js:audit`, `sc-php:audit`, `sc-python:audit`, `sc-rust:audit` | `aidd-dev:04-audit`, pilier `code-quality` | Les pivots de stack deviennent des critères supplémentaires du rapport AIDD. |
+| `sc-js:audit`, `sc-php:audit`, `sc-python:audit`, `sc-rust:audit`, `sc-pwsh:audit` | `aidd-dev:04-audit`, pilier `code-quality` | Les pivots de stack deviennent des critères supplémentaires du rapport AIDD. |
 | `sc-*:cd automata` | `overcode:deploy automata` | La stack conserve la façade applicative ; `overcode:deploy` possède seulement l'enveloppe fournisseur ou CI. |
 | Projet avec Firebase, Klaviyo, GTM/Meta, Clarity, PSI ou Stripe | `overcode:service` | Installe, vérifie ou explique les règles de consommation de ces services. |
 | `overcode:alias mirror` | `design/agents/copycat.md` | `copycat` est un contrat de sous-agent interne, pas une skill publique. |
@@ -95,6 +96,7 @@ Par projet — `.claude/settings.json` du projet, ou via commande :
 | CSS pur (architecture, audit, modernisation) | `sc-css` |
 | Web Python | `sc-python` |
 | Web Rust | `sc-rust` |
+| Scripts PowerShell | `sc-pwsh` |
 | SaaS tiers (Firebase, Klaviyo, GTM…) | `overcode` (`service`) |
 | Extraction de sources PDF | `overcode` (`extract-pdf`) |
 

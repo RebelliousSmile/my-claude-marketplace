@@ -1,0 +1,17 @@
+[
+  { "prompt": "detect my PowerShell stack", "expect_action": "scan" },
+  { "prompt": "sniff the project", "expect_action": "scan" },
+  { "prompt": "which PowerShell host do these scripts target?", "expect_action": "scan" },
+  { "prompt": "scan these .ps1 files", "expect_action": "scan" },
+  { "prompt": "do my scripts need PowerShell 7 or run on 5.1?", "expect_action": "scan" },
+  { "prompt": "is Pester or PSScriptAnalyzer used here?", "expect_action": "scan" },
+  { "prompt": "analyse mon projet PowerShell", "expect_action": "scan" },
+  { "prompt": "quel hôte PowerShell visent ces scripts ?", "expect_action": "scan" },
+  { "prompt": "détecte les scripts .ps1 du dossier", "expect_action": "scan" },
+  { "prompt": "quels outils de test PowerShell sont présents ?", "expect_action": "scan" },
+  { "prompt": "audit this script for style problems", "expect_action": null },
+  { "prompt": "find what breaks on Windows PowerShell 5.1", "expect_action": null },
+  { "prompt": "explain the difference between PowerShell 5.1 and 7", "expect_action": null },
+  { "prompt": "this is a Python project, not PowerShell", "expect_action": null },
+  { "prompt": "manually edit a script file", "expect_action": null }
+]

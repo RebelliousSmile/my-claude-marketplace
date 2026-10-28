@@ -27,6 +27,10 @@
     {
       "id": "sc-rust",
       "name": "sc-rust"
+    },
+    {
+      "id": "sc-pwsh",
+      "name": "sc-pwsh"
     }
   ]
 }

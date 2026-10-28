@@ -18,6 +18,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/). Versionnemen
 
 ### Added
 
+- Plugin `sc-pwsh` (0.1.0) : scripts PowerShell, hôte visé lu par fichier (Windows PowerShell 5.1 ou PowerShell 7), audit délégué à `aidd-dev:04-audit`, compatibilité entre versions, enseignement. Règles mesurées sur les deux hôtes ; pas de pivot testing/perf/data ni de `cd`/`log-analysis`.
 - `obs-mail compose` : ouvre une fenêtre de composition Thunderbird depuis le bloc d'une note validée ; ne l'envoie jamais.
 - Suites de comportement `obs-mail/evals/{triage,compose,convert}-scenarios.md` (`overcode:behave`, 45 scénarios, non encore exécutés).
 
