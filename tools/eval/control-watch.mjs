@@ -14,6 +14,8 @@
 //   W10 au-delà de 10 entrées, un dossier est résumé en une seule entrée
 //   W11 un changement de branche est nommé, pas pris pour une réécriture
 //   W12 un HEAD reculé est un retour en arrière, un --amend une réécriture
+//   W13 un renommage indexé garde son ancien chemin
+//   W14 un fichier visé par le transcript hors de la racine est compté et cité
 
 import { mkdtempSync, mkdirSync, writeFileSync, appendFileSync, readFileSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -98,6 +100,17 @@ try {
   git('commit', '-q', '--amend', '-m', 'init-bis');
   const amend = tick();
   check('W12', amend.includes("réécriture d'historique ?") && amend.includes('init-bis'), `réécriture attendue, reçu: ${amend}`);
+
+  git('mv', 'a.txt', 'renamed.txt');
+  const mv = tick();
+  check('W13', mv.includes('R a.txt -> renamed.txt'), `renommage avec ancien chemin attendu, reçu: ${mv}`);
+
+  appendFileSync(transcript, JSON.stringify({ type: 'assistant', message: { content: [
+    { type: 'tool_use', id: '9', name: 'Edit', input: { file_path: '/elsewhere/shop-coupon/total.ts' } },
+    { type: 'tool_use', id: '10', name: 'Edit', input: { file_path: join(repo, 'inside.txt') } },
+  ] } }) + '\n');
+  const out = tick();
+  check('W14', out.includes('outside×1: /elsewhere/shop-coupon/total.ts'), `travail hors racine attendu, reçu: ${out}`);
 } finally {
   rmSync(repo, { recursive: true, force: true });
   rmSync(state, { recursive: true, force: true });

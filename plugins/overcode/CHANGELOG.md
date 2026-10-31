@@ -4,6 +4,19 @@
 
 ## [Unreleased]
 
+## [6.2.0] — 2026-10-31
+
+### Fixed
+
+- `control` lance chacune de ses propres commandes Git en `GIT_OPTIONAL_LOCKS=0`, comme la sonde :
+  aucune lecture du commentateur ne prend `.git/index.lock` pendant un commit de la session observée.
+- Un renommage garde son ancien chemin dans la ligne de lot (`R ancien -> nouveau`), et `watch` le
+  commente comme un renommage, pas comme un fichier neuf.
+- La sonde compte les fichiers visés par le transcript hors de `--root` (`outside×n: <chemin>`, avec
+  jq) ; `watch` signale alors que le travail a quitté l'arbre observé et propose de réarmer dessus.
+- Suites `behave` : N8, C9 et L8 passent ; nouveaux contrôles négatifs N9 (ressources d'exécution
+  partagées, ports), C10 (lockfiles) et L9 (fin de la tâche observée).
+
 ## [6.1.0] — 2026-10-31
 
 ### Fixed

@@ -23,7 +23,9 @@
 #   [HH:MM:SS] batch #<k> | files: <statut chemin>, … | commits: <sha sujet>; … | transcript: +<n> lines <a>-<b> (<Outil>×<n> … errors×<n>)
 #   [HH:MM:SS] idle <n>s
 #
-# Variantes : un dossier de plus de 10 entrées se résume en "<statut> <dossier>/ (<n> entries)" ;
+# Variantes : un renommage s'écrit "R ancien -> nouveau" ; "outside×n: <chemin>" compte les
+# fichiers visés par le transcript hors de --root (premier chemin cité, jq requis) ; un dossier
+# de plus de 10 entrées se résume en "<statut> <dossier>/ (<n> entries)" ;
 # `commits:` peut porter "branch: <a> → <b> (HEAD …)", "HEAD a → b (retour en arrière …)" ou
 # "HEAD a → b (réécriture d'historique ?)".
 #
@@ -46,7 +48,7 @@ while [ $# -gt 0 ]; do
     --state) state="$2"; shift 2 ;;
     --once) once=1; shift ;;
     --reset) reset=1; shift ;;
-    -h|--help) sed -n '2,32p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,33p' "$0"; exit 0 ;;
     *) echo "watch.sh: option inconnue $1" >&2; exit 2 ;;
   esac
 done
@@ -67,9 +69,11 @@ snapshot() {
   if [ "$is_git" = 1 ]; then
     git -C "$root" status --porcelain=v1 --untracked-files=all 2>/dev/null |
     while IFS= read -r line; do
-      st="${line:0:2}"; p="${line:3}"; p="${p##* -> }"; p="${p%\"}"; p="${p#\"}"
+      st="${line:0:2}"; p="${line:3}"; from=""
+      case "$p" in *" -> "*) from="${p%% -> *}"; from="${from%\"}"; from="${from#\"}"; p="${p##* -> }" ;; esac
+      p="${p%\"}"; p="${p#\"}"
       sig="$(stat -c '%s:%Y' "$root/$p" 2>/dev/null || echo gone)"
-      printf '%s\t%s\t%s\n' "$(echo "$st" | tr -d ' ')" "$p" "$sig"
+      printf '%s\t%s\t%s\t%s\n' "$(echo "$st" | tr -d ' ')" "$p" "$sig" "$from"
     done | LC_ALL=C sort
   else
     find "$root" -type f -not -path '*/.git/*' -not -path '*/node_modules/*' \
@@ -79,20 +83,21 @@ snapshot() {
 
 branch_name() { [ "$is_git" = 1 ] && git -C "$root" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "-"; }
 
-# Liste "statut<TAB>chemin" → "statut chemin, …". Au-delà de BULK entrées dans un même
+# Liste "statut<TAB>chemin[<TAB>origine]" → "statut chemin, …" ; un renommage ou une copie
+# s'écrit "R ancien -> nouveau". Au-delà de BULK entrées dans un même
 # dossier, le dossier est résumé en une entrée : "?? dist/ (42 entries)".
 BULK=10
 group_bulk() {
   awk -F'\t' -v bulk="$BULK" '
     $2 == "" || seen[$2]++ { next }
-    { n++; st[n] = $1; path[n] = $2; d = $2; sub(/\/[^\/]*$/, "", d); if (d == $2) d = "."; dir[n] = d; count[d]++ }
+    { n++; st[n] = $1; path[n] = $2; from[n] = $3; d = $2; sub(/\/[^\/]*$/, "", d); if (d == $2) d = "."; dir[n] = d; count[d]++ }
     END {
       for (i = 1; i <= n; i++) {
         d = dir[i]
         if (count[d] > bulk) {
           if (done[d]++) continue
           item = st[i] " " d "/ (" count[d] " entries)"
-        } else item = st[i] " " path[i]
+        } else item = st[i] " " (from[i] != "" ? from[i] " -> " : "") path[i]
         printf "%s%s", (k++ ? ", " : ""), item
       }
     }'
@@ -105,6 +110,15 @@ tool_names() {
     jq -r 'select(.type=="assistant") | .message.content[]? | select(.type=="tool_use") | .name' 2>/dev/null
   else
     grep -oE '"type":"tool_use","id":"[^"]*","name":"[^"]*"' | sed -E 's/.*"name":"([^"]*)"/\1/'
+  fi
+}
+
+# Fichiers visés par les outils (`file_path`, `notebook_path`, `path`) hors de la racine observée.
+tool_outside() {
+  if command -v jq >/dev/null 2>&1; then
+    jq -r 'select(.type=="assistant") | .message.content[]? | select(.type=="tool_use")
+           | .input | (.file_path // .notebook_path // .path // empty)' 2>/dev/null |
+      awk -v root="$root" 'index($0, "/") == 1 && index($0, root "/") != 1 && $0 != root'
   fi
 }
 
@@ -144,7 +158,7 @@ tick() {
 
   # Fichiers apparus, modifiés ou disparus depuis le tick précédent.
   files="$(
-    { comm -13 <(printf '%s\n' "$prev") <(printf '%s\n' "$cur") | cut -f1,2
+    { comm -13 <(printf '%s\n' "$prev") <(printf '%s\n' "$cur") | cut -f1,2,4
       comm -23 <(printf '%s\n' "$prev" | cut -f2 | LC_ALL=C sort -u) \
                <(printf '%s\n' "$cur" | cut -f2 | LC_ALL=C sort -u) | sed 's/^/clean\t/'
     } | grep -v '^\s*$' | group_bulk
@@ -179,6 +193,12 @@ tick() {
       local errs
       errs="$(sed -n "$((old + 1)),${new}p" "$transcript" | tool_errors)"
       [ "${errs:-0}" -gt 0 ] && tools="${tools:+$tools }errors×${errs}"
+      local outside first
+      outside="$(sed -n "$((old + 1)),${new}p" "$transcript" | tool_outside)"
+      if [ -n "$outside" ]; then
+        first="$(printf '%s\n' "$outside" | head -n 1)"
+        tools="${tools:+$tools }outside×$(printf '%s\n' "$outside" | grep -c .): ${first}"
+      fi
       tr="+$((new - old)) lines $((old + 1))-${new}${tools:+ ($tools)}"
     fi
     echo "$old" > "$state/tlines_prev"; echo "$new" > "$state/tlines"

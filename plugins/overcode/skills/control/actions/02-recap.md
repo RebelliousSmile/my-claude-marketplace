@@ -10,7 +10,7 @@ Fait le point depuis la ligne de base : la partie entière, pas le dernier lot.
 ## Process
 
 1. Lire `baseline_head`, `baseline_snapshot` et `batch` dans le dossier d'état. Sans état, le dire et proposer `watch`.
-2. Mesurer depuis la base : `git log --oneline <baseline_head>..HEAD`, `git diff --stat <baseline_head>` (commits **et** arbre de travail), et les fichiers non suivis.
+2. Mesurer depuis la base (commandes en `GIT_OPTIONAL_LOCKS=0 git …`, règle *Lecture seule*) : `git log --oneline <baseline_head>..HEAD`, `git diff --stat <baseline_head>` (commits **et** arbre de travail), et les fichiers non suivis.
 3. **Écarter ce qui était déjà là.** Un fichier présent dans `baseline_snapshot` avec la **même signature** (`taille:mtime`) qu'aujourd'hui est préexistant : il ne figure pas dans *Ce qui a bougé* ; le mentionner une fois en *préexistant, hors session*. Signature changée depuis la base → le compter, marqué *mixte* (modifié avant et pendant).
 4. Relire les commentaires déjà émis dans cette conversation : les `⚠` restés sans réponse sont des points ouverts.
 5. Rédiger :

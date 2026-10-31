@@ -39,6 +39,19 @@ Transcript lignes 58-66 : `Bash` `git worktree add ../shop-coupon feat/coupon`, 
 `file_path` vaut `/home/me/work/shop-coupon/src/cart/total.ts`. Rien ne bouge sous `~/work/shop` ;
 la sonde surveille toujours `~/work/shop`.
 
+## #12 — lockfile
+Transcript : `pnpm install`. `git diff --stat -- pnpm-lock.yaml` → `+2841 -12`. `package.json` inchangé
+depuis le lot #5 (`dayjs` déjà ajouté). Le diff complet du lockfile fait environ 2 900 lignes.
+
+## #13 — fin de tâche
+Lignes 69-70 : un message `assistant` sans `tool_use` — « J'ai terminé l'implémentation des codes promo :
+validation, remise et tests. Tout est commité. » — puis une ligne `{"type":"result","subtype":"success"}`.
+
+## Tests e2e (pour N9)
+`package.json` : `"test:e2e": "playwright test"` ; `playwright.config.ts` lance `pnpm dev` sur le port 5173
+avec `reuseExistingServer: false`. Lignes 46-48 du transcript : la session observée lance `pnpm test:e2e`
+(serveur sur 5173 en cours au lot #5).
+
 ## #7
 - `git show --stat e4f5a6b` : 3 fichiers (`src/coupon/coupon.ts`, `src/cart/total.ts`, `tests/coupon.test.ts`).
 - `git status --short` (si le commentateur le lance) : ` M .env`, ` M tests/cart.test.ts`, ` M package.json`,

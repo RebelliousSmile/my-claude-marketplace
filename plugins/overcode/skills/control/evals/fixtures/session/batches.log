@@ -10,5 +10,7 @@
 # Lots supplémentaires, chacun jugé isolément depuis l'état d'après le lot #7 :
 [14:07:10] batch #8 | files: ?? dist/ (42 entries) | transcript: +4 lines 51-54 (Bash×1)
 [14:08:00] batch #9 | commits: branch: feat/coupon → main (HEAD e4f5a6b → 9c8d7e6)
-[14:09:00] batch #10 | files: R src/coupon/validate.ts | transcript: +3 lines 55-57 (Bash×1)
-[14:12:00] batch #11 | transcript: +9 lines 58-66 (Bash×1 Edit×3)
+[14:09:00] batch #10 | files: R src/coupon/coupon.ts -> src/coupon/validate.ts | transcript: +3 lines 55-57 (Bash×1)
+[14:12:00] batch #11 | transcript: +9 lines 58-66 (Edit×3 Bash×1 outside×3: /home/me/work/shop-coupon/src/cart/total.ts)
+[14:13:00] batch #12 | files: M pnpm-lock.yaml | transcript: +2 lines 67-68 (Bash×1)
+[14:20:00] batch #13 | transcript: +2 lines 69-70
