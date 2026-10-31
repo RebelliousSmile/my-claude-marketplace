@@ -90,3 +90,23 @@ Batch #9 now in probe format (`branch: feat/coupon → main`); batch #11 (worktr
 - L8 — flag transcript paths outside `--root` (or `git worktree add`) and propose re-arming there.
 - L3 — the open `⚠` depend on earlier comments in the same conversation.
 **Tally:** 6/8 PASS (0 N/A) — L7 half fixed (wording right, confirming read missing); L8 is the new live red.
+
+### 2026-10-31 — run 4 (post-fix, dry-run, target=overcode:control 5.2.0, fixture=session) — **7/8 PASS**
+
+Same fixture; `01-watch` § 7 now confirms a branch change with `git reflog -1`.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|
+| L1 | PASS | = | `01-watch` § 2–5 |
+| L2 | PASS | = | `01-watch` § 5; `watch.sh` prints a baseline only without state |
+| L3 | PASS | = | `02-recap` § 1, 2, 4 |
+| L4 | PASS | = | `03-stop` § 1–3 |
+| L5 | PASS | = | `SKILL.md` § Default flow; `01-watch` § 6 |
+| L6 | PASS | = | `02-recap` § 3 |
+| L7 | PASS | ▲ | `01-watch` § 7: `branch: a → b` confirmed by `git reflog -1`, no rewrite claim, probe now follows `main` |
+| L8 | FAIL | = | No instruction compares transcript `file_path`s with `--root`; `idle` framed as thinking or blocked only |
+
+**Frictions / gaps:**
+- L8 — read the `file_path`/`cd` of transcript calls; outside `--root` → `⚠` « travail hors de l'arbre observé », propose re-arming there with the user's agreement; mention it in § 8 too.
+- L3 — « sans réponse » depends on user replies the fixture does not record.
+**Tally:** 7/8 PASS (0 N/A) — L7 fixed (FAIL → PASS); L8 is the live red of the probe-target family.
