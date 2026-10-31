@@ -111,3 +111,24 @@ Same fixture; `01-watch` § 7 now confirms a branch change with `git reflog -1`.
 - L8 — read the `file_path`/`cd` of transcript calls; outside `--root` → `⚠` « travail hors de l'arbre observé », propose re-arming there with the user's agreement; mention it in § 8 too.
 - L3 — « sans réponse » depends on user replies the fixture does not record.
 **Tally:** 7/8 PASS (0 N/A) — L7 fixed (FAIL → PASS); L8 is the live red of the probe-target family.
+
+### 2026-10-31 — run 5 (post-fix, dry-run, target=overcode:control 5.3.0, fixture=session) — **8/9 PASS**
+
+Batch #11 now carries `outside×3`; batch #13 (end of task) and L9 added.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|
+| L1 | PASS | = | `01-watch` § 2–5 |
+| L2 | PASS | = | `01-watch` § 5; `watch.sh` baseline only without state |
+| L3 | PASS | = | `02-recap` § 1, 2, 4 |
+| L4 | PASS | = | `03-stop` § 1–3 |
+| L5 | PASS | = | `SKILL.md` § Default flow; `01-watch` § 6 |
+| L6 | PASS | = | `02-recap` § 3 |
+| L7 | PASS | = | `01-watch` § 7 branch bullet + `git reflog -1` |
+| L8 | PASS | ▲ | `01-watch` § 7 « travail hors de l'arbre observé »: `⚠`, probe blind, offer to re-arm on the worktree root |
+| L9 | FAIL | new | Nothing detects the end of the observed task (final assistant message, `result` line); § 5 re-arms unless the user said stop |
+
+**Frictions / gaps:**
+- L9 — detect a final assistant message without `tool_use` or a `result` line, say the session seems done (hypothesis), offer `recap` then `stop`, and do not re-arm silently after that notice; optionally tag `result×1` in the probe.
+- L1 — « candidat actif » has no recency threshold.
+**Tally:** 8/9 PASS (0 N/A) — L8 fixed (FAIL → PASS); L9 is the live red of the lifecycle family.

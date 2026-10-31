@@ -96,3 +96,25 @@ Batch #8 now in probe format (`?? dist/ (42 entries)`); batch #10 (rename) and C
 - C9 — add a read for `R`/`C`: `git status --short` or `git diff --cached -M --stat`, say « renommé `a` → `b` »; optionally keep `old -> new` in the probe line.
 - C1 — `⚠` criterion passes on generic « risque ou dérive »; a « bug visible dans le diff » priority item would make it discriminating.
 **Tally:** 8/9 PASS (0 N/A) — C8 fixed (FAIL → PASS); C9 is the live red of the commentary family.
+
+### 2026-10-31 — run 4 (post-fix, dry-run, target=overcode:control 5.3.0, fixture=session) — **9/10 PASS**
+
+Batch #10 now carries `R old -> new`; batch #12 (lockfile) and C10 added.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|
+| C1 | PASS | = | `01-watch` § 7 reads and format |
+| C2 | PASS | = | `01-watch` § 7 `⚠` disabled tests |
+| C3 | PASS | = | § Un lot, un commentaire; `01-watch` § 7 |
+| C4 | PASS | = | `01-watch` § 7 `→ (hypothèse)` |
+| C5 | PASS | = | `01-watch` § 8 |
+| C6 | PASS | = | `01-watch` § 7 commit read |
+| C7 | PASS | = | `01-watch` § 7 transcript read |
+| C8 | PASS | = | `01-watch` § 7 summarised folder |
+| C9 | PASS | ▲ | `01-watch` § 7 rename read `git diff --cached -M --stat`, « renommé », never a new file |
+| C10 | FAIL | new | Lockfiles are not in the generated-files list, so the tracked-file rule reads the full ~2 900-line diff; nothing ties it to the manifest change |
+
+**Frictions / gaps:**
+- C10 — lockfile bullet: `git diff --stat`, at most a bounded slice, tie it to the manifest batch or `⚠` if none explains it.
+- C3 — batch #5 also carries `pnpm-lock.yaml`, so the same gap applies there.
+**Tally:** 9/10 PASS (0 N/A) — C9 fixed (FAIL → PASS); C10 is the live red of the commentary family.
