@@ -49,3 +49,22 @@ State dir `/tmp/overcode-control-1234567`, `batch` = 7; `src/legacy/price.ts` di
 - L5 — give a concrete cwd in the situation to make the criterion discriminating.
 - L1 — bundles four checks; split transcript selection into its own row if it ever fails.
 **Tally:** 5/6 PASS (0 N/A) — initial run; L6 is the live red of the attribution family.
+
+### 2026-10-31 — run 2 (post-fix, dry-run, target=overcode:control 5.1.0, fixture=session) — **6/7 PASS**
+
+`baseline_snapshot` carries `src/legacy/price.ts` with an unchanged signature; batch #9 (branch switch) added; L5 now names a concrete cwd.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|
+| L1 | PASS | = | `01-watch` § 2–5 |
+| L2 | PASS | = | `01-watch` § 5; `watch.sh` writes a baseline only on empty or reset state |
+| L3 | PASS | = | `02-recap` § 1, 2, 4 |
+| L4 | PASS | = | `03-stop` § 1–3 |
+| L5 | PASS | = | `SKILL.md` § Default flow + `01-watch` § 6 name `~/work/shop` |
+| L6 | PASS | ▲ | `02-recap` § 3 excludes files of `baseline_snapshot` with an unchanged signature |
+| L7 | FAIL | new | `01-watch` § 7 and `watch.sh` read any HEAD move without new commits as a rewrite; nothing checks the branch |
+
+**Frictions / gaps:**
+- L7 — before raising a rewrite, read `git branch --show-current` / `git reflog -1`; report a branch switch when the branch changed. Optionally keep the branch in the probe state.
+- L3 — in a fresh conversation, `recap` has no way to rebuild the open `⚠` from state alone.
+**Tally:** 6/7 PASS (0 N/A) — L6 fixed (FAIL → PASS); L7 is the live red of the probe-state family.
