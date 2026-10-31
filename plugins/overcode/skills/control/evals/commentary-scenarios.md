@@ -74,3 +74,24 @@ Batch lines now carry `lines a-b` and `errors×n`; `diffs.md` #7 corrected; C8 a
 - C7 — situation wording was stale (« counts only »); reworded after this run.
 - C6 — the batch comment does not mark `src/legacy/price.ts` as pre-existing (only `02-recap` § 3 does).
 **Tally:** 7/8 PASS (0 N/A) — C6 and C7 fixed (FAIL → PASS); C8 is the live red of the commentary family.
+
+### 2026-10-31 — run 3 (post-fix, dry-run, target=overcode:control 5.2.0, fixture=session) — **8/9 PASS**
+
+Batch #8 now in probe format (`?? dist/ (42 entries)`); batch #10 (rename) and C9 added.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|
+| C1 | PASS | = | `01-watch` § 7: `git diff` for `M`, `Read` for `??`; format |
+| C2 | PASS | = | `01-watch` § 7 `⚠` disabled tests; `.env` masked |
+| C3 | PASS | = | `SKILL.md` § Un lot, un commentaire; `01-watch` § 7 |
+| C4 | PASS | = | `01-watch` § 7 `→ (hypothèse)` |
+| C5 | PASS | = | `01-watch` § 8 |
+| C6 | PASS | = | `01-watch` § 7 commit read + `git status --short` |
+| C7 | PASS | = | `01-watch` § 7 transcript read |
+| C8 | PASS | ▲ | `01-watch` § 7 summarised folder: no per-file read, `git check-ignore`, `⚠` unignored build artefacts |
+| C9 | FAIL | new | `R` falls under the tracked-file read `git diff --cached -- <new>`, which shows 48 added lines; the probe also drops the old path |
+
+**Frictions / gaps:**
+- C9 — add a read for `R`/`C`: `git status --short` or `git diff --cached -M --stat`, say « renommé `a` → `b` »; optionally keep `old -> new` in the probe line.
+- C1 — `⚠` criterion passes on generic « risque ou dérive »; a « bug visible dans le diff » priority item would make it discriminating.
+**Tally:** 8/9 PASS (0 N/A) — C8 fixed (FAIL → PASS); C9 is the live red of the commentary family.

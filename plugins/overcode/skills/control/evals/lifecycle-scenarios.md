@@ -69,3 +69,24 @@ State dir `/tmp/overcode-control-1234567`, `batch` = 7; `src/legacy/price.ts` di
 - L7 — before raising a rewrite, read `git branch --show-current` / `git reflog -1`; report a branch switch when the branch changed. Optionally keep the branch in the probe state.
 - L3 — in a fresh conversation, `recap` has no way to rebuild the open `⚠` from state alone.
 **Tally:** 6/7 PASS (0 N/A) — L6 fixed (FAIL → PASS); L7 is the live red of the probe-state family.
+
+### 2026-10-31 — run 3 (post-fix, dry-run, target=overcode:control 5.2.0, fixture=session) — **6/8 PASS**
+
+Batch #9 now in probe format (`branch: feat/coupon → main`); batch #11 (worktree) and L8 added.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|
+| L1 | PASS | = | `01-watch` § 2–5 |
+| L2 | PASS | = | `01-watch` § 5; § La sonde vit au-delà d'un Monitor |
+| L3 | PASS | = | `02-recap` § 1, 2, 4 |
+| L4 | PASS | = | `03-stop` § 1–3 |
+| L5 | PASS | = | `SKILL.md` § Default flow; `01-watch` § 6 |
+| L6 | PASS | = | `02-recap` § 3 |
+| L7 | FAIL | = | `01-watch` § 7 names the branch change and forbids the rewrite claim, but prescribes no confirming read for `branch: a → b` (only the reset and rewrite cases read the reflog) |
+| L8 | FAIL | new | Transcript lines are read, but nothing compares their `file_path` with the watched root or proposes re-arming |
+
+**Frictions / gaps:**
+- L7 — add « lire `git reflog -1` pour confirmer le checkout » to the branch sub-bullet.
+- L8 — flag transcript paths outside `--root` (or `git worktree add`) and propose re-arming there.
+- L3 — the open `⚠` depend on earlier comments in the same conversation.
+**Tally:** 6/8 PASS (0 N/A) — L7 half fixed (wording right, confirming read missing); L8 is the new live red.
