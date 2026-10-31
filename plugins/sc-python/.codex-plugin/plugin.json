@@ -1,6 +1,6 @@
 {
   "name": "sc-python",
-  "version": "0.8.2+codex.20260828.2",
+  "version": "0.9.0+codex.20261031000000",
   "description": "Python stack skills with manager-preserving multi-target staging/production CD for Django, FastAPI, Flask, workers, SQL, and managed media.",
   "author": {
     "name": "François-Xavier Guillois"

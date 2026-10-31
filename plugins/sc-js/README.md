@@ -72,19 +72,12 @@ Les fichiers `perf-pivots-*.md` et `data-pivots-*.md` sont copiés dans `.claude
 
 Si les fichiers sont absents, ces skills tombent en fallback sur un référentiel générique moins précis.
 
-### Pivot de gouvernance `testing` — lu par un autre plugin
-
-`skills/sniff/references/capabilities/tools/testing.md` est le seul pivot qui ne sert **ni** à `/sc-js:audit`, **ni** au matching par chemin : il est exposé par glob (`**/capabilities/**/testing.md`) sous la racine du plugin, à qui implémente le contrat de pivot. Il fournit la mécanique JS de gouvernance des tests — runners, glob des fichiers de test, commande de coverage, glob source, frontière d'ancrage (`Anchor boundary`), signaux de risque, gotchas d'outillage, résolution de domaine (`Domain resolution` — comment un domaine fonctionnel se lit dans l'arborescence et les identifiants JS/TS, jamais lesquels existent). Aujourd'hui `overcode:control` est le seul à le lire ; le fichier lui-même ne le sait pas, et c'est délibéré.
-
-Ce que ce pivot **ne fait pas** : décider s'il faut écrire un test, ni où passe la frontière entre preuve ancrée et preuve interne. Il constate ce que la stack JS rend prouvable ; l'arbitrage et le plafond de coût appartiennent au consommateur.
-
 ### Résumé
 
 | Type | Où ça vit | Qui le charge | Quand |
 |---|---|---|---|
 | Capability pivot | Plugin uniquement | Claude Code (automatique, via `paths:`) | À chaque édition de fichier matchant |
 | Perf / data pivot | `.claude/rules/07-quality/` | `web-optimize` / `data-optimize` (explicite) | Au lancement du skill |
-| Pivot `testing` | Plugin uniquement | Tout consommateur du contrat de pivot (découverte par glob) | À chaque action de gouvernance de tests sur un projet JS |
 
 ## Nettoyage des fichiers de règles orphelins
 

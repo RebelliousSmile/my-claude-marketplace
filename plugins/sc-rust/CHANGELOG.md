@@ -1,5 +1,11 @@
 # Changelog — sc-rust
 
+## [0.8.0] — 2026-10-31
+
+### Removed
+
+- Pivot `skills/sniff/references/capabilities/tools/testing.md` retiré, avec sa section du README le cas échéant : son seul consommateur, la gouvernance des tests de l'ancienne skill `overcode:control`, a été supprimé (overcode 6.0.0).
+
 ## [0.7.2] — 2026-09-16
 
 ### Changed

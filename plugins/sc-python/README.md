@@ -44,19 +44,12 @@ Détecte la stack du projet depuis ses manifestes Python et charge à la demande
 | Tout projet Python | `python/idioms.md` |
 | `spacy` | `python/spacy.md` |
 
-### Pivot de gouvernance `testing` — lu par un autre plugin
-
-`skills/sniff/references/capabilities/tools/testing.md` est le seul pivot qui ne sert **ni** à `/sc-python:audit`, **ni** au matching par chemin : il est exposé par glob (`**/capabilities/**/testing.md`) sous la racine du plugin, à qui implémente le contrat de pivot. Il fournit la mécanique Python de gouvernance des tests — runners (`pytest`, `manage.py test`, les orchestrateurs qui n'en sont pas), glob des fichiers de test lu comme valeur de `python_files`, commande de coverage machine-lisible, glob source et exclusions, frontière d'ancrage (`Anchor boundary`), signaux de risque, gotchas d'outillage, résolution de domaine (`Domain resolution` — comment un domaine fonctionnel se lit dans une arborescence d'apps Django et dans les identifiants Python, jamais lesquels existent). Applicable dès que `pytest` est détecté, ou à défaut sur présence d'un `manage.py`.
-
-Ce que ce pivot **ne fait pas** : décider s'il faut écrire un test, ni quel niveau de preuve un cas mérite. Ses commandes et ses chiffres ont été relevés sur un projet Django réel ; ce qui n'a pas pu être mesuré est signalé à l'endroit où il apparaît.
-
 ### Résumé
 
 | Type | Où ça vit | Qui le charge | Quand |
 |---|---|---|---|
 | Capability pivot | Plugin uniquement | Claude Code (automatique, via `paths:`) | À chaque édition de fichier matchant |
 | Perf / data pivot | `.claude/rules/07-quality/` | `web-optimize` / `data-optimize` (explicite) | Au lancement du skill |
-| Pivot `testing` | Plugin uniquement | Tout consommateur du contrat de pivot (découverte par glob) | À chaque action de gouvernance de tests sur un projet Python |
 
 ## CD multi-cibles
 

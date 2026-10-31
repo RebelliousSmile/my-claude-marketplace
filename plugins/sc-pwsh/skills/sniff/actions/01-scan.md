@@ -54,7 +54,7 @@ Also report, read-only, the installed versions: `Get-Module -ListAvailable Peste
 |---|---|---|
 | PowerShell idioms | at least one `*.ps1` or `*.psm1` found | `powershell/idioms.md` |
 
-No perf, data or testing pivot exists: their absence is declared, not hidden behind an empty file.
+No perf or data pivot exists: their absence is declared, not hidden behind an empty file.
 
 ### Step 5 — Detect gaps
 
