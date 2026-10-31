@@ -4,6 +4,23 @@
 
 ## [Unreleased]
 
+## [6.1.0] — 2026-10-31
+
+### Fixed
+
+- `control` n'agit plus hors de la conversation : issue, PR, commentaire, message ou fichier hors du
+  dépôt observé sont rédigés pour l'utilisateur et émis seulement après confirmation explicite
+  (règle *Rien hors de cette conversation*).
+- La sonde résume un dossier de plus de 10 entrées (`?? dist/ (42 entries)`), et `watch` ne lit ni ne
+  liste les artefacts de build un par un ; il signale ceux qu'aucun `.gitignore` ne couvre.
+- La sonde distingue changement de branche (`branch: a → b`), retour en arrière (`reset ?`) et
+  réécriture d'historique (ancien HEAD ni ancêtre ni descendant, comme après un `--amend`), et `watch`
+  confirme au reflog avant de signaler une réécriture.
+- La sonde lance Git avec `GIT_OPTIONAL_LOCKS=0`, pour ne jamais prendre `.git/index.lock` pendant un
+  `git commit` de la session observée.
+- Suites `behave` : C8, L7 et N7 passent ; nouveaux contrôles négatifs N8 (verrous des lectures Git du
+  commentateur), C9 (renommage) et L8 (travail déplacé dans un worktree hors de l'arbre observé).
+
 ## [6.0.0] — 2026-10-31
 
 ### Removed
