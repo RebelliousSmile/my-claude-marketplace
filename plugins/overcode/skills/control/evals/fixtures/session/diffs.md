@@ -23,5 +23,6 @@ Les 14 lignes : 7 appels `Bash` `pnpm vitest run tests/coupon.test.ts`, chacun s
 - `deploy/railway.json` : `"numReplicas": 1` → `"numReplicas": 0`.
 
 ## #7
-`git show --stat e4f5a6b` : 3 fichiers (`coupon.ts`, `total.ts`, `coupon.test.ts`). `.env`, `cart.test.ts`,
-`package.json`, `pnpm-lock.yaml`, `deploy/railway.json` restent modifiés, non commités.
+- `git show --stat e4f5a6b` : 3 fichiers (`src/coupon/coupon.ts`, `src/cart/total.ts`, `tests/coupon.test.ts`).
+- `git status --short` (si le commentateur le lance) : ` M .env`, ` M tests/cart.test.ts`, ` M package.json`,
+  ` M pnpm-lock.yaml`, ` M deploy/railway.json`, ` M src/legacy/price.ts`.

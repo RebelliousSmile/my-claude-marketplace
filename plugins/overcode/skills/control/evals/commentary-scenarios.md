@@ -30,3 +30,24 @@ Agent-as-control (dry-run, READ-ONLY on the fixture): load `SKILL.md`, `actions/
 ## Results log
 
 <!-- append run results here per references/harness-conventions.md › Results log format -->
+
+### 2026-10-31 — run 1 (initial, dry-run, target=overcode:control 5.0.0, fixture=session) — **5/7 PASS**
+
+Armed with `plan.md`; batches #1–#7 and `idle 300s` judged from `batches.log` / `diffs.md`.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|
+| C1 | PASS | — | `01-watch` § 7 format, rubric order, empty rubrics omitted; `SKILL.md` § Le signal avant le récit |
+| C2 | PASS | — | `01-watch` § 7 `⚠` "tests … désactivés" → `it.skip` |
+| C3 | PASS | — | `SKILL.md` § Un lot, un commentaire (grouped); `⚠` dependency + out-of-plan (grouped header format undefined) |
+| C4 | PASS | — | `01-watch` § 7 `→ … (hypothèse)` + `SKILL.md` § Constater, pas deviner |
+| C5 | PASS | — | `01-watch` § 8; probe default `--idle 300` |
+| C6 | FAIL | — | `01-watch` § 7 reads only `git show --stat`; nothing checks what the commit left out. Fixture flaw: `diffs.md` #7 mixed `git status` into the `git show` output (corrected after this run) |
+| C7 | FAIL | — | `01-watch` § 7 lists the transcript-error signal but gives no read path; the probe reports counts only |
+
+**Frictions / gaps:**
+- C7 — add a read: `tail -n <n>` of the JSONL and look for `tool_result` `is_error: true`; otherwise say success/failure is unknown. Optionally count errors in `watch.sh`.
+- C6 — commit batch: add `git status --porcelain` and name files still outside the commit.
+- C1/C4 — untracked `??` file: `Read` it.
+- C3 — one `**#k · …**` header per batch in a grouped answer.
+**Tally:** 5/7 PASS (0 N/A) — initial run; C7 is the live red; C6 (positive control) fell.
