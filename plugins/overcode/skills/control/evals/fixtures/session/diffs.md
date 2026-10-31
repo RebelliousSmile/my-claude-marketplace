@@ -10,7 +10,7 @@
 ## #3 — transcript seulement
 Les 14 lignes : 7 appels `Bash` `pnpm vitest run tests/coupon.test.ts`, chacun suivi d'un `tool_result`
 `is_error: true` (« ReferenceError: validateCoupon is not defined »). Aucun fichier modifié.
-`watch.sh` ne remonte que le compte des outils, pas les erreurs.
+Ce sont les lignes 27-40 du JSONL observé ; `watch.sh` en remonte le compte (`errors×7`), pas le message.
 
 ## #4
 - `tests/cart.test.ts` : `it('applies discount')` devient `it.skip('applies discount')`.

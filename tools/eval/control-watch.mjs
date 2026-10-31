@@ -9,8 +9,10 @@
 //   W5  les appels d'outils du transcript sont comptés par nom
 //   W6  la ligne `idle` sort une fois, pas à chaque tick
 //   W7  la sonde n'écrit rien dans le dépôt observé
+//   W8  les erreurs d'outils du transcript sont comptées, avec la plage de lignes
+//   W9  la liste des fichiers déjà modifiés à la base survit aux ticks suivants
 
-import { mkdtempSync, writeFileSync, appendFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, appendFileSync, readFileSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
@@ -37,9 +39,10 @@ try {
   writeFileSync(join(repo, 'a.txt'), 'a\n');
   git('add', '-A'); git('commit', '-qm', 'init');
   writeFileSync(transcript, '{"type":"user"}\n');
+  writeFileSync(join(repo, 'pre.txt'), 'déjà là\n');
 
   const base = tick();
-  check('W1', /baseline \| 0 fichier/.test(base) && base.split('\n').length === 1, `ligne de base attendue, reçu: ${base}`);
+  check('W1', /baseline \| 1 fichier/.test(base) && base.split('\n').length === 1, `ligne de base attendue, reçu: ${base}`);
   check('W2', tick() === '', 'un tick sans changement doit être muet');
 
   writeFileSync(join(repo, 'b.txt'), 'b\n');
@@ -49,14 +52,20 @@ try {
     { type: 'tool_use', id: '2', name: 'Edit', input: {} },
     { type: 'tool_use', id: '3', name: 'Bash', input: {} },
   ] } }) + '\n');
+  appendFileSync(transcript, JSON.stringify({ type: 'user', message: { content: [
+    { type: 'tool_result', tool_use_id: '3', is_error: true, content: 'ReferenceError' },
+  ] } }) + '\n');
   const before = git('status', '--porcelain');
   const b1 = tick();
   check('W3', /^\[\d\d:\d\d:\d\d\] batch #1 \| files: /.test(b1) && b1.includes('?? b.txt') && b1.includes('M a.txt') && !/, ,|clean  /.test(b1), `lot #1 attendu, reçu: ${b1}`);
-  check('W5', b1.includes('transcript: +1 (Edit×2 Bash×1)'), `outils du transcript, reçu: ${b1}`);
+  check('W5', b1.includes('(Edit×2 Bash×1'), `outils du transcript, reçu: ${b1}`);
+  check('W8', b1.includes('transcript: +2 lines 2-3 (Edit×2 Bash×1 errors×1)'), `erreurs et plage du transcript, reçu: ${b1}`);
   check('W7', git('status', '--porcelain') === before, 'la sonde a modifié le dépôt observé');
 
   git('add', '-A'); git('commit', '-qm', 'feat: ajoute b');
   const b2 = tick();
+  const baseSnap = readFileSync(join(state, 'baseline_snapshot'), 'utf8');
+  check('W9', baseSnap.includes('pre.txt') && !baseSnap.includes('b.txt'), `baseline_snapshot réécrit: ${baseSnap}`);
   check('W4', b2.includes('batch #2') && b2.includes('feat: ajoute b'), `commit attendu dans le lot #2, reçu: ${b2}`);
 
   const i1 = tick('--idle', '0');

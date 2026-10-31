@@ -9,4 +9,5 @@
 - `transcripts.txt` — les JSONL candidats du dossier projet, avec leur date de modification.
 - `batches.log` — les lignes émises par `scripts/watch.sh`, dans l'ordre d'arrivée.
 - `diffs.md` — ce que `git diff` / `git show` renverrait pour chaque lot, et les extraits de transcript.
-- Dossier d'état : `/tmp/overcode-control-1234567`, `batch` = 7 après le lot #7.
+- Dossier d'état : `/tmp/overcode-control-1234567`, `batch` = 7 après le lot #7 ; `baseline_head` = `a1b2c3d` ;
+  `baseline_snapshot` = `M\tsrc/legacy/price.ts\t2214:1792915200`, signature **inchangée** au lot #7.

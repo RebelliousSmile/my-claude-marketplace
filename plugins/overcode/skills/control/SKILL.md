@@ -2,7 +2,7 @@
 name: control
 description: Runs a read-only side-terminal commentator next to another Claude Code session busy with a long-running task or an implementation. Arms a background monitor that polls the repository (and optionally the observed session's JSONL transcript) every 10 seconds, receives the changes as batches, and comments each batch - what moved, what it seems to aim at, what looks risky or off-plan, what the user should check. Use when asked to "comment on what the other session is doing", "be the commentator", "watch the implementation running next door", "monitor the long-running task and batch me the changes", "fais le commentateur", "surveille l'autre terminal", "commente ce que fait l'implémentation", "recap of what changed since you started watching", or "stop commenting". Do NOT use to run, fix, or steer the work itself - the commentator never edits, commits, or talks to the observed session. Do NOT use for code review of a finished diff - use `code-review` instead. Do NOT use for test governance - this skill no longer covers it.
 author: François-Xavier Guillois
-version: 5.0.0
+version: 5.1.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash
@@ -40,9 +40,10 @@ Sans dépôt précisé, `watch` observe le répertoire courant — et le dit dan
 
 ## Transversal rules
 
-- **Lecture seule, sans exception.** Jamais d'`Edit`, de `Write`, de commit, de `git add`, de `git stash`, de checkout, d'install ni de commande qui écrit dans le dépôt observé. Lire (`git diff`, `git log`, `Read`, `Grep`) est permis ; lancer des tests ne l'est que s'ils n'écrivent rien et que l'utilisateur l'a demandé.
-- **Jamais d'ingérence.** Le commentateur ne parle pas à la session observée (pas de `SendMessage`, pas d'écriture dans son transcript, pas de fichier « note pour l'agent »). Ce qu'il a à dire, il le dit à l'utilisateur, qui décide.
-- **Un lot, un commentaire.** Chaque notification de la sonde reçoit un commentaire bref, dans le format de `01-watch`. Plusieurs lots arrivés pendant un même tour se commentent ensemble.
+- **Lecture seule, sans exception.** Jamais d'`Edit`, de `Write`, de commit, de `git add`, de `git stash`, de checkout, d'install ni de commande qui écrit dans le dépôt observé. Lire (`git diff`, `git log`, `Read`, `Grep`) est permis ; lancer des tests ne l'est que si l'utilisateur l'a demandé et qu'ils n'écrivent rien dans le dépôt — ni snapshot mis à jour, ni rapport de couverture, ni cache sous l'arbre suivi ; dans le doute, dire le risque et demander avant.
+- **Jamais d'ingérence.** Le commentateur ne parle pas à la session observée (pas de `SendMessage`, pas d'écriture dans son transcript, pas de fichier « note pour l'agent »). Ce qu'il a à dire, il le dit à l'utilisateur, qui décide. Quand l'utilisateur veut que la session observée fasse ou cesse quelque chose, le commentateur lui donne **la phrase à coller** dans l'autre terminal, courte et autonome.
+- **Aucun secret recopié.** Une valeur de secret (clé d'API, token, mot de passe, valeur d'un `.env`) lue dans un diff, un fichier ou le transcript n'apparaît jamais dans un commentaire, un recap ou une citation : nommer le fichier et la variable, masquer la valeur (`sk_live_…`), et conseiller la révocation ou la rotation si elle a pu sortir du poste.
+- **Un lot, un commentaire.** Chaque notification de la sonde reçoit un commentaire bref, dans le format de `01-watch`. Plusieurs lots arrivés pendant un même tour se commentent dans la même réponse, un en-tête `**#k · …**` par lot.
 - **Le signal avant le récit.** Un risque, une dérive de périmètre ou une incohérence passe en tête ; la paraphrase de ce que fait l'agent ne vaut que si elle éclaire. Rien à signaler se dit en une ligne.
 - **Constater, pas deviner.** Une intention attribuée à l'agent est marquée comme hypothèse (« semble viser… »). Une affirmation sur le code repose sur un diff lu.
 - **La sonde vit au-delà d'un Monitor.** Un Monitor expire (30 min au plus) : le réarmer avec le même `--state` reprend sans reposer de ligne de base ni rejouer d'anciens lots.

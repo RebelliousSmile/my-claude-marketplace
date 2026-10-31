@@ -24,6 +24,15 @@
   de la sonde survit au réarmement du Monitor.
 - Garde `tools/eval/control-watch.mjs` : ligne de base, lot, commit, outils du transcript, silence,
   `idle` unique, aucune écriture dans le dépôt observé.
+- Trois suites `behave` pour `control` (`non-interference`, `commentary`, `lifecycle`) et la fixture
+  `session`. Le run initial a révélé six manques, corrigés :
+  - aucune valeur de secret n'est recopiée (règle transversale *Aucun secret recopié*) ;
+  - la sonde compte les erreurs d'outils du transcript (`errors×n`) et donne la plage de lignes du
+    lot, que `watch` lit avant de parler de succès ou d'échec ;
+  - un lot de commit lit aussi `git status --short` pour nommer ce qui reste hors du commit ;
+  - la sonde conserve `baseline_snapshot`, et `recap` écarte les fichiers déjà modifiés au départ ;
+  - le commentateur donne à l'utilisateur la phrase à coller dans l'autre terminal ;
+  - un fichier non suivi se lit avec `Read`, `git diff` ne montrant rien pour lui.
 
 ## [5.11.1] — 2026-10-12
 

@@ -21,7 +21,11 @@ Arme la sonde à côté de la session qui travaille, puis commente chaque lot qu
    - `timeout_ms` : le maximum (1 800 000). À l'expiration, réarmer **avec le même `--state`** et sans `--reset`, sauf si l'utilisateur a dit `stop`.
 6. **Annoncer** en trois lignes : ce qui est observé, ce qui ne l'est pas (transcript absent, hors Git…), comment arrêter.
 7. **Commenter chaque lot.** Pour une ligne `batch #k` :
-   - lire ce qu'il faut pour juger : `git diff -- <fichier>` (ou `git diff --cached`), `git show --stat <sha>` pour un commit ; pas plus que nécessaire ;
+   - lire ce qu'il faut pour juger, pas plus :
+     - fichier suivi (`M`, `D`, `A`…) : `git diff -- <fichier>` (ou `git diff --cached -- <fichier>`) ;
+     - fichier non suivi (`??`) : `Read` du fichier — `git diff` n'affiche rien pour lui ;
+     - commit : `git show --stat <sha>`, **puis** `git status --short` pour nommer ce qui reste modifié hors du commit, en tête les fichiers déjà signalés en `⚠` ;
+     - transcript (`transcript: +n lines a-b`) : lire ces lignes-là (`sed -n 'a,bp' <jsonl>`) quand le lot n'a aucun effet disque, ou quand il porte `errors×n` — y relever les `tool_result` en `is_error: true` et leur message. Sans cette lecture, dire que le succès ou l'échec des appels est inconnu, ne jamais l'affirmer ;
    - répondre dans ce format, chaque rubrique omise si vide :
 
      ```
@@ -31,7 +35,8 @@ Arme la sonde à côté de la session qui travaille, puis commente chaque lot qu
      ? <ce que l'utilisateur devrait vérifier ou trancher>
      ```
 
-   - signaler en `⚠` en priorité : fichier hors du plan ; tests supprimés, désactivés ou affaiblis ; suppression massive ; secret ou `.env` touché ; dépendance ajoutée ; migration ou schéma modifié ; réécriture d'historique (`HEAD … → …`) ; même fichier réécrit en boucle ; transcript qui accumule des erreurs ou des `Bash` répétés sans effet sur disque.
+   - plusieurs lots dans le même tour : une seule réponse, un bloc par lot dans l'ordre d'arrivée ;
+   - signaler en `⚠` en priorité : fichier hors du plan ; tests supprimés, désactivés ou affaiblis ; suppression massive ; secret ou `.env` touché ; dépendance ajoutée ; migration ou schéma modifié ; réécriture d'historique (`HEAD … → …`) ; même fichier réécrit en boucle ; transcript qui accumule des erreurs (`errors×n`) ou des `Bash` répétés sans effet sur disque. Un secret touché se signale sans jamais recopier sa valeur (règle transversale *Aucun secret recopié*).
 8. **Ligne `idle`.** Une phrase : depuis combien de temps rien ne bouge, et ce que ça peut vouloir dire (l'agent réfléchit, attend une permission, est bloqué). Ne pas relancer la session observée.
 
 ## Outputs

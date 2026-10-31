@@ -20,8 +20,12 @@
 #
 # Format des lignes (une par tick non vide) :
 #   [HH:MM:SS] baseline | <n> fichier(s) déjà modifié(s) | HEAD <sha>
-#   [HH:MM:SS] batch #<k> | files: <statut chemin>, … | commits: <sha sujet>; … | transcript: +<n> (<Outil>×<n> …)
+#   [HH:MM:SS] batch #<k> | files: <statut chemin>, … | commits: <sha sujet>; … | transcript: +<n> lines <a>-<b> (<Outil>×<n> … errors×<n>)
 #   [HH:MM:SS] idle <n>s
+#
+# Dossier d'état : snapshot, head (dernier tick) ; baseline_snapshot, baseline_head
+# (jamais réécrits — ce qui était déjà là au départ) ; tlines, tlines_prev (offsets
+# du transcript : les lignes <a>-<b> du dernier lot) ; batch, last_change, idle_sent.
 
 set -u
 
@@ -35,7 +39,7 @@ while [ $# -gt 0 ]; do
     --state) state="$2"; shift 2 ;;
     --once) once=1; shift ;;
     --reset) reset=1; shift ;;
-    -h|--help) sed -n '2,25p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,29p' "$0"; exit 0 ;;
     *) echo "watch.sh: option inconnue $1" >&2; exit 2 ;;
   esac
 done
@@ -76,6 +80,15 @@ tool_names() {
   fi
 }
 
+# Résultats d'outils en erreur (`tool_result` avec `is_error: true`).
+tool_errors() {
+  if command -v jq >/dev/null 2>&1; then
+    jq -r 'select(.type=="user") | .message.content[]? | select(.type=="tool_result" and .is_error==true) | "e"' 2>/dev/null | grep -c . || true
+  else
+    grep -oE '"is_error": ?true' | grep -c . || true
+  fi
+}
+
 ts() { date +%H:%M:%S; }
 
 tick() {
@@ -85,9 +98,12 @@ tick() {
 
   if [ ! -f "$state/snapshot" ]; then
     printf '%s\n' "$cur" > "$state/snapshot"; echo "$head" > "$state/head"
+    printf '%s\n' "$cur" > "$state/baseline_snapshot"
     echo "$head" > "$state/baseline_head"; echo "$now" > "$state/last_change"
     echo 0 > "$state/batch"
-    if [ -n "$transcript" ] && [ -f "$transcript" ]; then wc -l < "$transcript" | tr -d ' ' > "$state/tlines"; fi
+    if [ -n "$transcript" ] && [ -f "$transcript" ]; then
+      wc -l < "$transcript" | tr -d ' ' > "$state/tlines"; cp "$state/tlines" "$state/tlines_prev"
+    fi
     n="$(printf '%s' "$cur" | grep -c . || true)"
     echo "[$(ts)] baseline | ${n} fichier(s) déjà modifié(s) | HEAD ${head}"
     return
@@ -117,9 +133,12 @@ tick() {
       local tools
       tools="$(sed -n "$((old + 1)),${new}p" "$transcript" | tool_names | sort | uniq -c | sort -rn |
                awk '{ printf "%s%s×%s", (n++ ? " " : ""), $2, $1 }')"
-      tr="+$((new - old))${tools:+ ($tools)}"
+      local errs
+      errs="$(sed -n "$((old + 1)),${new}p" "$transcript" | tool_errors)"
+      [ "${errs:-0}" -gt 0 ] && tools="${tools:+$tools }errors×${errs}"
+      tr="+$((new - old)) lines $((old + 1))-${new}${tools:+ ($tools)}"
     fi
-    echo "$new" > "$state/tlines"
+    echo "$old" > "$state/tlines_prev"; echo "$new" > "$state/tlines"
   fi
 
   printf '%s\n' "$cur" > "$state/snapshot"; echo "$head" > "$state/head"
