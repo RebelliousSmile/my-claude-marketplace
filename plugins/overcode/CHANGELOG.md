@@ -4,6 +4,27 @@
 
 ## [Unreleased]
 
+## [6.0.0] — 2026-10-31
+
+### Removed
+
+- **L'ancienne skill `control` (gouvernance des tests) est supprimée**, avec ses six actions (`write`,
+  `audit`, `configure`, `strengthen`, `stats`, `align`), ses références (matrice de décision, phases,
+  domaines, contrat de pivot `testing`), ses suites `behave`, la page `docs/control.md` et les gardes
+  `tools/eval/control-contract.mjs` et `control-authority-criteria.mjs`. Rupture : `/overcode:control
+  write|audit|…` n'existe plus.
+
+### Added
+
+- **Nouvelle skill `control` : le commentateur.** Lancée dans un second terminal à côté d'une longue
+  tâche ou d'une implémentation, elle arme un Monitor sur `scripts/watch.sh`, qui interroge le dépôt
+  (et, en option, le transcript JSONL de la session observée) toutes les 10 s et n'émet qu'une ligne
+  par tick non vide : chaque lot est commenté (risques en tête, intention présumée, points à vérifier).
+  Actions `watch`, `recap`, `stop`. Lecture seule, sans aucun message à la session observée ; l'état
+  de la sonde survit au réarmement du Monitor.
+- Garde `tools/eval/control-watch.mjs` : ligne de base, lot, commit, outils du transcript, silence,
+  `idle` unique, aucune écriture dans le dépôt observé.
+
 ## [5.11.1] — 2026-10-12
 
 ### Fixed
