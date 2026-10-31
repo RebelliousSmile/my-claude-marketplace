@@ -27,6 +27,9 @@ try {
 if (tested.stdout) process.stdout.write(tested.stdout);
 if (tested.stderr) process.stderr.write(tested.stderr);
 if (tested.status !== 0) {
+  if (/No module named pytest/.test(tested.stderr || ''))
+    console.error('  pytest absent — installer les dépendances de test : '
+      + `${python} -m pip install -r plugins/design/adapters/measure/requirements-dev.txt`);
   console.error(`✗ design-pytest — ${python} -m pytest exit ${tested.status ?? tested.error?.message}`);
   process.exit(1);
 }
