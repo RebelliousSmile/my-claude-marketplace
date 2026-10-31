@@ -29,3 +29,22 @@ Agent-as-control (dry-run, READ-ONLY on the fixture): load `SKILL.md`, the three
 ## Results log
 
 <!-- append run results here per references/harness-conventions.md › Results log format -->
+
+### 2026-10-31 — run 1 (initial, dry-run, target=overcode:control 5.0.0, fixture=session) — **5/6 PASS**
+
+State dir `/tmp/overcode-control-1234567`, `batch` = 7; `src/legacy/price.ts` dirty before baseline.
+
+| # | Verdict | Δ vs prior | Note (instruction cited) |
+|---|---|---|---|
+| L1 | PASS | — | `01-watch` § Process 2 drops the most recent JSONL, proposes `4ab0…77`; § 4 `--reset --once`; § 5 `--interval 10`, `timeout_ms` 1 800 000, `control — shop` |
+| L2 | PASS | — | `01-watch` § 5 and `SKILL.md` § Transversal rules: same `--state`, no `--reset`; `watch.sh` emits no baseline while `snapshot` exists |
+| L3 | PASS | — | `02-recap` § 1–3: `batch` = 7, `git log a1b2c3d..HEAD` → `e4f5a6b`, open `⚠` from `01-watch` § 7 |
+| L4 | PASS | — | `03-stop` § 1–3: `TaskStop`, final recap, state deleted unless kept |
+| L5 | PASS | — | `SKILL.md` § Default flow: current directory, said in first line (weak discrimination: no concrete cwd in the row) |
+| L6 | FAIL | — | `02-recap` § 2 `git diff --stat <baseline_head>` includes pre-existing dirt; no instruction separates it, and `watch.sh` overwrites `snapshot` every tick, so the baseline file list is lost |
+
+**Frictions / gaps:**
+- L6 — keep a never-overwritten `baseline_snapshot` in `watch.sh`, and make `02-recap` exclude (or mark « préexistant ») files whose signature is unchanged since baseline.
+- L5 — give a concrete cwd in the situation to make the criterion discriminating.
+- L1 — bundles four checks; split transcript selection into its own row if it ever fails.
+**Tally:** 5/6 PASS (0 N/A) — initial run; L6 is the live red of the attribution family.
