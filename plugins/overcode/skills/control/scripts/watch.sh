@@ -23,11 +23,18 @@
 #   [HH:MM:SS] batch #<k> | files: <statut chemin>, … | commits: <sha sujet>; … | transcript: +<n> lines <a>-<b> (<Outil>×<n> … errors×<n>)
 #   [HH:MM:SS] idle <n>s
 #
+# Variantes : un dossier de plus de 10 entrées se résume en "<statut> <dossier>/ (<n> entries)" ;
+# `commits:` peut porter "branch: <a> → <b> (HEAD …)", "HEAD a → b (retour en arrière …)" ou
+# "HEAD a → b (réécriture d'historique ?)".
+#
 # Dossier d'état : snapshot, head (dernier tick) ; baseline_snapshot, baseline_head
-# (jamais réécrits — ce qui était déjà là au départ) ; tlines, tlines_prev (offsets
+# (jamais réécrits — ce qui était déjà là au départ) ; branch ; tlines, tlines_prev (offsets
 # du transcript : les lignes <a>-<b> du dernier lot) ; batch, last_change, idle_sent.
 
 set -u
+# `git status` rafraîchit l'index et prend `.git/index.lock` : sans ceci, la sonde peut faire
+# échouer un `git commit` de la session observée qui tombe sur le même instant.
+export GIT_OPTIONAL_LOCKS=0
 
 root="$PWD"; interval=10; transcript=""; idle=300; state=""; once=0; reset=0
 while [ $# -gt 0 ]; do
@@ -39,7 +46,7 @@ while [ $# -gt 0 ]; do
     --state) state="$2"; shift 2 ;;
     --once) once=1; shift ;;
     --reset) reset=1; shift ;;
-    -h|--help) sed -n '2,29p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,32p' "$0"; exit 0 ;;
     *) echo "watch.sh: option inconnue $1" >&2; exit 2 ;;
   esac
 done
@@ -68,6 +75,27 @@ snapshot() {
     find "$root" -type f -not -path '*/.git/*' -not -path '*/node_modules/*' \
       -printf '~\t%P\t%s:%T@\n' 2>/dev/null | LC_ALL=C sort
   fi
+}
+
+branch_name() { [ "$is_git" = 1 ] && git -C "$root" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "-"; }
+
+# Liste "statut<TAB>chemin" → "statut chemin, …". Au-delà de BULK entrées dans un même
+# dossier, le dossier est résumé en une entrée : "?? dist/ (42 entries)".
+BULK=10
+group_bulk() {
+  awk -F'\t' -v bulk="$BULK" '
+    $2 == "" || seen[$2]++ { next }
+    { n++; st[n] = $1; path[n] = $2; d = $2; sub(/\/[^\/]*$/, "", d); if (d == $2) d = "."; dir[n] = d; count[d]++ }
+    END {
+      for (i = 1; i <= n; i++) {
+        d = dir[i]
+        if (count[d] > bulk) {
+          if (done[d]++) continue
+          item = st[i] " " d "/ (" count[d] " entries)"
+        } else item = st[i] " " path[i]
+        printf "%s%s", (k++ ? ", " : ""), item
+      }
+    }'
 }
 
 head_sha() { [ "$is_git" = 1 ] && git -C "$root" rev-parse --short HEAD 2>/dev/null || echo "-"; }
@@ -100,6 +128,7 @@ tick() {
     printf '%s\n' "$cur" > "$state/snapshot"; echo "$head" > "$state/head"
     printf '%s\n' "$cur" > "$state/baseline_snapshot"
     echo "$head" > "$state/baseline_head"; echo "$now" > "$state/last_change"
+    branch_name > "$state/branch"
     echo 0 > "$state/batch"
     if [ -n "$transcript" ] && [ -f "$transcript" ]; then
       wc -l < "$transcript" | tr -d ' ' > "$state/tlines"; cp "$state/tlines" "$state/tlines_prev"
@@ -110,19 +139,33 @@ tick() {
   fi
 
   prev="$(cat "$state/snapshot")"; prev_head="$(cat "$state/head")"
+  local br prev_br
+  br="$(branch_name)"; prev_br="$(cat "$state/branch" 2>/dev/null || echo "$br")"
 
   # Fichiers apparus, modifiés ou disparus depuis le tick précédent.
   files="$(
     { comm -13 <(printf '%s\n' "$prev") <(printf '%s\n' "$cur") | cut -f1,2
       comm -23 <(printf '%s\n' "$prev" | cut -f2 | LC_ALL=C sort -u) \
                <(printf '%s\n' "$cur" | cut -f2 | LC_ALL=C sort -u) | sed 's/^/clean\t/'
-    } | grep -v '^\s*$' | awk -F'\t' '$2 != "" && !seen[$2]++ { printf "%s%s %s", (n++ ? ", " : ""), $1, $2 }'
+    } | grep -v '^\s*$' | group_bulk
   )"
 
+  # Mouvement de HEAD : changement de branche, nouveaux commits, retour en arrière
+  # (ancêtre de l'ancien HEAD) ou, en dernier recours, réécriture d'historique.
   commits=""
-  if [ "$head" != "$prev_head" ] && [ "$is_git" = 1 ]; then
-    commits="$(git -C "$root" log --format='%h %s' "${prev_head}..${head}" 2>/dev/null | head -n 10 | paste -sd ';' - | sed 's/;/; /g')"
-    [ -z "$commits" ] && commits="HEAD ${prev_head} → ${head} (réécriture d'historique ?)"
+  if [ "$is_git" = 1 ] && [ "$br" != "$prev_br" ]; then
+    commits="branch: ${prev_br} → ${br} (HEAD ${prev_head} → ${head})"
+  elif [ "$head" != "$prev_head" ] && [ "$is_git" = 1 ]; then
+    if git -C "$root" merge-base --is-ancestor "$prev_head" "$head" 2>/dev/null; then
+      commits="$(git -C "$root" log --format='%h %s' "${prev_head}..${head}" 2>/dev/null | head -n 10 | paste -sd ';' - | sed 's/;/; /g')"
+    elif git -C "$root" merge-base --is-ancestor "$head" "$prev_head" 2>/dev/null; then
+      commits="HEAD ${prev_head} → ${head} (retour en arrière sur ${br} : reset ?)"
+    else
+      commits="HEAD ${prev_head} → ${head} (réécriture d'historique ?)"
+      local new_commits
+      new_commits="$(git -C "$root" log --format='%h %s' "${prev_head}..${head}" 2>/dev/null | head -n 10 | paste -sd ';' - | sed 's/;/; /g')"
+      [ -n "$new_commits" ] && commits="$commits; $new_commits"
+    fi
   fi
 
   if [ -n "$transcript" ] && [ -f "$transcript" ]; then
@@ -141,7 +184,7 @@ tick() {
     echo "$old" > "$state/tlines_prev"; echo "$new" > "$state/tlines"
   fi
 
-  printf '%s\n' "$cur" > "$state/snapshot"; echo "$head" > "$state/head"
+  printf '%s\n' "$cur" > "$state/snapshot"; echo "$head" > "$state/head"; echo "$br" > "$state/branch"
 
   if [ -n "$files" ] || [ -n "$commits" ] || [ -n "$tr" ]; then changed=1; fi
   if [ "$changed" = 1 ]; then

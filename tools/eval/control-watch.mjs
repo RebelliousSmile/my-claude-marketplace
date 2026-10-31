@@ -11,8 +11,11 @@
 //   W7  la sonde n'écrit rien dans le dépôt observé
 //   W8  les erreurs d'outils du transcript sont comptées, avec la plage de lignes
 //   W9  la liste des fichiers déjà modifiés à la base survit aux ticks suivants
+//   W10 au-delà de 10 entrées, un dossier est résumé en une seule entrée
+//   W11 un changement de branche est nommé, pas pris pour une réécriture
+//   W12 un HEAD reculé est un retour en arrière, un --amend une réécriture
 
-import { mkdtempSync, writeFileSync, appendFileSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, appendFileSync, readFileSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
@@ -34,7 +37,7 @@ const tick = (...extra) => {
 };
 
 try {
-  git('init', '-q');
+  git('init', '-q', '-b', 'feat');
   git('config', 'user.email', 't@t'); git('config', 'user.name', 't');
   writeFileSync(join(repo, 'a.txt'), 'a\n');
   git('add', '-A'); git('commit', '-qm', 'init');
@@ -74,6 +77,27 @@ try {
   const i2 = tick('--idle', '1');
   const i3 = tick('--idle', '1');
   check('W6', /idle \d+s/.test(i2) && i3 === '', `idle attendu une seule fois, reçu: "${i2}" puis "${i3}"`);
+
+  mkdirSync(join(repo, 'dist'));
+  for (let i = 1; i <= 12; i++) writeFileSync(join(repo, 'dist', `f${i}.js`), `${i}\n`);
+  const bulk = tick();
+  check('W10', bulk.includes('?? dist/ (12 entries)') && !bulk.includes('dist/f1.js'), `dossier résumé attendu, reçu: ${bulk}`);
+  rmSync(join(repo, 'dist'), { recursive: true, force: true });
+  tick();
+
+  git('branch', 'main', 'HEAD~1');
+  git('switch', '-q', 'main');
+  const sw = tick();
+  check('W11', /branch: feat → main \(HEAD \w+ → \w+\)/.test(sw) && !sw.includes('réécriture'), `changement de branche attendu, reçu: ${sw}`);
+  git('switch', '-q', 'feat');
+  tick();
+
+  git('reset', '-q', '--hard', 'HEAD~1');
+  const back = tick();
+  check('W12', back.includes('retour en arrière sur feat') && !back.includes('réécriture'), `retour en arrière attendu, reçu: ${back}`);
+  git('commit', '-q', '--amend', '-m', 'init-bis');
+  const amend = tick();
+  check('W12', amend.includes("réécriture d'historique ?") && amend.includes('init-bis'), `réécriture attendue, reçu: ${amend}`);
 } finally {
   rmSync(repo, { recursive: true, force: true });
   rmSync(state, { recursive: true, force: true });

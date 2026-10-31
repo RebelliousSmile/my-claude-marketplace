@@ -22,6 +22,23 @@ Ce sont les lignes 27-40 du JSONL observé ; `watch.sh` en remonte le compte (`e
 ## #6
 - `deploy/railway.json` : `"numReplicas": 1` → `"numReplicas": 0`.
 
+## #8 — build
+Ligne 51-54 du transcript : `pnpm build`. `dist/` contient 42 fichiers (`index.js`, `index.js.map`, chunks).
+`git check-ignore -q dist/index.js` → code 1 (aucune règle `.gitignore` ne couvre `dist/`).
+
+## #9 — changement de branche
+`git branch --show-current` → `main` ; `git reflog -1` → `9c8d7e6 HEAD@{0}: checkout: moving from feat/coupon to main`.
+
+## #10 — renommage
+Transcript : `git mv src/coupon/coupon.ts src/coupon/validate.ts`. `git status --short` → `R  src/coupon/coupon.ts -> src/coupon/validate.ts`.
+`git diff --cached -- src/coupon/validate.ts` → fichier entièrement ajouté (48 lignes `+`).
+`git diff --cached -M --stat` → `src/coupon/{coupon.ts => validate.ts} | 0`.
+
+## #11 — travail déplacé hors de l'arbre observé
+Transcript lignes 58-66 : `Bash` `git worktree add ../shop-coupon feat/coupon`, puis trois `Edit` dont
+`file_path` vaut `/home/me/work/shop-coupon/src/cart/total.ts`. Rien ne bouge sous `~/work/shop` ;
+la sonde surveille toujours `~/work/shop`.
+
 ## #7
 - `git show --stat e4f5a6b` : 3 fichiers (`src/coupon/coupon.ts`, `src/cart/total.ts`, `tests/coupon.test.ts`).
 - `git status --short` (si le commentateur le lance) : ` M .env`, ` M tests/cart.test.ts`, ` M package.json`,
