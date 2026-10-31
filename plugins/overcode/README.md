@@ -10,10 +10,9 @@ Les audits chargent les **pivots** déposés par les plugins de stack et par `ov
 
 | Page | Contenu |
 |---|---|
-| [`docs/concepts.md`](docs/concepts.md) | Le modèle mental — le socle, les pivots, les frontières entre skills voisines, la densité de `control` |
+| [`docs/concepts.md`](docs/concepts.md) | Le modèle mental — le socle, les pivots, les frontières entre skills voisines |
 | [`docs/workflow.md`](docs/workflow.md) | Quelle skill pour quelle situation — table de routage et détail par skill |
 | [`docs/aliases.md`](docs/aliases.md) | Les sept chaînes d'alias, ce qu'elles enchaînent et leurs garanties |
-| [`docs/control.md`](docs/control.md) | Le modèle de `control` — les quatre autorités, les phases, les domaines, le chaînage |
 
 Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 
@@ -27,7 +26,7 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 | `taste` | `/overcode:taste [cible]` | Vérifie la fraîcheur documentaire ou juge la sobriété d'une cible : ajouter le minimum, conserver, simplifier, fusionner ou retirer avec preuves AIDD et empreinte complète |
 | `foresee` | `/overcode:foresee <cible>` | Route les analyses vers AIDD, synthétise jusqu'à trois scénarios de résilience et conserve l'horizon d'abandon, d'isolation et de migration des dépendances |
 | `behave` | `/overcode:behave <action>` | Harness de tests comportementaux pour **prompts** — scaffold, run jugé, régression, review |
-| `control` | `/overcode:control <action>` | Gouvernance de la suite de tests d'un projet, bornée par une **densité** lue contre la médiane du projet et pondérée par sa **phase** déclarée. **Ne se déclenche jamais seule.** |
+| `control` | `/overcode:control <action>` | Commentateur en lecture seule à lancer dans un second terminal pendant une longue tâche : une sonde interroge le dépôt toutes les 10 s, remonte les changements par lots et chaque lot est commenté (`watch`, `recap`, `stop`). **Ne se déclenche jamais seule.** |
 | `dig` | `/overcode:dig` | Quiz interactif de cinq questions sur le code ou la mémoire du projet — difficulté adaptative, score sur 20 et rapport sourcé |
 | `web-optimize` | `/overcode:web-optimize` | Audit perf web (LCP, CLS, INP, bundle, N+1 au rendu) → roadmap priorisée |
 | `data-optimize` | `/overcode:data-optimize` | Audit perf de la couche données (N+1, index, pagination, cache, quota) |

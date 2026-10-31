@@ -4,6 +4,36 @@
 
 ## [Unreleased]
 
+## [6.0.0] — 2026-10-31
+
+### Removed
+
+- **L'ancienne skill `control` (gouvernance des tests) est supprimée**, avec ses six actions (`write`,
+  `audit`, `configure`, `strengthen`, `stats`, `align`), ses références (matrice de décision, phases,
+  domaines, contrat de pivot `testing`), ses suites `behave`, la page `docs/control.md` et les gardes
+  `tools/eval/control-contract.mjs` et `control-authority-criteria.mjs`. Rupture : `/overcode:control
+  write|audit|…` n'existe plus.
+
+### Added
+
+- **Nouvelle skill `control` : le commentateur.** Lancée dans un second terminal à côté d'une longue
+  tâche ou d'une implémentation, elle arme un Monitor sur `scripts/watch.sh`, qui interroge le dépôt
+  (et, en option, le transcript JSONL de la session observée) toutes les 10 s et n'émet qu'une ligne
+  par tick non vide : chaque lot est commenté (risques en tête, intention présumée, points à vérifier).
+  Actions `watch`, `recap`, `stop`. Lecture seule, sans aucun message à la session observée ; l'état
+  de la sonde survit au réarmement du Monitor.
+- Garde `tools/eval/control-watch.mjs` : ligne de base, lot, commit, outils du transcript, silence,
+  `idle` unique, aucune écriture dans le dépôt observé.
+- Trois suites `behave` pour `control` (`non-interference`, `commentary`, `lifecycle`) et la fixture
+  `session`. Le run initial a révélé six manques, corrigés :
+  - aucune valeur de secret n'est recopiée (règle transversale *Aucun secret recopié*) ;
+  - la sonde compte les erreurs d'outils du transcript (`errors×n`) et donne la plage de lignes du
+    lot, que `watch` lit avant de parler de succès ou d'échec ;
+  - un lot de commit lit aussi `git status --short` pour nommer ce qui reste hors du commit ;
+  - la sonde conserve `baseline_snapshot`, et `recap` écarte les fichiers déjà modifiés au départ ;
+  - le commentateur donne à l'utilisateur la phrase à coller dans l'autre terminal ;
+  - un fichier non suivi se lit avec `Read`, `git diff` ne montrant rien pour lui.
+
 ## [5.11.1] — 2026-10-12
 
 ### Fixed

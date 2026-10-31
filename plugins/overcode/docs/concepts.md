@@ -61,7 +61,7 @@ Plusieurs skills se ressemblent de loin. Les frontières sont explicites, parce 
 
 **`web-optimize` vs `data-optimize`** — les deux détectent des N+1, mais pas les mêmes. `web-optimize` traite le N+1 *au rendu* (une page qui déclenche N requêtes pendant sa construction) ; `data-optimize` traite le N+1 *de la couche données* (des requêtes répétées sur la même collection ou table, indépendamment du rendu). Un même symptôme, deux couches, deux corrections.
 
-**`behave` vs `control`** — `behave` teste des **prompts** : skills, agents, workflows pilotés par le langage. `control` gouverne les tests de **code** d'un projet. Un scénario `behave` juge un comportement de LLM ; `control` décide si un test unitaire mérite d'exister.
+**`behave` vs `control`** — `behave` teste des **prompts** : skills, agents, workflows pilotés par le langage, en dry-run jugé. `control` ne teste rien : il observe en direct une session qui travaille à côté et commente ses changements par lots. L'un juge un comportement après coup ; l'autre commente une partie en cours.
 
 **`taste` vs `foresee`** — `taste` garde une seule autorité locale : la fraîcheur pondérée des affirmations Markdown contre le dépôt. Une cible code part vers `aidd-dev:04-audit` ou `aidd-dev:03-assert`. `foresee` route de même les documents et le code vers `shadow-areas`, `challenge` ou `audit`; sa valeur locale commence après l'audit `dependencies`, sur la continuité des mainteneurs, l'isolation et le coût de sortie.
 
@@ -71,36 +71,19 @@ Plusieurs skills se ressemblent de loin. Les frontières sont explicites, parce 
 
 **`research` vs `taste`** — `research` cherche et croise des sources externes pour construire de la connaissance documentaire. `taste` vérifie qu'un document existant correspond encore au codebase local. L'un produit des faits sourcés ; l'autre détecte l'obsolescence d'affirmations déjà écrites.
 
-## La densité, pas le nombre — le modèle de `control`
+## Le commentateur — le modèle de `control`
 
-`control` mérite un mot à part, parce que son modèle est contre-intuitif.
+`control` tourne dans un **second terminal**, à côté d'une session occupée par une longue tâche. Il n'a aucun pouvoir sur elle, et c'est voulu : lecture seule, aucune écriture dans le dépôt, aucun message à la session observée. Sa seule sortie est un commentaire à l'utilisateur.
 
-Il ne borne **pas** le nombre de tests par un plafond. Il raisonne en **densité** : le nombre de cas de test rapporté aux points de branchement, lu contre **la médiane du projet lui-même**. Un module trois fois plus dense que la médiane du projet est suspect ; le même module dans un autre projet ne le serait pas.
+La cadence est portée par une sonde (`scripts/watch.sh`) armée sous Monitor, pas par la conversation : elle interroge toutes les 10 s et n'émet qu'une ligne par tick **non vide**, si bien qu'un tick muet ne coûte rien et qu'un lot égale une notification. Son état vit dans un dossier hors du dépôt, pour qu'un Monitor expiré se réarme sans rejouer d'anciens lots ni reposer de ligne de base.
 
-La densité n'est pondérée par rien : elle se lit contre la médiane du projet, point. Ce que gouverne la **phase**, c'est **ce qui entre dans l'analyse** — à condition qu'elle liste ce qu'elle en écarte —, quels critères pèsent lourd en ce moment, et dans quel ordre le résultat est restitué. Jamais ce qu'une donnée signifie : une absence du rapport de couverture vaut « non couvert » dans toutes les phases.
-
-La phase est déclarée ou demandée, **jamais déduite** :
-
-| Phase | Ce qu'on attend de la suite |
-|---|---|
-| `scaffolding` | peu de tests, sur les seuls invariants qui tiennent |
-| `hardening` | montée en couverture ciblée sur le risque |
-| `production` | régression protégée, coût de maintenance assumé |
-| `sustaining` | un solde négatif est attendu — jamais exigé |
-| `default` | neutralité choisie : aucun biais de classement, aucun lot de suppression |
-| `undetermined` | la question a été posée, elle est restée sans réponse |
-
-Le fait que la phase ne soit **jamais déduite** est un choix : un projet en `sustaining` ressemble beaucoup à un projet abandonné, et se tromper coûte soit des tests supprimés à tort, soit une suite qui gonfle sans fin.
-
-Le modèle complet — les quatre autorités, les domaines sémantiques, le chaînage des actions — est dans [`control.md`](control.md).
-
-`control` porte `disable-model-invocation: true` — il ne se déclenche jamais tout seul, uniquement sur `/overcode:control`. C'est cohérent avec son pouvoir : une skill qui peut recommander de supprimer des tests ne doit pas s'inviter dans une conversation.
+`control` porte `allow_implicit_invocation: false` — il ne se déclenche jamais tout seul, uniquement sur `/overcode:control`. Une sonde qui tourne en arrière-plan ne doit pas s'inviter dans une conversation.
 
 ## Ce qu'overcode délègue
 
 Le plugin décide et cadre ; il n'écrit pas le code de production.
 
-- `control` décide du tier d'un test, puis **délègue l'écriture** à `aidd-dev:06-test`.
+- `control` commente le travail d'une autre session ; il **n'y touche jamais**.
 - Les skills d'audit produisent une **roadmap priorisée**, pas un patch.
 - `decompose` produit un **graphe de dépendances** (méthode Mikado, fichiers YAML sous `mikado/<graphName>/`), pas une implémentation.
 

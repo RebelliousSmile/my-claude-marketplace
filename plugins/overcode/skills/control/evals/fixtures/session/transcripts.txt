@@ -1,0 +1,4 @@
+~/.claude/projects/-home-me-work-shop/
+  9f1e…c2.jsonl   modifié il y a 2 s    (session commentatrice — celle qui lit cette liste)
+  4ab0…77.jsonl   modifié il y a 6 s    (session observée)
+  0d3c…19.jsonl   modifié il y a 3 jours

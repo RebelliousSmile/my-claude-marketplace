@@ -29,7 +29,6 @@ PowerShell n'a pas de manifeste de projet. `sniff` part du dossier courant, s'ar
 
 Le plugin ne couvre pas, faute de mesure, et le dit plutôt que de livrer un fichier vide :
 
-- pivot `testing` (Pester) ;
 - pivots `perf` et `data` ;
 - skill `cd` ;
 - skill `log-analysis`.

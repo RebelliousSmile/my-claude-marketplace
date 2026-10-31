@@ -1,6 +1,6 @@
 {
   "name": "sc-rust",
-  "version": "0.7.2+codex.20260828.2",
+  "version": "0.8.0+codex.20261031000000",
   "description": "Rust stack skills with target-isolated reversible releases, schema delivery, and one facade shared by server and automata modes.",
   "author": {
     "name": "François-Xavier Guillois"

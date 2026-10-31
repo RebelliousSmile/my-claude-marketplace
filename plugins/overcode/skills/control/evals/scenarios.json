@@ -1,17 +1,13 @@
 [
-  {"prompt":"should I write a test for this refund calculation?","expect_action":"write"},
-  {"prompt":"add the smallest useful test for this validation path","expect_action":"write"},
-  {"prompt":"audit the suite for duplicate and trivial tests","expect_action":"audit"},
-  {"prompt":"which existing tests can I safely remove?","expect_action":"audit"},
-  {"prompt":"why is the configured coverage gate not failing CI?","expect_action":"configure"},
-  {"prompt":"check whether our test tooling is wired correctly","expect_action":"configure"},
-  {"prompt":"what are the riskiest untested paths in this project?","expect_action":"strengthen"},
-  {"prompt":"rank the missing tests that matter most","expect_action":"strengthen"},
-  {"prompt":"give me a snapshot of the current test strategy and counts","expect_action":"stats"},
-  {"prompt":"where do we stand on tests across each stack?","expect_action":"stats"},
-  {"prompt":"align testing.md with the tools and phase the project actually uses","expect_action":"align"},
-  {"prompt":"our test strategy document is stale; reconcile it with reality","expect_action":"align"},
-  {"prompt":"run the unit tests","expect_action":null},
-  {"prompt":"write behavioural scenarios for this skill","expect_action":null},
-  {"prompt":"review this pull request","expect_action":null}
+  { "prompt": "fais le commentateur pendant que l'autre terminal implémente la feature", "expect_action": "watch" },
+  { "prompt": "surveille l'autre session et batch-moi les changements toutes les 10 secondes", "expect_action": "watch" },
+  { "prompt": "be the commentator for the long-running task in my other terminal", "expect_action": "watch" },
+  { "prompt": "commente ce que fait l'implémentation à côté", "expect_action": "watch" },
+  { "prompt": "fais le point sur ce qui a changé depuis que tu observes", "expect_action": "recap" },
+  { "prompt": "recap of what the other session did so far", "expect_action": "recap" },
+  { "prompt": "arrête de commenter, c'est fini", "expect_action": "stop" },
+  { "prompt": "stop watching the repo", "expect_action": "stop" },
+  { "prompt": "corrige le bug que l'autre session vient d'introduire", "expect_action": null },
+  { "prompt": "review my finished diff before I merge", "expect_action": null },
+  { "prompt": "should I write a test for this function?", "expect_action": null }
 ]

@@ -1,6 +1,6 @@
 interface:
-  display_name: "Test Control"
-  short_description: "Govern test strategy and coverage value"
-  default_prompt: "Use $overcode:control to audit this test strategy."
+  display_name: "Control"
+  short_description: "Side-terminal commentator for a running task"
+  default_prompt: "Use $overcode:control to watch the work running in my other terminal and comment each batch of changes."
 policy:
   allow_implicit_invocation: false
