@@ -17,11 +17,12 @@ Check for the following files (in order of priority):
 3. `bin/console` — presence alone means Symfony
 4. `wp-config.php` — presence means WordPress
 5. `wp-content/` directory — presence means WordPress
+6. `classes/PrestaShopAutoload.php`, `config/defines.inc.php` (at the root or under one subdirectory) or a Compose file using the `prestashop/prestashop` image — presence means PrestaShop
 
 If none of these exist, abort:
 ```
 ❌ sc-php sniff — no PHP project detected
-   Expected: composer.json, artisan, bin/console, or wp-config.php
+   Expected: composer.json, artisan, bin/console, wp-config.php, or a PrestaShop sentinel
    Aborting.
 ```
 
@@ -32,6 +33,9 @@ If none of these exist, abort:
 | `laravel/framework` in composer.json, or `artisan` present | Laravel |
 | `symfony/http-kernel` or `symfony/framework-bundle` in composer.json, or `bin/console` present | Symfony |
 | `roots/sage`, `wp-config.php`, or `wp-content/` present | WordPress |
+| `classes/PrestaShopAutoload.php` or `config/defines.inc.php` at the root or under one subdirectory (e.g. `prestashop/`), `prestashop/prestashop` image in a Compose file, or a module main class `extends Module` under `modules/` | PrestaShop |
+
+PrestaShop ships `bin/console` and Symfony packages: when PrestaShop is detected, report Symfony as `part of PrestaShop` and do not install the Symfony perf pivot. In an allowlist repository the core may be absent from Git; the Compose image or project modules are then the signal.
 
 A project may match multiple (e.g. Laravel + HTMX).
 
@@ -77,6 +81,7 @@ If both signals are found, enable the `wordpress/fse-patterns.md` capability piv
 | Bruno test conventions | `bruno/` folder or `*.bru` files detected | `${SC_PHP_PLUGIN_ROOT}/skills/sniff/references/capabilities/testing/bruno.md` |
 | WordPress SSR block authoring | WordPress detected (Step 2) | `${SC_PHP_PLUGIN_ROOT}/skills/sniff/references/capabilities/wordpress/ssr.md` |
 | WordPress FSE pattern authoring | block theme + `patterns/` dir detected (Step 4c) | `${SC_PHP_PLUGIN_ROOT}/skills/sniff/references/capabilities/wordpress/fse-patterns.md` |
+| PrestaShop custom code | PrestaShop detected (Step 2) | `${SC_PHP_PLUGIN_ROOT}/skills/sniff/references/capabilities/prestashop/platform.md` |
 
 After listing capability pivots, append the `/sc-php:audit` readiness line:
 - → `/sc-php:audit` : PRÊT (capability pivots: list the active ones)
@@ -145,6 +150,7 @@ Framework:
   ❌ Laravel — not detected
   ❌ Symfony — not detected
   ❌ WordPress — not detected
+  ❌ PrestaShop — not detected
 
 Data layer:
   ❌ Eloquent ORM — not detected

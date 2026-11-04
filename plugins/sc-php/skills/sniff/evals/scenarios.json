@@ -11,6 +11,7 @@
   { "prompt": "detect capabilities and install rules", "expect_action": "scan" },
   { "prompt": "les règles sont déjà à jour, juste vérifier", "expect_action": "scan" },
   { "prompt": "re-sync rules after adding a new package", "expect_action": "scan" },
+  { "prompt": "détecte la stack de cette boutique PrestaShop", "expect_action": "scan" },
   { "prompt": "no composer.json in this project", "expect_action": null },
   { "prompt": "this is a Node.js project, not PHP", "expect_action": null },
   { "prompt": "manually edit a rule file", "expect_action": null }

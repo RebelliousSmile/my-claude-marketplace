@@ -8,5 +8,9 @@
   { "prompt": "miroir WordPress vers la cible demo-staging server", "expect_action": "server" },
   { "prompt": "publie le code en production sur client-prod automata", "expect_action": "automata" },
   { "prompt": "copie les uploads de client-prod vers demo-staging", "expect_action": null },
+  { "prompt": "monte le Docker local PrestaShop 9.2 en PHP 8.5", "expect_action": "local" },
+  { "prompt": "crée le script de déploiement PrestaShop vers la cible shop-prod en production", "expect_action": "server" },
+  { "prompt": "ajoute les modules sc_* et le thème enfant au deploy:prod PrestaShop", "expect_action": "server" },
+  { "prompt": "relance l'installeur PrestaShop sur la production", "expect_action": null },
   { "prompt": "scaffolde un nouveau projet Symfony", "expect_action": null }
 ]

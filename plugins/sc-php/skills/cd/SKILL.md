@@ -1,6 +1,6 @@
 ---
 name: cd
-description: Standardizes local setup and scoped production delivery for WordPress, Laravel, and Symfony while preserving the project's existing root deployment facade. Use when the user wants project setup, production hosting, database delivery, content synchronization, or automation. Not for scaffolding.
+description: Standardizes local setup and scoped production delivery for WordPress, Laravel, Symfony, and PrestaShop while preserving the project's existing root deployment facade. Use when the user wants project setup, production hosting, database delivery, content synchronization, or automation. Not for scaffolding.
 argument-hint: project setup | production scope | automation target
 ---
 
@@ -34,4 +34,5 @@ Run the flow above. Read only the next action file.
 - Keep code, configuration, migrations, database, editorial content, and media as separate named surfaces.
 - Never create another environment, reset WordPress, destroy containers, import a database during setup, or deploy merely because configuration was requested.
 - Select an exact target id, phase and `deploy:*` operation; refuse ambiguous multi-target requests and every target-to-target or pull flow.
+- For PrestaShop, read [the PrestaShop strategy](references/prestashop.md) and, before creating or reconciling Compose, `.gitignore` or a deployment script, [its templates](references/prestashop-templates.md). Never run the PrestaShop installer on an installed shop.
 - Read [differential synchronization](../../references/cd-differential-sync.md) for staging data or media. Production mutable data, editorial content and uploads are target-authoritative.

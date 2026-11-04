@@ -1,5 +1,27 @@
 # Changelog — sc-php
 
+## [0.16.0] — 2026-11-02
+
+### Added
+
+- PrestaShop (8.x/9.x) comme quatrième framework de `cd` : référence `prestashop.md` (forme du dépôt
+  en liste blanche, Docker local avec l'image officielle, installation de production manuelle,
+  profil de capacités de l'hôte, livraison du code, récupération, inventaire des modules
+  partenaires) et gabarits `prestashop-templates.md` (`docker-compose.yml`, `.gitignore`,
+  `scripts/deploy.sh` en delta rsync avec aperçu et confirmation).
+- Pivot de capacité `prestashop/platform.md`, chargé par `audit` : hooks avant overrides,
+  cohérence nom/dossier des modules, préfixe de tables et dossier admin jamais en dur,
+  hygiène SQL et des entrées, traductions, couche Symfony, thème enfant.
+- `sniff` détecte PrestaShop, y compris dans un dépôt en liste blanche où le core n'est pas
+  versionné, et ne confond plus son `bin/console` avec une application Symfony.
+
+### Notes
+
+- Leçons tirées d'une mise en production réelle (PrestaShop 9.2, Alwaysdata) : `PS_FOLDER_ADMIN=admin`
+  obligatoire avec l'installeur 9.2, PHP CLI SSH différent du PHP du site, binaire versionné sans
+  php.ini (`-c` requis), 512M minimum pour le conteneur Symfony, course `ps_checkout` à
+  l'installation, cache admin périmé après renommage, installeur à ne jamais relancer.
+
 ## [0.15.0] — 2026-09-23
 
 ### Added

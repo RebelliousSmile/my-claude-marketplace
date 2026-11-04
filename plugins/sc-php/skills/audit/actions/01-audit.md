@@ -50,6 +50,9 @@ PHP Code Quality Criteria — sc-php 0.4.0
 ## WordPress FSE pattern authoring   (only if wordpress/fse-patterns.md was in the manifeste)
 <content of wordpress/fse-patterns.md>
 
+## PrestaShop custom code   (only if prestashop/platform.md was in the manifeste)
+<content of prestashop/platform.md>
+
 [...additional capability pivots from manifeste...]
 ```
 
@@ -59,6 +62,7 @@ From the `01-scan` output, identify PHP source directories:
 - Laravel: `app/Http/Controllers/`, `app/Models/`, `app/Services/`, `app/Repositories/`
 - Symfony: `src/Controller/`, `src/Entity/`, `src/Service/`, `src/Repository/`
 - WordPress: `wp-content/themes/`, `wp-content/plugins/`
+- PrestaShop: project modules (`modules/<prefix>_*/`), `override/`, the child theme — never core, stock theme or marketplace modules
 - Generic: check `composer.json` `autoload.psr-4` for custom source roots
 - Always exclude: `vendor/`
 

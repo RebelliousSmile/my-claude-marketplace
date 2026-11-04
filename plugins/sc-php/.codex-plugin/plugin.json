@@ -1,7 +1,7 @@
 {
   "name": "sc-php",
-  "version": "0.15.0+codex.20260923104210",
-  "description": "PHP and WordPress skills with native FSE patterns and multi-target staging/production CD with differential WordPress media.",
+  "version": "0.16.0+codex.20261102140000",
+  "description": "PHP, WordPress and PrestaShop skills with native FSE patterns and multi-target staging/production CD with differential WordPress media.",
   "author": {
     "name": "François-Xavier Guillois"
   },
@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "SC PHP",
     "shortDescription": "Build, audit, and modernize PHP stacks",
-    "longDescription": "Work with PHP, WordPress FSE, Laravel, Symfony, tests, logs, design pivots, and capability-aware local/production delivery through the project's native facade.",
+    "longDescription": "Work with PHP, WordPress FSE, Laravel, Symfony, PrestaShop, tests, logs, design pivots, and capability-aware local/production delivery through the project's native facade.",
     "developerName": "François-Xavier Guillois",
     "category": "Developer Tools",
     "capabilities": [

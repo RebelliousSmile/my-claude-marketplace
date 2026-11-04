@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sc-php",
-  "version": "0.15.0",
-  "description": "PHP and WordPress skills with native FSE patterns and multi-target staging/production CD with differential WordPress media.",
+  "version": "0.16.0",
+  "description": "PHP, WordPress and PrestaShop skills with native FSE patterns and multi-target staging/production CD with differential WordPress media.",
   "author": {
     "name": "François-Xavier Guillois"
   }

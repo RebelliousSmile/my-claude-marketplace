@@ -23,9 +23,9 @@
     },
     {
       "name": "sc-php",
-      "version": "0.15.0",
+      "version": "0.16.0",
       "source": "./plugins/sc-php",
-      "description": "PHP and WordPress skills with native FSE patterns and multi-target staging/production CD with differential WordPress media.",
+      "description": "PHP, WordPress and PrestaShop skills with native FSE patterns and multi-target staging/production CD with differential WordPress media.",
       "recommended": false
     },
     {

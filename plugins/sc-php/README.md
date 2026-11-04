@@ -1,6 +1,6 @@
 # sc-php
 
-*Knowledge provider pour les stacks PHP (Laravel, Symfony, WordPress, HTMX) : détection de stack, audit, modernisation et enseignement par pivots.*
+*Knowledge provider pour les stacks PHP (Laravel, Symfony, WordPress, PrestaShop, HTMX) : détection de stack, audit, modernisation et enseignement par pivots.*
 
 Détecte la stack du projet et charge à la demande les pivots de capacité applicables. Les pivots perf/data alimentent `web-optimize` / `data-optimize` (plugin `overcode`).
 
@@ -17,7 +17,7 @@ Détecte la stack du projet et charge à la demande les pivots de capacité appl
 | `bruno` | `/sc-php:bruno` | Tests API Bruno en CLI — itère jusqu'au vert (scripts, environnements, assertions) |
 | `design-bridge` | `/sc-php:design-bridge` | Réceptacle du pivot design pour PHP/WP — linter natif PHP/WP + export de block patterns WordPress + lint du contenu stocké en base (règles `stored-content`), rendu au gate par un rapport de pivot ; possède le workflow de plateforme block theme / FSE |
 | `builder-coverage` | `/sc-php:builder-coverage` | Gate de couverture WYSIWYG pour un thème bloc WordPress FSE — prouve par parcours exhaustif que chaque composant a une block pattern éditable, et que les patterns sont rangées par rôle de section |
-| `cd` | `/sc-php:cd local\|server\|automata` | wp-env/Docker en local, façade de déploiement native du projet en production et enveloppe via `overcode:deploy`. WordPress sépare code, base, contenus et médias et adapte le transport aux capacités vérifiées de chaque cible. |
+| `cd` | `/sc-php:cd local\|server\|automata` | wp-env/Docker (dont l'image officielle PrestaShop) en local, façade de déploiement native du projet en production et enveloppe via `overcode:deploy`. WordPress sépare code, base, contenus et médias et adapte le transport aux capacités vérifiées de chaque cible. |
 
 > `bruno`, `design-bridge` et `builder-coverage` sont spécifiques à PHP/WordPress et ne sont pas propagés aux autres plugins `sc-*`.
 
@@ -39,6 +39,10 @@ auto-enregistrées sont des fichiers `patterns/*.php`, et toutes les commandes W
 ## CD multi-cibles
 
 `sc-php:cd` garde une façade racine unique pour WordPress, Laravel ou Symfony. En staging, WordPress peut refléter base, contenu et uploads depuis le local après aperçu différentiel, sauvegarde et confirmation. En production, seuls code et migrations déclaratives sûres sont livrés ; base éditoriale, contenu et uploads restent autoritatifs sur chaque instance.
+
+## PrestaShop
+
+`sniff` détecte PrestaShop et `audit` charge le pivot `prestashop/platform.md`, qui couvre le code propre au projet (modules, overrides, thème enfant). `cd local` monte l'image officielle `prestashop/prestashop` alignée sur le PHP de production. `cd server` ne livre que le code versionné, par delta rsync, puis vide le cache avec le binaire PHP et le php.ini du site. Le core est installé une seule fois à la main sur la cible, et l'installeur n'est jamais relancé.
 
 ## Licence
 

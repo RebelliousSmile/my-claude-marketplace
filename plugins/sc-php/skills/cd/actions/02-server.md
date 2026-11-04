@@ -12,7 +12,7 @@ One root facade, one owned implementation, and a matching secret free contract, 
 
 ## Process
 
-1. **Load.** Read [facade reconciliation](../references/command-facade.md), [framework strategies](../references/php-frameworks.md), and [WordPress synchronization](../references/wordpress-sync.md).
+1. **Load.** Read [facade reconciliation](../references/command-facade.md), [framework strategies](../references/php-frameworks.md), and [WordPress synchronization](../references/wordpress-sync.md); for PrestaShop also [the PrestaShop strategy](../references/prestashop.md).
 2. **Select.** Resolve the exact target, phase, independent lock and lifecycle revision. Identify the existing root package-manager command and its owning script before choosing a facade. PHP or WordPress does not by itself make Composer the deployment owner.
 3. **Reconcile.** Preserve targets and custom behavior behind that one existing facade. Create a Composer facade only when Composer already owns root project operations or no deployment facade exists and Composer is the detected project manager.
    - Report conflicting semantics and request arbitration without adding a second producer.
@@ -35,3 +35,5 @@ One root facade, one owned implementation, and a matching secret free contract, 
 | reconciliation runs twice unchanged | the second intended-write set is empty |
 | staging upload is unchanged | it contributes zero transferable bytes |
 | production sync includes database, content or uploads | no transport or remote mutation is intended |
+| PrestaShop code release is configured | only tracked overrides, project modules and child theme are sent; `parameters.php`, media, `var/` and module `vendor/` are refused |
+| PrestaShop target CLI PHP differs from the site PHP | post-delivery uses the site's binary and ini and proves `pdo_mysql` before `bin/console` |

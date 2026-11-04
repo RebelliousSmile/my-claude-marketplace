@@ -11,7 +11,7 @@ Le **détail des skills de chaque plugin vit dans son propre README** — ce tab
 | [`overcode`](plugins/overcode/README.md) | [README](plugins/overcode/README.md) · [CHANGELOG](plugins/overcode/CHANGELOG.md) | ✅ | Socle commun — workflows AIDD, rétrospectives de méthode et de tokens, règles SaaS, enveloppes de livraison, maintenance et audits |
 | [`design`](plugins/design/README.md) | [README](plugins/design/README.md) · [CHANGELOG](plugins/design/CHANGELOG.md) | — | Création, critique, figeage, contrôle et diffusion d'un design system. Chaque skill fonctionne seule ; le cycle complet reste disponible pour les refontes globales. |
 | [`sc-js`](plugins/sc-js/README.md) | [README](plugins/sc-js/README.md) · [CHANGELOG](plugins/sc-js/CHANGELOG.md) | — | Stack JavaScript : Nuxt / Vue SPA / Vite / Alpine / Astro |
-| [`sc-php`](plugins/sc-php/README.md) | [README](plugins/sc-php/README.md) · [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / HTMX |
+| [`sc-php`](plugins/sc-php/README.md) | [README](plugins/sc-php/README.md) · [CHANGELOG](plugins/sc-php/CHANGELOG.md) | — | Stack PHP : Laravel / Symfony / WordPress / PrestaShop / HTMX |
 | [`sc-css`](plugins/sc-css/README.md) | [README](plugins/sc-css/README.md) · [CHANGELOG](plugins/sc-css/CHANGELOG.md) | — | Couche CSS pure : architecture (BEM, utility-first, CSS Modules, ITCSS), audit, modernisation |
 | [`sc-python`](plugins/sc-python/README.md) | [README](plugins/sc-python/README.md) · [CHANGELOG](plugins/sc-python/CHANGELOG.md) | — | Stack Python : Django / FastAPI / Flask / Celery |
 | [`sc-rust`](plugins/sc-rust/README.md) | [README](plugins/sc-rust/README.md) · [CHANGELOG](plugins/sc-rust/CHANGELOG.md) | — | Stack Rust : Axum / Actix-web |
