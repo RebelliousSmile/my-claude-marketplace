@@ -32,6 +32,7 @@ Expands a short command into a well-crafted, pre-authored prompt that chains aid
 | 05  | `gitit`       | Init git dans `R` + dépôt distant **privé** via gh (si absent) + commit + pull + push + tag SemVer si un push a eu lieu | dossier cible `R` (défaut CWD) `[--public]` |
 | 06  | `mirror`      | Image deux navigateurs côte à côte → diff texte + style → corrections via le contrat agent `design/agents/copycat.md` | image (chemin ou collée) + optionnel `--ref right` |
 | 07  | `debrief`     | Rétrospective de méthode, qualité bornée des skills et usage des tokens via AIDD telemetry quand il est actif | profondeur optionnelle (sessions ou durée), `--scope`, `--focus`, `--skill`, `--save <file.md>` |
+| 08  | `verify-prod` | Vérification en production, au navigateur, d'une liste fermée d'issues sous un goal borné (sorties prévues, deux essais, écriture seulement autorisée, nettoyage, rapport vérifié / non prouvé) | numéros d'issues + `--base-url`, `--allow-write <#issue>`, `--recipes <fichier>` |
 
 ## Default flow
 
@@ -44,6 +45,7 @@ Trigger-to-action mapping:
 - "gitit", "alias gitit", "git it", "init le dépôt git", "crée le dépôt git", "versionne ce dossier", "crée et pousse le dépôt", "git init + remote + push" → `gitit`
 - "mirror", "alias mirror", "comparer les deux navigateurs", "corriger les différences maquette", "aligner l'implémentation sur la maquette", "réconcilier mockup vs impl", "trouve les différences dans l'image", "corrige les écarts visuels" → `mirror`
 - "debrief", "alias debrief", "rétrospective", "retro", "qu'est-ce qui a bloqué", "où est-ce que j'ai perdu du temps", "comment j'utilise les skills", "analyse la qualité de mes skills", "analyse mon usage des tokens", "analyse mes conversations", "axes d'amélioration", "post-mortem des sessions", "what slowed us down", "how did we work" → `debrief`
+- "verify-prod", "alias verify-prod", "vérifie en production", "vérifie la résolution en prod", "teste les correctifs en production avec Claude in Chrome", "verify the fixes in production", "check the issues are fixed in prod" → `verify-prod`
 
 ## Transversal rules
 

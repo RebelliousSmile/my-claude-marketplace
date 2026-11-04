@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+## [6.1.0] — 2026-11-04
+
+### Added
+
+- **Alias `verify-prod`** : vérification en production, au navigateur, d'une liste fermée d'issues sous un
+  goal borné. La condition générée écrit d'avance les sorties définitives (refus du classifieur ou d'une
+  permission, consigne de l'utilisateur, matériel ou compte absent, deux essais échoués), pour qu'un refus
+  ne relance pas la session en boucle. Recettes lues dans le dépôt cible, aucun `.env` lu, écriture en
+  production seulement sous `--allow-write` avec restauration, nettoyage des helpers et onglets, rapport
+  vérifié / constaté / non prouvé / sauté. Né d'une session de vérification de JVT (2026-11-04) relancée
+  deux fois par son hook Stop après un refus du classifieur.
+
 ## [6.0.0] — 2026-10-31
 
 ### Removed

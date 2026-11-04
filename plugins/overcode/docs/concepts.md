@@ -92,4 +92,4 @@ C'est la même séparation que dans `design` : le plugin garde le *quoi*, l'exé
 ## Voir aussi
 
 - [`workflow.md`](workflow.md) — quelle skill pour quelle situation
-- [`aliases.md`](aliases.md) — les sept chaînes d'enchaînement
+- [`aliases.md`](aliases.md) — les huit chaînes d'enchaînement

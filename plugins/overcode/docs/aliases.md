@@ -21,6 +21,7 @@ Le nom peut aussi être formulé en langage naturel : « clôture la tâche » a
 | [`gitit`](#gitit) | init → remote privé → commit → pull → push → tag | dossier cible (défaut : CWD) |
 | [`mirror`](#mirror) | image deux navigateurs → diff → corrections via le contrat agent `design/agents/copycat.md` | une image |
 | [`debrief`](#debrief) | transcripts + télémétrie AIDD optionnelle → méthode, qualité des skills et tokens | profondeur optionnelle, `--scope`, `--focus`, `--skill`, `--save <fichier.md>` |
+| [`verify-prod`](#verify-prod) | recettes du projet → goal borné → vérification au navigateur → nettoyage → rapport | numéros d'issues, `--base-url`, `--allow-write <#issue>`, `--recipes <fichier>` |
 
 ---
 
@@ -92,6 +93,23 @@ Deux garde-fous portés par l'action : **un signal vu dans une seule session est
 Lecture seule et bornée : aucune suite de tests, aucun lint, aucune action sœur, jamais un transcript lu en entier ni un corps de résultat d'outil. Seul le digest entre en contexte.
 
 Syntaxe : `debrief [<profondeur>] [--scope project|global] [--focus frictions|skills|skill-quality|prompts|plugins|tokens] [--skill <plugin:skill>] [--save <fichier.md>]`. La profondeur est un nombre de sessions ou une durée (`30d`, plafonnée à 40 sessions) ; défaut : 8 sessions sur 30 jours. Une session ouverte avant la fenêtre et reprise dedans y entre entière — son `span` le montre, et un constat qui en vient se date par le span. `--scope global` élargit à tous les projets et attribue chaque constat au sien. `--skill` cible le contrôle qualité d'une skill. `--save` ajoute le rapport au fichier sous un titre daté, d'un niveau sous le titre courant, sans jamais tronquer l'existant.
+
+## `verify-prod`
+
+Vérifie en production, au navigateur, qu'une **liste fermée** d'issues est résolue. Il ne déploie rien : le déploiement reste à `overcode:deploy` et à son autorisation.
+
+Le cœur de l'alias est la condition du goal qu'il génère. Une condition qui dit seulement « vérifie la résolution » traite un refus de permission comme du travail inachevé et relance la session en boucle. Celle de `verify-prod` écrit d'avance les sorties valables et définitives : refus du classifieur ou d'une permission, consigne de l'utilisateur, matériel ou compte absent, deux essais échoués.
+
+Garanties portées par l'action :
+
+- **contexte du projet hors de l'alias** : routes, sélecteurs, comptes par rôle et pièges vivent dans le dépôt (`--recipes`, `.claude/verify-prod.md`, ou la section « Vérification en production » de `aidd_docs/memory/testing.md`) ; sans recette, elle est déduite de l'issue et marquée comme telle ;
+- **aucun secret lu** : les sessions sont ouvertes à la main dans le navigateur avant le lancement, jamais depuis un `.env` ;
+- **au plus deux essais par issue**, actions groupées en un appel (`browser_batch`), attentes sur condition ;
+- **aucune écriture en production** hors `--allow-write`, une seule fois, valeur d'origine relevée puis restaurée ; un refus n'est jamais contourné par un autre chemin ;
+- **nettoyage** des helpers injectés et des onglets ouverts par le run ;
+- **rapport** qui sépare `vérifié`, `constaté`, `non prouvé` et `sauté`, chacun avec sa preuve ou son motif ; la formulation du CHANGELOG est proposée, jamais écrite ni commitée.
+
+Syntaxe : `verify-prod <#issue>… [--base-url <url>] [--allow-write <#issue>]… [--recipes <fichier>]`.
 
 ## Voir aussi
 

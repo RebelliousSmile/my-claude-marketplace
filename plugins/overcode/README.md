@@ -12,7 +12,7 @@ Les audits chargent les **pivots** déposés par les plugins de stack et par `ov
 |---|---|
 | [`docs/concepts.md`](docs/concepts.md) | Le modèle mental — le socle, les pivots, les frontières entre skills voisines |
 | [`docs/workflow.md`](docs/workflow.md) | Quelle skill pour quelle situation — table de routage et détail par skill |
-| [`docs/aliases.md`](docs/aliases.md) | Les sept chaînes d'alias, ce qu'elles enchaînent et leurs garanties |
+| [`docs/aliases.md`](docs/aliases.md) | Les huit chaînes d'alias, ce qu'elles enchaînent et leurs garanties |
 
 Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 
@@ -20,7 +20,7 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 
 | Skill | Invocation | Description |
 |---|---|---|
-| `alias` | `/overcode:alias <nom>` | Enchaîne des workflows en une commande — sept chaînes pré-écrites, dont une rétrospective de méthode et de consommation de tokens |
+| `alias` | `/overcode:alias <nom>` | Enchaîne des workflows en une commande — huit chaînes pré-écrites, dont une rétrospective de méthode et de consommation de tokens |
 | `harvest` | `/overcode:harvest [all\|tracker\|normative\|cleanup\|freshness\|review]` | Maintenance complète par défaut, ou pilier ciblé avec ses seuls prérequis |
 | `reconcile-normative` | `/overcode:reconcile-normative` | Cohérence du normatif entre archives, mémoire et règles actives |
 | `taste` | `/overcode:taste [cible]` | Vérifie la fraîcheur documentaire ou juge la sobriété d'une cible : ajouter le minimum, conserver, simplifier, fusionner ou retirer avec preuves AIDD et empreinte complète |
@@ -47,7 +47,7 @@ Le processus de chaque skill vit dans son `SKILL.md` et ses `actions/`.
 
 Une exécution ciblée charge uniquement son action et ses dépendances indispensables. `cleanup` réconcilie d'abord le tracker puis le normatif ; `review` consulte le tracker en lecture seule ; `freshness` ne charge ni cycle de vie ni tracker. La réponse développe le pilier demandé et résume brièvement les prérequis. Seul le mode `all` écrit le rapport Harvest global ; toutes les confirmations de clôture et de suppression restent obligatoires.
 
-Chaînes d'alias fournies : `rechallenge`, `endtask`, `bump-plugin`, `previously`, `gitit`, `mirror`, `debrief` — détail dans [`docs/aliases.md`](docs/aliases.md). `mirror` charge le contrat feuille `design/agents/copycat.md` dans un sous-agent natif ; il n'appelle aucune skill `design:copycat`.
+Chaînes d'alias fournies : `rechallenge`, `endtask`, `bump-plugin`, `previously`, `gitit`, `mirror`, `debrief`, `verify-prod` — détail dans [`docs/aliases.md`](docs/aliases.md). `mirror` charge le contrat feuille `design/agents/copycat.md` dans un sous-agent natif ; il n'appelle aucune skill `design:copycat`.
 
 ## Licence
 

@@ -64,6 +64,11 @@
   { "prompt": "analyse la qualité de mes skills", "expect_action": "debrief" },
   { "prompt": "analyse mon usage des tokens", "expect_action": "debrief" },
   { "prompt": "what slowed us down in the last sessions", "expect_action": "debrief" },
+  { "prompt": "verify-prod #229 #231", "expect_action": "verify-prod" },
+  { "prompt": "alias verify-prod", "expect_action": "verify-prod" },
+  { "prompt": "vérifie en production la résolution des issues 229 et 235", "expect_action": "verify-prod" },
+  { "prompt": "verify the fixes in production with the browser", "expect_action": "verify-prod" },
+  { "prompt": "déploie en production", "expect_action": null },
   { "prompt": "résume-moi la dernière conversation", "expect_action": null },
   { "prompt": "lance les tests et donne-moi la couverture", "expect_action": null }
 ]
