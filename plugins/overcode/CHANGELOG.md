@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [6.2.1] — 2026-11-04
+
 ### Fixed
 
 - **`control` : plus de lots perdus entre deux notifications.** Une ligne que le Monitor ne remontait
