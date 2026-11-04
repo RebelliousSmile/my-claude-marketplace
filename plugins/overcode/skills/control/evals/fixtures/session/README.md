@@ -7,7 +7,7 @@
 - **Session observée** : implémente le plan de `plan.md` dans le premier terminal.
 - **Session commentatrice** : celle qui exécute `control`, dans le second terminal.
 - `transcripts.txt` — les JSONL candidats du dossier projet, avec leur date de modification.
-- `batches.log` — les lignes émises par `scripts/watch.sh`, dans l'ordre d'arrivée.
+- `batches.log` — les lignes émises par `scripts/watch.sh`, dans l'ordre d'arrivée ; tient lieu du journal `emitted.log` du dossier d'état.
 - `diffs.md` — ce que `git diff` / `git show` renverrait pour chaque lot, et les extraits de transcript.
 - Dossier d'état : `/tmp/overcode-control-1234567`, `batch` = 7 après le lot #7 ; `baseline_head` = `a1b2c3d` ;
-  `baseline_snapshot` = `M\tsrc/legacy/price.ts\t2214:1792915200`, signature **inchangée** au lot #7.
+  `baseline_snapshot` = `M\tsrc/legacy/price.ts\t2214:1792915200`, signature **inchangée** au lot #7 ; `commented` = 3 (scénarios L8–L9 : lots #4 à #7 émis sans notification).

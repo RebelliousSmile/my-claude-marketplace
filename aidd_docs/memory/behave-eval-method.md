@@ -27,3 +27,9 @@ Constaté le 2026-08-25 sur `overcode:alias/backlog`. La règle bornait un rempl
 Avant de modifier une règle, relire ce que sa suite exige d'elle : une ligne d'éval n'est pas un contrôle indépendant de la règle, elle en est la transcription. Là où elle cite l'observable en termes de mécanisme (« remplace jusqu'à `X` ») plutôt que d'effet (« ne détruit rien hors du bloc généré »), elle fige le mécanisme et devient un obstacle au correctif.
 
 Corollaire de rédaction : viser l'**effet préservé**, pas le geste. Un observable écrit en effet survit au changement de mécanisme ; écrit en geste, il doit être réécrit à chaque correctif — et cette réécriture ressemble à un ajustement de la mesure pour faire passer la cible.
+
+## L'auteur des consignes ne juge pas son propre run à sec
+
+Constaté le 2026-11-04 sur `overcode:control` (journal des lots, L8 et L9). L'auteur des consignes les relit avec l'intention qu'il y a mise : un agent neuf, qui ne connaît que les fichiers, a trouvé L9 en échec (une ligne `idle` lue dans le journal n'était commentée par aucune instruction) là où l'auteur tenait le scénario pour couvert.
+
+Le run se joue donc en deux passes d'agents neufs : la suite entière, puis, après retouche, les scénarios touchés, **y compris ceux dont une action citée a changé** (L4, parce que `03-stop` avait gagné une étape de rattrapage). Un critère obtenu par bon sens, sans instruction qui le porte, est un FAIL.
