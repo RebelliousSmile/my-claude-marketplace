@@ -1,6 +1,6 @@
 {
   "name": "sc-php",
-  "version": "0.16.0+codex.20261102140000",
+  "version": "0.17.0+codex.20261104000000",
   "description": "PHP, WordPress and PrestaShop skills with native FSE patterns and multi-target staging/production CD with differential WordPress media.",
   "author": {
     "name": "François-Xavier Guillois"

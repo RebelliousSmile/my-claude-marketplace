@@ -18,7 +18,7 @@ Les skills s'invoquent sous la forme `/overcode:<skill>`.
 | « le backend / la base est lente » | [`data-optimize`](#audits-de-performance) |
 | « on n'est pas visibles sur Google » | [`seo-optimize`](#audit-seo--geo) |
 | « la fédération ActivityPub déconne » | [`ap-optimize`](#activitypub) |
-| « faut-il écrire ce test ? » | [`control`](#gouvernance-des-tests--control) |
+| « commente ce que fait l'implémentation dans l'autre terminal » | [`control`](#commentateur--control) |
 | « cette skill se comporte-t-elle correctement ? » | [`behave`](#tests-comportementaux--behave) |
 | « quiz-moi sur ce projet » | [`dig`](#révision-active--dig) |
 | « la mémoire projet est en vrac » | [`harvest`](#maintenance) puis [`reconcile-normative`](#maintenance) |
@@ -98,26 +98,17 @@ Sortie : roadmap priorisée **plus le copy prêt à coller**.
 
 `ap-optimize` audite une implémentation de fédération : idempotence de l'inbox, vérification des signatures HTTP, fan-out de delivery, cache actor/clés, conformité de pagination de l'outbox, rate limiting, circuit breaker, conformité AS2, sécurité, observabilité.
 
-## Gouvernance des tests — `control`
+## Commentateur — `control`
 
-Six actions, à choisir selon le moment :
+Pendant une longue tâche ou une implémentation, on ouvre un second terminal « à côté » et on y lance `/overcode:control watch`. Cette session ne touche à rien : elle arme un Monitor sur `scripts/watch.sh`, qui interroge le dépôt (et, en option, le transcript JSONL de la session observée) toutes les 10 s et n'émet une ligne que lorsqu'un tick a vu quelque chose changer. Chaque ligne est un **lot** ; chaque lot reçoit un commentaire bref — ce qui a bougé, les risques en tête (fichier hors plan, test supprimé, secret touché, réécriture d'historique), l'intention présumée, ce qu'il faut vérifier.
 
 | Action | Moment |
 |---|---|
-| `stats` | l'état des lieux d'un coup d'œil — **le point d'entrée**, il route vers les quatre autres |
-| `write` | **avant** d'écrire un test — décide du tier, puis délègue l'écriture à `aidd-dev:06-test` |
-| `audit` | traque les tests sans valeur |
-| `strengthen` | classe par risque les tests manquants |
-| `align` | réaligne le document de stratégie de test sur ce que le projet fait réellement |
-| `configure` | détecte l'outillage mal configuré (couverture qui ne fait pas échouer le build, par exemple) |
+| `watch` | au lancement : ligne de base, armement de la sonde, puis commentaire de chaque lot |
+| `recap` | à tout moment : la partie depuis la ligne de base, points ouverts compris |
+| `stop` | à la fin : arrêt de la sonde, recap final, nettoyage de l'état |
 
-Quand on ne sait pas par où commencer, on commence par `stats`. Tout nouveau test, quelle que soit l'action qui l'a fait remonter, passe par `write` — aucune action n'en écrit en contournant ce passage.
-
-`align` gère aussi le solde net d'une bascule de phase : passer en `sustaining` produit un lot de suppression **caractérisé par son critère**, pas une liste arbitraire.
-
-`configure` est à part : elle vérifie le câblage de l'outillage, ce qui est vrai ou faux indépendamment de la phase du projet. Elle ne prend ni phase ni périmètre.
-
-Cette skill ne se déclenche jamais d'elle-même — uniquement sur `/overcode:control`. Son modèle complet est dans [`control.md`](control.md).
+Le commentateur ne parle jamais à la session observée et n'écrit jamais dans le dépôt : ce qu'il a à dire, il le dit à l'utilisateur. Cette skill ne se déclenche jamais d'elle-même — uniquement sur `/overcode:control`.
 
 ## Tests comportementaux — `behave`
 
@@ -130,7 +121,7 @@ Harness pour tester des **prompts** : skills, agents, workflows pilotés par le 
 | `regress` | rejoue une suite pour la non-régression |
 | `review` | audite une suite existante — couverture comportementale + qualité par scénario (grille à 7 axes) |
 
-Pour les tests unitaires et d'intégration du code, c'est `control` puis le runner du projet — pas `behave`.
+Pour les tests unitaires et d'intégration du code, c'est `aidd-dev:06-test` puis le runner du projet — pas `behave`.
 
 ## Révision active — `dig`
 

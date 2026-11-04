@@ -202,9 +202,9 @@ function scenarioActions(scenarioPath) {
 // qu'il faut durcir, pas le compteur qu'il faut masquer.
 //
 // Un discriminant « `evals/` existe mais pas `scenarios.json` = travail commencé
-// et non tenu » a été essayé et retiré : il ne sépare rien dans ce dépôt (une
-// seule skill le déclenche, `overcode:control`, dont `evals/` porte les suites
-// comportementales `behave` — un autre harnais, pas un routage abandonné).
+// et non tenu » a été essayé et retiré : il ne séparait rien dans ce dépôt (la
+// seule skill qui le déclenchait portait dans `evals/` des suites comportementales
+// `behave` — un autre harnais, pas un routage abandonné).
 // Ce cas mérite une mention distincte, pas un échec.
 function missingSuitePolicy() {
   return 'todo';

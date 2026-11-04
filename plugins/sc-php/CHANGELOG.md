@@ -1,6 +1,6 @@
 # Changelog — sc-php
 
-## [0.16.0] — 2026-11-02
+## [0.17.0] — 2026-11-04
 
 ### Added
 
@@ -21,6 +21,12 @@
   obligatoire avec l'installeur 9.2, PHP CLI SSH différent du PHP du site, binaire versionné sans
   php.ini (`-c` requis), 512M minimum pour le conteneur Symfony, course `ps_checkout` à
   l'installation, cache admin périmé après renommage, installeur à ne jamais relancer.
+
+## [0.16.0] — 2026-10-31
+
+### Removed
+
+- Pivot `skills/sniff/references/capabilities/tools/testing.md` retiré, avec sa section du README le cas échéant : son seul consommateur, la gouvernance des tests de l'ancienne skill `overcode:control`, a été supprimé (overcode 6.0.0).
 
 ## [0.15.0] — 2026-09-23
 

@@ -1,5 +1,11 @@
 # Changelog — sc-pwsh
 
+## [0.1.1] — 2026-10-31
+
+### Changed
+
+- `sniff` et le README ne déclarent plus l'absence d'un pivot `testing` : son seul consommateur, l'ancienne skill `overcode:control`, a été retiré (overcode 6.0.0).
+
 ## [0.1.0] — 2026-10-28
 
 ### Added

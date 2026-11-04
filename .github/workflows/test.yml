@@ -20,7 +20,9 @@ jobs:
         run: node tools/eval/selftest.mjs
 
   design:
-    runs-on: ubuntu-latest
+    # Playwright 1.60 n'installe pas Chromium sur ubuntu-latest (26.04) : runner figé
+    # jusqu'à une version de Playwright qui supporte la 26.04.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
