@@ -11,6 +11,7 @@
 //   W7  la sonde n'écrit rien dans le dépôt observé
 //   W8  les erreurs d'outils du transcript sont comptées, avec la plage de lignes
 //   W9  la liste des fichiers déjà modifiés à la base survit aux ticks suivants
+//   W10 chaque ligne émise est ajoutée à emitted.log, à l'identique ; --reset repart d'un journal vide
 
 import { mkdtempSync, writeFileSync, appendFileSync, readFileSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -74,6 +75,12 @@ try {
   const i2 = tick('--idle', '1');
   const i3 = tick('--idle', '1');
   check('W6', /idle \d+s/.test(i2) && i3 === '', `idle attendu une seule fois, reçu: "${i2}" puis "${i3}"`);
+
+  const journal = () => readFileSync(join(state, 'emitted.log'), 'utf8').trimEnd();
+  const emitted = [base, b1, b2, i2].join('\n');
+  check('W10', journal() === emitted, `journal ≠ sorties émises:\n${journal()}\n---\n${emitted}`);
+  const r = tick('--reset');
+  check('W10', journal() === r && /baseline/.test(r), `--reset doit repartir d'un journal vide, reçu: ${journal()}`);
 } finally {
   rmSync(repo, { recursive: true, force: true });
   rmSync(state, { recursive: true, force: true });

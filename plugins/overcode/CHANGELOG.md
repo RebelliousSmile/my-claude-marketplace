@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **`control` : plus de lots perdus entre deux notifications.** Une ligne que le Monitor ne remontait
+  pas était perdue, puisque la sonde n'écrivait que sur la sortie standard (34 lots sans commentaire
+  constatés en une session). La sonde ajoute désormais chaque ligne émise (base, lot, `idle`) au
+  journal `emitted.log` de son dossier d'état ; le commentateur note le dernier lot commenté dans
+  `commented`, fichier qui survit au compactage de la conversation. Un numéro sauté, une expiration du
+  Monitor ou un `stop` déclenchent un bloc « Rattrapage #a–#b » relu dans le journal, avec chaque `⚠`
+  nommé. L'armement sans `timeout_ms` (1 800 000) est explicitement interdit. Contrat W10, scénarios
+  L8 et L9.
+
 ## [6.2.0] — 2026-11-04
 
 ### Added

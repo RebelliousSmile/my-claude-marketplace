@@ -25,7 +25,10 @@
 #
 # Dossier d'état : snapshot, head (dernier tick) ; baseline_snapshot, baseline_head
 # (jamais réécrits — ce qui était déjà là au départ) ; tlines, tlines_prev (offsets
-# du transcript : les lignes <a>-<b> du dernier lot) ; batch, last_change, idle_sent.
+# du transcript : les lignes <a>-<b> du dernier lot) ; batch, last_change, idle_sent ;
+# emitted.log (chaque ligne émise, en ajout : le commentateur y rattrape les lots
+# qu'aucune notification n'a remontés). `commented` (dernier lot commenté) est écrit
+# par le commentateur, jamais par la sonde.
 
 set -u
 
@@ -39,7 +42,7 @@ while [ $# -gt 0 ]; do
     --state) state="$2"; shift 2 ;;
     --once) once=1; shift ;;
     --reset) reset=1; shift ;;
-    -h|--help) sed -n '2,29p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,32p' "$0"; exit 0 ;;
     *) echo "watch.sh: option inconnue $1" >&2; exit 2 ;;
   esac
 done
@@ -91,6 +94,10 @@ tool_errors() {
 
 ts() { date +%H:%M:%S; }
 
+# Écrit une ligne sur stdout et l'ajoute au journal des lots.
+emit() { printf '%s
+' "$1" | tee -a "$state/emitted.log"; }
+
 tick() {
   local now cur prev head prev_head files commits tr="" changed=0
   now="$(date +%s)"
@@ -105,7 +112,7 @@ tick() {
       wc -l < "$transcript" | tr -d ' ' > "$state/tlines"; cp "$state/tlines" "$state/tlines_prev"
     fi
     n="$(printf '%s' "$cur" | grep -c . || true)"
-    echo "[$(ts)] baseline | ${n} fichier(s) déjà modifié(s) | HEAD ${head}"
+    emit "[$(ts)] baseline | ${n} fichier(s) déjà modifié(s) | HEAD ${head}"
     return
   fi
 
@@ -151,10 +158,10 @@ tick() {
     [ -n "$files" ] && out="$out | files: $files"
     [ -n "$commits" ] && out="$out | commits: $commits"
     [ -n "$tr" ] && out="$out | transcript: $tr"
-    echo "$out"
+    emit "$out"
   elif [ "$idle" -gt 0 ] && [ ! -f "$state/idle_sent" ]; then
     local quiet=$(( now - $(cat "$state/last_change") ))
-    if [ "$quiet" -ge "$idle" ]; then echo "[$(ts)] idle ${quiet}s"; touch "$state/idle_sent"; fi
+    if [ "$quiet" -ge "$idle" ]; then emit "[$(ts)] idle ${quiet}s"; touch "$state/idle_sent"; fi
   fi
 }
 

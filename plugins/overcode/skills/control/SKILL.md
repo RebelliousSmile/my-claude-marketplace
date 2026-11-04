@@ -40,20 +40,20 @@ Sans dépôt précisé, `watch` observe le répertoire courant — et le dit dan
 
 ## Transversal rules
 
-- **Lecture seule, sans exception.** Jamais d'`Edit`, de `Write`, de commit, de `git add`, de `git stash`, de checkout, d'install ni de commande qui écrit dans le dépôt observé. Lire (`git diff`, `git log`, `Read`, `Grep`) est permis ; lancer des tests ne l'est que si l'utilisateur l'a demandé et qu'ils n'écrivent rien dans le dépôt — ni snapshot mis à jour, ni rapport de couverture, ni cache sous l'arbre suivi ; dans le doute, dire le risque et demander avant.
+- **Lecture seule du dépôt observé, sans exception.** Jamais d'`Edit`, de `Write`, de commit, de `git add`, de `git stash`, de checkout, d'install ni de commande qui écrit dans le dépôt observé. Lire (`git diff`, `git log`, `Read`, `Grep`) est permis ; lancer des tests ne l'est que si l'utilisateur l'a demandé et qu'ils n'écrivent rien dans le dépôt — ni snapshot mis à jour, ni rapport de couverture, ni cache sous l'arbre suivi ; dans le doute, dire le risque et demander avant. Le dossier d'état de la sonde, hors du dépôt, appartient à control : le commentateur n'y écrit que `commented`, et le supprime au `stop`.
 - **Jamais d'ingérence.** Le commentateur ne parle pas à la session observée (pas de `SendMessage`, pas d'écriture dans son transcript, pas de fichier « note pour l'agent »). Ce qu'il a à dire, il le dit à l'utilisateur, qui décide. Quand l'utilisateur veut que la session observée fasse ou cesse quelque chose, le commentateur lui donne **la phrase à coller** dans l'autre terminal, courte et autonome.
 - **Aucun secret recopié.** Une valeur de secret (clé d'API, token, mot de passe, valeur d'un `.env`) lue dans un diff, un fichier ou le transcript n'apparaît jamais dans un commentaire, un recap ou une citation : nommer le fichier et la variable, masquer la valeur (`sk_live_…`), et conseiller la révocation ou la rotation si elle a pu sortir du poste.
-- **Un lot, un commentaire.** Chaque notification de la sonde reçoit un commentaire bref, dans le format de `01-watch`. Plusieurs lots arrivés pendant un même tour se commentent dans la même réponse, un en-tête `**#k · …**` par lot.
+- **Un lot, un commentaire.** Chaque notification de la sonde reçoit un commentaire bref, dans le format de `01-watch`. Plusieurs lots arrivés pendant un même tour se commentent dans la même réponse, un en-tête `**#k · …**` par lot. Un lot émis sans notification (`k` sauté, ou Monitor expiré) se rattrape depuis `emitted.log`, jamais en silence.
 - **Le signal avant le récit.** Un risque, une dérive de périmètre ou une incohérence passe en tête ; la paraphrase de ce que fait l'agent ne vaut que si elle éclaire. Rien à signaler se dit en une ligne.
 - **Constater, pas deviner.** Une intention attribuée à l'agent est marquée comme hypothèse (« semble viser… »). Une affirmation sur le code repose sur un diff lu.
-- **La sonde vit au-delà d'un Monitor.** Un Monitor expire (30 min au plus) : le réarmer avec le même `--state` reprend sans reposer de ligne de base ni rejouer d'anciens lots.
+- **La sonde vit au-delà d'un Monitor.** Un Monitor expire (30 min au plus) : le réarmer avec le même `--state` reprend sans reposer de ligne de base ni rejouer d'anciens lots. Une expiration se traite comme un trou possible : relire le journal depuis `commented`, puis réarmer.
 
 ## References
 
-- `scripts/watch.sh` — la sonde : options, format des lignes, état persistant (`--help`)
+- `scripts/watch.sh` — la sonde : options, format des lignes, état persistant dont le journal `emitted.log` (`--help`)
 - [host portability](../../references/host-portability.md) — résolution de la racine du skill
 
 ## Evals
 
 - `evals/scenarios.json` — routage prompt → action
-- `tools/eval/control-watch.mjs` — contrat de la sonde (ligne de base, lot, commit, transcript, silence, idle)
+- `tools/eval/control-watch.mjs` — contrat de la sonde (ligne de base, lot, commit, transcript, silence, idle, journal des lots)

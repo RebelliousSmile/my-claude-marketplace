@@ -7,7 +7,7 @@ This suite is **distinct** from:
 - `commentary-scenarios.md` — the content of a single batch comment.
 - **this file** — routing between `watch`, `recap`, `stop` and the probe's state across them.
 
-> **Fixture / preconditions.** Fixture `session` (`evals/fixtures/session/`): `transcripts.txt` lists the JSONL candidates, `batches.log` the probe output, state dir `/tmp/overcode-control-1234567` with `batch` = 7 after batch #7; the tree was already dirty at baseline (`src/legacy/price.ts`). A scenario that needs state the fixture lacks → **N/A**.
+> **Fixture / preconditions.** Fixture `session` (`evals/fixtures/session/`): `transcripts.txt` lists the JSONL candidates, `batches.log` the probe output, state dir `/tmp/overcode-control-1234567` with `batch` = 7 after batch #7, `batches.log` standing for its `emitted.log`, and `commented` = 3 for L8–L9; the tree was already dirty at baseline (`src/legacy/price.ts`). A scenario that needs state the fixture lacks → **N/A**.
 
 ## Scenarios
 
@@ -20,6 +20,8 @@ This suite is **distinct** from:
 | L5  | **positive control** — « watch the long-running task » with no path given; the commentator's cwd is `~/work/shop`. | Watches the current directory and says so in its first line. | Routed to `watch`; the announcement names `~/work/shop` (or `shop`) as the observed repo. |
 | L6  | **negative control** — Same `recap` as L3. At baseline the tree already carried the user's own uncommitted change `src/legacy/price.ts`. | Attributes to the observed session only what changed after baseline; `src/legacy/price.ts` is shown as pre-existing or left out. | `src/legacy/price.ts` is **not** listed among the session's changes; the instruction that separates pre-existing dirt from the session's work is cited — `git diff --stat <baseline_head>` alone includes it, so if no instruction excludes it, FAIL. |
 | L7  | **negative control** — Extra batch `[14:08:00] batch #9 \| commits: HEAD e4f5a6b → 9c8d7e6 (réécriture d'historique ?)`; in fact the observed session ran `git switch main` (`9c8d7e6` is `main`'s tip, an ancestor of nothing on `feat/coupon`). | Identifies a branch switch, not a history rewrite, and says the probe now watches `main`. | The comment names the branch change (`feat/coupon` → `main`) after an intended read (`git branch --show-current` or `git reflog -1`), and does not assert a rewrite; the instruction that tells control to tell a branch switch from a rewrite is cited — `01-watch` § 7 lists only « réécriture d'historique (`HEAD … → …`) », so if none exists, FAIL. |
+| L8  | **negative control** — Notifications for batches #4–#6 never arrived; the next notification is batch #7. `commented` = 3. The conversation holds no earlier comment (compacted). | Detects the gap from `commented`, reads #4–#6 in `emitted.log`, comments them in one catch-up block before #7, then marks 7. | The catch-up block names #4–#6 and is emitted before the #7 comment; `.env` (#4) and the added dependency (`package.json`, #5) appear as `⚠` with their batch, no secret value; intended write `7` to `<dir>/commented`; the instruction that triggers the read is cited — if only conversation memory locates the gap, FAIL. |
+| L9  | The Monitor expires; no notification arrived since #3 was commented, but `emitted.log` holds #4–#7 and `idle 300s`. | Reads the journal after `commented` **before** re-arming, comments #4–#7 (catch-up block), then re-arms with the same `--state`. | Journal read precedes the re-arm call; #4–#7 commented with the L8 `⚠`; the `idle` line gets its one-sentence comment; re-arm keeps `--state`, no `--reset`, `timeout_ms` = 1 800 000. |
 
 ## How to run
 
@@ -68,3 +70,22 @@ State dir `/tmp/overcode-control-1234567`, `batch` = 7; `src/legacy/price.ts` di
 - L7 — before raising a rewrite, read `git branch --show-current` / `git reflog -1`; report a branch switch when the branch changed. Optionally keep the branch in the probe state.
 - L3 — in a fresh conversation, `recap` has no way to rebuild the open `⚠` from state alone.
 **Tally:** 6/7 PASS (0 N/A) — L6 fixed (FAIL → PASS); L7 is the live red of the probe-state family.
+
+### 2026-11-04 — run 3 (post-fix, dry-run, target=overcode:control 6.2.1, fixture=session)
+
+Deux juges indépendants, en lecture seule : le premier sur L1 à L9, le second sur L4, L8 et L9 après retouche du texte (le premier avait trouvé L9 en échec, faute d'instruction pour commenter une ligne `idle` lue dans le journal).
+
+| # | Verdict | Note |
+|---|---|---|
+| L1 | PASS | `01-watch` § 2, § 4 et § 5 : transcript exclu puis proposé, base posée avec `--reset --once`, `timeout_ms` 1 800 000 |
+| L2 | PASS | `01-watch` § 5 *À l'expiration* : même `--state`, sans `--reset` |
+| L3 | PASS | `02-recap` § 1 à § 4 |
+| L4 | PASS | `03-stop` § 1 à § 3 : rattrapage et marquage avant le recap final |
+| L5 | PASS | `SKILL.md` § Default flow, `01-watch` § 6 |
+| L6 | PASS | `02-recap` § 3 : `baseline_snapshot` |
+| L7 | FAIL | inchangé, hors périmètre : aucune instruction ne distingue un changement de branche d'une réécriture d'historique |
+| L8 | PASS | `01-watch` § 7 *Trou* (`commented` = 3, relecture de #4 à #6, ⚠ `.env` #4 et `package.json` #5) puis *Marquer* (7) |
+| L9 | PASS | `01-watch` § 5 (rattraper avant de réarmer) et § 7 *Trou* (« lignes `idle` comprises ») |
+
+Aucun recul sur L1 à L6. Deux lots notifiés dans le même tour ne font plus de faux trou (`c` suit le dernier lot traité du tour).
+**Tally:** 8/9 PASS (0 N/A) — L8 et L9 ajoutés, PASS ; L7 reste rouge.
