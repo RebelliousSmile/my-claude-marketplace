@@ -105,6 +105,8 @@ Garanties portées par l'action :
 - **contexte du projet hors de l'alias** : routes, sélecteurs, comptes par rôle et pièges vivent dans le dépôt (`--recipes`, `.claude/verify-prod.md`, ou la section « Vérification en production » de `aidd_docs/memory/testing.md`) ; sans recette, elle est déduite de l'issue et marquée comme telle ;
 - **aucun secret lu** : les sessions sont ouvertes à la main dans le navigateur avant le lancement, jamais depuis un `.env` ;
 - **au plus deux essais par issue**, actions groupées en un appel (`browser_batch`), attentes sur condition ;
+- **inventaire unique avant le navigateur** : registre de données de test tenu hors version (identifiants seulement), plan d'écritures approuvé ligne par ligne en une seule question, plus aucune question ensuite ;
+- **compte jetable de préférence** : créé à partir d'un alias de boîte jamais affiché, amené au palier voulu par un seed gardé, puis supprimé en fin de test ;
 - **aucune écriture en production** hors `--allow-write`, une seule fois, valeur d'origine relevée puis restaurée ; un refus n'est jamais contourné par un autre chemin ;
 - **nettoyage** des helpers injectés et des onglets ouverts par le run ;
 - **rapport** qui sépare `vérifié`, `constaté`, `non prouvé` et `sauté`, chacun avec sa preuve ou son motif ; la formulation du CHANGELOG est proposée, jamais écrite ni commitée.

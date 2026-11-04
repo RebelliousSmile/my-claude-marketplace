@@ -4,6 +4,25 @@
 
 ## [Unreleased]
 
+## [6.2.0] — 2026-11-04
+
+### Added
+
+- **`verify-prod` : registre de données de test et inventaire en un seul passage** (Step 0b). Avant
+  d'ouvrir le navigateur, l'alias charge le registre que le projet garde hors version (identifiants
+  seulement, jamais de mot de passe ni d'e-mail), dresse le plan d'écritures ligne par ligne, contrôle
+  chaque session sans afficher l'identifiant et pose une seule question. Ensuite, le run ne demande plus
+  rien : une cible hors du registre devient `écriture non autorisée`.
+- **Comptes jetables** : quand le projet le permet, le run crée un compte dédié à partir d'un alias de
+  boîte (`+tag`, adresse jamais affichée) et le supprime en fin de test par le parcours de suppression
+  du produit. Création et suppression tiennent sur une même ligne du plan, et le rapport confirme la
+  suppression.
+- **Seeds de complétion** : les recettes du projet fournissent l'état à atteindre. Le run s'inscrit par
+  l'interface, applique le seed en une écriture gardée (refusée hors de l'alias jetable) et attend le
+  recalcul côté serveur. Le palier requis par chaque issue est décidé dès l'inventaire.
+- **Comptes classés** : le registre peut ordonner ses comptes (ceux du propriétaire d'abord, puis un
+  vivier de repli). Le plan prend le mieux classé et justifie tout repli.
+
 ## [6.1.0] — 2026-11-04
 
 ### Added
