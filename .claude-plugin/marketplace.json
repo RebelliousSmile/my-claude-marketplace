@@ -62,6 +62,13 @@
       "source": "./plugins/sc-pwsh",
       "description": "PowerShell stack skills that detect the target host (Windows PowerShell 5.1 or PowerShell 7), audit scripts, find host-specific legacy, and teach the divergences.",
       "recommended": false
+    },
+    {
+      "name": "doc-pdf",
+      "version": "0.1.0",
+      "source": "./plugins/doc-pdf",
+      "description": "Moteur interprojets de documentation PDF : Markdown du dépôt client vers ICML/IDML (charte Scriptami), mise à jour du .indd et export PDF par InDesign.",
+      "recommended": false
     }
   ]
 }

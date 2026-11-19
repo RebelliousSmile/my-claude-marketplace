@@ -1,0 +1,25 @@
+{
+  "name": "doc-pdf",
+  "version": "0.1.0",
+  "description": "Moteur interprojets de documentation PDF : Markdown du dépôt client vers ICML/IDML (charte Scriptami), mise à jour du .indd et export PDF par InDesign.",
+  "author": {
+    "name": "François-Xavier Guillois"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Documentation PDF",
+    "shortDescription": "Markdown vers ICML, IDML et PDF InDesign",
+    "longDescription": "Génère les ICML et l’IDML de la charte Scriptami depuis le Markdown d’un dépôt client, met à jour le .indd existant et exporte le PDF.",
+    "developerName": "François-Xavier Guillois",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Initialise la documentation PDF de ce projet",
+      "Régénère les ICML des guides",
+      "Mets à jour le .indd du guide vendeur et exporte le PDF"
+    ]
+  }
+}

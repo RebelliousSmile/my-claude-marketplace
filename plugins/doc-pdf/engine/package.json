@@ -1,0 +1,17 @@
+{
+  "name": "doc-pdf-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Moteur Markdown → ICML/IDML → PDF (InDesign) de la charte Scriptami.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["<rootDir>/tests/**/*.test.js"]
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

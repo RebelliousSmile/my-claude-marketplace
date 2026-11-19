@@ -1,0 +1,202 @@
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { ComposeError, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, backupDocument, stamp, main } = require('../compose-guide');
+const { resolveConfig } = require('../guide-config');
+
+const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
+
+const REPO_CONFIG_FILE = FIXTURE_CONFIG;
+
+/** Configuration synthétique : le moteur ne doit rien savoir des guides d'un projet. */
+const CONFIG = resolveConfig({
+  sourceDir: '.',
+  outputDir: '../output',
+  pagesFile: 'pages.json',
+  versionFile: '../package.json',
+  guides: [
+    { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange' },
+    { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'turquoise' }
+  ]
+}, path.resolve('/r/docs/documentation.config.json'));
+
+/** Chemin normalisé en `/`, sans lettre de lecteur : stable d'un système à l'autre. */
+const slash = file => file.replace(/\\/g, '/').replace(/^[A-Za-z]:/, '');
+
+describe('compose-guide', () => {
+  describe('parseArgs', () => {
+    it('lit le guide et le chapitre', () => {
+      expect(parseArgs(['--guide', 'guide-vendeur', '--chapitre', '01-vue-ensemble']))
+        .toEqual({ command: 'build', guide: 'guide-vendeur', chapitre: '01-vue-ensemble', configPath: null });
+    });
+
+    it("lit --config, où qu'il soit placé", () => {
+      expect(parseArgs(['--config', 'x/doc.json', '--guide', 'vendeur', '--chapitre', '01-a']))
+        .toEqual({ command: 'build', guide: 'vendeur', chapitre: '01-a', configPath: 'x/doc.json' });
+    });
+
+    it('ignore le -- transmis par pnpm', () => {
+      expect(parseArgs(['--', '--guide', 'vendeur', '--chapitre', '01-a']).guide).toBe('vendeur');
+    });
+
+    it('lit la commande update, qui ne veut pas de chapitre', () => {
+      expect(parseArgs(['update', '--guide', 'vendeur']))
+        .toEqual({ command: 'update', guide: 'vendeur', chapitre: null, configPath: null });
+      expect(parseArgs(['--', 'update', '--guide', 'vendeur', '--force']).force).toBe(true);
+    });
+
+    it('la commande build explicite vaut la commande par défaut', () => {
+      expect(parseArgs(['build', '--guide', 'vendeur', '--chapitre', '01-a']))
+        .toEqual(parseArgs(['--guide', 'vendeur', '--chapitre', '01-a']));
+    });
+
+    it.each([
+      [['update'], /Usage/],
+      [['update', '--guide', 'vendeur', '--chapitre', '01-a'], /entier/],
+      [['--guide', 'vendeur', '--chapitre', '01-a', '--force'], /--force ne vaut que pour/]
+    ])('refuse %j', (argv, message) => {
+      expect(() => parseArgs(argv)).toThrow(message);
+    });
+
+    it.each([
+      [[], /Usage/],
+      [['--guide', 'guide-vendeur'], /Usage/],
+      [['--guide'], /attend une valeur/],
+      [['--guide', '--chapitre', 'x'], /attend une valeur/],
+      [['--autre', 'x'], /Option inconnue/],
+      [['--guide', '../etc', '--chapitre', '01-x'], /Guide : identifiant/],
+      [['--guide', 'vendeur', '--chapitre', '../etc'], /minuscules/]
+    ])('refuse %j', (argv, message) => {
+      expect(() => parseArgs(argv)).toThrow(ComposeError);
+      expect(() => parseArgs(argv)).toThrow(message);
+    });
+
+    it('refuse --config sans chemin', () => {
+      expect(() => parseArgs(['--config'])).toThrow(/--config attend/);
+    });
+  });
+
+  describe('isInDesignRunning', () => {
+    it('reconnaît le processus dans la sortie de tasklist', () => {
+      expect(isInDesignRunning('InDesign.exe                 15460 Console')).toBe(true);
+    });
+
+    it('ne confond pas avec un autre programme', () => {
+      expect(isInDesignRunning('Aucune tâche en cours ne correspond aux critères spécifiés.')).toBe(false);
+      expect(isInDesignRunning('InDesignServer.exe 12 Console')).toBe(false);
+      expect(isInDesignRunning('')).toBe(false);
+    });
+  });
+
+  describe('pathsFor', () => {
+    it("range les sorties de l'essai sous <outputDir>/pdf-essai", () => {
+      const paths = pathsFor({ guide: 'vendeur', chapitre: '01-vue-ensemble' }, CONFIG);
+      expect(slash(paths.pdf)).toBe('/r/output/pdf-essai/guide-vendeur-01-vue-ensemble.pdf');
+      expect(slash(paths.document)).toBe('/r/output/pdf-essai/guide-vendeur-01-vue-ensemble.indd');
+      expect(slash(paths.chapterDir)).toBe('/r/output/icml/guide-vendeur/01-vue-ensemble');
+      expect(slash(paths.pagesDir)).toBe('/r/output/icml/guide-vendeur/00-pages');
+      expect(slash(paths.commonDir)).toBe('/r/output/icml/common');
+    });
+
+    it("le modèle IDML porte l'accent du guide, tiré de la configuration, désigné par id ou par dossier", () => {
+      expect(path.basename(pathsFor({ guide: 'vendeur', chapitre: '01-a' }, CONFIG).template)).toBe('scriptami-orange-vendeur.idml');
+      expect(path.basename(pathsFor({ guide: 'guide-client', chapitre: '01-a' }, CONFIG).template)).toBe('scriptami-turquoise-client.idml');
+    });
+
+    it('refuse un guide absent de la configuration', () => {
+      expect(() => pathsFor({ guide: 'inconnu', chapitre: '01-a' }, CONFIG)).toThrow(/Guide inconnu/);
+    });
+  });
+
+  describe('updatePathsFor', () => {
+    const withDocument = (document) => resolveConfig({
+      sourceDir: '.',
+      outputDir: '../output',
+      pagesFile: 'pages.json',
+      versionFile: '../package.json',
+      pdfPreset: 'Qualité optimale',
+      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', ...(document ? { document } : {}) }]
+    }, path.resolve('/r/docs/documentation.config.json'));
+
+    it('écrit le PDF à côté du .indd sous le même nom, avec le préréglage de la configuration', () => {
+      const paths = updatePathsFor({ guide: 'vendeur' }, withDocument('guides/vendeur.indd'));
+      expect(slash(paths.document)).toBe('/r/docs/guides/vendeur.indd');
+      expect(slash(paths.pdf)).toBe('/r/docs/guides/vendeur.pdf');
+      expect(paths.preset).toBe('Qualité optimale');
+      expect(slash(paths.icmlDir)).toBe('/r/output/icml/guide-vendeur');
+      expect(slash(paths.commonDir)).toBe('/r/output/icml/common');
+    });
+
+    it("refuse un guide sans champ « document », en nommant le guide", () => {
+      expect(() => updatePathsFor({ guide: 'vendeur' }, withDocument(null))).toThrow(ComposeError);
+      expect(() => updatePathsFor({ guide: 'vendeur' }, withDocument(null))).toThrow(/vendeur.*« document »/);
+    });
+  });
+
+  describe('backupDocument', () => {
+    let dir;
+    beforeEach(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cerascan-backup-')); });
+    afterEach(() => fs.rmSync(dir, { recursive: true, force: true }));
+
+    it("copie le .indd à côté sous <nom>.avant-<horodatage>.indd, l'original intact", () => {
+      const document = path.join(dir, 'guide.indd');
+      fs.writeFileSync(document, 'octets');
+      const copy = backupDocument(document, new Date(2026, 10, 20, 14, 30, 5));
+      expect(path.basename(copy)).toBe('guide.avant-20261120-143005.indd');
+      expect(fs.readFileSync(copy, 'utf8')).toBe('octets');
+      expect(fs.readFileSync(document, 'utf8')).toBe('octets');
+    });
+
+    it("n'écrase jamais une copie existante", () => {
+      const document = path.join(dir, 'guide.indd');
+      fs.writeFileSync(document, 'octets');
+      const now = new Date(2026, 10, 20, 14, 30, 5);
+      backupDocument(document, now);
+      expect(() => backupDocument(document, now)).toThrow(/EEXIST/);
+    });
+
+    it('document introuvable : erreur de composition, rien écrit', () => {
+      expect(() => backupDocument(path.join(dir, 'absent.indd'))).toThrow(ComposeError);
+      expect(fs.readdirSync(dir)).toEqual([]);
+    });
+
+    it("l'horodatage est sur deux chiffres partout", () => {
+      expect(stamp(new Date(2026, 0, 2, 3, 4, 5))).toBe('20260102-030405');
+    });
+  });
+
+  describe('main', () => {
+    let write;
+    beforeEach(() => {
+      write = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    });
+    afterEach(() => write.mockRestore());
+
+    it('refuse sans rien lancer quand InDesign tourne', () => {
+      const code = main(['--guide', 'vendeur', '--chapitre', '01-vue-ensemble', '--config', REPO_CONFIG_FILE],
+        { processListing: () => 'InDesign.exe 15460 Console' });
+      expect(code).toBe(1);
+      expect(write.mock.calls[0][0]).toMatch(/déjà ouvert/);
+    });
+
+    it('refuse un guide inconnu de la configuration, avant de regarder InDesign', () => {
+      const code = main(['--guide', 'inconnu', '--chapitre', '01-vue-ensemble', '--config', REPO_CONFIG_FILE],
+        { processListing: () => 'InDesign.exe 15460 Console' });
+      expect(code).toBe(1);
+      expect(write.mock.calls[0][0]).toMatch(/Guide inconnu/);
+    });
+
+    it("update : refuse sans rien copier quand InDesign tourne", () => {
+      const code = main(['update', '--guide', 'vendeur', '--config', REPO_CONFIG_FILE], { processListing: () => 'InDesign.exe 15460 Console' });
+      expect(code).toBe(1);
+      expect(write.mock.calls[0][0]).toMatch(/déjà ouvert/);
+    });
+
+    it('refuse un fichier de configuration introuvable', () => {
+      const code = main(['--guide', 'vendeur', '--chapitre', '01-a', '--config', path.join(__dirname, 'absent.json')],
+        { processListing: () => '' });
+      expect(code).toBe(1);
+      expect(write.mock.calls[0][0]).toMatch(/introuvable/);
+    });
+  });
+});

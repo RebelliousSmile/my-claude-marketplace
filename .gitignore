@@ -1,2 +1,5 @@
 # Cache Python (extract-pdf)
 __pycache__/
+
+# Dépendances de développement du moteur doc-pdf
+node_modules/

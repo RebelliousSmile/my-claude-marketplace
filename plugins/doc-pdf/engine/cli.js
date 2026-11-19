@@ -1,0 +1,127 @@
+#!/usr/bin/env node
+/**
+ * Point d'entrée unique du moteur doc-pdf : Markdown → ICML/IDML → PDF (InDesign), charte Scriptami.
+ *
+ *   node cli.js <commande> [options]
+ *
+ * Commandes (chaque option est transmise telle quelle au script concerné) :
+ *   init [--dir <dossier>]     écrit un documentation.config.json de départ (refuse d'écraser)
+ *   merge  [--check]           versions fusionnées des guides (build-merged-guides.js)
+ *   icml   [--force] …         régénère les ICML (export-icml.js) ; Pandoc requis
+ *   idml   [--gabarits] …      modèle IDML de la charte (build-idml-template.js)
+ *   pdf    build|update …      pilote InDesign (compose-guide.js) ; Pandoc et InDesign requis
+ *   version                    version du plugin
+ *
+ * Toutes les commandes acceptent `--config <chemin>` (sinon recherche en remontant depuis le dossier courant).
+ * Aucune écriture n'a lieu quand Pandoc manque : le contrôle précède le lancement du script.
+ */
+
+const fs = require('fs');
+const path = require('path');
+const { spawnSync } = require('child_process');
+
+const PLUGIN_MANIFEST = path.join(__dirname, '..', '.claude-plugin', 'plugin.json');
+const CONFIG_NAME = 'documentation.config.json';
+const SCRIPTS = {
+  merge: 'build-merged-guides.js',
+  icml: 'export-icml.js',
+  idml: 'build-idml-template.js',
+  pdf: 'compose-guide.js'
+};
+const NEEDS_PANDOC = new Set(['icml', 'pdf']);
+const PANDOC_MISSING = "Pandoc est introuvable dans le PATH. L'installer (https://pandoc.org/installing.html, "
+  + "ou `winget install JohnMacFarlane.Pandoc`), rouvrir le terminal, puis relancer. Aucun fichier n'a été écrit.";
+
+const CONFIG_TEMPLATE = {
+  sourceDir: '.',
+  outputDir: '../output',
+  pagesFile: 'pages-gabarit.json',
+  versionFile: '../package.json',
+  guides: [
+    {
+      id: 'utilisateur',
+      dir: 'guide-utilisateur',
+      title: 'Guide de l’utilisateur',
+      verb: 'Maîtriser',
+      type: 'Documentation utilisateur',
+      accent: 'turquoise'
+    }
+  ]
+};
+
+function pluginVersion() {
+  return JSON.parse(fs.readFileSync(PLUGIN_MANIFEST, 'utf8')).version;
+}
+
+function hasPandoc(run = spawnSync) {
+  const result = run('pandoc', ['--version'], { encoding: 'utf8' });
+  return !result.error && result.status === 0;
+}
+
+function usage() {
+  return [
+    `doc-pdf ${pluginVersion()} — Markdown → ICML/IDML → PDF (InDesign)`,
+    '',
+    'Usage : node cli.js <commande> [options]',
+    '  init [--dir <dossier>]   écrit un documentation.config.json de départ',
+    '  merge [--check]          versions fusionnées des guides',
+    '  icml [--force]           régénère les ICML (Pandoc requis)',
+    '  idml [--gabarits]        modèle IDML de la charte',
+    '  pdf build|update         pilote InDesign (Pandoc et InDesign requis)',
+    '  version                  version du plugin',
+    '',
+    'Toutes les commandes acceptent --config <chemin>.'
+  ].join('\n');
+}
+
+/** Écrit le fichier de configuration de départ ; refuse d'écraser un fichier existant. */
+function init(args, out) {
+  const flag = args.indexOf('--dir');
+  const dir = path.resolve(flag === -1 ? '.' : (args[flag + 1] || '.'));
+  const file = path.join(dir, CONFIG_NAME);
+  if (fs.existsSync(file)) {
+    out.err(`${file} existe déjà : rien écrit.`);
+    return 1;
+  }
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(file, `${JSON.stringify(CONFIG_TEMPLATE, null, 2)}\n`, 'utf8');
+  out.log(`Écrit : ${file}`);
+  out.log('Compléter les guides (dossier, titre, accent), puis ajouter pages-gabarit.json (sous-titres, pages de fin, mentions).');
+  return 0;
+}
+
+/**
+ * Route une commande. `deps` isole les effets (Pandoc, lancement) pour les tests.
+ * Rend le code de sortie.
+ */
+function main(argv, deps = {}) {
+  const out = deps.out || { log: m => process.stdout.write(`${m}\n`), err: m => process.stderr.write(`${m}\n`) };
+  const run = deps.run || spawnSync;
+  const [command, ...rest] = argv;
+
+  if (!command || command === '--help' || command === '-h' || command === 'help') {
+    out.log(usage());
+    return command ? 0 : 1;
+  }
+  if (command === 'version' || command === '--version') {
+    out.log(pluginVersion());
+    return 0;
+  }
+  if (command === 'init') return init(rest, out);
+  if (!SCRIPTS[command]) {
+    out.err(`Commande inconnue : « ${command} ».\n${usage()}`);
+    return 1;
+  }
+  if (NEEDS_PANDOC.has(command) && !hasPandoc(run)) {
+    out.err(PANDOC_MISSING);
+    return 1;
+  }
+  const result = run(process.execPath, [path.join(__dirname, SCRIPTS[command]), ...rest], { stdio: 'inherit' });
+  return result.status === 0 ? 0 : 1;
+}
+
+if (require.main === module) {
+  process.exitCode = main(process.argv.slice(2));
+}
+
+module.exports = { main, hasPandoc, init, usage, pluginVersion, PANDOC_MISSING, CONFIG_TEMPLATE, SCRIPTS };

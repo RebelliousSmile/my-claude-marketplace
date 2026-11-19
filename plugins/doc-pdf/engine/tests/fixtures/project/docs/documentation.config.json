@@ -1,0 +1,35 @@
+{
+  "sourceDir": ".",
+  "outputDir": "../output",
+  "pagesFile": "pages-gabarit.json",
+  "versionFile": "../package.json",
+  "guides": [
+    {
+      "id": "administrateur",
+      "dir": "guide-administrateur",
+      "title": "Guide de l’administrateur",
+      "verb": "Maîtriser",
+      "type": "Documentation utilisateur",
+      "accent": "vert",
+      "mergedFile": "Guide administrateur.md"
+    },
+    {
+      "id": "partenaire",
+      "dir": "guide-partenaire",
+      "title": "Guide du client",
+      "verb": "Consolider",
+      "type": "Documentation utilisateur",
+      "accent": "turquoise",
+      "mergedFile": "guide client.md"
+    },
+    {
+      "id": "vendeur",
+      "dir": "guide-vendeur",
+      "title": "Guide du vendeur",
+      "verb": "Débloquer",
+      "type": "Documentation utilisateur",
+      "accent": "orange",
+      "document": "cerascan-guide-du-vendeur.indd"
+    }
+  ]
+}

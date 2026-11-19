@@ -31,6 +31,10 @@
     {
       "id": "sc-pwsh",
       "name": "sc-pwsh"
+    },
+    {
+      "id": "doc-pdf",
+      "name": "doc-pdf"
     }
   ]
 }

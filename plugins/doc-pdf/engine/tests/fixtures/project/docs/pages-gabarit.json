@@ -1,0 +1,146 @@
+{
+  "commun": {
+    "pied": "Société Exemple · scriptami",
+    "mentions": [
+      "L’informatique nous relie.",
+      "Société Exemple · SIRET 000 000 000 00000 · TVA FR00000000000 · 1 rue de l’Exemple, 00000 Exemple"
+    ]
+  },
+  "guide-partenaire": {
+    "sousTitre": "Importer votre catalogue, générer vos QR codes et vos planches PDF.",
+    "fin": {
+      "titre": "Un blocage technique ?",
+      "accroche": "Votre interlocuteur technique vous répond sur l’import, les QR codes et les planches PDF.",
+      "cartes": [
+        {
+          "label": "E-mail",
+          "valeur": "À renseigner",
+          "note": "Adresse de votre interlocuteur technique"
+        },
+        {
+          "label": "Téléphone",
+          "valeur": "À renseigner",
+          "note": "Jours et horaires de réponse"
+        },
+        {
+          "label": "Nom",
+          "valeur": "À renseigner",
+          "note": "Votre interlocuteur technique"
+        }
+      ],
+      "colonnes": [
+        {
+          "titre": "Pour être aidé vite",
+          "lignes": [
+            "1. Notez l’adresse de votre site et le nom de votre partenaire.",
+            "2. Joignez le fichier CSV concerné et une capture de l’écran.",
+            "3. Indiquez l’étape du guide où vous êtes bloqué."
+          ]
+        },
+        {
+          "titre": "Avant de nous écrire",
+          "lignes": [
+            "1. Relisez le message affiché : il dit quoi corriger dans le fichier.",
+            "2. Rechargez la page, puis relancez l’étape.",
+            "3. Si rien ne change, écrivez-nous."
+          ]
+        }
+      ]
+    }
+  },
+  "guide-vendeur": {
+    "pages": {
+      "1": 3,
+      "1.1": 4,
+      "1.2": 4,
+      "1.3": 5,
+      "1.4": 6,
+      "1.5": 8,
+      "1.6": 9,
+      "1.7": 10,
+      "1.8": 10
+    },
+    "sousTitre": "Retrouver les informations d’un produit en rayon, depuis son QR code.",
+    "fin": {
+      "titre": "Une question sur un produit ou un prix ?",
+      "accroche": "Votre responsable de showroom est votre premier contact : il vous répond ou fait remonter la demande.",
+      "cartes": [
+        {
+          "label": "E-mail",
+          "valeur": "À renseigner",
+          "note": "Adresse de votre responsable"
+        },
+        {
+          "label": "Téléphone",
+          "valeur": "À renseigner",
+          "note": "Jours et horaires de réponse"
+        },
+        {
+          "label": "Nom",
+          "valeur": "À renseigner",
+          "note": "Votre responsable de showroom"
+        }
+      ],
+      "colonnes": [
+        {
+          "titre": "Pour être compris vite",
+          "lignes": [
+            "1. Scannez le QR code du produit concerné.",
+            "2. Notez la référence affichée sur la fiche.",
+            "3. Transmettez cette référence avec votre question."
+          ]
+        },
+        {
+          "titre": "Si la fiche ne s’ouvre pas",
+          "lignes": [
+            "1. Vérifiez votre connexion, puis rescannez le QR code.",
+            "2. Reconnectez-vous avec le code vendeur de votre showroom.",
+            "3. Si rien ne change, prévenez votre responsable."
+          ]
+        }
+      ]
+    }
+  },
+  "guide-administrateur": {
+    "sousTitre": "Piloter les partenaires, les imports, les accès et les documents produits.",
+    "fin": {
+      "titre": "Une question sur l’administration ?",
+      "accroche": "Pour un blocage, une anomalie ou une évolution, écrivez-moi : je réponds sous 48 h ouvrées.",
+      "cartes": [
+        {
+          "label": "E-mail",
+          "valeur": "contact@exemple.test",
+          "note": "Réponse sous 48 h ouvrées"
+        },
+        {
+          "label": "Téléphone",
+          "valeur": "01 23 45 67 89",
+          "note": "Du lundi au vendredi"
+        },
+        {
+          "label": "GitHub",
+          "valeur": "RebelliousSmile",
+          "note": "Signaler une anomalie"
+        }
+      ],
+      "colonnes": [
+        {
+          "titre": "Pour une réponse rapide",
+          "lignes": [
+            "1. Indiquez le partenaire et l’onglet de la console concernés.",
+            "2. Joignez une capture de l’écran et le message affiché.",
+            "3. Précisez l’heure approximative du problème."
+          ]
+        },
+        {
+          "titre": "En cas d’urgence",
+          "lignes": [
+            "1. Un import a vidé un catalogue : n’en lancez pas d’autre.",
+            "2. Appelez-moi avant toute nouvelle manipulation.",
+            "3. Conservez le fichier CSV utilisé."
+          ]
+        }
+      ]
+    }
+  }
+}
