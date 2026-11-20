@@ -1,7 +1,7 @@
 ---
 name: doc-pdf
 description: >-
-  Génère la documentation PDF d'un projet client depuis son Markdown : ICML et IDML de la charte Scriptami, mise à jour du .indd existant et export PDF par InDesign.
+  Génère la documentation PDF d'un projet client depuis son Markdown : ICML et IDML d'une maquette externe, mise à jour du .indd existant et export PDF par InDesign.
 author: François-Xavier Guillois
 version: 0.2.0
 vibe_version: ">=1.0.0"
@@ -18,7 +18,7 @@ Read [host portability](../../references/host-portability.md) before resolving p
 
 # doc-pdf
 
-Moteur interprojets : le Markdown reste dans le dépôt du client, la charte Scriptami est unique, le moteur vit dans ce plugin.
+Moteur interprojets : le Markdown reste dans le dépôt du client, la mise en page vient d'une maquette externe, le moteur vit dans ce plugin.
 
 ## Available actions
 

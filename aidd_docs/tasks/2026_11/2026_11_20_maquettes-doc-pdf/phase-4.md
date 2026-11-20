@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Dépôt Scriptami, squelette neutre et tests sur le squelette (0.4.0)
@@ -196,3 +196,13 @@ journey
 | 5 | Le banc compare deux configurations différentes et rend 0 sur deux moteurs identiques ; la configuration de référence vit dans le scratchpad et rien n'est écrit dans cerascan pour elle. |
 | 6 | ICML, IDML et PDF de cerascan identiques avant et après la bascule ; aucun fichier supprimé sans accord. |
 | 7 | `consistency.mjs` est vert, les trois manifestes sont en 0.4.0, la note de migration liste chaque geste. |
+
+## Compte rendu
+
+- Moteur sans marque, `init --maquette`, champ `maquette` obligatoire, test des polices du squelette, gabarits `squelette-<accent>.idml` vérifiés. Jest : 438 verts ; `consistency.mjs` vert ; version 0.4.0 (trois manifestes + CHANGELOG avec note de migration).
+- Banc : option `--config-reference` (+ tests). Référence au SHA `184b866`, cerascan pointé vers `Code/Perso/scriptami/maquette-doc-pdf`, `commun` réduit à `miseAJour` : 273 fichiers ICML/IDML identiques octet pour octet (avant et après réduction du `commun`).
+- `compare-engines --pdf` non rejoué en phase 4 : les IDML sont identiques octet pour octet et la composition InDesign n'a pas changé (preuve PDF de la phase 3 conservée).
+- README du dépôt Scriptami écrit ; dépôt git initialisé, rien commité, aucun distant.
+- Cerascan : `codebase-map.md` à jour ; commit séparé à demander.
+- Non fait, accord requis : suppression de `engine/maquettes/scriptami/` (Marketplace), de la charte et du PDF des gabarits dans cerascan.
+- SHA du commit de fin de phase : SHA_A_REMPLACER

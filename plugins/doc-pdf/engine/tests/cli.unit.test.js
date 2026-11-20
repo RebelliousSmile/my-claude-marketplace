@@ -65,15 +65,28 @@ describe('cli', () => {
     beforeEach(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), 'doc-pdf-init-')); });
     afterEach(() => fs.rmSync(dir, { recursive: true, force: true }));
 
-    it('écrit une configuration valide puis refuse d\'écraser', () => {
+    const MAQUETTE = path.join(__dirname, '..', 'maquettes', 'squelette');
+
+    it("écrit une configuration valide puis refuse d'écraser", () => {
       const { resolveConfig } = require('../guide-config');
-      expect(main(['init', '--dir', dir], { out: sink().out })).toBe(0);
+      expect(main(['init', '--dir', dir, '--maquette', MAQUETTE], { out: sink().out })).toBe(0);
       const file = path.join(dir, 'documentation.config.json');
-      expect(() => resolveConfig(JSON.parse(fs.readFileSync(file, 'utf8')), file)).not.toThrow();
+      const written = JSON.parse(fs.readFileSync(file, 'utf8'));
+      expect(written.maquette.split(String.fromCharCode(92))).toHaveLength(1);
+      expect(written.guides[0].accent).toBe('bleu');
+      expect(() => resolveConfig(written, file)).not.toThrow();
       fs.writeFileSync(file, 'garde');
       const s = sink();
-      expect(main(['init', '--dir', dir], { out: s.out })).toBe(1);
+      expect(main(['init', '--dir', dir, '--maquette', MAQUETTE], { out: s.out })).toBe(1);
       expect(fs.readFileSync(file, 'utf8')).toBe('garde');
+    });
+
+    it('refuse sans --maquette ou avec une maquette invalide, sans rien écrire', () => {
+      const file = path.join(dir, 'documentation.config.json');
+      const s = sink();
+      expect(main(['init', '--dir', dir], { out: s.out })).toBe(1);
+      expect(main(['init', '--dir', dir, '--maquette', path.join(dir, 'absente')], { out: s.out })).toBe(1);
+      expect(fs.existsSync(file)).toBe(false);
     });
   });
 });

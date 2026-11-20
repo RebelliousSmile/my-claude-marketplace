@@ -4,19 +4,21 @@ const path = require('path');
 const { pdfPresetFor, compositionFor, ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main, EXIT_MESSAGES, launch } = require('../compose-guide');
 const { resolveConfig } = require('../guide-config');
 
+const MAQUETTE_DIR = path.join(__dirname, '..', 'maquettes', 'squelette');
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
 
 const REPO_CONFIG_FILE = FIXTURE_CONFIG;
 
 /** Configuration synthétique : le moteur ne doit rien savoir des guides d'un projet. */
 const CONFIG = resolveConfig({
+  maquette: path.relative(path.resolve('/r/docs'), MAQUETTE_DIR),
   sourceDir: '.',
   outputDir: '../output',
   pagesFile: 'pages.json',
   versionFile: '../package.json',
   guides: [
-    { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange' },
-    { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'turquoise' }
+    { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu' },
+    { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'gris' }
   ]
 }, path.resolve('/r/docs/documentation.config.json'));
 
@@ -99,8 +101,8 @@ describe('compose-guide', () => {
     });
 
     it("le modèle IDML porte l'accent du guide, tiré de la configuration, désigné par id ou par dossier", () => {
-      expect(path.basename(pathsFor({ guide: 'vendeur', chapitre: '01-a' }, CONFIG).template)).toBe('scriptami-orange-vendeur.idml');
-      expect(path.basename(pathsFor({ guide: 'guide-client', chapitre: '01-a' }, CONFIG).template)).toBe('scriptami-turquoise-client.idml');
+      expect(path.basename(pathsFor({ guide: 'vendeur', chapitre: '01-a' }, CONFIG).template)).toBe('squelette-bleu-vendeur.idml');
+      expect(path.basename(pathsFor({ guide: 'guide-client', chapitre: '01-a' }, CONFIG).template)).toBe('squelette-gris-client.idml');
     });
 
     it('refuse un guide absent de la configuration', () => {
@@ -110,12 +112,13 @@ describe('compose-guide', () => {
 
   describe('updatePathsFor', () => {
     const withDocument = (document) => resolveConfig({
+      maquette: path.relative(path.resolve('/r/docs'), MAQUETTE_DIR),
       sourceDir: '.',
       outputDir: '../output',
       pagesFile: 'pages.json',
       versionFile: '../package.json',
       pdfPreset: 'Qualité optimale',
-      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', ...(document ? { document } : {}) }]
+      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu', ...(document ? { document } : {}) }]
     }, path.resolve('/r/docs/documentation.config.json'));
 
     it('écrit le PDF sous <outputDir>/pdf (sans version lisible : sans suffixe), avec le préréglage de la configuration', () => {
@@ -155,19 +158,20 @@ describe('compose-guide', () => {
     });
 
     const withDocument = (document) => resolveConfig({
+      maquette: path.relative(path.resolve('/r/docs'), MAQUETTE_DIR),
       sourceDir: '.',
       outputDir: '../output',
       pagesFile: 'pages.json',
       versionFile: '../package.json',
       pdfPreset: 'Qualité optimale',
-      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', ...(document ? { document } : {}) }]
+      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu', ...(document ? { document } : {}) }]
     }, path.resolve('/r/docs/documentation.config.json'));
 
     it('compose dans le .indd de la configuration, PDF sous <outputDir>/pdf, modèle sous pdf-essai', () => {
       const paths = composePathsFor({ guide: 'vendeur', sortie: null }, withDocument('guides/vendeur.indd'));
       expect(slash(paths.document)).toBe('/r/docs/guides/vendeur.indd');
       expect(slash(paths.pdf)).toBe('/r/output/pdf/vendeur.pdf');
-      expect(slash(paths.template)).toBe('/r/output/pdf-essai/scriptami-orange-vendeur.idml');
+      expect(slash(paths.template)).toBe('/r/output/pdf-essai/squelette-bleu-vendeur.idml');
       expect(slash(paths.icmlDir)).toBe('/r/output/icml/guide-vendeur');
       expect(slash(paths.commonDir)).toBe('/r/output/icml/common');
       expect(slash(paths.pagesDir)).toBe('/r/output/icml/guide-vendeur/00-pages');
@@ -186,8 +190,9 @@ describe('compose-guide', () => {
       try {
         fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ version: '2.20.0' }));
         const config = resolveConfig({
+          maquette: MAQUETTE_DIR,
           sourceDir: '.', outputDir: 'out', pagesFile: 'pages.json', versionFile: 'package.json',
-          guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', document: 'out/indd/cerascan-guide-du-vendeur.indd' }]
+          guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu', document: 'out/indd/cerascan-guide-du-vendeur.indd' }]
         }, path.join(dir, 'documentation.config.json'));
         expect(path.relative(dir, releasePdfPath(config.guides[0].document, config)).split(path.sep).join('/')).toBe('out/pdf/cerascan-guide-du-vendeur-v2.20.0.pdf');
         expect(path.relative(dir, composePathsFor({ guide: 'vendeur', sortie: null }, config).pdf).split(path.sep).join('/')).toBe('out/pdf/cerascan-guide-du-vendeur-v2.20.0.pdf');

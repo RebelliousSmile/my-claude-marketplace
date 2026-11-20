@@ -28,7 +28,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { MaquetteError, loadMaquette, DEFAULT_MAQUETTE_DIR } = require('./maquette');
+const { MaquetteError, loadMaquette } = require('./maquette');
 
 const CONFIG_NAME = 'documentation.config.json';
 const DEFAULT_TYPE = 'Documentation utilisateur';
@@ -96,10 +96,10 @@ function findUp(dir, name) {
   }
 }
 
-/** Maquette désignée par la configuration (chemin relatif à son dossier) ; défaut transitoire : la maquette embarquée. */
+/** Maquette désignée par la configuration (chemin relatif à son dossier) : le champ est obligatoire. */
 function loadMaquetteField(value, dir) {
   try {
-    return loadMaquette(value === undefined ? DEFAULT_MAQUETTE_DIR : path.resolve(dir, requireText(value, 'maquette')));
+    return loadMaquette(path.resolve(dir, requireText(value, 'maquette')));
   } catch (error) {
     if (error instanceof MaquetteError) throw new ConfigError(error.message);
     throw error;

@@ -18,8 +18,8 @@ const {
   findGuide,
   readVersion
 } = require('../guide-config');
-const { AXES } = require('../build-idml-template');
 
+const SQUELETTE = path.join(__dirname, '..', 'maquettes', 'squelette');
 const REPO_CONFIG_FILE = path.join(__dirname, 'fixtures', 'project', 'docs', CONFIG_NAME);
 
 const tempDirs = [];
@@ -34,13 +34,14 @@ afterAll(() => {
   tempDirs.forEach(dir => fs.rmSync(dir, { recursive: true, force: true }));
 });
 
-const GUIDE = { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange' };
+const GUIDE = { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu' };
 
 function valid(overrides = {}) {
   return {
+    maquette: SQUELETTE,
     sourceDir: '.',
     pagesFile: 'pages.json',
-    guides: [{ ...GUIDE }, { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'turquoise' }],
+    guides: [{ ...GUIDE }, { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'gris' }],
     ...overrides
   };
 }
@@ -116,7 +117,7 @@ describe('resolveConfig', () => {
   test('refuse un accent hors charte et cite les valeurs acceptées', () => {
     const raw = valid({ guides: [{ ...GUIDE, accent: 'rose' }] });
     expect(() => resolveConfig(raw, FILE)).toThrow(/« guides\[0\]\.accent » \(guide vendeur\) hors de la maquette : rose/);
-    expect(() => resolveConfig(raw, FILE)).toThrow(/turquoise, orange, vert/);
+    expect(() => resolveConfig(raw, FILE)).toThrow(/bleu, gris/);
   });
 
   test('refuse un identifiant ou un dossier en double, en désignant le second guide', () => {
@@ -130,9 +131,23 @@ describe('resolveConfig', () => {
     expect(() => resolveConfig(raw, FILE)).toThrow(/doit contenir un objet/);
   });
 
-  test('les axes de la maquette embarquée sont ceux du modèle IDML', () => {
-    const config = resolveConfig(valid(), FILE);
-    expect(Object.keys(config.maquette.axes.noms).sort()).toEqual(Object.keys(AXES).sort());
+  test('charge la maquette désignée, chemin relatif au fichier de configuration', () => {
+    const config = resolveConfig(valid({ maquette: path.relative(path.dirname(FILE), SQUELETTE) }), FILE);
+    expect(config.maquette.nom).toBe('squelette');
+    expect(Object.keys(config.maquette.axes.noms)).toEqual(['bleu', 'gris']);
+  });
+
+  test('refuse l’absence du champ « maquette » en le nommant', () => {
+    const raw = valid();
+    delete raw.maquette;
+    expect(() => resolveConfig(raw, FILE)).toThrow(ConfigError);
+    expect(() => resolveConfig(raw, FILE)).toThrow(/« maquette » doit être un texte non vide/);
+  });
+
+  test('refuse une maquette introuvable en donnant le chemin résolu', () => {
+    const raw = valid({ maquette: '../absente' });
+    expect(() => resolveConfig(raw, FILE)).toThrow(ConfigError);
+    expect(() => resolveConfig(raw, FILE)).toThrow(path.resolve('/projet/absente'));
   });
 });
 

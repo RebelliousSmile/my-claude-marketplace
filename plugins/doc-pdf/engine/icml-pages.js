@@ -174,8 +174,11 @@ const COMMON_KEY = 'commun';
  * Lit et vérifie le fichier de configuration : une entrée `commun` (`pied` : texte unique des pieds
  * de page, `mentions` : pied de la page de fin) et une entrée par dossier de guide
  * (clé = `dir` du guide dans la configuration), avec `sousTitre` (couverture), `fin` (page de fin) et `pages` (facultatif).
+ * Le `commun` de la maquette sert de base, complété clé par clé par celui du projet (une clé du projet l'emporte) ;
+ * `miseAJour` (date, projet) s'ajoute à la dernière mention, après le libellé `textes.miseAJour` de la maquette.
  */
-function loadPagesConfig(file) {
+function loadPagesConfig(file, maquette) {
+  if (!maquette) throw new PagesError('Pages de couverture et de fin : la maquette est obligatoire.');
   let config;
   try {
     config = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -185,11 +188,8 @@ function loadPagesConfig(file) {
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new PagesError('Pages de couverture et de fin : le fichier doit contenir un objet par guide.');
   }
-  const common = config[COMMON_KEY];
-  if (!common || !isText(common.pied)) {
-    throw new PagesError(`Pied de page (${COMMON_KEY}) : « pied » doit être un texte non vide.`);
-  }
-  checkMentions(common.mentions, COMMON_KEY);
+  const common = mergeCommon(config[COMMON_KEY], maquette, file);
+  config[COMMON_KEY] = common;
   Object.entries(config).filter(([guide]) => guide !== COMMON_KEY).forEach(([guide, entry]) => {
     if (!entry || !isText(entry.sousTitre)) {
       throw new PagesError(`Couverture (${guide}) : « sousTitre » doit être un texte non vide.`);
@@ -198,6 +198,25 @@ function loadPagesConfig(file) {
     checkPages(entry.pages, guide);
   });
   return config;
+}
+
+/** `commun` du projet complété de celui de la maquette, date de mise à jour ajoutée ; vérifie le résultat. */
+function mergeCommon(project, maquette, file) {
+  const merged = { ...(maquette.commun ?? {}), ...(project ?? {}) };
+  const where = `${maquette.file} et ${file}`;
+  if (!isText(merged.pied)) {
+    throw new PagesError(`Pied de page (${COMMON_KEY}) : « pied » doit être un texte non vide, ni la maquette ni le projet ne le donne (${where}).`);
+  }
+  if (!Array.isArray(merged.mentions)) {
+    throw new PagesError(`Mentions de fin (${COMMON_KEY}) : « mentions » absent, ni la maquette ni le projet ne le donne (${where}).`);
+  }
+  checkMentions(merged.mentions, COMMON_KEY);
+  if (merged.miseAJour !== undefined) {
+    if (!isText(merged.miseAJour)) throw new PagesError(`Mentions de fin (${COMMON_KEY}) : « miseAJour » doit être un texte non vide.`);
+    const last = merged.mentions.length - 1;
+    merged.mentions = merged.mentions.map((text, index) => (index === last ? `${text} · ${maquette.textes.miseAJour} ${merged.miseAJour}` : text));
+  }
+  return merged;
 }
 
 /** Texte commun aux trois guides (`pied`, `mentions`) de la configuration lue. */
@@ -289,8 +308,9 @@ function guideChapters(guide, guidesDir) {
  * Couverture et fin d'un guide : paragraphes tels que les écrit l'ICML, plus le sous-titre
  * de la couverture et le contact (bandeau et cartes) de la page de fin.
  */
-function guidePages(guide, { guidesDir, pagesConfig, version, textes }) {
-  const entry = guideEntry(loadPagesConfig(pagesConfig), guide);
+function guidePages(guide, { guidesDir, pagesConfig, version, maquette }) {
+  const { textes } = maquette;
+  const entry = guideEntry(loadPagesConfig(pagesConfig, maquette), guide);
   return {
     cover: coverParagraphs({ chapters: guideChapters(guide, guidesDir), version }, textes),
     subtitle: entry.sousTitre,

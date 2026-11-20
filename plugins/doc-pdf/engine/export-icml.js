@@ -302,7 +302,7 @@ function exportGuides({ config, outDir: outDirOverride, pandoc = 'pandoc', colum
   let pagesConfig;
   let productVersion;
   try {
-    pagesConfig = pages.loadPagesConfig(config.pagesFile);
+    pagesConfig = pages.loadPagesConfig(config.pagesFile, config.maquette);
     productVersion = version ?? readVersion(config);
   } catch (error) {
     throw new ExportError(error.message);

@@ -1,11 +1,11 @@
 # doc-pdf
 
-Moteur interprojets de documentation PDF, charte Scriptami unique. La documentation reste en Markdown dans le dépôt de chaque client ; le moteur, lui, vit ici.
+Moteur interprojets de documentation PDF, maquette externe (dossier `maquette.json`). La documentation reste en Markdown dans le dépôt de chaque client ; le moteur, lui, vit ici.
 
 ## Ce qu'il fait
 
-1. **Markdown → ICML** (Pandoc) avec le jeu de styles fermé de la charte, manifeste d'empreintes (`output/icml/.manifest.json`) : un ICML corrigé à la main arrête la régénération sauf `--force`.
-2. **Modèle IDML** de la charte (gabarits, pages d'exemple).
+1. **Markdown → ICML** (Pandoc) avec le jeu de styles fermé de la maquette, manifeste d'empreintes (`output/icml/.manifest.json`) : un ICML corrigé à la main arrête la régénération sauf `--force`.
+2. **Modèle IDML** de la maquette (gabarits, pages d'exemple).
 3. **Mise à jour d'un `.indd` existant** : copie de sauvegarde, liens rafraîchis, pages ajoutées ou retirées, export PDF.
 
 ## Prérequis
@@ -16,7 +16,7 @@ Moteur interprojets de documentation PDF, charte Scriptami unique. La documentat
 ## Utilisation
 
 ```sh
-node <racine du plugin>/engine/cli.js init            # écrit documentation.config.json
+node <racine du plugin>/engine/cli.js init --maquette <dossier>   # écrit documentation.config.json
 node <racine du plugin>/engine/cli.js merge --check
 node <racine du plugin>/engine/cli.js icml [--force]
 node <racine du plugin>/engine/cli.js idml --gabarits --guide <id>

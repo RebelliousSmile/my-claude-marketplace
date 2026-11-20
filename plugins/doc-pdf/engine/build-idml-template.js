@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Génère un modèle IDML qui charge dans InDesign la charte « Scriptami — Charte de
- * mise en page des documentations PDF » : styles (paragraphe, caractère, tableau,
+ * Génère un modèle IDML qui charge dans InDesign la charte de la maquette
+ * externe (dossier `maquette.json`) : styles (paragraphe, caractère, tableau,
  * cellule, objet), nuances RVB, document A4 en vis-à-vis aux marges de la grille avec
  * 3 mm de fond perdu, et, avec --gabarits, les quatre gabarits de la charte :
  * A-Courante, B-Chapitre, C-Couverture, D-Fin.
  *
- *   node <racine du plugin>/engine/cli.js idml                       output/idml/scriptami-turquoise.idml
+ *   node <racine du plugin>/engine/cli.js idml                       output/idml/<maquette>-<axe>.idml
  *   node <racine du plugin>/engine/cli.js idml --axe orange          couleur d'axe : turquoise | orange | vert
  *   node <racine du plugin>/engine/cli.js idml --gabarits            + gabarits A à D (pages courantes, ouverture, couverture, fin)
  *   node <racine du plugin>/engine/cli.js idml --police-puce <nom>   police du triangle ▶ des puces (défaut : Segoe UI Symbol)
@@ -24,8 +24,7 @@ const path = require('path');
 const { writeZip } = require('./zip-store');
 const { PagesError, guidePages, mentionLines } = require('./icml-pages');
 const { ConfigError, DEFAULT_TYPE, loadConfig, extractConfigArg, findGuide, readVersion } = require('./guide-config');
-const { pictoGradients, wordmarkShapes, pictoFacets } = require('./logo-scriptami');
-const { loadMaquette } = require('./maquette');
+const { pictoGradients, wordmarkShapes, pictoFacets } = require('./logo');
 
 /** Sous-dossier de la sortie du projet (`<outputDir>/idml`) ; sans configuration, `output/idml` sous le dossier courant. */
 const IDML_DIR = 'idml';
@@ -39,7 +38,7 @@ class IdmlError extends Error {}
 const mm = value => Math.round(value * 72 / 25.4 * 10000) / 10000;
 
 // Grille, nuancier, axes et polices viennent de la maquette (engine/maquette.js) : `applyMaquette` les pose en fin de module
-// et `buildIdmlEntries` les repose à chaque appel. Les exports gardent ceux de la maquette embarquée.
+// et `buildIdmlEntries` les repose à chaque appel : le moteur n'embarque aucune maquette.
 /** Grille de la maquette (points). */
 /** Table des styles de la maquette (familles paragraph, character, table, cell, object). */
 let STYLES;
@@ -513,7 +512,7 @@ function foldFolioBox(side) {
 
 /**
  * A-Courante : page gauche (paire) puis droite (impaire). Titres courants en variables de
- * texte, pointillé orange, folio et coin plié du côté extérieur, pied « scriptami.com » côté
+ * texte, pointillé orange, folio et coin plié du côté extérieur, pied de page de la maquette côté
  * intérieur.
  */
 function masterA(builder, { footer = FOOTER_TEXT } = {}) {
@@ -1157,10 +1156,8 @@ function applyMaquette(maquette) {
     : { name: nom, type: 'MatchParagraphStyleType', style }));
 }
 
-const EMBEDDED_MAQUETTE = loadMaquette();
-applyMaquette(EMBEDDED_MAQUETTE);
-
-function buildIdmlEntries({ axis, masters = false, bulletFont, pages = null, maquette = EMBEDDED_MAQUETTE } = {}) {
+function buildIdmlEntries({ axis, masters = false, bulletFont, pages = null, maquette } = {}) {
+  if (!maquette) throw new IdmlError('Une maquette est requise (champ « maquette » de la configuration).');
   applyMaquette(maquette);
   axis = axis || DEFAULT_AXIS;
   bulletFont = bulletFont || DEFAULT_BULLET_FONT;
@@ -1190,8 +1187,8 @@ function buildIdml(options) {
   return writeZip(buildIdmlEntries(options));
 }
 
-function outputPathFor(outDir, axis, guide) {
-  return path.join(outDir, `${EMBEDDED_MAQUETTE.nom}-${axis}${guide ? `-${guide}` : ''}.idml`);
+function outputPathFor(outDir, axis, guide, maquette) {
+  return path.join(outDir, `${maquette.nom}-${axis}${guide ? `-${guide}` : ''}.idml`);
 }
 
 function parseArgs(argv) {
@@ -1219,7 +1216,7 @@ function parseArgs(argv) {
       }
       i += 1;
     } else {
-      throw new IdmlError(`Option inconnue : ${arg}. Options : --axe <turquoise|orange|vert>, --gabarits, --guide <identifiant de la configuration>, --config <chemin>, --police-puce <police>, --sortie <dossier>.`);
+      throw new IdmlError(`Option inconnue : ${arg}. Options : --axe <axe de la maquette>, --gabarits, --guide <identifiant de la configuration>, --config <chemin>, --police-puce <police>, --sortie <dossier>.`);
     }
   }
   return options;
@@ -1229,11 +1226,11 @@ function main(argv) {
   try {
     const { configPath, rest } = extractConfigArg(argv);
     const { axis: requestedAxis, masters = false, bulletFont, outDir: requestedOutDir, guide: guideName } = parseArgs(rest);
-    // La configuration n'est lue que pour un guide ou un chemin explicite : le modèle seul n'en dépend pas.
-    const config = guideName || configPath ? loadConfig({ configPath }) : null;
+    // La maquette vient de la configuration : elle est toujours lue.
+    const config = loadConfig({ configPath });
     const guide = guideName ? findGuide(config, guideName) : null;
-    const outDir = requestedOutDir ?? path.join(config ? config.outputDir : path.resolve('output'), IDML_DIR);
-    const maquette = config ? config.maquette : EMBEDDED_MAQUETTE;
+    const outDir = requestedOutDir ?? path.join(config.outputDir, IDML_DIR);
+    const { maquette } = config;
     const axes = Object.keys(maquette.axes.noms);
     if (requestedAxis !== undefined && !axes.includes(requestedAxis)) {
       throw new IdmlError(`Axe inconnu : ${requestedAxis}. Valeurs acceptées : ${axes.join(', ')}.`);
@@ -1242,13 +1239,13 @@ function main(argv) {
     // Couverture et fin remplies d'après le guide : titre, sous-titre, version, sommaire, contact et conseils de chaque guide.
     const pages = guide
       ? {
-        ...guidePages(guide.dir, { guidesDir: config.sourceDir, pagesConfig: config.pagesFile, version: readVersion(config), textes: maquette.textes }),
+        ...guidePages(guide.dir, { guidesDir: config.sourceDir, pagesConfig: config.pagesFile, version: readVersion(config), maquette }),
         label: guide.title,
         verb: guide.verb,
         tag: guide.type
       }
       : null;
-    const file = outputPathFor(outDir, axis, guide ? guide.id : null);
+    const file = outputPathFor(outDir, axis, guide ? guide.id : null, maquette);
     const data = buildIdml({ axis, masters, bulletFont, pages, maquette });
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(file, data);
@@ -1279,13 +1276,7 @@ module.exports = {
   outputPathFor,
   parseArgs,
   IdmlError,
-  AXES,
-  COLORS,
-  FORMATS,
-  CHARTER_ONLY,
-  PAGE,
-  MARGINS,
-  COLUMNS,
+  applyMaquette,
   chapterBoxes,
   IDML_DIR,
   MIMETYPE

@@ -8,7 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const icmlTransform = require('../icml-transform');
-const MAQUETTE = require('../maquette').loadMaquette();
+const MAQUETTE = require('../maquette').loadMaquette(require('path').join(__dirname, '..', 'maquettes', 'squelette'));
 const STYLES = MAQUETTE.styles;
 const { toLinkUri } = icmlTransform;
 const transformIcml = (icml, options = {}) => icmlTransform.transformIcml(icml, { maquette: MAQUETTE, ...options });

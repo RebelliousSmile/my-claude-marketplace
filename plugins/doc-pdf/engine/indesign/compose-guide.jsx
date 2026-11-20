@@ -300,7 +300,7 @@ function masterHasFrame(page, name) {
 
 /**
  * Cadres de marge et de renvoi des deux pages du kit, avec leur position relative au coin de leur page.
- * Le cadre de marge est exigé ; le cadre de renvoi peut manquer d'un côté (le gabarit Scriptami n'en porte
+ * Le cadre de marge est exigé ; le cadre de renvoi peut manquer d'un côté (un gabarit de maquette peut n'en porter
  * qu'un, à gauche) : il est alors repris de l'autre côté, symétrique par rapport au milieu de la page.
  */
 function marginSources(kit) {

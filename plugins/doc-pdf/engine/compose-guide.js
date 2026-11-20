@@ -119,7 +119,7 @@ function pathsFor({ guide, chapitre }, config) {
     chapterDir: path.join(icmlDir, chapitre),
     pagesDir: path.join(icmlDir, '00-pages'),
     commonDir: path.join(icmlRoot, 'common'),
-    template: outputPathFor(trialDir, entry.accent, entry.id),
+    template: outputPathFor(trialDir, entry.accent, entry.id, config.maquette),
     document: path.join(trialDir, `${entry.dir}-${chapitre}.indd`),
     pdf: path.join(trialDir, `${entry.dir}-${chapitre}.pdf`),
     preset: pdfPresetFor(config),
@@ -190,7 +190,7 @@ function composePathsFor({ guide, sortie }, config) {
   if (!/\.indd$/i.test(document)) throw new ComposeError(`Le document doit porter l'extension .indd : ${document}`);
   const icmlDir = path.join(config.outputDir, 'icml', entry.dir);
   return {
-    template: outputPathFor(path.join(config.outputDir, TRIAL_DIR), entry.accent, entry.id),
+    template: outputPathFor(path.join(config.outputDir, TRIAL_DIR), entry.accent, entry.id, config.maquette),
     document,
     pdf: sortie ? document.replace(/\.indd$/i, '.pdf') : releasePdfPath(document, config),
     preset: pdfPresetFor(config),

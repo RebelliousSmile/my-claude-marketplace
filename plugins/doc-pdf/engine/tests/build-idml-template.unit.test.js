@@ -1,23 +1,27 @@
 const { writeZip, readZip, METHOD_STORE } = require('../zip-store');
 const os = require('os');
 const path = require('path');
-const STYLES = require('../maquette').loadMaquette().styles;
+const MAQUETTE = require('../maquette').loadMaquette(path.join(__dirname, '..', 'maquettes', 'squelette'));
+const STYLES = MAQUETTE.styles;
+const AXES = MAQUETTE.axes.noms;
+const COLORS = MAQUETTE.couleurs;
+const FORMATS = MAQUETTE.formats;
+const CHARTER_ONLY = MAQUETTE.charteSeule;
+const PAGE = { height: MAQUETTE.page.hauteurMm * 72 / 25.4 };
 const { loadConfig } = require('../guide-config');
 const {
-  buildIdml,
-  buildIdmlEntries,
+  buildIdml: buildIdmlWith,
+  buildIdmlEntries: buildIdmlEntriesWith,
   outputPathFor,
   parseArgs,
   main,
   IdmlError,
-  AXES,
-  COLORS,
-  FORMATS,
-  CHARTER_ONLY,
-  PAGE,
   chapterBoxes,
   MIMETYPE
 } = require('../build-idml-template');
+
+const buildIdml = (options) => buildIdmlWith({ maquette: MAQUETTE, ...options });
+const buildIdmlEntries = (options) => buildIdmlEntriesWith({ maquette: MAQUETTE, ...options });
 
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
 
@@ -268,9 +272,8 @@ describe('build-idml-template', () => {
     const footers = [['A-Courante', 'pied-gauche'], ['A-Courante', 'pied-droite'], ['B-Chapitre', 'pied-titre']]
       .map(([master, frame]) => byName(list, `Stories/Story_${master}_${frame}.xml`));
     footers.forEach(text => {
-      expect(text).toContain('<Content>François-Xavier Guillois · scriptami</Content>');
+      expect(text).toContain(`<Content>${MAQUETTE.entetePied.piedTexte}</Content>`);
       expect(text).toContain('ParagraphStyle/Titre-courant');
-      expect(text).not.toContain('scriptami.com');
     });
   });
 
@@ -280,12 +283,12 @@ describe('build-idml-template', () => {
       verb: 'Consolider',
       cover: [{ style: 'Titre-couverture', text: 'Guide' }, { style: 'Surtitre', text: 'Version 1' }, { style: 'Sommaire-titre', text: 'Sommaire' }, { style: 'Sommaire-ligne', text: '01	A' }],
       subtitle: 's',
-      footer: 'Scriptami · Guide de test',
+      footer: 'Marque · Guide de test',
       contact: { titre: 't', accroche: 'a', cartes: [{ label: 'l', valeur: 'v', note: 'n' }, { label: 'l', valeur: 'v', note: 'n' }, { label: 'l', valeur: 'v', note: 'n' }] },
       end: [{ style: 'Surtitre', text: 'x' }, { style: 'Courant', text: 'y' }]
     } });
     ['A-Courante_pied-gauche', 'A-Courante_pied-droite', 'B-Chapitre_pied-titre'].forEach(name => {
-      expect(byName(list, `Stories/Story_${name}.xml`)).toContain('<Content>Scriptami · Guide de test</Content>');
+      expect(byName(list, `Stories/Story_${name}.xml`)).toContain('<Content>Marque · Guide de test</Content>');
     });
   });
 
@@ -337,20 +340,20 @@ describe('build-idml-template', () => {
     expect(fin).toContain('Name="conseils-filet"');
   });
 
-  it('remplace le texte « SCRIPTAMI » par le mot vectoriel sur la couverture et par le picto seul sur la fin', () => {
+  it('remplace le texte « MARQUE » par le mot vectoriel sur la couverture et par le picto seul sur la fin', () => {
     const list = files({ masters: true });
     const cover = byName(list, 'MasterSpreads/MasterSpread_C-Couverture.xml');
     const fin = byName(list, 'MasterSpreads/MasterSpread_D-Fin.xml');
     const stories = prefix => list.filter(f => f.name.startsWith('Stories/') && f.name.includes(prefix)).map(f => f.text).join('');
     // Mot : un seul tracé composé de neuf lettres, dont les contreformes (S, C, R, P, A) sont des sous-tracés.
     const word = cover.match(/<Polygon Self="Polygon_C-Couverture_logo"[\s\S]*?<\/Polygon>/)[0];
-    expect((word.match(/<GeometryPathType /g) || []).length).toBeGreaterThanOrEqual(12);
+    expect((word.match(/<GeometryPathType /g) || []).length).toBeGreaterThanOrEqual(MAQUETTE.logo.chemins.length);
     expect(word).toContain('FillColor="Color/Anthracite%20fonc%C3%A9"');
     expect(word).toMatch(/LeftDirection="[^"]+" RightDirection="[^"]+"/);
     expect(stories('C-Couverture_logo')).toBe('');
-    // Picto : trois facettes, sans texte « SCRIPTAMI » dans le pied.
-    for (const name of ['orange', 'jaune', 'turquoise']) expect(fin).toContain(`Name="picto-${name}"`);
-    expect(stories('D-Fin_pied-texte')).not.toContain('SCRIPTAMI');
+    // Picto : trois facettes, sans texte « MARQUE » dans le pied.
+    if (MAQUETTE.picto) for (const { nom } of MAQUETTE.picto.facettes) expect(fin).toContain(`Name="picto-${nom}"`);
+    else expect(fin).not.toContain('Name="picto-');
     expect(cover).not.toContain('Name="picto-');
   });
 
@@ -358,7 +361,11 @@ describe('build-idml-template', () => {
     const list = files({ masters: true });
     const graphic = byName(list, 'Resources/Graphic.xml');
     const fin = byName(list, 'MasterSpreads/MasterSpread_D-Fin.xml');
-    for (const name of ['orange', 'jaune', 'turquoise']) {
+    if (!MAQUETTE.picto) {
+      expect(graphic).not.toContain('Gradient/Picto');
+      return;
+    }
+    for (const name of MAQUETTE.picto.facettes.map(facette => facette.nom)) {
       const gradient = graphic.match(new RegExp(`<Gradient Self="Gradient/Picto%20${name}"[\\s\\S]*?</Gradient>`))[0];
       const stops = [...gradient.matchAll(/<GradientStop [^>]*StopColor="([^"]+)" Location="([^"]+)"/g)];
       expect(stops.length).toBeGreaterThanOrEqual(5);
@@ -440,7 +447,7 @@ describe('build-idml-template : pages remplies', () => {
       { style: 'Sommaire-ligne', text: '02\tImporter le tarif' }
     ],
     subtitle: 'Un sous-titre propre au guide de test.',
-    footer: 'Scriptami · Guide de test',
+    footer: 'Marque · Guide de test',
     contact: {
       titre: 'Un blocage technique de test ?',
       accroche: 'Votre interlocuteur de test vous répond.',
@@ -576,7 +583,7 @@ describe('build-idml-template : pages remplies', () => {
 
   it('donne à chaque guide l’accent de la configuration, parmi les axes connus', () => {
     expect(Object.fromEntries(CONFIG.guides.map(guide => [guide.id, guide.accent])))
-      .toEqual({ administrateur: 'vert', partenaire: 'turquoise', vendeur: 'orange' });
+      .toEqual({ administrateur: 'bleu', partenaire: 'gris', vendeur: 'bleu' });
     CONFIG.guides.forEach(guide => expect(Object.keys(AXES)).toContain(guide.accent));
   });
 
@@ -594,9 +601,9 @@ describe('build-idml-template : pages remplies', () => {
       const story = signature(verb);
       expect(story).toBe(reference);
       expect(story).not.toContain('PointSize="12"');
-      for (const [word, guide] of [['consolider', 'guide du client'], ['débloquer', 'guide du vendeur'], ['maîtriser', 'guide de l’administrateur']]) {
-        expect(story).toMatch(new RegExp(`CharacterStyle/Gras"[^>]*>\\s*<Content>${word}</Content>`));
-        expect(story).toContain(`<Content> · ${guide}</Content>`);
+      for (const { mot, suite } of MAQUETTE.textes.marque) {
+        expect(story).toMatch(new RegExp(`CharacterStyle/Gras"[^>]*>\\s*<Content>${mot}</Content>`));
+        expect(story).toContain(`<Content>${suite}</Content>`);
       }
     }
   });
@@ -630,7 +637,7 @@ describe('build-idml-template : pages remplies', () => {
     expect(all).toMatch(/CharacterStyle\/Accent"[^>]*>\s*<Content>partenaire<\/Content>/);
     expect(all).toContain('Un sous-titre propre au guide de test.');
     expect(all).not.toContain('Sous-titre du document à renseigner');
-    expect(all).toMatch(/CharacterStyle\/Gras"[^>]*>\s*<Content>consolider<\/Content>/);
+    expect(all).toMatch(new RegExp(`CharacterStyle/Gras"[^>]*>\\s*<Content>${MAQUETTE.textes.marque[0].mot}</Content>`));
     expect(all).toContain('Version 9.9.9');
     expect(all).toContain('Consolider · Guide du client');
     const cover = byName(list, 'MasterSpreads/MasterSpread_C-Couverture.xml');
@@ -693,16 +700,16 @@ describe('build-idml-template : ligne de commande', () => {
     const errors = [];
     const spy = jest.spyOn(console, 'error').mockImplementation(message => errors.push(message));
     try {
-      expect(main(['--axe', 'rose', '--sortie', path.join(os.tmpdir(), 'doc-pdf-axe-inconnu')])).toBe(1);
+      expect(main(['--config', FIXTURE_CONFIG, '--axe', 'rose', '--sortie', path.join(os.tmpdir(), 'doc-pdf-axe-inconnu')])).toBe(1);
     } finally {
       spy.mockRestore();
     }
     const output = errors.join(' ');
-    expect(output).toMatch(/Axe inconnu : rose\. Valeurs acceptées : turquoise, orange, vert/);
+    expect(output).toMatch(/Axe inconnu : rose\. Valeurs acceptées : bleu, gris/);
     expect(output).toMatch(/Aucun fichier écrit/);
   });
 
   it('nomme le fichier d’après l’axe', () => {
-    expect(outputPathFor('/tmp/x', 'vert')).toMatch(/scriptami-vert\.idml$/);
+    expect(outputPathFor('/tmp/x', 'gris', null, MAQUETTE)).toMatch(/squelette-gris\.idml$/);
   });
 });

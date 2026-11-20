@@ -1,24 +1,35 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { loadMaquette, MaquetteError, DEFAULT_MAQUETTE_DIR, MAQUETTE_FILE } = require('../maquette');
+const { loadMaquette, MaquetteError, MAQUETTE_FILE } = require('../maquette');
 
-const base = () => JSON.parse(fs.readFileSync(path.join(DEFAULT_MAQUETTE_DIR, MAQUETTE_FILE), 'utf8'));
+const SQUELETTE = path.join(__dirname, '..', 'maquettes', 'squelette');
+const base = () => JSON.parse(fs.readFileSync(path.join(SQUELETTE, MAQUETTE_FILE), 'utf8'));
 
 function folderWith(raw) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'maquette-test-'));
   fs.writeFileSync(path.join(dir, MAQUETTE_FILE), typeof raw === 'string' ? raw : JSON.stringify(raw));
-  for (const resource of ['logo.svg', 'picto.json']) fs.copyFileSync(path.join(DEFAULT_MAQUETTE_DIR, resource), path.join(dir, resource));
+  fs.copyFileSync(path.join(SQUELETTE, 'logo.svg'), path.join(dir, 'logo.svg'));
   return dir;
 }
 
 describe('loadMaquette', () => {
-  test('lit la maquette embarquée et la fige en profondeur', () => {
-    const maquette = loadMaquette();
+  test('lit le squelette et le fige en profondeur', () => {
+    const maquette = loadMaquette(SQUELETTE);
     expect(maquette.format).toBe(1);
     expect(Object.isFrozen(maquette)).toBe(true);
     expect(Object.isFrozen(maquette.page.marges)).toBe(true);
     expect(Object.isFrozen(maquette.axes.noms)).toBe(true);
+  });
+
+  test('le squelette n’emploie que des polices présentes sur tout poste Windows', () => {
+    expect(loadMaquette(SQUELETTE).polices).toEqual({
+      titre: 'Segoe UI', texte: 'Segoe UI', code: 'Consolas', puce: 'Segoe UI Symbol'
+    });
+  });
+
+  test('exige le dossier de la maquette', () => {
+    expect(() => loadMaquette()).toThrow(/dossier de la maquette est requis/);
   });
 
   test('refuse un format inconnu en le nommant', () => {
@@ -203,10 +214,18 @@ describe('loadMaquette : gabarits, cadres, variables', () => {
 });
 
 describe('loadMaquette : logo et picto', () => {
-  test('expose les tracés du logo et le picto', () => {
-    const maquette = loadMaquette();
-    expect(maquette.logo.chemins).toHaveLength(9);
-    expect(maquette.picto.facettes).toHaveLength(3);
+  test('expose les tracés du logo ; le squelette n’a pas de picto', () => {
+    const maquette = loadMaquette(SQUELETTE);
+    expect(maquette.logo.chemins).toHaveLength(1);
+    expect(maquette.picto).toBeNull();
+  });
+
+  test('lit un picto désigné par la maquette', () => {
+    const raw = { ...base(), picto: 'picto.json' };
+    const dir = folderWith(raw);
+    const facette = { nom: 'a', points: [[0, 0], [1, 1], [0, 1]], degrade: { depart: [0, 1], arrivee: [0, 0], arrets: [{ offset: 0, rgb: [0, 0, 0] }, { offset: 1, rgb: [9, 9, 9] }] } };
+    fs.writeFileSync(path.join(dir, 'picto.json'), JSON.stringify({ opacite: 90, facettes: [facette] }));
+    expect(loadMaquette(dir).picto.facettes).toHaveLength(1);
   });
 
   test('refuse un logo introuvable en nommant le fichier', () => {
@@ -228,15 +247,13 @@ describe('loadMaquette : logo et picto', () => {
   });
 
   test('refuse un picto sans facettes', () => {
-    const dir = folderWith(base());
+    const dir = folderWith({ ...base(), picto: 'picto.json' });
     fs.writeFileSync(path.join(dir, 'picto.json'), JSON.stringify({ opacite: 88, facettes: [] }));
     expect(() => loadMaquette(dir)).toThrow(/« opacite » et « facettes » sont requis/);
   });
 
   test('accepte une maquette sans picto', () => {
-    const raw = base();
-    delete raw.picto;
-    expect(loadMaquette(folderWith(raw)).picto).toBeNull();
+    expect(loadMaquette(folderWith(base())).picto).toBeNull();
   });
 });
 
@@ -281,5 +298,37 @@ describe('loadMaquette : composition et export', () => {
     const raw = base();
     raw.export = { preset: 'Qualité optimale' };
     expect(loadMaquette(folderWith(raw)).export.preset).toBe('Qualité optimale');
+  });
+});
+
+describe('loadMaquette : commun', () => {
+  test('le commun est facultatif', () => {
+    const raw = base();
+    delete raw.commun;
+    expect(loadMaquette(folderWith(raw)).commun).toBeUndefined();
+  });
+
+  test('refuse un pied qui n’est pas un texte', () => {
+    const raw = base();
+    raw.commun.pied = 3;
+    expect(() => loadMaquette(folderWith(raw))).toThrow(/« commun.pied »/);
+  });
+
+  test('refuse des mentions qui ne sont pas une liste de textes', () => {
+    const raw = base();
+    raw.commun.mentions = 'une phrase';
+    expect(() => loadMaquette(folderWith(raw))).toThrow(/« commun.mentions »/);
+  });
+
+  test('refuse un commun qui n’est pas un objet', () => {
+    const raw = base();
+    raw.commun = [];
+    expect(() => loadMaquette(folderWith(raw))).toThrow(/« commun »/);
+  });
+
+  test('exige le libellé de mise à jour', () => {
+    const raw = base();
+    delete raw.textes.miseAJour;
+    expect(() => loadMaquette(folderWith(raw))).toThrow(/« textes.miseAJour »/);
   });
 });

@@ -1,6 +1,6 @@
 /**
  * Transforme l'ICML produit par `pandoc -f gfm -t icml -s` en ICML aux styles
- * de la charte Scriptami (jeu court), prêt à être lié dans InDesign.
+ * de la maquette (jeu court), prêt à être lié dans InDesign.
  *
  * Fonction pure : aucune lecture disque. L'existence des images est vérifiée
  * par l'appelant (export-icml.js).

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- Moteur sans marque : toute la charte (page, couleurs, axes, polices, styles, gabarits, cadres, textes, logo, picto) est lue dans une maquette externe (format 1 : dossier `maquette.json`, `logo.svg`, `picto.json` facultatif). Aucune mention de Scriptami ne reste dans le moteur, hors la maquette d'exemple qui sera retirée.
+- Migration : le champ `maquette` de `documentation.config.json` est obligatoire (chemin relatif au fichier de configuration) ; sans lui, toute commande s'arrête avec un message. `init` exige `--maquette <dossier>` et prend l'accent par défaut de la maquette. Le `commun` de la maquette (pied, mentions) est complété par celui du projet ; `pages-gabarit.json` peut se réduire à `"commun": { "miseAJour": "…" }`.
+- Les IDML de gabarits et de guides portent le nom de la maquette (`<maquette>-<accent>[-<guide>].idml`).
+- Maquette `squelette` livrée (axes bleu et gris, polices Segoe UI, Consolas) pour démarrer une nouvelle maquette.
+- Banc `tools/compare-engines.js` : option `--config-reference` pour comparer deux moteurs dont les configurations diffèrent (ancien moteur sans champ `maquette`). Vérifié sur les guides cerascan : 273 fichiers ICML/IDML identiques octet pour octet.
+
 ## 0.3.0
 
 - Lanceur élevé : `engine/indesign/run-elevated.ps1` exécute InDesign par une tâche planifiée (`RunLevel Highest`, session interactive), sans terminal administrateur ; `pdf compose` et `pdf update` le consomment. Le journal est relayé à l'écran, la tâche est désenregistrée à la fin, le délai par défaut est de 60 min.

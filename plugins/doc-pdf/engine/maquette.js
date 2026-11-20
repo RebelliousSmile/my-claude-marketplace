@@ -8,8 +8,6 @@ const path = require('path');
 
 const MAQUETTE_FILE = 'maquette.json';
 const SUPPORTED_FORMAT = 1;
-/** Maquette embarquée, défaut transitoire jusqu'au départ de Scriptami (phase 4). */
-const DEFAULT_MAQUETTE_DIR = path.join(__dirname, 'maquettes', 'scriptami');
 
 /** Erreur attendue : son message nomme le champ et le fichier. */
 class MaquetteError extends Error {}
@@ -83,12 +81,24 @@ function validate(raw, file) {
   validateStyles(block(raw, 'styles', file), file);
   validateFormats(block(raw, 'formats', file), block(raw, 'charteSeule', file), file);
   validateTextes(block(raw, 'textes', file), file);
+  if (raw.commun !== undefined) validateCommun(raw.commun, file);
   validateNuances(block(raw, 'nuances', file), couleurs, tons, file);
   validateGabarits(raw.gabarits, file);
   validateCadres(block(raw, 'cadres', file), file);
   validateVariables(raw.variables, styleNames(raw.styles), file);
   validateComposition(block(raw, 'composition', file), file);
   if (raw.export !== undefined) validateExport(raw.export, file);
+}
+
+/** Texte commun facultatif à tous les documents de la maquette : `pied` et `mentions` (la date reste au projet). */
+function validateCommun(commun, file) {
+  if (!isObject(commun)) throw new MaquetteError(`Maquette : « commun » doit être un objet dans ${file}.`);
+  if (commun.pied !== undefined && !isText(commun.pied)) {
+    throw new MaquetteError(`Maquette : « commun.pied » doit être un texte non vide dans ${file}.`);
+  }
+  if (commun.mentions !== undefined && !isTextList(commun.mentions)) {
+    throw new MaquetteError(`Maquette : « commun.mentions » doit être une liste de textes dans ${file}.`);
+  }
 }
 
 const COMPOSITION_SETTINGS = ['echelleTexteMin', 'pasReduction', 'reserveBas', 'ecartTitre', 'hauteurCapitales',
@@ -243,7 +253,7 @@ function validateNuances(nuances, couleurs, tons, file) {
 /** Textes fixes de la maquette : libellés, valeurs par défaut, marque et pages d'exemple. */
 function validateTextes(textes, file) {
   requireKeys(textes, ['sousTitreDefaut', 'sommaire', 'pageSommaire', 'pageSommairePrefixe', 'verbeDefaut', 'libelleGuideDefaut',
-    'signature', 'noteRenvoi'], isText, 'textes', file);
+    'signature', 'noteRenvoi', 'miseAJour'], isText, 'textes', file);
   if (!isTextList(textes.mentionsDefaut)) {
     throw new MaquetteError(`Maquette : « textes.mentionsDefaut » doit être une liste de textes dans ${file}.`);
   }
@@ -327,7 +337,8 @@ function readPicto(relative, folder) {
   return { fichier: full, opacite: picto.opacite, facettes: picto.facettes };
 }
 
-function loadMaquette(dir = DEFAULT_MAQUETTE_DIR) {
+function loadMaquette(dir) {
+  if (!isText(dir)) throw new MaquetteError('Maquette : le dossier de la maquette est requis.');
   const folder = path.resolve(dir);
   const file = path.join(folder, MAQUETTE_FILE);
   if (!fs.existsSync(file)) throw new MaquetteError(`Maquette : fichier introuvable : ${file}`);
@@ -341,4 +352,4 @@ function loadMaquette(dir = DEFAULT_MAQUETTE_DIR) {
   return deepFreeze({ ...raw, logo: readLogo(raw.logo, folder), picto: raw.picto === undefined ? null : readPicto(raw.picto, folder), dir: folder, file });
 }
 
-module.exports = { MaquetteError, loadMaquette, DEFAULT_MAQUETTE_DIR, MAQUETTE_FILE, SUPPORTED_FORMAT };
+module.exports = { MaquetteError, loadMaquette, MAQUETTE_FILE, SUPPORTED_FORMAT };

@@ -42,6 +42,8 @@ describe('options et configuration', () => {
     expect(() => parseArgs(['--reference', 'r'])).toThrow(/--config est obligatoire/);
     expect(parseArgs(['--reference', 'r', '--config', 'c', '--garder'])).toEqual({ reference: 'r', config: 'c', keep: true, pdf: false });
     expect(parseArgs(['--reference', 'r', '--config', 'c', '--pdf']).pdf).toBe(true);
+    expect(parseArgs(['--reference', 'r', '--config', 'c', '--config-reference', 'x']).configReference).toBe('x');
+    expect(() => parseArgs(['--reference', 'r', '--config', 'c', '--config-reference'])).toThrow(/attend une valeur/);
     expect(() => parseArgs(['--bizarre'])).toThrow(/Option inconnue/);
   });
 

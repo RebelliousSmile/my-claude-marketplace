@@ -1,9 +1,8 @@
 {
   "format": 1,
-  "nom": "scriptami",
+  "nom": "squelette",
   "langue": "French",
   "logo": "logo.svg",
-  "picto": "picto.json",
   "page": {
     "largeurMm": 210,
     "hauteurMm": 297,
@@ -28,27 +27,42 @@
     "pointilleBlanc": 1.5,
     "filetEpaisseur": 0.75,
     "piedHauteur": 16,
-    "piedTexte": "François-Xavier Guillois · scriptami",
+    "piedTexte": "Pied de page à renseigner",
     "piedLargeur": 300,
     "coinMm": 17,
     "folioLargeur": 30,
     "bandePiedMm": 66
   },
   "couleurs": {
-    "Turquoise vif": [
-      52,
-      184,
-      154
+    "Bleu vif": [
+      60,
+      120,
+      200
     ],
-    "Turquoise texte": [
-      27,
-      122,
-      101
+    "Bleu texte": [
+      30,
+      70,
+      140
     ],
-    "Turquoise fond": [
-      227,
-      243,
-      238
+    "Bleu fond": [
+      226,
+      236,
+      248
+    ],
+    "Gris vif": [
+      140,
+      140,
+      140
+    ],
+    "Gris texte": [
+      80,
+      80,
+      80
+    ],
+    "Gris fond": [
+      235,
+      235,
+      235
     ],
     "Orange vif": [
       232,
@@ -107,11 +121,10 @@
     ]
   },
   "axes": {
-    "defaut": "turquoise",
+    "defaut": "bleu",
     "noms": {
-      "turquoise": "Turquoise",
-      "orange": "Orange",
-      "vert": "Vert"
+      "bleu": "Bleu",
+      "gris": "Gris"
     },
     "tons": {
       "Axe vif": "vif",
@@ -120,9 +133,9 @@
     }
   },
   "polices": {
-    "titre": "Quicksand",
-    "texte": "Proza Libre",
-    "code": "JetBrains Mono",
+    "titre": "Segoe UI",
+    "texte": "Segoe UI",
+    "code": "Consolas",
     "puce": "Segoe UI Symbol"
   },
   "styles": {
@@ -884,7 +897,7 @@
       },
       "Légende": {
         "font": "@titre",
-        "fontStyle": "Medium",
+        "fontStyle": "Semibold",
         "size": 9,
         "leading": 13.5,
         "fill": "Anthracite"
@@ -942,7 +955,7 @@
       },
       "Mentions": {
         "font": "@titre",
-        "fontStyle": "Medium",
+        "fontStyle": "Semibold",
         "size": 9,
         "leading": 13.5,
         "fill": "Paper",
@@ -986,7 +999,7 @@
       },
       "Accent": {
         "font": "@titre",
-        "fontStyle": "SemiBold",
+        "fontStyle": "Semibold",
         "skew": 12,
         "fill": "Axe texte"
       },
@@ -1010,7 +1023,7 @@
       },
       "Sommaire-page": {
         "font": "@titre",
-        "fontStyle": "Medium",
+        "fontStyle": "Semibold",
         "size": 8,
         "fill": "Anthracite"
       },
@@ -1087,7 +1100,15 @@
     "cell": [],
     "object": []
   },
+  "commun": {
+    "pied": "Pied de page à renseigner",
+    "mentions": [
+      "Phrase de marque à renseigner.",
+      "Mentions légales à renseigner."
+    ]
+  },
   "textes": {
+    "miseAJour": "Dernière mise à jour :",
     "sousTitreDefaut": "Sous-titre du document à renseigner.",
     "mentionsDefaut": [
       "Phrase de marque à renseigner.",
@@ -1119,19 +1140,19 @@
     "pageSommairePrefixe": "p. ",
     "verbeDefaut": "Maîtriser",
     "libelleGuideDefaut": "Guide",
-    "signature": "François-Xavier Guillois · scriptami.com",
+    "signature": "Signature à renseigner",
     "marque": [
       {
-        "mot": "consolider",
-        "suite": " · guide du client"
+        "mot": "présenter",
+        "suite": " · premier document"
       },
       {
-        "mot": "débloquer",
-        "suite": " · guide du vendeur"
+        "mot": "expliquer",
+        "suite": " · deuxième document"
       },
       {
-        "mot": "maîtriser",
-        "suite": " · guide de l’administrateur"
+        "mot": "conclure",
+        "suite": " · troisième document"
       }
     ],
     "chapitre": {
@@ -1296,7 +1317,7 @@
     "papier": "Paper",
     "papierPage": "Papier de page",
     "orange": "Orange vif",
-    "turquoise": "Turquoise vif",
+    "turquoise": "Bleu vif",
     "vert": "Vert vif",
     "axeVif": "Axe vif",
     "axeFond": "Axe fond",

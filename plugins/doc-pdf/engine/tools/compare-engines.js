@@ -36,13 +36,13 @@ function parseArgs(argv) {
       options.keep = true;
     } else if (arg === '--pdf') {
       options.pdf = true;
-    } else if (arg === '--reference' || arg === '--config') {
+    } else if (arg === '--reference' || arg === '--config' || arg === '--config-reference') {
       const value = argv[i + 1];
       if (value === undefined || value.startsWith('--')) throw new CompareError(`${arg} attend une valeur.`);
-      options[arg === '--reference' ? 'reference' : 'config'] = value;
+      options[{ '--reference': 'reference', '--config': 'config', '--config-reference': 'configReference' }[arg]] = value;
       i += 1;
     } else {
-      throw new CompareError(`Option inconnue : ${arg}. Options : --reference <moteur>, --config <chemin>, --garder, --pdf.`);
+      throw new CompareError(`Option inconnue : ${arg}. Options : --reference <moteur>, --config <chemin>, --config-reference <chemin>, --garder, --pdf.`);
     }
   }
   if (!options.reference) throw new CompareError('--reference est obligatoire (racine du moteur de référence).');
@@ -148,9 +148,10 @@ function composeGuides(engineDir, configFile, side, guideIds, run) {
   });
 }
 
-function compare({ referenceEngine, currentEngine = CURRENT_ENGINE, configPath, keep = false, pdf = false, run = spawnSync, compareFn = comparePdfs, log = console.log }) {
+function compare({ referenceEngine, currentEngine = CURRENT_ENGINE, configPath, configReferencePath = configPath, keep = false, pdf = false, run = spawnSync, compareFn = comparePdfs, log = console.log }) {
   const originalFile = path.resolve(configPath);
-  const raw = JSON.parse(fs.readFileSync(originalFile, 'utf8'));
+  const referenceFile = path.resolve(configReferencePath);
+  const rawFor = file => JSON.parse(fs.readFileSync(file, 'utf8'));
   const config = loadConfig({ configPath: originalFile });
   const axes = Object.keys(config.maquette.axes.noms);
   const commands = commandsFor(axes, config.guides.map(guide => guide.id));
@@ -158,12 +159,12 @@ function compare({ referenceEngine, currentEngine = CURRENT_ENGINE, configPath, 
   const work = fs.mkdtempSync(path.join(os.tmpdir(), 'doc-pdf-compare-'));
   try {
     const sides = {};
-    for (const [name, engine] of [['reference', referenceEngine], ['current', currentEngine]]) {
+    for (const [name, engine, source] of [['reference', referenceEngine, referenceFile], ['current', currentEngine, originalFile]]) {
       const side = path.join(work, name);
       const outputDir = path.join(side, 'output');
       fs.mkdirSync(side, { recursive: true });
       const file = path.join(side, CONFIG_NAME);
-      fs.writeFileSync(file, `${JSON.stringify(buildTempConfig(raw, originalFile, outputDir), null, 2)}\n`);
+      fs.writeFileSync(file, `${JSON.stringify(buildTempConfig(rawFor(source), source, outputDir), null, 2)}\n`);
       sides[name] = { outputDir, file, side, engine, runs: runEngine(engine, file, commands, run) };
     }
 
@@ -225,6 +226,7 @@ function main(argv) {
     const result = compare({
       referenceEngine: resolveEngine(options.reference),
       configPath: options.config,
+      configReferencePath: options.configReference,
       keep: options.keep,
       pdf: options.pdf
     });

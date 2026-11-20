@@ -117,7 +117,7 @@ function subpathsBounds(subpaths) {
 }
 
 /**
- * Mot « scriptami » ajusté à `width` points avec son coin haut gauche en (`left`, `top`) ;
+ * Mot du logo ajusté à `width` points avec son coin haut gauche en (`left`, `top`) ;
  * rend les sous-tracés (repère de la page, ordonnées comptées depuis le haut) et leur hauteur.
  */
 function wordmarkShapes(paths, { left, top, width }) {

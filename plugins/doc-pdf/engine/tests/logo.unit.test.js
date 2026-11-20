@@ -5,14 +5,30 @@ const {
   wordmarkShapes,
   pictoFacets,
   pictoGradients
-} = require('../logo-scriptami');
-const { loadMaquette } = require('../maquette');
+} = require('../logo');
 
-const { logo, picto: PICTO } = loadMaquette();
-const WORDMARK_PATHS = logo.chemins;
+// Données neutres : trois lettres (une pleine, deux à contreforme) et un picto de trois facettes.
+const WORDMARK_PATHS = [
+  'M0,0H10V20H0Z',
+  'M20,0H40V20H20Z M25,5H35V15H25Z',
+  'M50,0H70V20H50Z M55,5H65V15H55Z'
+];
+const gradient = (from, to) => ({
+  depart: [0, 100],
+  arrivee: [0, 0],
+  arrets: [{ offset: 0, rgb: from }, { offset: 0.5, rgb: [100, 100, 100] }, { offset: 1, rgb: to }]
+});
+const PICTO = {
+  opacite: 88,
+  facettes: [
+    { nom: 'premiere', points: [[0, 100], [20, 0], [10, 60]], degrade: gradient([20, 40, 60], [255, 216, 0]) },
+    { nom: 'deuxieme', points: [[20, 0], [40, 100], [30, 50]], degrade: { ...gradient([10, 10, 10], [200, 200, 200]), depart: [20, 0], arrivee: [20, 100] } },
+    { nom: 'troisieme', points: [[40, 100], [60, 0], [50, 60]], degrade: gradient([5, 5, 5], [250, 250, 250]) }
+  ]
+};
 const PICTO_OPACITY = PICTO.opacite;
 
-describe('logo-scriptami : analyse des tracés SVG', () => {
+describe('logo : analyse des tracés SVG', () => {
   it('lit des segments droits (M, L, H, V, Z) et fusionne le point de fermeture', () => {
     const [path] = parseSvgPath('M10,10H20V30h-10z');
     expect(path.open).toBe(false);
@@ -46,56 +62,53 @@ describe('logo-scriptami : analyse des tracés SVG', () => {
     expect(() => parseSvgPath('M0,0A5,5,0,0,1,10,0')).toThrow(LogoError);
   });
 
-  it('lit les neuf lettres du mot, avec leurs contreformes', () => {
+  it('lit les lettres du mot, avec leurs contreformes', () => {
     const letters = WORDMARK_PATHS.map(parseSvgPath);
-    expect(letters).toHaveLength(9);
-    // R, P et A portent chacun une contreforme ; S et C sont d’un seul tenant.
-    expect(letters.map(subpaths => subpaths.length)).toEqual([1, 1, 2, 1, 2, 1, 2, 1, 1]);
+    expect(letters).toHaveLength(3);
+    expect(letters.map(subpaths => subpaths.length)).toEqual([1, 2, 2]);
     expect(letters.flat().every(subpath => subpath.open === false)).toBe(true);
   });
 });
 
-describe('logo-scriptami : mise à l’échelle', () => {
+describe('logo : mise à l’échelle', () => {
   it('ajuste le mot à la largeur demandée, coin haut gauche compris', () => {
     const { subpaths, height } = wordmarkShapes(WORDMARK_PATHS, { left: 58, top: 50, width: 120 });
     const bounds = subpathsBounds(subpaths);
     expect(bounds.left).toBeCloseTo(58, 3);
     expect(bounds.right - bounds.left).toBeCloseTo(120, 3);
     expect(bounds.top).toBeCloseTo(50, 3);
-    expect(height).toBeGreaterThan(10);
-    expect(height).toBeLessThan(20);
+    expect(height).toBeCloseTo(120 * 20 / 70, 3);
   });
 
   it('ajuste le picto à la hauteur demandée, sans texte', () => {
     const { facets, width } = pictoFacets(PICTO, { left: 58, top: 700, height: 56 });
-    expect(facets.map(facet => facet.name)).toEqual(['orange', 'jaune', 'turquoise']);
+    expect(facets.map(facet => facet.name)).toEqual(['premiere', 'deuxieme', 'troisieme']);
     const xs = facets.flatMap(facet => facet.points.map(([x]) => x));
     const ys = facets.flatMap(facet => facet.points.map(([, y]) => y));
     expect(Math.min(...xs)).toBeCloseTo(58, 3);
     expect(Math.min(...ys)).toBeCloseTo(700, 3);
     expect(Math.max(...ys)).toBeCloseTo(756, 3);
-    expect(width).toBeGreaterThan(20);
-    expect(width).toBeLessThan(40);
+    expect(width).toBeCloseTo(60 * 56 / 100, 3);
   });
 
-  it('donne à chaque facette un dégradé vertical dans la facette, à 88 % d’opacité', () => {
+  it('donne à chaque facette un dégradé vertical dans la facette, à l’opacité du picto', () => {
     const { facets } = pictoFacets(PICTO, { left: 58, top: 700, height: 56 });
     expect(PICTO_OPACITY).toBe(88);
-    for (const { name, points, gradient, opacity } of facets) {
+    for (const { name, points, gradient: placed, opacity } of facets) {
       expect(opacity).toBe(88);
-      expect(gradient.name).toBe(`Picto ${name}`);
-      expect(gradient.length).toBeGreaterThan(0);
+      expect(placed.name).toBe(`Picto ${name}`);
+      expect(placed.length).toBeGreaterThan(0);
       const ys = points.map(([, y]) => y);
-      expect(gradient.start[1]).toBeGreaterThanOrEqual(Math.min(...ys) - 1e-6);
-      expect(gradient.start[1]).toBeLessThanOrEqual(Math.max(...ys) + 1e-6);
+      expect(placed.start[1]).toBeGreaterThanOrEqual(Math.min(...ys) - 1e-6);
+      expect(placed.start[1]).toBeLessThanOrEqual(Math.max(...ys) + 1e-6);
     }
-    // Orange et turquoise montent (90°), le jaune descend (-90°) : repère de la page, y vers le bas.
-    expect(facets.map(({ gradient }) => gradient.angle)).toEqual([90, -90, 90]);
+    // Repère de la page, y vers le bas : du bas vers le haut = 90°, du haut vers le bas = -90°.
+    expect(facets.map(({ gradient: placed }) => placed.angle)).toEqual([90, -90, 90]);
   });
 
   it('déclare un dégradé par facette, aux décalages croissants de 0 à 1, en RVB valide', () => {
     const gradients = pictoGradients(PICTO);
-    expect(gradients.map(({ name }) => name)).toEqual(['Picto orange', 'Picto jaune', 'Picto turquoise']);
+    expect(gradients.map(({ name }) => name)).toEqual(['Picto premiere', 'Picto deuxieme', 'Picto troisieme']);
     for (const { stops } of gradients) {
       expect(stops[0].offset).toBe(0);
       expect(stops[stops.length - 1].offset).toBe(1);
@@ -111,11 +124,8 @@ describe('logo-scriptami : mise à l’échelle', () => {
     expect(pictoGradients(null)).toEqual([]);
   });
 
-  it('incorpore l’ombrage aux couleurs : l’orange foncé du bas est plus sombre que le jaune clair du haut', () => {
-    const [orange] = pictoGradients(PICTO);
-    const luminance = ([r, g, b]) => 0.299 * r + 0.587 * g + 0.114 * b;
-    expect(luminance(orange.stops[0].rgb)).toBeLessThan(luminance(orange.stops[orange.stops.length - 1].rgb));
-    // Sans l’ombrage, le point d’arrêt du jaune final (#FFD800) resterait inchangé : ici il l’est (ombrage nul en haut).
-    expect(orange.stops[orange.stops.length - 1].rgb).toEqual([255, 216, 0]);
+  it('reprend tels quels les points d’arrêt de la maquette', () => {
+    const [first] = pictoGradients(PICTO);
+    expect(first.stops[first.stops.length - 1].rgb).toEqual([255, 216, 0]);
   });
 });
