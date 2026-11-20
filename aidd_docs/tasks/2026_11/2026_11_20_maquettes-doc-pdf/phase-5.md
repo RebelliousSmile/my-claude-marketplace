@@ -230,5 +230,4 @@ journey
 - Preuve réelle sur une maquette neuve : init → icml → idml (gabarits, guide) → `pdf compose` (12 pages, 41 liens). Alertes relevées : chapeau d'ouverture à 94 % (page 3), un intertitre reporté, sommaires sans numéros au premier essai (reprise par `--maj-pages`).
 - Calage : le levier est `formats.<style>` de `maquette.json`, pas les `attributes` de `styles.paragraph` (sans effet ; 02-calage corrigé). `formats.Intertitre-2.size` 15 → 17 : `compare-pdfs` montre 5 pages différentes (celles qui portent des sous-sections), même pagination.
 - Aucune tâche planifiée `doc-pdf-*` restante ; dossier d'essai supprimé (accord donné).
-- Le cache installé du plugin reste en 0.3.x tant qu'il n'est pas réinstallé.
 - SHA du commit de fin de phase : 5f4869c

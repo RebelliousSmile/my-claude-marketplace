@@ -7,7 +7,7 @@
   { "prompt": "compare ce rendu avec l'essai précédent", "expect_action": "calage" },
   { "prompt": "branche cette maquette au projet et génère le PDF du guide", "expect_action": "production" },
   { "prompt": "init le projet avec la maquette calée puis pdf compose", "expect_action": "production" },
-  { "prompt": "mets à jour le PDF du guide vendeur avec la maquette", "expect_action": "production" },
+  { "prompt": "mets à jour le PDF du guide vendeur", "expect_action": null },
   { "prompt": "régénère les ICML du guide partenaire", "expect_action": null },
   { "prompt": "fusionne les chapitres du guide administrateur", "expect_action": null },
   { "prompt": "Pandoc est introuvable, que faire pour lancer icml ?", "expect_action": null }

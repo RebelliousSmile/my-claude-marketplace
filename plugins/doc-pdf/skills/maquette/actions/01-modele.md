@@ -6,7 +6,7 @@ Obtenir une maquette valide et son spécimen, avec les ICML et les modèles IDML
 
 ## Entrées
 
-- Le dossier cible de la maquette (hors du projet client, dépôt dédié recommandé).
+- Le dossier cible de la maquette (hors du projet client, dépôt dédié recommandé). Le demander et le faire confirmer par l'utilisateur avant `maquette init` ; ne jamais en choisir un dans un projet client. Un distant pour ce dépôt n'est créé qu'avec son accord.
 - Un nom (`[a-z0-9-]+`, défaut : nom du dossier), une couleur d'axe par défaut, un logo SVG.
 
 ## Processus

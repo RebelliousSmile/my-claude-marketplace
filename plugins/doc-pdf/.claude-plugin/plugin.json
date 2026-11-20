@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "doc-pdf",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Moteur interprojets de documentation PDF : Markdown du dépôt client vers ICML/IDML selon une maquette externe, mise à jour du .indd et export PDF par InDesign ; création et calage de maquettes (skill maquette).",
   "author": {
     "name": "François-Xavier Guillois"

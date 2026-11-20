@@ -13,10 +13,10 @@ Composer le spécimen dans InDesign, lire les pages rendues et ajuster `maquette
 
 1. Composer le spécimen : `node <DOC_PDF_PLUGIN_ROOT>/engine/cli.js pdf compose --guide specimen --config <dossier>/specimen/documentation.config.json`.
 2. Rendre les pages : `pdftoppm -png -r 60 <pdf> <préfixe>`, puis les lire.
-3. Choisir un seul écart, modifier la valeur correspondante de `maquette.json`, regénérer (`idml`) et recomposer (`pdf compose --remplacer`). Les tailles, interlignes et couleurs des styles se règlent dans `formats.<style>` (par exemple `formats.Intertitre-2.size`) ; les `attributes` de `styles.paragraph` ne pilotent pas le rendu.
-4. Comparer avec l'essai précédent (`compare-pdfs`) : seules les pages attendues doivent changer. Sinon annuler le réglage.
+3. Choisir un seul écart et annoncer à l'utilisateur les pages qui doivent changer, puis modifier la valeur correspondante de `maquette.json`, regénérer (`idml`) et recomposer (`pdf compose --remplacer`). Les tailles, interlignes et couleurs des styles se règlent dans `formats.<style>` (par exemple `formats.Intertitre-2.size`) ; les `attributes` de `styles.paragraph` ne servent qu'aux définitions de styles des ICML et `formats` l'emporte dans l'IDML : ne pas les retirer, ne pas s'y fier pour régler le rendu.
+4. Comparer avec l'essai précédent (`compare-pdfs`) : seules les pages annoncées à l'étape 3 doivent changer. Sinon annuler le réglage.
 5. Vérifier qu'aucune tâche planifiée `doc-pdf-*` ne reste.
-6. Répéter jusqu'à ce que le spécimen soit juste.
+6. Répéter, un écart à la fois, jusqu'à ce que l'utilisateur valide le rendu du spécimen : c'est lui qui clôt le calage.
 
 ## Limites
 

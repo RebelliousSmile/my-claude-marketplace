@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.1
+
+- Skill `doc-pdf:maquette` : le dossier cible de la maquette est confirmé par l'utilisateur avant `maquette init`, le calage annonce les pages attendues et se clôt sur la validation de l'utilisateur, la production lit le constat d'empreintes et renvoie tout défaut de rendu vers le calage.
+- Prompt d'évaluation « mets à jour le PDF du guide vendeur » reclassé hors de la skill `maquette`.
+
 ## 0.5.0
 
 - Skill `doc-pdf:maquette` : méthode rodée en trois temps (modèle, calage, production) pour créer, caler et brancher une maquette, avec ses evals de routage.

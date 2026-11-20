@@ -52,7 +52,7 @@ Sans maquette existante, partir de `modele`. Avec une maquette déjà calée, al
 - Piloter InDesign (`pdf compose`, `pdf update`, `compare-engines --pdf`) exige l'accord explicite de l'utilisateur, le document fermé et aucun terminal administrateur (tâche planifiée élevée). Sans accord, donner la commande au lieu de la lancer.
 - Prérequis : Pandoc dans le PATH pour `icml` et `pdf` ; `pdftoppm` pour lire les pages. Sans eux, s'arrêter avant d'écrire.
 - Un seul réglage de `maquette.json` à la fois, relu sur les pages rendues, jamais deviné.
-- Le dépôt qui porte une maquette (ex. Scriptami) n'a de distant qu'avec l'accord de l'utilisateur.
+- Le dépôt qui porte une maquette n'a de distant qu'avec l'accord de l'utilisateur.
 - Le dossier `specimen/output/` ne se versionne pas.
 
 ## References
