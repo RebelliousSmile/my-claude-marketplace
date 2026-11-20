@@ -3,7 +3,7 @@ name: doc-pdf
 description: >-
   Génère la documentation PDF d'un projet client depuis son Markdown : ICML et IDML de la charte Scriptami, mise à jour du .indd existant et export PDF par InDesign.
 author: François-Xavier Guillois
-version: 0.1.0
+version: 0.2.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash
@@ -32,6 +32,7 @@ Une seule skill, plusieurs commandes du moteur. Les lancer avec `node <DOC_PDF_P
 | `idml` | Modèle IDML de la charte (`--gabarits`, `--guide <id>`) | aucun |
 | `pdf build` | Compose un chapitre d'essai dans InDesign | Pandoc, InDesign |
 | `pdf update` | Met à jour le `.indd` du guide et exporte le PDF | Pandoc, InDesign |
+| `pdf compose` | Place tous les chapitres (ICML liés) dans le modèle IDML, écrit le `.indd` et le PDF (`--remplacer`, `--sortie <fichier.indd>`) | Pandoc, InDesign |
 
 ## Default flow
 

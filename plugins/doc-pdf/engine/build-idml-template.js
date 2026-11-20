@@ -222,6 +222,8 @@ const FORMATS = Object.freeze({
       attrs: {
         TopBorderStrokeWeight: '1.5', TopBorderStrokeColor: colorRef(TEXT),
         BottomBorderStrokeWeight: '1.5', BottomBorderStrokeColor: colorRef(TEXT),
+        // Sans ces valeurs, InDesign trace le contour noir de 1 pt de ses réglages par défaut.
+        LeftBorderStrokeWeight: '0', RightBorderStrokeWeight: '0',
         AlternatingFillsType: 'AlternatingRows',
         StartRowFillColor: NONE_SWATCH, StartRowFillCount: '1',
         EndRowFillColor: colorRef('Papier chaud'), EndRowFillCount: '1'
@@ -232,7 +234,11 @@ const FORMATS = Object.freeze({
     'Cellule': {
       attrs: {
         AppliedParagraphStyle: ref('ParagraphStyle', 'Tableau texte'),
-        TopInset: '3', BottomInset: '3', LeftInset: '5', RightInset: '5'
+        TopInset: '3', BottomInset: '3', LeftInset: '5', RightInset: '5',
+        // Filets horizontaux fins entre les lignes, aucun filet vertical ; l'IDML ne porte pas les pointillés.
+        TopEdgeStrokeWeight: '0.5', TopEdgeStrokeColor: colorRef('Axe vif'),
+        BottomEdgeStrokeWeight: '0.5', BottomEdgeStrokeColor: colorRef('Axe vif'),
+        LeftEdgeStrokeWeight: '0', RightEdgeStrokeWeight: '0'
       }
     }
   },
@@ -1030,6 +1036,11 @@ ${items.join('\n')}
 }
 
 const SUMMARY_PAGE_LABEL = 'p. …';
+/** « p. N » si la configuration du guide donne la page du chapitre (clé « N » sans zéro initial), sinon le libellé à remplacer. */
+function summaryPageLabel(pageNumbers, number) {
+  const page = pageNumbers ? pageNumbers[String(Number.parseInt(number, 10))] : undefined;
+  return page === undefined ? SUMMARY_PAGE_LABEL : `p. ${page}`;
+}
 const SUMMARY_LABEL = 'Sommaire';
 const SUMMARY_LINE = /^(\d+)\t(.+)$/;
 
@@ -1044,7 +1055,7 @@ function summaryBox() {
  * couverture : surtitre sous filet épais, une ligne par chapitre, filet épais final.
  * Les numéros de page sont à renseigner (ou à remplacer par une table des matières InDesign).
  */
-function summaryParagraphs(cover) {
+function summaryParagraphs(cover, pageNumbers) {
   const lines = cover.filter(item => item.style === 'Sommaire-ligne')
     .map(item => SUMMARY_LINE.exec(item.text))
     .filter(Boolean);
@@ -1055,7 +1066,7 @@ function summaryParagraphs(cover) {
       { text: '\t' },
       { text: title },
       { text: '\t' },
-      { text: SUMMARY_PAGE_LABEL, character: 'Sommaire-page' }
+      { text: summaryPageLabel(pageNumbers, number), character: 'Sommaire-page' }
     ],
     index === lines.length - 1 ? { attrs: ruleBelow(DARK, 3, 9) } : {}));
   return [
@@ -1207,7 +1218,7 @@ function chapterOpening(cover) {
  * sont libres, posés sur la page, donc modifiables sans surcharge d'élément de gabarit.
  * @returns {{ spreads: object[], stories: { self: string, xml: string }[] }}
  */
-function filledPages({ cover, end, subtitle = DEFAULT_SUBTITLE, label = 'Guide', verb = DEFAULT_VERB, tag = DEFAULT_TYPE }) {
+function filledPages({ cover, end, pages: pageNumbers, subtitle = DEFAULT_SUBTITLE, label = 'Guide', verb = DEFAULT_VERB, tag = DEFAULT_TYPE }) {
   const coverBuilder = masterBuilder('Page-C');
   coverTexts(coverBuilder, {
     tag,
@@ -1217,7 +1228,7 @@ function filledPages({ cover, end, subtitle = DEFAULT_SUBTITLE, label = 'Guide',
     version: textOfStyle(cover, 'Surtitre') || ''
   });
   const summaryBuilder = masterBuilder('Page-Sommaire');
-  summaryBuilder.frame('sommaire', summaryBox(), summaryParagraphs(cover));
+  summaryBuilder.frame('sommaire', summaryBox(), summaryParagraphs(cover, pageNumbers));
   const opening = chapterOpening(cover);
   const boxes = chapterBoxes();
   summaryBuilder.frame('chapitre-surtitre', boxes.kicker, opening.kicker);

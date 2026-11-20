@@ -21,6 +21,7 @@ node <racine du plugin>/engine/cli.js merge --check
 node <racine du plugin>/engine/cli.js icml [--force]
 node <racine du plugin>/engine/cli.js idml --gabarits --guide <id>
 node <racine du plugin>/engine/cli.js pdf update --guide <id>
+node <racine du plugin>/engine/cli.js pdf compose --guide <id> [--sortie copie.indd]   # premier .indd, ou refonte
 ```
 
 Toutes les commandes acceptent `--config <chemin>` ; sinon la configuration est cherchée en remontant depuis le dossier courant.

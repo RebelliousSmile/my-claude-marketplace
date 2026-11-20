@@ -15,7 +15,7 @@ function composeChapter() {
     doc = doc.save(toFile(paths.document));
 
     // Repères du modèle : chaque page est retrouvée par un de ses cadres nommés.
-    var endPage = requirePage(doc, 'conseils-fin');
+    requirePage(doc, 'conseils-fin'); // la page de fin doit exister ; flowBody insère après la dernière page de corps
     var openingPage = requirePage(doc, 'chapitre-titre');
     var leftBodyPage = requirePage(doc, 'corps-gauche');
     var rightBodyPage = requirePage(doc, 'corps-droite');
@@ -55,7 +55,7 @@ function composeChapter() {
     rightFrame.contents = '';
     leftFrame.nextTextFrame = rightFrame;
     var bodyFrames = [leftFrame, rightFrame];
-    var added = flowBody(doc, bodyFrames, endPage, 'Courante');
+    var added = flowBody(doc, bodyFrames, 'Courante');
     report.push('pages de corps ajoutées : ' + added);
 
     var overflowing = bodyFrames[bodyFrames.length - 1].overflows;
@@ -68,15 +68,6 @@ function composeChapter() {
     doc.close(SaveOptions.NO);
   }
   return report.join('\n');
-}
-
-function hasFrame(page, name) {
-  var items = page.allPageItems;
-  var index;
-  for (index = 0; index < items.length; index += 1) {
-    if (items[index].name === name) return true;
-  }
-  return false;
 }
 
 composeChapter();

@@ -197,6 +197,20 @@ Pour changer le sous-titre, le texte du pied, le contact ou les conseils d'un gu
 
 La page de fin répond à ce que chaque lecteur cherche : le client (partenaire) y trouve son interlocuteur technique, le vendeur son responsable de showroom, l'administrateur le moyen de joindre l'éditeur. Les coordonnées du client et du vendeur sont encore « À renseigner » dans le fichier : les compléter avant de diffuser ces guides. `sousTitre`, titres, accroches et conseils sont des propositions à relire.
 
+## 3 ter. Composer un guide entier (`pdf compose`)
+
+`pdf compose --guide <id> [--remplacer] [--sortie <fichier.indd>]` place tous les chapitres dans une copie du modèle IDML, enregistre le `.indd` et exporte le PDF à côté. InDesign doit être fermé ; un `.indd` existant n'est remplacé qu'avec `--remplacer` (copie `<nom>.avant-<horodatage>.indd` faite avant).
+
+Ce que la commande fait seule :
+
+- ouverture de chaque chapitre sur une page de droite (une page blanche est intercalée si besoin, signalée dans le rapport) ;
+- cadres des pages dupliquées replacés sur la géométrie du premier jeu de pages ;
+- titre et sommaire d'ouverture : cadre agrandi, puis texte réduit (jusqu'à 60 %) tant qu'il déborde, la réduction étant signalée ;
+- en-têtes de droite (numéro et titre du chapitre) et de gauche (titre du guide, version) ;
+- corps chaîné sur autant de pages que nécessaire.
+
+Ce qu'elle laisse à la main : colonne marginale et renvois (cadres vidés), numéros de page du sommaire (clé `pages` de `pages-gabarit.json`). Les lignes `A CONTROLER` du rapport listent les débordements et les réductions de texte.
+
 ## 4. Mettre à jour après une modification des guides
 
 1. Corriger le chapitre dans le Markdown, sous `aidd_docs/guides/<guide>/`.

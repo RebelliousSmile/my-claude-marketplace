@@ -114,11 +114,7 @@ function growStory(doc, story, notes) {
     notes.push('corps déborde dans un cadre unique : pages à ajouter à la main');
     return 0;
   }
-  var lastPage = frames[frames.length - 1].parentPage;
-  var next = null;
-  var position = lastPage.documentOffset + 1;
-  if (position < doc.pages.length) next = doc.pages[position];
-  return flowBody(doc, frames, next, 'Courante');
+  return flowBody(doc, frames, 'Courante');
 }
 
 function updateDocument() {

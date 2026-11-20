@@ -144,6 +144,18 @@ describe('build-idml-template', () => {
     expect(style).toContain('RuleBelowColor="Color/Axe%20vif"');
   });
 
+  it('neutralise les contours par défaut d’InDesign sur les tableaux : filets horizontaux seuls, aucun filet vertical', () => {
+    const styles = byName(files(), 'Resources/Styles.xml');
+    const table = styles.match(/<TableStyle [^>]*Name="Tableau"[^>]*>/)[0];
+    expect(table).toContain('LeftBorderStrokeWeight="0"');
+    expect(table).toContain('RightBorderStrokeWeight="0"');
+    const cell = styles.match(/<CellStyle [^>]*Name="Cellule"[^>]*>/)[0];
+    expect(cell).toContain('LeftEdgeStrokeWeight="0"');
+    expect(cell).toContain('RightEdgeStrokeWeight="0"');
+    expect(cell).toContain('TopEdgeStrokeWeight="0.5"');
+    expect(cell).toContain('BottomEdgeStrokeWeight="0.5"');
+  });
+
   it('rend chaque référence de style et de nuance résolvable', () => {
     const list = files({ masters: true });
     const known = new Set([...selfIds(byName(list, 'Resources/Styles.xml')), ...selfIds(byName(list, 'Resources/Graphic.xml'))]);
@@ -530,6 +542,17 @@ describe('build-idml-template : pages remplies', () => {
     expect(story).toContain('<Content>\t</Content>');
     expect(story).toContain('RuleBelowOn="true"');
     expect(story).toContain('RuleBelowLineWeight="3"');
+  });
+
+  it('numérote le sommaire d’après les pages du guide, « p. … » en l’absence de numéro', () => {
+    const summaryOf = withPages => {
+      const list = files({ masters: true, pages: withPages });
+      const story = storyTexts(list).find(text => text.includes('Prendre en main'));
+      return [...story.matchAll(/CharacterStyle\/Sommaire-page[^>]*>\s*<Content>([^<]*)<\/Content>/g)].map(m => m[1]);
+    };
+    expect(summaryOf({ ...pages, pages: { 1: 3, 2: 11 } })).toEqual(['p. 3', 'p. 11']);
+    expect(summaryOf({ ...pages, pages: { 1: 3 } })).toEqual(['p. 3', 'p. …']);
+    expect(summaryOf(pages)).toEqual(['p. …', 'p. …']);
   });
 
   it('définit la ligne de sommaire avec une tabulation à gauche et une à droite', () => {

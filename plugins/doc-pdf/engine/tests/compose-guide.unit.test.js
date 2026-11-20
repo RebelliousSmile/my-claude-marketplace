@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { ComposeError, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, backupDocument, stamp, main } = require('../compose-guide');
+const { ComposeError, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main } = require('../compose-guide');
 const { resolveConfig } = require('../guide-config');
 
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
@@ -27,12 +27,12 @@ describe('compose-guide', () => {
   describe('parseArgs', () => {
     it('lit le guide et le chapitre', () => {
       expect(parseArgs(['--guide', 'guide-vendeur', '--chapitre', '01-vue-ensemble']))
-        .toEqual({ command: 'build', guide: 'guide-vendeur', chapitre: '01-vue-ensemble', configPath: null });
+        .toEqual({ command: 'build', guide: 'guide-vendeur', chapitre: '01-vue-ensemble', sortie: null, configPath: null });
     });
 
     it("lit --config, où qu'il soit placé", () => {
       expect(parseArgs(['--config', 'x/doc.json', '--guide', 'vendeur', '--chapitre', '01-a']))
-        .toEqual({ command: 'build', guide: 'vendeur', chapitre: '01-a', configPath: 'x/doc.json' });
+        .toEqual({ command: 'build', guide: 'vendeur', chapitre: '01-a', sortie: null, configPath: 'x/doc.json' });
     });
 
     it('ignore le -- transmis par pnpm', () => {
@@ -41,7 +41,7 @@ describe('compose-guide', () => {
 
     it('lit la commande update, qui ne veut pas de chapitre', () => {
       expect(parseArgs(['update', '--guide', 'vendeur']))
-        .toEqual({ command: 'update', guide: 'vendeur', chapitre: null, configPath: null });
+        .toEqual({ command: 'update', guide: 'vendeur', chapitre: null, sortie: null, configPath: null });
       expect(parseArgs(['--', 'update', '--guide', 'vendeur', '--force']).force).toBe(true);
     });
 
@@ -133,6 +133,70 @@ describe('compose-guide', () => {
     });
   });
 
+  describe('compose', () => {
+    it('lit --remplacer et --sortie, sans chapitre', () => {
+      expect(parseArgs(['compose', '--guide', 'vendeur', '--remplacer', '--sortie', 'x/copie.indd']))
+        .toEqual({ command: 'compose', guide: 'vendeur', chapitre: null, sortie: 'x/copie.indd', remplacer: true, configPath: null });
+    });
+
+    it.each([
+      [['compose'], /Usage/],
+      [['compose', '--guide', 'vendeur', '--chapitre', '01-a'], /entier/],
+      [['compose', '--guide', 'vendeur', '--force'], /--force ne vaut que pour/],
+      [['update', '--guide', 'vendeur', '--remplacer'], /ne valent que pour la commande compose/],
+      [['--guide', 'vendeur', '--chapitre', '01-a', '--sortie', 'x.indd'], /ne valent que pour la commande compose/]
+    ])('refuse %j', (argv, message) => {
+      expect(() => parseArgs(argv)).toThrow(message);
+    });
+
+    const withDocument = (document) => resolveConfig({
+      sourceDir: '.',
+      outputDir: '../output',
+      pagesFile: 'pages.json',
+      versionFile: '../package.json',
+      pdfPreset: 'Qualité optimale',
+      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', ...(document ? { document } : {}) }]
+    }, path.resolve('/r/docs/documentation.config.json'));
+
+    it('compose dans le .indd de la configuration, PDF à côté, modèle sous pdf-essai', () => {
+      const paths = composePathsFor({ guide: 'vendeur', sortie: null }, withDocument('guides/vendeur.indd'));
+      expect(slash(paths.document)).toBe('/r/docs/guides/vendeur.indd');
+      expect(slash(paths.pdf)).toBe('/r/docs/guides/vendeur.pdf');
+      expect(slash(paths.template)).toBe('/r/output/pdf-essai/scriptami-orange-vendeur.idml');
+      expect(slash(paths.icmlDir)).toBe('/r/output/icml/guide-vendeur');
+      expect(slash(paths.commonDir)).toBe('/r/output/icml/common');
+      expect(slash(paths.pagesDir)).toBe('/r/output/icml/guide-vendeur/00-pages');
+      expect(paths.preset).toBe('Qualité optimale');
+    });
+
+    it('--sortie remplace le champ document et peut en tenir lieu', () => {
+      const paths = composePathsFor({ guide: 'vendeur', sortie: 'copie/essai.indd' }, withDocument(null));
+      expect(path.basename(paths.document)).toBe('essai.indd');
+      expect(path.basename(paths.pdf)).toBe('essai.pdf');
+    });
+
+    it('refuse sans document ni --sortie, ou une extension autre que .indd', () => {
+      expect(() => composePathsFor({ guide: 'vendeur', sortie: null }, withDocument(null))).toThrow(/--sortie/);
+      expect(() => composePathsFor({ guide: 'vendeur', sortie: 'x.pdf' }, withDocument(null))).toThrow(/\.indd/);
+    });
+
+    describe('chapterNamesIn', () => {
+      let dir;
+      beforeEach(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), 'doc-pdf-chapters-')); });
+      afterEach(() => fs.rmSync(dir, { recursive: true, force: true }));
+
+      it('liste les dossiers 0N-nom triés, hors 00-pages et fichiers', () => {
+        ['02-b', '01-a', '00-pages', 'common', 'autre'].forEach(name => fs.mkdirSync(path.join(dir, name)));
+        fs.writeFileSync(path.join(dir, '03-fichier'), '');
+        expect(chapterNamesIn(dir)).toEqual(['01-a', '02-b']);
+      });
+
+      it('rend une liste vide si le dossier manque', () => {
+        expect(chapterNamesIn(path.join(dir, 'absent'))).toEqual([]);
+      });
+    });
+  });
+
   describe('backupDocument', () => {
     let dir;
     beforeEach(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cerascan-backup-')); });
@@ -162,6 +226,73 @@ describe('compose-guide', () => {
 
     it("l'horodatage est sur deux chiffres partout", () => {
       expect(stamp(new Date(2026, 0, 2, 3, 4, 5))).toBe('20260102-030405');
+    });
+  });
+
+  describe('constat des fichiers avant/après', () => {
+    let dir;
+    beforeEach(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cerascan-diff-')); });
+    afterEach(() => fs.rmSync(dir, { recursive: true, force: true }));
+
+    const write = (name, content) => {
+      const file = path.join(dir, name);
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, content);
+      return file;
+    };
+    const pathsIn = () => ({
+      icmlDir: path.join(dir, 'icml', 'guide'),
+      commonDir: path.join(dir, 'icml', 'common'),
+      template: path.join(dir, 'guide.idml'),
+      document: path.join(dir, 'guide.indd'),
+      pdf: path.join(dir, 'guide.pdf')
+    });
+
+    it("relève les ICML du guide et communs, l'IDML, le .indd et le PDF ; un fichier absent vaut null", () => {
+      write('icml/guide/01-a/a.icml', 'a');
+      write('icml/common/c.icml', 'c');
+      write('guide.idml', 'i');
+      const snapshot = snapshotOutputs(pathsIn());
+      expect(Object.keys(snapshot.icml)).toHaveLength(2);
+      expect(Object.values(snapshot.idml)).toHaveLength(1);
+      expect(Object.values(snapshot.indd)).toEqual([null]);
+      expect(Object.values(snapshot.pdf)).toEqual([null]);
+    });
+
+    it('contenu identique : rien de modifié ni de créé', () => {
+      write('icml/guide/01-a/a.icml', 'a');
+      const before = snapshotOutputs(pathsIn());
+      const diff = diffSnapshots(before, snapshotOutputs(pathsIn()));
+      expect(diff.icml).toEqual({ total: 1, created: 0, changed: 0 });
+    });
+
+    it('contenu modifié ou fichier apparu : compté en modifié ou en créé', () => {
+      const a = write('icml/guide/01-a/a.icml', 'a');
+      const before = snapshotOutputs(pathsIn());
+      fs.writeFileSync(a, 'a2');
+      write('guide.pdf', 'pdf');
+      const diff = diffSnapshots(before, snapshotOutputs(pathsIn()));
+      expect(diff.icml).toEqual({ total: 1, created: 0, changed: 1 });
+      expect(diff.pdf).toEqual({ total: 1, created: 1, changed: 0 });
+      expect(diff.indd).toEqual({ total: 0, created: 0, changed: 0 });
+    });
+
+    it("le constat nomme chaque famille et alerte quand aucun ICML n'a changé", () => {
+      write('icml/guide/01-a/a.icml', 'a');
+      const before = snapshotOutputs(pathsIn());
+      const report = formatChangeReport(diffSnapshots(before, snapshotOutputs(pathsIn())));
+      expect(report).toMatch(/ICML : 0 modifié sur 1/);
+      expect(report).toMatch(/PDF : 0 modifié sur 0/);
+      expect(report).toMatch(/Aucun ICML n'a changé/);
+    });
+
+    it("pas d'alerte quand un ICML a changé", () => {
+      const a = write('icml/guide/01-a/a.icml', 'a');
+      const before = snapshotOutputs(pathsIn());
+      fs.writeFileSync(a, 'b');
+      const report = formatChangeReport(diffSnapshots(before, snapshotOutputs(pathsIn())));
+      expect(report).toMatch(/ICML : 1 modifié sur 1/);
+      expect(report).not.toMatch(/Aucun ICML/);
     });
   });
 

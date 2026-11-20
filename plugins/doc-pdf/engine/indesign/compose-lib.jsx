@@ -48,6 +48,16 @@ function requirePage(doc, name) {
   return page;
 }
 
+/** Vrai si la page porte (ou surcharge) un cadre de ce nom. */
+function hasFrame(page, name) {
+  var items = page.allPageItems;
+  var index;
+  for (index = 0; index < items.length; index += 1) {
+    if (items[index].name === name) return true;
+  }
+  return false;
+}
+
 /** Remplace le contenu d'un cadre par le texte d'un ICML. */
 function placeIcml(frame, path) {
   var file = toFile(path);
@@ -64,21 +74,39 @@ function masterNamed(doc, fragment) {
   fail('Gabarit introuvable : ' + fragment);
 }
 
+/** Dernier cadre de la liste posé sur une page du côté demandé ; null si aucun. */
+function lastFrameOnSide(bodyFrames, side) {
+  var index;
+  for (index = bodyFrames.length - 1; index >= 0; index -= 1) {
+    var page = bodyFrames[index].parentPage;
+    if (page !== null && page !== undefined && page.side === side) return bodyFrames[index];
+  }
+  return null;
+}
+
 /**
- * Chaîne le texte de `first` sur de nouveaux cadres, une page de plus tant que le texte déborde.
- * `bodyFrames` : cadres de corps déjà posés, dans l'ordre de lecture (au moins deux : un par côté),
- * `beforePage` : page devant laquelle insérer (la page de fin). Renvoie le nombre de pages ajoutées.
+ * Chaîne le texte du dernier cadre sur de nouveaux cadres, une page de plus tant que le texte déborde.
+ * `bodyFrames` : cadres de corps déjà posés, dans l'ordre de lecture (au moins deux : un par côté).
+ * Chaque page est insérée juste après la page du dernier cadre (l'ordre de lecture suit l'ordre des pages),
+ * et son cadre reprend la géométrie d'un cadre déjà posé sur une page du même côté (gauche/droite) :
+ * copier le cadre « deux avant » mettait le corps du mauvais côté dès la deuxième paire.
+ * Renvoie le nombre de pages ajoutées.
  */
-function flowBody(doc, bodyFrames, beforePage, masterFragment) {
+function flowBody(doc, bodyFrames, masterFragment) {
   var added = 0;
   var master = masterNamed(doc, masterFragment);
   var last = bodyFrames[bodyFrames.length - 1];
   while (last.overflows) {
     if (added >= MAX_ADDED_PAGES) fail('Plus de ' + MAX_ADDED_PAGES + ' pages ajoutées : composition interrompue.');
-    var reference = bodyFrames[bodyFrames.length - 2];
-    var referencePage = reference.parentPage;
-    var page = doc.pages.add(LocationOptions.BEFORE, beforePage);
+    var previousPage = last.parentPage;
+    var page = doc.pages.add(LocationOptions.AFTER, previousPage);
     page.appliedMaster = master;
+    if (page.documentOffset !== previousPage.documentOffset + 1) {
+      fail('Page ajoutée hors de l\'ordre de lecture (page ' + page.name + ' après ' + previousPage.name + ').');
+    }
+    var reference = lastFrameOnSide(bodyFrames, page.side);
+    if (reference === null) fail('Aucun cadre de corps modèle pour le côté de la page ' + page.name + '.');
+    var referencePage = reference.parentPage;
     var offset = [
       reference.geometricBounds[0] - referencePage.bounds[0],
       reference.geometricBounds[1] - referencePage.bounds[1],

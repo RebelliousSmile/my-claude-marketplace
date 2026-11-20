@@ -9,7 +9,7 @@
  *   merge  [--check]           versions fusionnées des guides (build-merged-guides.js)
  *   icml   [--force] …         régénère les ICML (export-icml.js) ; Pandoc requis
  *   idml   [--gabarits] …      modèle IDML de la charte (build-idml-template.js)
- *   pdf    build|update …      pilote InDesign (compose-guide.js) ; Pandoc et InDesign requis
+ *   pdf    build|update|compose …  pilote InDesign (compose-guide.js) ; Pandoc et InDesign requis
  *   version                    version du plugin
  *
  * Toutes les commandes acceptent `--config <chemin>` (sinon recherche en remontant depuis le dossier courant).
@@ -67,7 +67,7 @@ function usage() {
     '  merge [--check]          versions fusionnées des guides',
     '  icml [--force]           régénère les ICML (Pandoc requis)',
     '  idml [--gabarits]        modèle IDML de la charte',
-    '  pdf build|update         pilote InDesign (Pandoc et InDesign requis)',
+    '  pdf build|update|compose pilote InDesign (Pandoc et InDesign requis)',
     '  version                  version du plugin',
     '',
     'Toutes les commandes acceptent --config <chemin>.'
