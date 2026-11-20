@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- `pdf compose` n'intercale plus de page blanche avant une ouverture de chapitre : l'ouverture suit la fin du chapitre précédent, à gauche comme à droite (à gauche, les deux premières pages de corps se copient dans l'ordre droite puis gauche). Script InDesign non exécuté par l'agent : à contrôler sur une recomposition (`pdf compose --remplacer`) ; les `.indd` déjà composés gardent leurs pages blanches tant qu'ils ne sont pas recomposés.
+
 ## 0.2.0
 
 - Commande `pdf compose` : compose tous les chapitres d'un guide dans le modèle IDML (ouverture, corps chaîné, en-têtes, pages blanches pour garder chaque ouverture à droite), crée les liens ICML qu'`update` rafraîchira ensuite. Un `.indd` existant n'est remplacé qu'avec `--remplacer` (copie de sauvegarde). Script InDesign non vérifié : colonne marginale et renvois laissés vides.

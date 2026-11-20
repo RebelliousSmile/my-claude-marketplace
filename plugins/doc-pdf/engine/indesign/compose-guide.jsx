@@ -4,7 +4,7 @@
 //   template (IDML de la charte), document (.indd écrit), pdf, preset, icmlDir, chapters (noms de dossiers triés).
 // Couverture, sommaire et page de fin gardent leur contenu : le générateur d'IDML les a déjà remplis.
 // Par chapitre : ouverture (5 ICML), corps chaîné sur autant de pages que nécessaire, en-têtes de la page droite.
-// Chaque ouverture tombe sur une page de droite (une page blanche est intercalée si besoin).
+// Aucune page blanche : une ouverture suit directement la fin du chapitre précédent, à droite comme à gauche.
 // Pages dupliquées : cadres nommés recalés sur la géométrie du premier kit (la copie les décalait).
 // Titre et sommaire d'ouverture : cadre agrandi puis texte réduit tant qu'il déborde.
 // En-têtes de gauche (titre du guide, version) : placés sur toutes les pages de gauche dont le gabarit les porte.
@@ -189,22 +189,33 @@ function makeReserve(doc, kit) {
   return { opening: opening, left: left, right: right, pages: pages };
 }
 
-/** Trois pages d'un nouveau chapitre copiées de la réserve, juste après `after`, ouverture à droite. */
+/**
+ * Trois pages d'un nouveau chapitre copiées de la réserve, juste après `after`, sans page blanche :
+ * l'ouverture suit directement la dernière page du chapitre précédent. Quand elle tombe à gauche, le corps
+ * commence sur une page de droite : les deux pages de corps se copient alors dans l'ordre inverse
+ * (droite puis gauche), chacune gardant la géométrie de son côté. `bodyPages` donne l'ordre de lecture.
+ */
 function appendKit(doc, reserve, after, notes, snapshots) {
-  var reference = after;
-  if (reference.side === PageSideOptions.RIGHT_HAND) {
-    reference = addBlankPage(doc, LocationOptions.AFTER, reference);
-    notes.push('page blanche intercalée après la page ' + after.name);
+  var opening = reserve.opening.duplicate(LocationOptions.AFTER, after);
+  var first;
+  var second;
+  var left;
+  var right;
+  if (opening.side === PageSideOptions.RIGHT_HAND) {
+    left = reserve.left.duplicate(LocationOptions.AFTER, opening);
+    right = reserve.right.duplicate(LocationOptions.AFTER, left);
+    first = left;
+    second = right;
+  } else {
+    right = reserve.right.duplicate(LocationOptions.AFTER, opening);
+    left = reserve.left.duplicate(LocationOptions.AFTER, right);
+    first = right;
+    second = left;
+    notes.push('ouverture à gauche (page ' + opening.name + ') : pas de page blanche intercalée');
   }
-  var opening = reserve.opening.duplicate(LocationOptions.AFTER, reference);
-  if (opening.side !== PageSideOptions.RIGHT_HAND) {
-    fail('Ouverture de chapitre hors page de droite (page ' + opening.name + ').');
-  }
-  var left = reserve.left.duplicate(LocationOptions.AFTER, opening);
-  var right = reserve.right.duplicate(LocationOptions.AFTER, left);
   // La copie décale les cadres locaux : on les replace d'après le premier kit, resté en place.
   var moved = restoreGeometry(opening, snapshots.opening) + restoreGeometry(left, snapshots.left) + restoreGeometry(right, snapshots.right);
-  return { opening: opening, left: left, right: right, moved: moved };
+  return { opening: opening, left: left, right: right, bodyPages: [first, second], moved: moved };
 }
 
 function placeOpening(kit, chapterDir, notes, chapterName) {
@@ -295,6 +306,7 @@ function composeGuide() {
       left: requirePage(doc, 'corps-gauche'),
       right: requirePage(doc, 'corps-droite')
     };
+    firstKit.bodyPages = [firstKit.left, firstKit.right];
     removeExampleBodyPages(doc, firstKit.left, firstKit.right);
     if (firstKit.opening.side !== PageSideOptions.RIGHT_HAND) {
       notes.push('la première ouverture de chapitre du modèle n\'est pas sur une page de droite (page ' + firstKit.opening.name + ')');
@@ -329,10 +341,13 @@ function composeGuide() {
       step = chapterName + ' : corps du chapitre';
       var leftFrame = frameNamed(kit.left, 'corps-gauche');
       var rightFrame = frameNamed(kit.right, 'corps-droite');
-      placeIcml(leftFrame, chapterDir + '/corps.icml');
-      rightFrame.contents = '';
-      leftFrame.nextTextFrame = rightFrame;
-      var bodyFrames = [leftFrame, rightFrame];
+      // Ordre de lecture : gauche puis droite, ou droite puis gauche quand l'ouverture est à gauche.
+      var firstFrame = kit.bodyPages[0] === kit.left ? leftFrame : rightFrame;
+      var secondFrame = firstFrame === leftFrame ? rightFrame : leftFrame;
+      placeIcml(firstFrame, chapterDir + '/corps.icml');
+      secondFrame.contents = '';
+      firstFrame.nextTextFrame = secondFrame;
+      var bodyFrames = [firstFrame, secondFrame];
       addedPages += flowBody(doc, bodyFrames, 'Courante');
       if (bodyFrames[bodyFrames.length - 1].overflows) fail(chapterName + ' : le texte du corps déborde encore après la composition.');
       kit.lastPage = bodyFrames[bodyFrames.length - 1].parentPage;

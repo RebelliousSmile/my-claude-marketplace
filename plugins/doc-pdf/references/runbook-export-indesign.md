@@ -203,7 +203,7 @@ La page de fin répond à ce que chaque lecteur cherche : le client (partenaire)
 
 Ce que la commande fait seule :
 
-- ouverture de chaque chapitre sur une page de droite (une page blanche est intercalée si besoin, signalée dans le rapport) ;
+- ouverture de chaque chapitre à la suite du précédent, sans page blanche : à droite ou à gauche selon la parité (à gauche, le corps commence sur une page de droite ; le cas est signalé dans le rapport) ;
 - cadres des pages dupliquées replacés sur la géométrie du premier jeu de pages ;
 - titre et sommaire d'ouverture : cadre agrandi, puis texte réduit (jusqu'à 60 %) tant qu'il déborde, la réduction étant signalée ;
 - en-têtes de droite (numéro et titre du chapitre) et de gauche (titre du guide, version) ;
