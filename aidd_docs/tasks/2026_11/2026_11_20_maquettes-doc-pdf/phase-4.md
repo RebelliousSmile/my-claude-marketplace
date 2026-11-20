@@ -205,4 +205,4 @@ journey
 - README du dépôt Scriptami écrit ; dépôt git initialisé, rien commité, aucun distant.
 - Cerascan : `codebase-map.md` à jour ; commit séparé à demander.
 - Non fait, accord requis : suppression de `engine/maquettes/scriptami/` (Marketplace), de la charte et du PDF des gabarits dans cerascan.
-- SHA du commit de fin de phase : SHA_A_REMPLACER
+- SHA du commit de fin de phase : 8808cec
