@@ -172,3 +172,9 @@ journey
 | 6 | `consistency.mjs` est vert et la suite Jest du moteur est verte. |
 | 7 | Le PDF du guide vendeur est produit sans terminal administrateur, le nom du préréglage d'export est relevé dans le compte rendu de la phase, InDesign ouvert fait rendre le code 2, et le Planificateur ne garde aucune tâche `doc-pdf-*` après ces deux passages. |
 | 8 | Le compte rendu de la phase porte le SHA du commit de fin de phase du Marketplace. |
+
+## Compte rendu
+
+- Commit de fin de phase (Marketplace, feat/maquettes-doc-pdf) : a8d9e60. Commit cerascan (guides fusionnés) : 4319f43.
+- Préréglage d export retenu par l heuristique : [Qualité supérieure] (à inscrire dans la maquette en phase 3).
+- Composition réelle : guide vendeur, 23 pages, PDF produit sans terminal administrateur, aucune tâche doc-pdf résiduelle. Le test du code 2 (InDesign ouvert) n a pas été joué ; il est couvert par le test sur le texte du script.

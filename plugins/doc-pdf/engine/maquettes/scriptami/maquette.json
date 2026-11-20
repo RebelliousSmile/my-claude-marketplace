@@ -1,0 +1,53 @@
+{
+  "format": 1,
+  "nom": "scriptami",
+  "langue": "French",
+  "page": {
+    "largeurMm": 210,
+    "hauteurMm": 297,
+    "fondPerduMm": 3,
+    "marges": { "hautMm": 12.7, "basMm": 12.7, "interieureMm": 20.6, "exterieureMm": 12.7 },
+    "colonnes": { "texteMm": 130.7, "gouttiereMm": 6.3, "marginaleMm": 39.7 }
+  },
+  "entetePied": {
+    "enteteHaut": 14,
+    "enteteHauteur": 16,
+    "filetY": 34,
+    "pointilleTrait": 1.5,
+    "pointilleBlanc": 1.5,
+    "filetEpaisseur": 0.75,
+    "piedHauteur": 16,
+    "piedTexte": "François-Xavier Guillois · scriptami",
+    "piedLargeur": 300,
+    "coinMm": 17,
+    "folioLargeur": 30,
+    "bandePiedMm": 66
+  },
+  "couleurs": {
+    "Turquoise vif": [52, 184, 154],
+    "Turquoise texte": [27, 122, 101],
+    "Turquoise fond": [227, 243, 238],
+    "Orange vif": [232, 155, 60],
+    "Orange texte": [165, 87, 21],
+    "Orange fond": [251, 236, 216],
+    "Vert vif": [144, 196, 114],
+    "Vert texte": [78, 118, 56],
+    "Vert fond": [234, 242, 224],
+    "Anthracite foncé": [42, 42, 44],
+    "Anthracite": [58, 58, 60],
+    "Papier chaud": [243, 238, 226],
+    "Papier de page": [251, 248, 241],
+    "Attention fond": [253, 243, 231]
+  },
+  "axes": {
+    "defaut": "turquoise",
+    "noms": { "turquoise": "Turquoise", "orange": "Orange", "vert": "Vert" },
+    "tons": { "Axe vif": "vif", "Axe texte": "texte", "Axe fond": "fond" }
+  },
+  "polices": {
+    "titre": "Quicksand",
+    "texte": "Proza Libre",
+    "code": "JetBrains Mono",
+    "puce": "Segoe UI Symbol"
+  }
+}

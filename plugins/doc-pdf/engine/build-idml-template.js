@@ -26,6 +26,7 @@ const { writeZip } = require('./zip-store');
 const { PagesError, guidePages, mentionLines } = require('./icml-pages');
 const { ConfigError, DEFAULT_TYPE, loadConfig, extractConfigArg, findGuide, readVersion } = require('./guide-config');
 const { pictoGradients, wordmarkShapes, pictoFacets } = require('./logo-scriptami');
+const { loadMaquette } = require('./maquette');
 
 /** Sous-dossier de la sortie du projet (`<outputDir>/idml`) ; sans configuration, `output/idml` sous le dossier courant. */
 const IDML_DIR = 'idml';
@@ -38,35 +39,19 @@ class IdmlError extends Error {}
 
 const mm = value => Math.round(value * 72 / 25.4 * 10000) / 10000;
 
-/** Grille de la charte (mm). Largeur totale : 20,6 + 130,7 + 6,3 + 39,7 + 12,7 = 210. */
-const PAGE = { width: mm(210), height: mm(297), bleed: mm(3) };
-const MARGINS = { top: mm(12.7), bottom: mm(12.7), inner: mm(20.6), outer: mm(12.7) };
-const COLUMNS = { text: mm(130.7), gutter: mm(6.3), margin: mm(39.7) };
-
-/** Nuancier de la charte, en RVB. */
-const COLORS = Object.freeze({
-  'Turquoise vif': [52, 184, 154],
-  'Turquoise texte': [27, 122, 101],
-  'Turquoise fond': [227, 243, 238],
-  'Orange vif': [232, 155, 60],
-  'Orange texte': [165, 87, 21],
-  'Orange fond': [251, 236, 216],
-  'Vert vif': [144, 196, 114],
-  'Vert texte': [78, 118, 56],
-  'Vert fond': [234, 242, 224],
-  'Anthracite foncé': [42, 42, 44],
-  'Anthracite': [58, 58, 60],
-  'Papier chaud': [243, 238, 226],
-  // « Papier » seul serait confondu avec la nuance native de même nom.
-  'Papier de page': [251, 248, 241],
-  // Fond de l'encadré « Attention » (hors des trois tons d'axe).
-  'Attention fond': [253, 243, 231]
-});
-
+// Grille, nuancier, axes et polices viennent de la maquette (engine/maquette.js) : `applyMaquette` les pose en fin de module
+// et `buildIdmlEntries` les repose à chaque appel. Les exports gardent ceux de la maquette embarquée.
+/** Grille de la maquette (points). */
+let PAGE;
+let MARGINS;
+let COLUMNS;
+/** Nuancier de la maquette, en RVB. */
+let COLORS;
 /** Trois tons par axe : la nuance « Axe … » prend les valeurs de l'axe choisi. */
-const AXES = Object.freeze({ turquoise: 'Turquoise', orange: 'Orange', vert: 'Vert' });
-const AXIS_TONES = Object.freeze({ 'Axe vif': 'vif', 'Axe texte': 'texte', 'Axe fond': 'fond' });
-const DEFAULT_AXIS = 'turquoise';
+let AXES;
+let AXIS_TONES;
+let DEFAULT_AXIS;
+let LANGUAGE;
 
 const NONE_SWATCH = 'Swatch/None';
 
@@ -89,11 +74,11 @@ const NO_TABLE = nativeRef('TableStyle', '[No table style]');
 const NO_CELL = nativeRef('CellStyle', '[None]');
 const NO_OBJECT = nativeRef('ObjectStyle', '[None]');
 
-const QUICKSAND = 'Quicksand';
-const PROZA = 'Proza Libre';
-const MONO = 'JetBrains Mono';
+let QUICKSAND;
+let PROZA;
+let MONO;
 // Ni Quicksand ni Proza Libre n'ont le triangle ▶ : sans police qui le porte, InDesign affiche un carré.
-const DEFAULT_BULLET_FONT = 'Segoe UI Symbol';
+let DEFAULT_BULLET_FONT;
 const DARK = 'Anthracite foncé';
 const TEXT = 'Anthracite';
 const BULLET_CODE = 9654; // ▶
@@ -121,10 +106,13 @@ const ruleBelow = (color, weight, offset) => ({
 });
 
 /** Largeur du cadre de la page de sommaire : la page moins ses deux marges. */
-const SUMMARY_WIDTH = PAGE.width - MARGINS.inner - MARGINS.outer;
+let SUMMARY_WIDTH;
 const SUMMARY_NUMBER_TAB = 44;
 
-const FORMATS = Object.freeze({
+let FORMATS;
+
+function buildFormats() {
+  return Object.freeze({
   paragraph: {
     'Titre-couverture': { font: QUICKSAND, fontStyle: 'Bold', size: 45, leading: 45, tracking: -25, fill: DARK, hyphenate: false },
     'Titre-chapitre': { font: QUICKSAND, fontStyle: 'Bold', size: 34, leading: 36, tracking: -15, fill: DARK, hyphenate: false, keepNext: true,
@@ -250,7 +238,8 @@ const FORMATS = Object.freeze({
       }
     }
   }
-});
+  });
+}
 
 /** Styles de la charte absents de STYLE_TABLE, déclarés quand même. */
 const CHARTER_ONLY = Object.freeze({
@@ -316,7 +305,7 @@ function renderStyle(family, name, tableAttributes, bulletFont) {
         : `<Leading type="unit">${format.leading}</Leading>`);
     }
     if (format.hyphenate !== undefined) attributes.Hyphenation = String(format.hyphenate);
-    if (format.hyphenate) properties.push('<AppliedLanguage type="string">$ID/French</AppliedLanguage>');
+    if (format.hyphenate) properties.push(`<AppliedLanguage type="string">$ID/${LANGUAGE}</AppliedLanguage>`);
     if (format.keepNext) attributes.KeepWithNext = '1';
     if (format.keepLines) attributes.KeepLinesTogether = 'true';
     if (format.tabs) {
@@ -415,19 +404,19 @@ function pageMargins(side) {
 }
 
 const LAYER_SELF = 'Layer/Calque1';
-const HEADER_TOP = 14;
-const HEADER_HEIGHT = 16;
-const RULE_Y = 34;
-const DASH_LENGTH = 1.5; // pointillé de pliage : trait
-const DASH_GAP = 1.5; // pointillé de pliage : blanc
-const RULE_WEIGHT = 0.75; // pointillé du titre courant et pointillé de pliage : même épaisseur
-const FOOTER_HEIGHT = 16;
+let HEADER_TOP;
+let HEADER_HEIGHT;
+let RULE_Y;
+let DASH_LENGTH; // pointillé de pliage : trait
+let DASH_GAP; // pointillé de pliage : blanc
+let RULE_WEIGHT; // pointillé du titre courant et pointillé de pliage : même épaisseur
+let FOOTER_HEIGHT;
 // Un seul texte de pied pour tous les gabarits (celui de `common/pied.icml` quand un guide est choisi), un seul style, une seule largeur.
-const FOOTER_TEXT = 'François-Xavier Guillois · scriptami';
-const FOOTER_WIDTH = 300;
-const CORNER = mm(17); // coin plié des pages courantes
-const FOLIO_WIDTH = 30; // largeur du cadre du folio, centré dans le rabat du coin
-const FOOTER_BAND = mm(66); // pied anthracite de la dernière page
+let FOOTER_TEXT;
+let FOOTER_WIDTH;
+let CORNER; // coin plié des pages courantes
+let FOLIO_WIDTH; // largeur du cadre du folio, centré dans le rabat du coin
+let FOOTER_BAND; // pied anthracite de la dernière page
 const PAPER = 'Paper';
 const ORANGE = 'Orange vif';
 
@@ -629,12 +618,9 @@ function masterBuilder(name) {
   };
 }
 
-const pageEdges = {
-  left: { outer: -PAGE.width + MARGINS.outer, inner: -MARGINS.inner },
-  right: { inner: MARGINS.inner, outer: PAGE.width - MARGINS.outer }
-};
-const headerBox = { top: HEADER_TOP, bottom: HEADER_TOP + HEADER_HEIGHT };
-const footerBox = { top: PAGE.height - 14 - FOOTER_HEIGHT, bottom: PAGE.height - 14 };
+let pageEdges;
+let headerBox;
+let footerBox;
 
 /**
  * Ordonnée du pointillé de pliage : le contour est centré sur le tracé, donc le trait descend d'une
@@ -1080,7 +1066,7 @@ function summaryParagraphs(cover, pageNumbers) {
 const textOfStyle = (list, style) => (list.find(item => item.style === style) || {}).text;
 
 const BODY_TOP = 56; // sous le filet de l'en-tête (34 pt), comme la maquette
-const BODY_BOTTOM = PAGE.height - 70;
+let BODY_BOTTOM;
 // Colonne marginale : un cadre par élément, de la hauteur de son contenu, à glisser en regard du
 // texte qu'il commente (numéro de section et rubrique en tête, note de renvoi en face d'un paragraphe).
 const SECTION_HEIGHT = 64;
@@ -1324,7 +1310,51 @@ const CONTAINER_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
  * Fichiers du paquet IDML, dans l'ordre d'écriture : `mimetype` en premier, stocké.
  * @returns {{ name: string, data: string, store?: boolean }[]}
  */
-function buildIdmlEntries({ axis = DEFAULT_AXIS, masters = false, bulletFont = DEFAULT_BULLET_FONT, pages = null } = {}) {
+/** Pose la maquette : grille, nuancier, polices, entête et pied, puis les valeurs qui en dérivent. */
+function applyMaquette(maquette) {
+  const { page, entetePied: header, polices } = maquette;
+  PAGE = { width: mm(page.largeurMm), height: mm(page.hauteurMm), bleed: mm(page.fondPerduMm) };
+  MARGINS = { top: mm(page.marges.hautMm), bottom: mm(page.marges.basMm), inner: mm(page.marges.interieureMm), outer: mm(page.marges.exterieureMm) };
+  COLUMNS = { text: mm(page.colonnes.texteMm), gutter: mm(page.colonnes.gouttiereMm), margin: mm(page.colonnes.marginaleMm) };
+  COLORS = maquette.couleurs;
+  AXES = maquette.axes.noms;
+  AXIS_TONES = maquette.axes.tons;
+  DEFAULT_AXIS = maquette.axes.defaut;
+  LANGUAGE = maquette.langue;
+  QUICKSAND = polices.titre;
+  PROZA = polices.texte;
+  MONO = polices.code;
+  DEFAULT_BULLET_FONT = polices.puce;
+  HEADER_TOP = header.enteteHaut;
+  HEADER_HEIGHT = header.enteteHauteur;
+  RULE_Y = header.filetY;
+  DASH_LENGTH = header.pointilleTrait;
+  DASH_GAP = header.pointilleBlanc;
+  RULE_WEIGHT = header.filetEpaisseur;
+  FOOTER_HEIGHT = header.piedHauteur;
+  FOOTER_TEXT = header.piedTexte;
+  FOOTER_WIDTH = header.piedLargeur;
+  CORNER = mm(header.coinMm);
+  FOLIO_WIDTH = header.folioLargeur;
+  FOOTER_BAND = mm(header.bandePiedMm);
+  SUMMARY_WIDTH = PAGE.width - MARGINS.inner - MARGINS.outer;
+  pageEdges = {
+    left: { outer: -PAGE.width + MARGINS.outer, inner: -MARGINS.inner },
+    right: { inner: MARGINS.inner, outer: PAGE.width - MARGINS.outer }
+  };
+  headerBox = { top: HEADER_TOP, bottom: HEADER_TOP + HEADER_HEIGHT };
+  footerBox = { top: PAGE.height - 14 - FOOTER_HEIGHT, bottom: PAGE.height - 14 };
+  BODY_BOTTOM = PAGE.height - 70;
+  FORMATS = buildFormats();
+}
+
+const EMBEDDED_MAQUETTE = loadMaquette();
+applyMaquette(EMBEDDED_MAQUETTE);
+
+function buildIdmlEntries({ axis, masters = false, bulletFont, pages = null, maquette = EMBEDDED_MAQUETTE } = {}) {
+  applyMaquette(maquette);
+  axis = axis || DEFAULT_AXIS;
+  bulletFont = bulletFont || DEFAULT_BULLET_FONT;
   if (pages && !masters) throw new IdmlError('Les pages remplies exigent les gabarits (--gabarits).');
   const filled = pages ? filledPages(pages) : null;
   const built = masters ? MASTERS.map(master => buildMaster(master, { filled: Boolean(filled), contact: pages ? pages.contact : null, footer: pages ? pages.footer : undefined, mentions: pages ? pages.mentions : undefined })) : [];
@@ -1370,7 +1400,7 @@ function parseArgs(argv) {
       const value = argv[i + 1];
       if (value === undefined || value.startsWith('--')) throw new IdmlError(`${arg} attend une valeur.`);
       if (arg === '--axe') {
-        if (!AXES[value]) throw new IdmlError(`Axe inconnu : ${value}. Valeurs acceptées : ${Object.keys(AXES).join(', ')}.`);
+        // Validé par main() contre les axes de la maquette.
         options.axis = value;
       } else if (arg === '--guide') {
         // Validé par main() contre les guides de la configuration.
@@ -1397,7 +1427,12 @@ function main(argv) {
     const config = guideName || configPath ? loadConfig({ configPath }) : null;
     const guide = guideName ? findGuide(config, guideName) : null;
     const outDir = requestedOutDir ?? path.join(config ? config.outputDir : path.resolve('output'), IDML_DIR);
-    const axis = requestedAxis || (guide ? guide.accent : DEFAULT_AXIS);
+    const maquette = config ? config.maquette : EMBEDDED_MAQUETTE;
+    const axes = Object.keys(maquette.axes.noms);
+    if (requestedAxis !== undefined && !axes.includes(requestedAxis)) {
+      throw new IdmlError(`Axe inconnu : ${requestedAxis}. Valeurs acceptées : ${axes.join(', ')}.`);
+    }
+    const axis = requestedAxis || (guide ? guide.accent : maquette.axes.defaut);
     // Couverture et fin remplies d'après le guide : titre, sous-titre, version, sommaire, contact et conseils de chaque guide.
     const pages = guide
       ? {
@@ -1408,7 +1443,7 @@ function main(argv) {
       }
       : null;
     const file = outputPathFor(outDir, axis, guide ? guide.id : null);
-    const data = buildIdml({ axis, masters, bulletFont, pages });
+    const data = buildIdml({ axis, masters, bulletFont, pages, maquette });
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(file, data);
     const detail = guide ? ` (gabarits A à D, couverture, sommaire et fin du guide ${guide.id} remplis)` : masters ? ' (avec les gabarits A à D)' : '';
@@ -1432,6 +1467,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  main,
   buildIdml,
   buildIdmlEntries,
   outputPathFor,

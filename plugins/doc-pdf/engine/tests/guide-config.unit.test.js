@@ -8,7 +8,6 @@ const os = require('os');
 const path = require('path');
 const {
   ConfigError,
-  ACCENTS,
   CONFIG_NAME,
   DEFAULT_TYPE,
   resolveConfig,
@@ -116,7 +115,7 @@ describe('resolveConfig', () => {
 
   test('refuse un accent hors charte et cite les valeurs acceptées', () => {
     const raw = valid({ guides: [{ ...GUIDE, accent: 'rose' }] });
-    expect(() => resolveConfig(raw, FILE)).toThrow(/« guides\[0\]\.accent » hors charte : rose/);
+    expect(() => resolveConfig(raw, FILE)).toThrow(/« guides\[0\]\.accent » \(guide vendeur\) hors de la maquette : rose/);
     expect(() => resolveConfig(raw, FILE)).toThrow(/turquoise, orange, vert/);
   });
 
@@ -131,8 +130,9 @@ describe('resolveConfig', () => {
     expect(() => resolveConfig(raw, FILE)).toThrow(/doit contenir un objet/);
   });
 
-  test('les accents de la charte sont exactement les axes du modèle IDML', () => {
-    expect([...ACCENTS].sort()).toEqual(Object.keys(AXES).sort());
+  test('les axes de la maquette embarquée sont ceux du modèle IDML', () => {
+    const config = resolveConfig(valid(), FILE);
+    expect(Object.keys(config.maquette.axes.noms).sort()).toEqual(Object.keys(AXES).sort());
   });
 });
 
@@ -180,7 +180,7 @@ describe('lecture et découverte', () => {
   test('loadConfig enchaîne la découverte et la lecture', () => {
     const config = loadConfig({ configPath: REPO_CONFIG_FILE });
     expect(config.guides.map(guide => guide.id)).toEqual(['administrateur', 'partenaire', 'vendeur']);
-    expect(config.guides.every(guide => ACCENTS.includes(guide.accent))).toBe(true);
+    expect(config.guides.every(guide => Object.keys(config.maquette.axes.noms).includes(guide.accent))).toBe(true);
   });
 });
 

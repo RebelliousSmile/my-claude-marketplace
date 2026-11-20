@@ -1,12 +1,14 @@
 const { writeZip, readZip, METHOD_STORE } = require('../zip-store');
+const os = require('os');
 const path = require('path');
 const { STYLE_TABLE } = require('../icml-transform');
-const { loadConfig, ACCENTS } = require('../guide-config');
+const { loadConfig } = require('../guide-config');
 const {
   buildIdml,
   buildIdmlEntries,
   outputPathFor,
   parseArgs,
+  main,
   IdmlError,
   AXES,
   COLORS,
@@ -578,8 +580,8 @@ describe('build-idml-template : pages remplies', () => {
     CONFIG.guides.forEach(guide => expect(Object.keys(AXES)).toContain(guide.accent));
   });
 
-  it('les accents acceptés par la configuration sont exactement les axes du modèle', () => {
-    expect([...ACCENTS].sort()).toEqual(Object.keys(AXES).sort());
+  it('les accents acceptés par la configuration sont exactement les axes de la maquette', () => {
+    expect(Object.keys(CONFIG.maquette.axes.noms).sort()).toEqual(Object.keys(AXES).sort());
   });
 
   it('présente les trois guides sur trois lignes identiques, sans mettre en avant celui du document', () => {
@@ -684,8 +686,20 @@ describe('build-idml-template : ligne de commande', () => {
 
   it('rejette une option inconnue, un axe inconnu et une valeur manquante', () => {
     expect(() => parseArgs(['--x'])).toThrow(IdmlError);
-    expect(() => parseArgs(['--axe', 'rose'])).toThrow(/Axe inconnu/);
     expect(() => parseArgs(['--axe'])).toThrow(/valeur/);
+  });
+
+  it('refuse un axe hors de la maquette, en listant les axes permis, sans rien écrire', () => {
+    const errors = [];
+    const spy = jest.spyOn(console, 'error').mockImplementation(message => errors.push(message));
+    try {
+      expect(main(['--axe', 'rose', '--sortie', path.join(os.tmpdir(), 'doc-pdf-axe-inconnu')])).toBe(1);
+    } finally {
+      spy.mockRestore();
+    }
+    const output = errors.join(' ');
+    expect(output).toMatch(/Axe inconnu : rose\. Valeurs acceptées : turquoise, orange, vert/);
+    expect(output).toMatch(/Aucun fichier écrit/);
   });
 
   it('nomme le fichier d’après l’axe', () => {

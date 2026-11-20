@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Banc de comparaison, format de maquette 1 et chargeur (grille, nuancier, polices)
@@ -118,3 +118,11 @@ journey
 | 3 | Un guide dont l'accent n'est pas un axe de la maquette est refusé avec la liste des axes ; sans champ `maquette`, la sortie reste celle de Scriptami. |
 | 4 | Une recherche des valeurs hexadécimales et des noms de police de la maquette dans `build-idml-template.js` ne trouve plus que les couleurs fixes laissées pour la phase 3. |
 | 5 | `compare-engines` rend 0 sur les sources cerascan, la suite Jest est verte, et le compte rendu porte le SHA du commit de fin de phase. |
+
+## Compte rendu
+
+- Banc `tools/compare-engines.js` : référence = worktree au SHA `a8d9e60` (fin de phase 1), moteur courant, configuration cerascan. Résultat : 273 fichiers identiques octet pour octet, `.manifest.json` compris, code 0. Worktree retiré, `output/` de cerascan non touché.
+- Le banc a servi : une première passe a révélé six IDML différents (`${LANGUAGE}` resté littéral dans `Styles.xml`, chaîne à guillemets simples). Corrigé en gabarit de chaîne, banc rejoué au vert.
+- Jest : 13 suites, 377 tests verts (ajouts : `maquette.unit.test.js`, `compare-engines.unit.test.js`).
+- Critère 4 : la recherche des hexadécimaux et noms de police ne trouve plus que les couleurs fixes hors axe (`Paper`, `Attention fond`, `Papier chaud`, `Orange vif`), laissées pour la phase 3, et la police de puce par défaut citée en commentaire d'aide.
+- Commit de fin de phase : à demander à l'utilisateur (phases 1 et 2 ensemble) ; SHA à noter ici.
