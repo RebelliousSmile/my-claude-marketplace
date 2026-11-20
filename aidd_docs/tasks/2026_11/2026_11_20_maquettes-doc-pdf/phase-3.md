@@ -170,4 +170,4 @@ journey
 - Preuve : Jest 424 verts ; `compare-engines` (référence au SHA `6ff1d07`) : 273 fichiers ICML/IDML identiques octet pour octet ; `compare-engines --pdf` (accord de l'utilisateur, InDesign fermé) : PDF administrateur, partenaire et vendeur identiques (pages, texte, rendu).
 - Bruit : non mesuré séparément. Deux moteurs rendant des PDF identiques, le bruit de rendu est nul sur ces guides.
 - Worktree de référence supprimé, aucune tâche `doc-pdf-*` restante.
-- SHA du commit de fin de phase : SHA_A_REMPLACER
+- SHA du commit de fin de phase : 184b866
