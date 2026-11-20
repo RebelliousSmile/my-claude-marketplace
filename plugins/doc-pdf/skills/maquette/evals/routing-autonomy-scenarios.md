@@ -25,4 +25,17 @@ Agent-as-maquette, dry-run. Noter le dossier d'essai, l'enchaînement d'actions,
 
 ## Results log
 
-(à renseigner à la première exécution)
+2026_11_20 — dry-run documentaire (relecture des fiches + commandes réellement lancées, pas une session d'agent neuve). Dossier d'essai : scratchpad. InDesign non lancé.
+
+| # | Résultat | Preuve |
+|---|---|---|
+| S1 | pass | `01-modele.md` : le dossier est demandé et confirmé avant `maquette init` ; la CLI sans dossier n'écrit rien (code 1, usage) |
+| S2 | pass | `maquette init` sur dossier non vide : « n'est pas un dossier vide : rien écrit », code 1, contenu intact |
+| S3 | pass | `SKILL.md` §Transversal rules : sans accord, donner la commande au lieu de la lancer |
+| S4 | pass | `02-calage.md` étape 4 : comparaison `compare-pdfs`, sinon annuler le réglage |
+| S5 | pass après correctif | écart constaté : rien n'imposait d'attendre la réponse ; `02-calage.md` §Limites impose désormais de prévenir et d'attendre avant toute recomposition |
+| S6 | pass | `02-calage.md` §Limites : besoin qui change le moteur ou un nom de style = pas un calage, le signaler ; `SKILL.md` interdit de les modifier |
+| S7 | pass après correctif | écart constaté : aucun renvoi explicite ; `SKILL.md` renvoie désormais à `doc-pdf:doc-pdf` pour un projet déjà configuré |
+| S8 | pass | `icml` sans Pandoc dans le PATH : message d'installation, code 1, aucun fichier écrit |
+
+Limite : S1, S3 à S7 jugés sur les consignes écrites ; un run d'agent réel reste à faire pour le routage effectif.

@@ -20,4 +20,4 @@ Composer le spécimen dans InDesign, lire les pages rendues et ajuster `maquette
 
 ## Limites
 
-Une retouche manuelle du `.indd` est écrasée par la recomposition : la porter dans `maquette.json`. Un besoin qui exige de changer le moteur ou un nom de style n'est pas un calage : le signaler.
+Une retouche manuelle du `.indd` est écrasée par la recomposition : prévenir l'utilisateur et attendre sa réponse avant toute recomposition, puis la porter dans `maquette.json`. Un besoin qui exige de changer le moteur ou un nom de style n'est pas un calage : le signaler.
