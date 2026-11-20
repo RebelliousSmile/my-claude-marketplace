@@ -65,7 +65,7 @@
     },
     {
       "name": "doc-pdf",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "source": "./plugins/doc-pdf",
       "description": "Moteur interprojets de documentation PDF : Markdown du dépôt client vers ICML/IDML (charte Scriptami), mise à jour du .indd et export PDF par InDesign.",
       "recommended": false
