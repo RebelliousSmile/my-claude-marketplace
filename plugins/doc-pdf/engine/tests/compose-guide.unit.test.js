@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main } = require('../compose-guide');
+const { ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main, EXIT_MESSAGES, launch } = require('../compose-guide');
 const { resolveConfig } = require('../guide-config');
 
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
@@ -343,6 +343,48 @@ describe('compose-guide', () => {
       const report = formatChangeReport(diffSnapshots(before, snapshotOutputs(pathsIn())));
       expect(report).toMatch(/ICML : 1 modifié sur 1/);
       expect(report).not.toMatch(/Aucun ICML/);
+    });
+  });
+
+  describe('launch', () => {
+    let write;
+    beforeEach(() => {
+      write = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    });
+    afterEach(() => write.mockRestore());
+
+    const messageFor = code => {
+      write.mockClear();
+      expect(launch('compose.jsx', { document: 'a.indd' }, () => code)).toBe(code);
+      return write.mock.calls.map(call => call[0]).join('');
+    };
+
+    it('passe le script et les chemins au lanceur et rend le code 0 sans rien écrire', () => {
+      const launcher = jest.fn(() => 0);
+      expect(launch('compose.jsx', { document: 'a.indd' }, launcher)).toBe(0);
+      expect(launcher).toHaveBeenCalledWith('compose.jsx', { document: 'a.indd' });
+      expect(write).not.toHaveBeenCalled();
+    });
+
+    it("rend chaque code 2 à 5 tel quel, avec un message distinct qui n'annonce aucun PDF", () => {
+      const messages = [2, 3, 4, 5].map(messageFor);
+      expect(new Set(messages).size).toBe(4);
+      messages.forEach(message => {
+        expect(message).toMatch(/Aucun PDF produit/);
+        expect(message).not.toMatch(/PDF :/);
+      });
+      expect(messages[0]).toMatch(/déjà ouvert/);
+      expect(messages[1]).toMatch(/COM/);
+      expect(messages[2]).toMatch(/journal/);
+      expect(messages[3]).toMatch(/Délai dépassé/);
+    });
+
+    it('nomme le code quand il est inattendu', () => {
+      expect(messageFor(9)).toMatch(/code 9/);
+    });
+
+    it('couvre exactement les codes 2 à 5', () => {
+      expect(Object.keys(EXIT_MESSAGES).sort()).toEqual(['2', '3', '4', '5']);
     });
   });
 

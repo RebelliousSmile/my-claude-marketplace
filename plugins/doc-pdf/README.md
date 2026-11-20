@@ -11,7 +11,7 @@ Moteur interprojets de documentation PDF, charte Scriptami unique. La documentat
 ## Prérequis
 
 - Node.js, Pandoc dans le PATH (`icml`, `pdf`).
-- Adobe InDesign et un PowerShell lancé en administrateur (`pdf` uniquement, document fermé).
+- Adobe InDesign (`pdf` uniquement, document fermé). Le COM exige un processus élevé : `engine/indesign/run-elevated.ps1` le lance par une tâche planifiée, sans terminal administrateur.
 
 ## Utilisation
 

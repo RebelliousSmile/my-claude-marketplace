@@ -1,6 +1,6 @@
 /**
  * Textes des pages de gabarit (couverture, sommaire, fin) d'un guide, en paragraphes à
- * styles du jeu court, prêts pour `buildPageIcml` (scripts/guides/icml-transform.js).
+ * styles du jeu court, prêts pour `buildPageIcml` (engine/icml-transform.js).
  *
  * - couverture : titre du document (premier titre du chapitre 01), version du
  *   produit (`versionFile` de la configuration), sommaire « NN, tabulation, titre » de tous les chapitres ;

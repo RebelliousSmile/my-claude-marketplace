@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- Lanceur élevé : `engine/indesign/run-elevated.ps1` exécute InDesign par une tâche planifiée (`RunLevel Highest`, session interactive), sans terminal administrateur ; `pdf compose` et `pdf update` le consomment. Le journal est relayé à l'écran, la tâche est désenregistrée à la fin, le délai par défaut est de 60 min.
+- Le lanceur passe toujours par la tâche, même depuis un shell déjà élevé : un jeton élevé par un autre moyen reçoit 0x800702E4 du COM d'InDesign, la tâche non (constaté le 2026-11-20).
+- Codes de sortie : 0 succès, 2 InDesign déjà ouvert, 3 COM indisponible, 4 script introuvable ou en échec, 5 délai dépassé ; chacun porte un message explicite.
+- Runbook générique (`references/runbook-export-indesign.md`, section 3 quater) : plus de mention de projet, de `scripts/guides` ni de pnpm ; messages et en-têtes du moteur neutralisés. Le commentaire des guides fusionnés cite désormais la commande `merge` du plugin : un `merge` sur un projet existant ne change que cette première ligne.
+
 ## 0.2.3
 
 - En-tête de la page gauche : la flèche devant le titre du guide est maintenant ◀ (vers le bord extérieur), comme le ▶ de la page droite ; avant, les deux flèches regardaient vers l'intérieur à gauche et vers l'extérieur à droite. Modèle IDML et ICML d'en-tête ; recomposer (`pdf compose --remplacer`) ou régénérer l'ICML puis `pdf update` pour les .indd existants. Le ▶ du bloc « Dans ce chapitre » et des puces ne change pas.

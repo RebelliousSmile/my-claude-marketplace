@@ -1,5 +1,5 @@
 /**
- * Transformation ICML Pandoc → styles CERASCAN (scripts/guides/icml-transform.js).
+ * Transformation ICML Pandoc → styles CERASCAN (engine/icml-transform.js).
  *
  * Fixture figée, régénérée par (Pandoc 3.7) :
  *   cd tests/fixtures/icml && pandoc -f gfm -t icml -s echantillon.md -o echantillon.pandoc.icml

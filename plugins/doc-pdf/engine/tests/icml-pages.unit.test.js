@@ -1,5 +1,5 @@
 /**
- * Textes des pages de couverture et de fin (scripts/guides/icml-pages.js) :
+ * Textes des pages de couverture et de fin (engine/icml-pages.js) :
  * titre lu dans le chapitre, sommaire, sous-titre, contact et conseils de la fin.
  */
 

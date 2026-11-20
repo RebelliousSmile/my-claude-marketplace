@@ -3,14 +3,14 @@
  * Exporte chaque chapitre numéroté (`0N-xxx.md`) des guides d'un projet
  * en ICML aux styles de la charte, à lier dans InDesign.
  *
- *   node scripts/guides/export-icml.js                         écrit <outputDir>/icml/<guide>/<chapitre>/corps.icml
+ *   node <racine du plugin>/engine/cli.js icml                         écrit <outputDir>/icml/<guide>/<chapitre>/corps.icml
  *                                                              (corps du chapitre) et, à côté, les textes
  *                                                              de gabarit du même chapitre
- *   node scripts/guides/export-icml.js --largeur-colonne 275   largeur de colonne InDesign (pt) :
+ *   node <racine du plugin>/engine/cli.js icml --largeur-colonne 275   largeur de colonne InDesign (pt) :
  *                                                              plafond des captures, largeur des tableaux
- *   node scripts/guides/export-icml.js --force                 écrit même si un ICML a été corrigé à la main
+ *   node <racine du plugin>/engine/cli.js icml --force                 écrit même si un ICML a été corrigé à la main
  *                                                              depuis le dernier export (cf. ci-dessous)
- *   node scripts/guides/export-icml.js --config <chemin>       configuration du projet (guide-config.js) ;
+ *   node <racine du plugin>/engine/cli.js icml --config <chemin>       configuration du projet (guide-config.js) ;
  *                                                              défaut : documentation.config.json cherché
  *                                                              depuis le dossier courant
  *
@@ -78,7 +78,7 @@ const BODY_FILE = 'corps.icml';
 class ExportError extends Error {}
 
 const PANDOC_MISSING = 'Pandoc est introuvable. L\'installer (https://pandoc.org/installing.html) '
-  + 'et vérifier que la commande pandoc est dans le PATH, puis relancer pnpm run guides:icml.';
+  + 'et vérifier que la commande pandoc est dans le PATH, puis relancer la commande icml.';
 
 /** Dossier des ICML d'un projet : `<outputDir>/icml`. */
 function icmlDirFor(config) {
@@ -360,7 +360,7 @@ function parseArgs(argv) {
   if (split.configPath) options.configPath = split.configPath;
   const rest = split.rest;
   for (let i = 0; i < rest.length; i += 1) {
-    // pnpm transmet tel quel le `--` de `pnpm run guides:icml -- --largeur-colonne 300`.
+    // Un `--` isolé (séparateur transmis tel quel par un gestionnaire de paquets) est ignoré.
     if (rest[i] === '--') continue;
     if (rest[i] === '--force') {
       options.force = true;

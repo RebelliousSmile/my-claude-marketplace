@@ -3,8 +3,8 @@
  * Assemble la version fusionnée de chaque guide utilisateur à partir de ses
  * fichiers numérotés (`0N-xxx.md`), seule source de vérité (issue #74).
  *
- *   node scripts/guides/build-merged-guides.js          écrit les versions fusionnées
- *   node scripts/guides/build-merged-guides.js --check  n'écrit rien, sort en 1 si l'une est périmée
+ *   node <racine du plugin>/engine/cli.js merge          écrit les versions fusionnées
+ *   node <racine du plugin>/engine/cli.js merge --check  n'écrit rien, sort en 1 si l'une est périmée
  *   --config <chemin>                                   configuration du projet (défaut : documentation.config.json
  *                                                       cherché depuis le dossier courant) ; les guides à fusionner
  *                                                       sont ceux qui portent un `mergedFile`
@@ -24,9 +24,9 @@ function mergedTargets(config) {
     .map(guide => ({ dir: guide.dir, output: guide.mergedFile }));
 }
 
-const BANNER = '<!-- Fichier généré par scripts/guides/build-merged-guides.js à partir des '
+const BANNER = '<!-- Fichier généré par la commande merge du plugin doc-pdf à partir des '
   + 'fichiers 0*.md de ce dossier. Ne pas modifier : éditer les fichiers numérotés '
-  + 'puis lancer pnpm run guides:build. -->';
+  + 'puis relancer merge. -->';
 
 const NUMBERED_FILE = /^0\d-[^/\\]+\.md$/;
 const LOCAL_LINK = /\[([^\]]*)\]\((0\d-[^)#\s/\\]+\.md)(#[^)\s]*)?\)/g;
@@ -139,7 +139,7 @@ function main(argv) {
     const stale = targets.filter(t => !t.upToDate);
     stale.forEach(t => console.error(`Version fusionnée périmée : ${path.relative(process.cwd(), t.outputPath)}`));
     if (stale.length > 0) {
-      console.error('Lancer pnpm run guides:build.');
+      console.error('Relancer la commande merge du plugin doc-pdf.');
       return 1;
     }
     console.log('Versions fusionnées à jour.');

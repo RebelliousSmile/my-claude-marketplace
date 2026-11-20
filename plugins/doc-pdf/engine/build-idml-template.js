@@ -6,12 +6,12 @@
  * 3 mm de fond perdu, et, avec --gabarits, les quatre gabarits de la charte :
  * A-Courante, B-Chapitre, C-Couverture, D-Fin.
  *
- *   node scripts/guides/build-idml-template.js                       output/idml/scriptami-turquoise.idml
- *   node scripts/guides/build-idml-template.js --axe orange          couleur d'axe : turquoise | orange | vert
- *   node scripts/guides/build-idml-template.js --gabarits            + gabarits A à D (pages courantes, ouverture, couverture, fin)
- *   node scripts/guides/build-idml-template.js --police-puce <nom>   police du triangle ▶ des puces (défaut : Segoe UI Symbol)
- *   node scripts/guides/build-idml-template.js --sortie <dossier>    dossier de sortie (défaut : <outputDir>/idml de la configuration)
- *   node scripts/guides/build-idml-template.js --guide <id>          gabarits remplis pour un guide de documentation.config.json
+ *   node <racine du plugin>/engine/cli.js idml                       output/idml/scriptami-turquoise.idml
+ *   node <racine du plugin>/engine/cli.js idml --axe orange          couleur d'axe : turquoise | orange | vert
+ *   node <racine du plugin>/engine/cli.js idml --gabarits            + gabarits A à D (pages courantes, ouverture, couverture, fin)
+ *   node <racine du plugin>/engine/cli.js idml --police-puce <nom>   police du triangle ▶ des puces (défaut : Segoe UI Symbol)
+ *   node <racine du plugin>/engine/cli.js idml --sortie <dossier>    dossier de sortie (défaut : <outputDir>/idml de la configuration)
+ *   node <racine du plugin>/engine/cli.js idml --guide <id>          gabarits remplis pour un guide de documentation.config.json
  *                                                                    (titre, verbe, type, accent) ; --config <chemin> désigne la configuration
  *
  * Les noms des styles du jeu court viennent de STYLE_TABLE (icml-transform.js) : le
@@ -286,7 +286,7 @@ function renderStyle(family, name, tableAttributes, bulletFont) {
   const defined = FORMATS[family][name];
   const format = defined && family === 'character' && name === 'Puce' ? { ...defined, font: bulletFont } : defined;
   if (!format) {
-    throw new IdmlError(`Le style ${family} « ${name} » n'a pas de mise en forme dans la charte : l'ajouter à FORMATS (scripts/guides/build-idml-template.js).`);
+    throw new IdmlError(`Le style ${family} « ${name} » n'a pas de mise en forme dans la charte : l'ajouter à FORMATS (engine/build-idml-template.js).`);
   }
   const { prefix, element, none } = FAMILY_REFS[family];
   const attributes = {
@@ -1362,7 +1362,7 @@ function parseArgs(argv) {
   const options = {};
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    // pnpm transmet tel quel le `--` de `pnpm run guides:idml -- --axe orange`.
+    // Un `--` isolé (séparateur transmis tel quel par un gestionnaire de paquets) est ignoré.
     if (arg === '--') continue;
     if (arg === '--gabarits') {
       options.masters = true;

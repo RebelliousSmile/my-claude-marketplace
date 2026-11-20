@@ -1,5 +1,5 @@
 /**
- * Configuration d'un projet client du moteur de documentation (scripts/guides/guide-config.js) :
+ * Configuration d'un projet client du moteur de documentation (engine/guide-config.js) :
  * validation, résolution des chemins, découverte du fichier, désignation d'un guide, version.
  */
 

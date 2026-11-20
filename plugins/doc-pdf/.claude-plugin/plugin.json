@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "doc-pdf",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Moteur interprojets de documentation PDF : Markdown du dépôt client vers ICML/IDML (charte Scriptami), mise à jour du .indd et export PDF par InDesign.",
   "author": {
     "name": "François-Xavier Guillois"

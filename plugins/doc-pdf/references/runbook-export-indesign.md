@@ -1,21 +1,21 @@
-# Runbook — export des guides vers InDesign
+# Runbook — export des documents vers InDesign
 
-La commande `pnpm run guides:icml` convertit chaque chapitre numéroté des trois guides (partenaire, vendeur, administrateur) en un fichier ICML. Le fichier se place lié dans InDesign : après une correction du Markdown, on relance l'export et on met à jour le lien, la mise en page reste en place.
+La commande `icml` convertit chaque chapitre numéroté de chaque guide de la configuration en un fichier ICML. Le fichier se place lié dans InDesign : après une correction du Markdown, on relance l'export et on met à jour le lien, la mise en page reste en place.
 
 Le Markdown reste la source du texte. InDesign porte la mise en forme, par un jeu court de styles dont les noms sont fixés par l'export.
 
 ## Prérequis
 
 - Pandoc installé, la commande `pandoc` accessible dans le PATH : `pandoc --version` répond par un numéro de version (installation : https://pandoc.org/installing.html).
-- Les dépendances du dépôt installées (`pnpm install`).
+- Une configuration `documentation.config.json` (champs `guides`, `maquette`, `document`, `pdfPreset`) : chaque commande la reçoit par `--config <configuration>`.
 - InDesign, pour la mise en page.
 
 ## 1. Lancer l'export
 
-1. Depuis la racine du dépôt, lancer :
+1. Depuis le projet qui porte la configuration, lancer :
 
    ```bash
-   pnpm run guides:icml
+   node <racine du plugin>/engine/cli.js icml --config <configuration>
    ```
 
 2. Lire le récapitulatif : une ligne `Écrit :` par fichier, puis le nombre de fichiers écrits.
@@ -23,13 +23,13 @@ Le Markdown reste la source du texte. InDesign porte la mise en forme, par un je
 
    ```text
    output/icml/
-   ├── common/                        identiques pour les trois guides : à lier une seule fois
+   ├── common/                        identiques pour tous les guides : à lier une seule fois
    │   ├── pied.icml                  texte unique des pieds de page (pages de droite et d'ouverture)
    │   ├── pied-gauche.icml           même texte, aligné à droite (pages de gauche)
    │   ├── en-tete-version.icml       version, en-tête de la page gauche
    │   ├── type-document.icml         pastille « type de document » de la couverture
    │   └── fin-mentions.icml          pied anthracite de la page de fin
-   └── guide-partenaire/              un dossier par guide (partenaire, vendeur, administrateur)
+   └── guide-<id>/                    un dossier par guide de la configuration
        ├── 00-pages/                  pages de gabarit propres au guide
        │   ├── couverture.icml        titre, version, sommaire de la couverture
        │   ├── sommaire.icml          page de sommaire (page 2)
@@ -47,11 +47,11 @@ Le Markdown reste la source du texte. InDesign porte la mise en forme, par un je
        └── 02-import-catalogue/ …
    ```
 
-   Exemple : `output/icml/guide-partenaire/02-import-catalogue/corps.icml`. `00-pages/` passe avant les chapitres dans l'ordre alphabétique, et dans chaque dossier de chapitre `corps.icml` précède les fichiers par cadre.
+   Exemple : `output/icml/<guide>/02-<chapitre>/corps.icml`. `00-pages/` passe avant les chapitres dans l'ordre alphabétique, et dans chaque dossier de chapitre `corps.icml` précède les fichiers par cadre.
 4. Passer la largeur de la colonne de texte du document, en points (360 par défaut), telle que la mesure InDesign : sélectionner le bloc de texte et lire sa largeur moins les marges intérieures, ou la largeur de colonne dans Objet > Options de bloc de texte. Cette largeur plafonne les captures et se répartit entre les colonnes de chaque tableau, chacune assez large pour son plus long mot. InDesign ne réduit ni une capture ancrée ni un tableau plus larges que leur bloc : ils débordent de la colonne. Une valeur trop grande, même de quelques points, suffit à les faire déborder. Pour une colonne de 260 pt :
 
    ```bash
-   pnpm run guides:icml --largeur-colonne 260
+   node <racine du plugin>/engine/cli.js icml --config <configuration> --largeur-colonne 260
    ```
 
    Garder la même valeur à chaque export, sinon les captures et les tableaux changent de taille à la mise à jour des liens.
@@ -126,7 +126,7 @@ L'export reconnaît quelques conventions dans le Markdown des guides pour reprod
 
 1. Encadré : une citation dont le premier mot est un libellé en gras. `> **Bon à savoir** texte` donne « Encadré-info », `> **Attention** …` « Encadré-attention », `> **À retenir** …` « Encadré-retenir », `> **Renvoi** …` « Note-renvoi ». Les paragraphes suivants de la même citation gardent le style. Une citation sans libellé, ou au libellé inconnu, fait échouer l'export.
 2. Mot en couleur dans un titre : `# Monter un *hub* auto-hébergé` applique le style de caractère « Accent » à « hub ». Ailleurs que dans un titre, `*mot*` reste de l'italique.
-3. Sommaire : un chapitre d'au moins deux sections reçoit un bloc « Dans ce chapitre » (« Sommaire-titre » avec le triangle en « Puce », puis un « Sommaire-section » par section : numéro en « Sommaire-numéro », titre, « p. … » en « Sommaire-page »), rendu dans `ouverture-sommaire.icml`. Les numéros de page viennent de la clé `pages` de `pages-gabarit.json` (section 3 bis) ; sans elle, « p. … » reste à remplacer, par exemple par une table des matières InDesign.
+3. Sommaire : un chapitre d'au moins deux sections reçoit un bloc « Dans ce chapitre » (« Sommaire-titre » avec le triangle en « Puce », puis un « Sommaire-section » par section : numéro en « Sommaire-numéro », titre, « p. … » en « Sommaire-page »), rendu dans `ouverture-sommaire.icml`. Les numéros de page viennent de la clé `pages` de le fichier de pages de gabarit (section 3 bis) ; sans elle, « p. … » reste à remplacer, par exemple par une table des matières InDesign.
 4. Numéro de section : chaque intertitre de niveau 1 reçoit un fichier de marge `marge-N.M-<titre>.icml` (« Numéro-section » « 2.1 », puis la rubrique en « Surtitre »).
 5. Note de renvoi : une citation `> **Renvoi** …` quitte le corps du chapitre et va dans son propre fichier `renvoi-K-<début du texte>.icml`.
 6. Typographie française : l'export remplace l'apostrophe droite par `’`, pose une espace insécable avant `:`, `%`, `»` et après `«`, et une fine insécable avant `;`, `!`, `?`. Le texte du style « Code-inline » reste tel quel. Rien à saisir dans le Markdown ni à corriger dans InDesign.
@@ -162,30 +162,30 @@ Un chapitre = un fichier ICML de corps = un bloc de texte (ou une suite de blocs
 
 ## 3 bis. Placer la couverture, le sommaire et la fin
 
-Chaque guide reçoit sept ICML en plus de ses chapitres, dans `00-pages/` : `couverture.icml`, `sommaire.icml`, `en-tete-titre.icml`, `fin-bandeau.icml`, `fin-carte-1.icml` à `fin-carte-3.icml` et `fin-conseils.icml`. Cinq autres sont identiques pour les trois guides et ne sont écrits qu'une fois, dans `output/icml/common/` : `pied.icml`, `pied-gauche.icml`, `en-tete-version.icml`, `type-document.icml` et `fin-mentions.icml`. Un document lie ces cinq fichiers à `common/` : une correction du texte commun (pied, mentions légales) se fait dans `pages-gabarit.json` (clé `commun`) et se propage aux trois guides au prochain export. Un `00-pages/pied.icml` ou `00-pages/fin-mentions.icml` d'un export antérieur reste sur le disque et est signalé comme orphelin : repointer le lien vers `common/`, puis supprimer l'ancien fichier. Ils portent le texte des pages de gabarit, mis à jour à chaque export comme les chapitres. Un ICML ne porte ni fond ni forme : ils restent dans les gabarits (section 7). Chaque fichier va dans son propre cadre : la couverture et le sommaire n'ont pas les mêmes styles et ne se partagent jamais un cadre.
+Chaque guide reçoit sept ICML en plus de ses chapitres, dans `00-pages/` : `couverture.icml`, `sommaire.icml`, `en-tete-titre.icml`, `fin-bandeau.icml`, `fin-carte-1.icml` à `fin-carte-3.icml` et `fin-conseils.icml`. Cinq autres sont identiques pour tous les guides et ne sont écrits qu'une fois, dans `output/icml/common/` : `pied.icml`, `pied-gauche.icml`, `en-tete-version.icml`, `type-document.icml` et `fin-mentions.icml`. Un document lie ces cinq fichiers à `common/` : une correction du texte commun (pied, mentions légales) se fait dans le fichier de pages de gabarit (clé `commun`) et se propage à tous les guides au prochain export. Un `00-pages/pied.icml` ou `00-pages/fin-mentions.icml` d'un export antérieur reste sur le disque et est signalé comme orphelin : repointer le lien vers `common/`, puis supprimer l'ancien fichier. Ils portent le texte des pages de gabarit, mis à jour à chaque export comme les chapitres. Un ICML ne porte ni fond ni forme : ils restent dans les gabarits (section 7). Chaque fichier va dans son propre cadre : la couverture et le sommaire n'ont pas les mêmes styles et ne se partagent jamais un cadre.
 
 | Fichier | Contenu | Cadre | Source |
 | ------- | ------- | ----- | ------ |
 | `00-pages/couverture.icml` | titre du document, « Version x.y.z », sommaire de la couverture (« Sommaire-général », « Sommaire-ligne ») | `texte-couverture` (gabarit C) | premier titre de chaque chapitre ; version de `package.json` |
 | `00-pages/sommaire.icml` | page de sommaire : « Sommaire » en « Surtitre », puis une ligne « Sommaire-chapitre » par chapitre (numéro, titre, « p. … ») | `sommaire` (page 2) | premier titre de chaque chapitre |
-| `common/pied.icml` | le texte unique des pieds de page (« François-Xavier Guillois · scriptami », le même pour les trois guides), en « Titre-courant », aligné à gauche | `pied-droite` (gabarit A), `pied-titre` (gabarit B) | `commun.pied` dans `aidd_docs/guides/pages-gabarit.json` |
+| `common/pied.icml` | le texte unique des pieds de page (« François-Xavier Guillois · scriptami », le même pour tous les guides), en « Titre-courant », aligné à gauche | `pied-droite` (gabarit A), `pied-titre` (gabarit B) | `commun.pied` dans le fichier de pages de gabarit |
 | `common/pied-gauche.icml` | le même texte et le même style, aligné à droite contre la marge intérieure : l'import écrase l'alignement du cadre, d'où un fichier à part | `pied-gauche` (gabarit A) | idem |
 | `00-pages/en-tete-titre.icml` | puce et titre du document (celui de la couverture), en « Titre-courant » | `en-tete-gauche-titre` (gabarit A) | premier titre du premier chapitre |
 | `common/en-tete-version.icml` | « v » et la version, en « Titre-courant », aligné à droite | `en-tete-gauche-version` (gabarit A) | version de `package.json` |
 | `<chapitre>/en-tete-chapitre.icml` | « Chapitre NN » en « En-tête-chapitre » (couleur d'accent) | `en-tete-droite-chapitre` (gabarit A) | numéro lu dans le préfixe `0N-` du fichier |
 | `<chapitre>/en-tete-titre-chapitre.icml` | titre du chapitre puis puce, en « Titre-courant », aligné à droite | `en-tete-droite-titre` (gabarit A) | premier titre du chapitre |
-| `00-pages/fin-bandeau.icml` | titre (« Bandeau-titre ») puis accroche (« Bandeau-texte ») du bandeau orange de contact, en couleur papier | `bandeau-texte` (gabarit D) | `fin.titre` et `fin.accroche` dans `aidd_docs/guides/pages-gabarit.json` |
-| `00-pages/fin-carte-1.icml` à `fin-carte-3.icml` | une carte de contact : libellé (« Surtitre »), valeur (« Carte-valeur »), note (« Légende ») | `carte-1-texte` à `carte-3-texte` (gabarit D) | `fin.cartes` dans `aidd_docs/guides/pages-gabarit.json`, coordonnées à renseigner à la main |
-| `common/type-document.icml` | « Documentation utilisateur » en « Type-document » (anthracite, centré) | `type-document` (gabarit C) | texte fixe, identique pour les trois guides (`COVER_TYPE`, `scripts/guides/icml-pages.js`) |
-| `common/fin-mentions.icml` | pied anthracite : phrase de marque en « Mentions-marque » (plus grande, espace après), puis une ligne « Mentions » par donnée des mentions légales (séparées par « · » dans le JSON), couleur papier | `pied-texte` (gabarit D) | `commun.mentions` dans `aidd_docs/guides/pages-gabarit.json`, à renseigner à la main |
-| `00-pages/fin-conseils.icml` | deux colonnes de conseils propres au guide, sans césure (attribut posé sur chaque paragraphe, le style « Courant » garde la sienne) | `conseils-fin` (gabarit D) | `fin.colonnes` dans `aidd_docs/guides/pages-gabarit.json`, à tenir à jour à la main |
+| `00-pages/fin-bandeau.icml` | titre (« Bandeau-titre ») puis accroche (« Bandeau-texte ») du bandeau orange de contact, en couleur papier | `bandeau-texte` (gabarit D) | `fin.titre` et `fin.accroche` dans le fichier de pages de gabarit |
+| `00-pages/fin-carte-1.icml` à `fin-carte-3.icml` | une carte de contact : libellé (« Surtitre »), valeur (« Carte-valeur »), note (« Légende ») | `carte-1-texte` à `carte-3-texte` (gabarit D) | `fin.cartes` dans le fichier de pages de gabarit, coordonnées à renseigner à la main |
+| `common/type-document.icml` | « Documentation utilisateur » en « Type-document » (anthracite, centré) | `type-document` (gabarit C) | texte fixe, identique pour tous les guides (champ `type` de la configuration, « Documentation utilisateur » par défaut : `DEFAULT_TYPE`, `engine/guide-config.js`) |
+| `common/fin-mentions.icml` | pied anthracite : phrase de marque en « Mentions-marque » (plus grande, espace après), puis une ligne « Mentions » par donnée des mentions légales (séparées par « · » dans le JSON), couleur papier | `pied-texte` (gabarit D) | `commun.mentions` dans le fichier de pages de gabarit, à renseigner à la main |
+| `00-pages/fin-conseils.icml` | deux colonnes de conseils propres au guide, sans césure (attribut posé sur chaque paragraphe, le style « Courant » garde la sienne) | `conseils-fin` (gabarit D) | `fin.colonnes` dans le fichier de pages de gabarit, à tenir à jour à la main |
 
 1. Appliquer le gabarit C à la page de couverture, une page courante à la page 2, puis le gabarit D à la dernière page.
 2. Sur chaque page de gabarit, dégager le cadre : « texte-couverture » (C) ou « bandeau-texte », « carte-1-texte » à « carte-3-texte » et « conseils-fin » (D). Un élément de gabarit ne se sélectionne pas tel quel sur la page : Ctrl+Maj+clic le surcharge, ce qui le rend modifiable. Le cadre « sommaire » de la page 2 est un cadre de page, à sélectionner directement.
 3. Sélectionner le cadre avec l'outil de sélection, puis Fichier > Importer en cochant « Remplacer l'élément sélectionné », et choisir le fichier qui lui correspond, dans `00-pages/` (`couverture.icml`, `sommaire.icml`, `en-tete-titre.icml`, `fin-bandeau.icml`, `fin-carte-N.icml` ou `fin-conseils.icml`) ou dans `common/` (`type-document.icml`, `pied.icml`, `pied-gauche.icml`, `en-tete-version.icml` ou `fin-mentions.icml`), et pour chaque chapitre `en-tete-chapitre.icml` et `en-tete-titre-chapitre.icml`). Pour le pied, importer `common/pied.icml` dans chacun des trois cadres de pied du gabarit (Ctrl+Maj+clic pour les dégager), en remplaçant le texte saisi à la main. Dans un modèle généré avec `--guide`, les trois cadres portent déjà le même texte : le lien n'est utile que pour les suivre à l'export. Le texte remplace les repères et prend les styles du jeu court. Dans un modèle généré avec `--guide`, la couverture, le sommaire et la fin sont déjà remplis : ne pas les importer, le titre, la version et le sommaire seraient en double.
 4. Pour la mise à jour, procéder comme pour un chapitre (section 4) : le lien suit l'export.
 
-Pour changer le sous-titre, le texte du pied, le contact ou les conseils d'un guide, modifier `aidd_docs/guides/pages-gabarit.json`, puis relancer l'export. Le fichier porte une entrée par dossier de guide (`guide-partenaire`, `guide-vendeur`, `guide-administrateur`) :
+Pour changer le sous-titre, le texte du pied, le contact ou les conseils d'un guide, modifier le fichier de pages de gabarit désigné par la configuration, puis relancer l'export. Le fichier porte une entrée par dossier de guide :
 
 | Clé | Contenu |
 | --- | ------- |
@@ -195,11 +195,11 @@ Pour changer le sous-titre, le texte du pied, le contact ou les conseils d'un gu
 | `fin.cartes` | exactement trois cartes `{ label, valeur, note }`, toutes renseignées |
 | `fin.colonnes` | exactement deux colonnes `{ titre, lignes }` de conseils, lignes non vides |
 
-La page de fin répond à ce que chaque lecteur cherche : le client (partenaire) y trouve son interlocuteur technique, le vendeur son responsable de showroom, l'administrateur le moyen de joindre l'éditeur. Les coordonnées du client et du vendeur sont encore « À renseigner » dans le fichier : les compléter avant de diffuser ces guides. `sousTitre`, titres, accroches et conseils sont des propositions à relire.
+La page de fin répond à ce que chaque lecteur cherche : le client (partenaire) y trouve son interlocuteur technique, le vendeur son responsable de showroom, l'administrateur le moyen de joindre l'éditeur. `sousTitre`, titres, accroches et conseils sont des propositions à relire.
 
 ## 3 ter. Composer un guide entier (`pdf compose`)
 
-`pdf compose --guide <id> [--remplacer] [--maj-pages] [--sortie <fichier.indd>]` place tous les chapitres dans une copie du modèle IDML, enregistre le `.indd` et exporte le PDF à côté. InDesign doit être fermé ; un `.indd` existant n'est remplacé qu'avec `--remplacer` (copie `<nom>.avant-<horodatage>.indd` faite avant).
+`pdf compose --guide <id> [--remplacer] [--maj-pages] [--sortie <fichier.indd>]` place tous les chapitres dans une copie du modèle IDML, enregistre le `.indd` et exporte le PDF à côté. InDesign doit être fermé (cf. 3 quater) ; un `.indd` existant n'est remplacé qu'avec `--remplacer` (copie `<nom>.avant-<horodatage>.indd` faite avant).
 
 Ce que la commande fait seule :
 
@@ -209,14 +209,35 @@ Ce que la commande fait seule :
 - en-têtes de droite (numéro et titre du chapitre) et de gauche (titre du guide, version) ;
 - corps chaîné sur autant de pages que nécessaire ;
 - colonne marginale : pour chaque intertitre de niveau 1, le cadre `marge-N.M` (numéro « N.M » et rubrique) est cloné sur la page de l'intertitre, côté marginal de la page (gauche ou droite), le haut sur celui de l'intertitre, sous la marge de la rubrique précédente si elle est sur la même page ; les notes « Renvoi » de la section se rangent dessous (`renvoi-K-s<M>-…`, M = rang de la section, 0 pour une note avant le premier intertitre, rangée avec la section 1). Un renvoi qui ne tient pas est signalé `A CONTROLER` ;
-- numéros de page des sommaires : relevés sur le document composé (page d'ouverture de chaque chapitre, page de chaque intertitre), écrits dans `<outputDir>/pages-mesurees/<dossier du guide>.json` et comparés à la clé `pages` de `pages-gabarit.json`. Les sommaires étant des ICML écrits avant la composition, un écart se corrige en deux passages : `pdf compose --remplacer --maj-pages` (met la table à jour), puis `pdf compose --remplacer` (les sommaires reprennent les numéros). Quand le rapport dit « conformes », rien à refaire.
+- numéros de page des sommaires : relevés sur le document composé (page d'ouverture de chaque chapitre, page de chaque intertitre), écrits dans `<outputDir>/pages-mesurees/<dossier du guide>.json` et comparés à la clé `pages` de le fichier de pages de gabarit. Les sommaires étant des ICML écrits avant la composition, un écart se corrige en deux passages : `pdf compose --remplacer --maj-pages` (met la table à jour), puis `pdf compose --remplacer` (les sommaires reprennent les numéros). Quand le rapport dit « conformes », rien à refaire.
 
 Les lignes `A CONTROLER` du rapport listent les débordements, les réductions de texte, les renvois non placés et les numéros de page des sommaires qui diffèrent du document composé.
 
+## 3 quater. Lancer InDesign (`pdf update`, `pdf compose`)
+
+Le COM d'InDesign exige un processus élevé. Les commandes `pdf` passent par `engine/indesign/run-elevated.ps1`, qui n'a pas besoin d'un terminal administrateur : depuis un terminal ordinaire, il enregistre une tâche planifiée `doc-pdf-<pid>-<horodatage>` (niveau d'exécution le plus élevé, session de l'utilisateur, sans invite), la démarre, relaie son journal à l'écran, puis la désenregistre.
+
+1. Fermer InDesign et les documents concernés. Un InDesign déjà ouvert fait refuser la commande (code 2) : le moteur ne ferme jamais une application qu'il n'a pas lancée.
+2. Lancer la commande `pdf` depuis un terminal ordinaire. Le journal défile à l'écran ; une composition longue (plusieurs minutes) est normale, le délai est de 60 minutes.
+3. Attendre le rapport : la ligne `PDF : … (préréglage …)` nomme le fichier produit et le préréglage d'export retenu.
+4. Entre deux commandes, laisser InDesign se fermer : le lanceur attend jusqu'à 60 secondes la disparition du processus avant de rendre la main.
+
+Codes de sortie du lanceur (relayés par `pdf`, avec un message qui précise « Aucun PDF produit ») :
+
+| Code | Sens | Geste |
+| ---- | ---- | ----- |
+| 0 | succès | rien à faire |
+| 2 | InDesign est déjà ouvert | l'enregistrer et le fermer, puis relancer |
+| 3 | COM d'InDesign indisponible | vérifier que l'application est installée et s'ouvre, puis relancer |
+| 4 | le script InDesign a échoué, ou la tâche s'est arrêtée sans rendre de code | lire le journal à l'écran, corriger la cause, relancer |
+| 5 | délai dépassé | la tâche est arrêtée, InDesign a pu rester ouvert : le fermer, puis lire le journal dont le chemin est donné (conservé sur les codes 3, 4 et 5, supprimé sur 0 et 2) |
+
+Si le terminal est déjà administrateur, le lanceur appelle `run-indesign.ps1` directement, sans tâche planifiée. Une tâche `doc-pdf-*` qui subsisterait dans le Planificateur de tâches après la commande est un reste d'arrêt brutal : la supprimer à la main.
+
 ## 4. Mettre à jour après une modification des guides
 
-1. Corriger le chapitre dans le Markdown, sous `aidd_docs/guides/<guide>/`.
-2. Relancer `pnpm run guides:icml`.
+1. Corriger le chapitre dans le Markdown, dans le dossier du guide.
+2. Relancer `node <racine du plugin>/engine/cli.js icml --config <configuration>`.
 3. Dans le panneau Liens, sélectionner les chapitres et les fichiers par cadre signalés modifiés, puis les mettre à jour : bouton « Mettre à jour le lien » en bas du panneau, ou double-clic sur l'icône d'alerte de modification.
 4. Contrôler les pages touchées : le texte et les captures suivent, les styles et les blocs restent en place.
 
@@ -229,28 +250,28 @@ Le dossier du chapitre suit le nom du fichier Markdown. Après un renommage, l'e
 1. Dans le panneau Liens, sélectionner l'ancien chapitre, puis choisir Rééditer le lien... dans son menu contextuel (clic droit).
 2. Désigner le nouvel ICML sous `output/icml/<guide>/`.
 3. Supprimer l'ancien fichier ICML que le récapitulatif signalait.
-4. Relancer `pnpm run guides:icml` : le récapitulatif ne liste plus aucun fichier orphelin.
+4. Relancer l'export : le récapitulatif ne liste plus aucun fichier orphelin.
 
 ## 6. Quand l'export échoue
 
 L'export vérifie tous les chapitres avant d'écrire : en cas d'erreur, il affiche « Aucun fichier écrit. » et les ICML du dernier export réussi restent en place. Le message nomme le chapitre en cause.
 
-1. « Styles Pandoc sans correspondance dans le jeu court » : le chapitre emploie une construction Markdown que le jeu de styles ne couvre pas (citation, liste à trois niveaux, bloc de code…). Soit simplifier le Markdown, soit ajouter la correspondance à `STYLE_TABLE` dans `scripts/guides/icml-transform.js`, puis ajouter le style au tableau de la section 2 de ce runbook et au document InDesign.
-2. « Page de fin » ou « Couverture » : le fichier `aidd_docs/guides/pages-gabarit.json` est illisible, n'a pas d'entrée pour le guide, ou une valeur est vide ou mal formée (sous-titre, titre ou accroche de fin, nombre de cartes ou de colonnes, ligne vide) ; le message nomme le guide et la valeur.
+1. « Styles Pandoc sans correspondance dans le jeu court » : le chapitre emploie une construction Markdown que le jeu de styles ne couvre pas (citation, liste à trois niveaux, bloc de code…). Soit simplifier le Markdown, soit ajouter la correspondance à `STYLE_TABLE` dans `engine/icml-transform.js` du plugin, puis ajouter le style au tableau de la section 2 de ce runbook et au document InDesign.
+2. « Page de fin » ou « Couverture » : le fichier de pages de gabarit est illisible, n'a pas d'entrée pour le guide, ou une valeur est vide ou mal formée (sous-titre, titre ou accroche de fin, nombre de cartes ou de colonnes, ligne vide) ; le message nomme le guide et la valeur.
 3. « image introuvable » : corriger le chemin de l'image dans le chapitre (il est relatif au dossier du chapitre), ou ajouter l'image manquante.
 4. « Pandoc est introuvable » : installer Pandoc (voir Prérequis), rouvrir le terminal, puis relancer.
-5. Relancer `pnpm run guides:icml` jusqu'au récapitulatif sans erreur.
+5. Relancer l'export jusqu'au récapitulatif sans erreur.
 
 ## 7. Charger la charte dans InDesign (modèle IDML)
 
-La commande `pnpm run guides:idml` écrit `output/idml/scriptami-<axe>.idml`, un modèle qui porte la charte (`Scriptami — Charte de mise en page des documentations PDF.md`) : les styles de la section 2 et les styles de la charte que l'export n'emploie pas (couverture, numéro de chapitre, surtitre, chapeau, légende, code, titre courant, folio), avec polices, corps, interlignage, approche, couleurs et retraits suspendus ; le nuancier ; un document A4 en pages en vis-à-vis, aux marges de la grille, avec 3 mm de fond perdu. Les noms sont ceux des ICML : aucun doublon à l'import.
+La commande `idml` écrit `output/idml/scriptami-<axe>.idml`, un modèle qui porte la charte (`Scriptami — Charte de mise en page des documentations PDF.md`) : les styles de la section 2 et les styles de la charte que l'export n'emploie pas (couverture, numéro de chapitre, surtitre, chapeau, légende, code, titre courant, folio), avec polices, corps, interlignage, approche, couleurs et retraits suspendus ; le nuancier ; un document A4 en pages en vis-à-vis, aux marges de la grille, avec 3 mm de fond perdu. Les noms sont ceux des ICML : aucun doublon à l'import.
 
 Ce modèle n'a pas encore été ouvert dans InDesign. S'il est refusé ou s'il s'ouvre incomplet, le dire avec le message affiché : le générateur est à corriger, pas le poste.
 
 ### Préparer le poste
 
 1. Installer les polices : Quicksand (Bold, Medium, SemiBold), Proza Libre (Regular, Italic, Bold) et JetBrains Mono (Regular). Une police absente s'affiche en rose, comme à la section 2.
-2. Le triangle ▶ des puces n'existe ni dans Quicksand ni dans Proza Libre : le style de caractère « Puce » prend la police « Segoe UI Symbol » (Windows). Sur un autre poste, ou pour une autre police qui porte le triangle : `pnpm run guides:idml --police-puce "<police>"`. Sans elle, InDesign affiche un carré surligné en rose à la place de la puce.
+2. Le triangle ▶ des puces n'existe ni dans Quicksand ni dans Proza Libre : le style de caractère « Puce » prend la police « Segoe UI Symbol » (Windows). Sur un autre poste, ou pour une autre police qui porte le triangle : `node <racine du plugin>/engine/cli.js idml --config <configuration> --police-puce "<police>"`. Sans elle, InDesign affiche un carré surligné en rose à la place de la puce.
 3. Quicksand n'a pas d'italique : le numéro de chapitre et le style « Accent » sont inclinés de 12° par le style, pas par la police.
 
 ### Générer le modèle
@@ -258,22 +279,22 @@ Ce modèle n'a pas encore été ouvert dans InDesign. S'il est refusé ou s'il s
 1. Choisir la couleur d'axe de la charte : `turquoise` (par défaut), `orange` ou `vert`. Les nuances « Axe vif », « Axe texte » et « Axe fond » prennent ses valeurs, et les styles qui les emploient suivent.
 
    ```bash
-   pnpm run guides:idml
-   pnpm run guides:idml --axe orange
+   node <racine du plugin>/engine/cli.js idml --config <configuration>
+   node <racine du plugin>/engine/cli.js idml --config <configuration> --axe orange
    ```
 
 2. Ajouter `--gabarits` pour créer aussi les quatre gabarits de la charte, sur le modèle des maquettes :
    - « A-Courante » (page gauche et page droite) : titres courants en variables de texte, pointillé orange sous chaque titre courant, pied « scriptami.com », coin plié côté extérieur, bordé d'un pointillé de pliage de la couleur du coin (« Axe vif », tirets de 1,5 pt séparés de 1,5 pt, dessinés comme segments d’un tracé composé (InDesign ignore les styles de contour d’un IDML ; le pli se règle donc en retouchant le tracé, non le panneau Contour), 0,75 pt, le même trait que sous le titre courant) qui sépare la zone de pied de page, folio en couleur du papier (blanc) centré dans le rabat. À appliquer aux pages de contenu.
    - « B-Chapitre » (page simple) : fond d'ouverture à bord incliné, pli, triangles de flanc, folio, même pointillé orange de pliage que A-Courante au-dessus du pied. À appliquer à la première page de chaque chapitre.
    - « C-Couverture » (page simple) : (le filet de pied est le même pointillé orange que le pli de A-Courante) bandeau d'axe, mot « SCRIPTAMI » en tracé vectoriel dans la police du logo (anthracite, sans le picto : ses couleurs se mêlaient au fond), verbe, puis un cadre « texte-couverture » (titre, version, sommaire). À appliquer à la couverture ; le texte du cadre vient de `00-pages/couverture.icml` (section 3 bis).
-   - « D-Fin » (page simple) : bandeau de contact, trois cartes, pied anthracite portant le picto du logo seul (trois facettes, sans texte) à gauche des mentions, puis un filet et un cadre « conseils-fin » à deux colonnes (`00-pages/fin-conseils.icml` impose le saut de colonne avant la seconde). À appliquer à la dernière page ; le texte du cadre vient de `00-pages/fin-conseils.icml`, celui du bandeau (un cadre « bandeau-texte » : titre et accroche) de `fin-bandeau.icml` et celui de chaque carte (« carte-N-texte ») de `fin-carte-N.icml` (section 3 bis). Sans `--guide`, le bandeau et les cartes sont des repères « À renseigner » à éditer dans le gabarit ; avec `--guide`, ils portent le contact du guide (voir `pages-gabarit.json`, section 3 bis). Les textes du pied restent des repères à éditer.
+   - « D-Fin » (page simple) : bandeau de contact, trois cartes, pied anthracite portant le picto du logo seul (trois facettes, sans texte) à gauche des mentions, puis un filet et un cadre « conseils-fin » à deux colonnes (`00-pages/fin-conseils.icml` impose le saut de colonne avant la seconde). À appliquer à la dernière page ; le texte du cadre vient de `00-pages/fin-conseils.icml`, celui du bandeau (un cadre « bandeau-texte » : titre et accroche) de `fin-bandeau.icml` et celui de chaque carte (« carte-N-texte ») de `fin-carte-N.icml` (section 3 bis). Sans `--guide`, le bandeau et les cartes sont des repères « À renseigner » à éditer dans le gabarit ; avec `--guide`, ils portent le contact du guide (voir le fichier de pages de gabarit, section 3 bis). Les textes du pied restent des repères à éditer.
 
    Les gabarits A et B portent aussi des repères de règle (cyan) pour poser des cadres de texte aux bons endroits, sans surcharger d'élément de gabarit : sur A, trois repères horizontaux (haut du corps, bas du bloc « numéro de section + rubrique » sous lequel se glisse une note de renvoi, bas du corps), les côtés étant donnés par les colonnes du gabarit ; sur B, un repère par bord des cinq zones de l'ouverture de chapitre (surtitre, numéro, titre, chapeau, « Dans ce chapitre »), identiques aux cadres de la page d'exemple. Ils sont visibles sur toute page qui applique le gabarit (Affichage > Grilles et repères > Repères).
 
    Les variables « Titre du document », « Version » et « Chapitre » se renseignent dans Texte > Variables de texte > Définir. Un gabarit ne s'applique pas tout seul : le glisser sur la page dans le panneau Pages (ou Appliquer le gabarit aux pages).
 
    ```bash
-   pnpm run guides:idml --gabarits
+   node <racine du plugin>/engine/cli.js idml --config <configuration> --gabarits
    ```
 
 3. Ajouter `--guide partenaire` (ou `vendeur`, `administrateur`) pour obtenir en plus huit pages d'exemple remplies avec le texte de ce guide, qui montrent les gabarits en situation (l'ouverture de chapitre reprend les zones de la maquette : surtitre, numéro, titre dont le dernier mot est en « Accent », chapeau et bloc « Dans ce chapitre » en cadres séparés). Cette option implique `--gabarits` ; le fichier s'appelle `scriptami-<axe>-<guide>.idml`.
@@ -284,17 +305,15 @@ Ce modèle n'a pas encore été ouvert dans InDesign. S'il est refusé ou s'il s
    | 2 (gauche) | A-Courante | sommaire seul : libellé « Sommaire », une ligne par chapitre (numéro, titre, « p. … »), sans encadré de couleur ; son texte vient de `00-pages/sommaire.icml` |
    | 3 (droite) | B-Chapitre | ouverture du premier chapitre : surtitre, numéro, titre (qui alimente le titre courant des pages suivantes) et chapeau |
    | 4 à 7 | A-Courante | texte courant d'exemple : intertitres, paragraphes, listes à puces et numérotées, encadrés (info, attention, à retenir), note de renvoi ; sert à contrôler les en-têtes, le folio et le pied de page. La colonne marginale (guides de colonne du gabarit) reçoit un cadre par élément, à la hauteur de son contenu : numéro de section et rubrique en tête, note de renvoi à une position d'exemple. Chaque note se glisse en regard du paragraphe qu'elle commente |
-   | 8 | D-Fin | contact du guide (bandeau et trois cartes) et deux colonnes de conseils de `pages-gabarit.json` |
+   | 8 | D-Fin | contact du guide (bandeau et trois cartes) et deux colonnes de conseils de le fichier de pages de gabarit |
 
    Les numéros de page du sommaire sont l'espace réservé « p. … » : les renseigner à la main, ou remplacer ces lignes par une table des matières InDesign (Mise en page > Table des matières) une fois les chapitres placés. La page 8 tombe à gauche d'une double page : si elle doit rester une page simple, désactiver « Pages en vis-à-vis » pour la dernière planche.
 
    ```bash
-   pnpm run guides:idml --guide partenaire
-   pnpm run guides:idml --guide vendeur
-   pnpm run guides:idml --guide administrateur
+   node <racine du plugin>/engine/cli.js idml --config <configuration> --guide <id>
    ```
 
-   Sans `--axe`, chaque guide prend l'axe de son verbe dans la charte (`GUIDE_AXES`) : partenaire en turquoise (« Consolider »), vendeur en orange (« Débloquer »), administrateur en vert (« Maîtriser »). Cela donne trois fichiers : `scriptami-turquoise-partenaire.idml`, `scriptami-orange-vendeur.idml` et `scriptami-vert-administrateur.idml`.
+   Sans `--axe`, chaque guide prend l'axe du champ `accent` de la configuration. Cela donne un fichier par guide, `scriptami-<accent>-<id>.idml`.
 
 ### Utiliser le modèle
 
@@ -305,7 +324,7 @@ Ce modèle n'a pas encore été ouvert dans InDesign. S'il est refusé ou s'il s
 
 ### Ce que le modèle ne contient pas
 
-- Images : à poser à la main. Le logo est dessiné par le générateur (`scripts/guides/logo-scriptami.js`, tracés tirés de `LOGO SCRIPTAMI.svg`) : mot en tracé composé sur la couverture, picto en trois facettes sur la page de fin, avec les dégradés verticaux et l'opacité de 88 % du SVG d'origine. Les ombrages du SVG (noir à 18 %), qu'un dégradé IDML ne sait pas rendre (pas d'opacité par point d'arrêt), sont incorporés aux couleurs des points d'arrêt : le rendu est proche, pas identique au pixel. Le nuancier reçoit trois dégradés (« Picto orange », « Picto jaune », « Picto turquoise ») et leurs nuances de points d'arrêt (« Picto orange 01 », etc.) : les ignorer, ou les supprimer avec le picto. Hypothèse non vérifiée dans InDesign : l'angle de dégradé (`GradientFillAngle`, 90° = du bas vers le haut) ; si un dégradé apparaît inversé, le retourner depuis le panneau Dégradé. Largeur du mot : `coverBoxes().logo` ; hauteur du picto : `PICTO_HEIGHT`, dans `build-idml-template.js`. Pour un logo exact, remplacer ces formes par le fichier SVG ou AI placé à la main.
+- Images : à poser à la main. Le logo est dessiné par le générateur (`engine/logo-scriptami.js`, tracés tirés de `LOGO SCRIPTAMI.svg`) : mot en tracé composé sur la couverture, picto en trois facettes sur la page de fin, avec les dégradés verticaux et l'opacité de 88 % du SVG d'origine. Les ombrages du SVG (noir à 18 %), qu'un dégradé IDML ne sait pas rendre (pas d'opacité par point d'arrêt), sont incorporés aux couleurs des points d'arrêt : le rendu est proche, pas identique au pixel. Le nuancier reçoit trois dégradés (« Picto orange », « Picto jaune », « Picto turquoise ») et leurs nuances de points d'arrêt (« Picto orange 01 », etc.) : les ignorer, ou les supprimer avec le picto. Hypothèse non vérifiée dans InDesign : l'angle de dégradé (`GradientFillAngle`, 90° = du bas vers le haut) ; si un dégradé apparaît inversé, le retourner depuis le panneau Dégradé. Largeur du mot : `coverBoxes().logo` ; hauteur du picto : `PICTO_HEIGHT`, dans `build-idml-template.js`. Pour un logo exact, remplacer ces formes par le fichier SVG ou AI placé à la main.
 - La barre latérale des encadrés : ils n'ont qu'un fond et un libellé. Le numéro de section en marge vient du fichier `marge-N.M-<titre>.icml` (section 2 ter).
-- Les textes du pied de page des gabarits : à éditer dans les gabarits, ils ne changent pas d'un guide à l'autre. Avec `--guide`, le sous-titre de la couverture et le contact de la fin viennent de `pages-gabarit.json`, et le verbe de la couverture suit le guide (partenaire : « Consolider · Guide du client », vendeur : « Débloquer · Guide du vendeur », administrateur : « Maîtriser · Guide de l’administrateur » ; `GUIDE_VERBS` et `GUIDE_LABELS`, le client étant le « partenaire » du code) ; sans `--guide`, le gabarit garde « Maîtriser ». Le triangle et le texte du verbe suivent l'axe choisi par `--axe` (teintes « Axe vif » et « Axe texte »), comme le reste du document. Les trois lignes de signature du bandeau (« consolider · guide du client », « débloquer · guide du vendeur », « maîtriser · guide de l’administrateur ») présentent les trois guides existants et sont identiques dans les trois documents : aucune n'est mise en avant, le verbe du document figure déjà sur la ligne de surtitre. Le verbe de chaque ligne est en gras, la teinte d'axe n'y serait pas toujours lisible sur l'aplat de couleur fixe du bandeau.
+- Les textes du pied de page des gabarits : à éditer dans les gabarits, ils ne changent pas d'un guide à l'autre. Avec `--guide`, le sous-titre de la couverture et le contact de la fin viennent de le fichier de pages de gabarit, et le verbe de la couverture suit le guide (partenaire : « Consolider · Guide du client », vendeur : « Débloquer · Guide du vendeur », administrateur : « Maîtriser · Guide de l’administrateur » ; champs `verb` et `title` de la configuration) ; sans `--guide`, le gabarit garde « Maîtriser ». Le triangle et le texte du verbe suivent l'axe choisi par `--axe` (teintes « Axe vif » et « Axe texte »), comme le reste du document. Les trois lignes de signature du bandeau (« consolider · guide du client », « débloquer · guide du vendeur », « maîtriser · guide de l’administrateur ») présentent les trois guides existants et sont identiques dans les trois documents : aucune n'est mise en avant, le verbe du document figure déjà sur la ligne de surtitre. Le verbe de chaque ligne est en gras, la teinte d'axe n'y serait pas toujours lisible sur l'aplat de couleur fixe du bandeau.
 - Les styles « Tableau texte » (10 pt) et « Tableau en-tête » (Quicksand Bold 10 pt) ne figurent pas dans la charte : leur mise en forme est un choix du générateur, à ajuster dans `FORMATS`, `scripts/guides/build-idml-template.js`.

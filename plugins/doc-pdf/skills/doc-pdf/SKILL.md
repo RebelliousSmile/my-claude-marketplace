@@ -44,7 +44,7 @@ Une seule skill, plusieurs commandes du moteur. Les lancer avec `node <DOC_PDF_P
 
 - Sources uniques : le Markdown et `documentation.config.json`. Ne jamais corriger un ICML généré sans le dire : la prochaine régénération l'écrase, sauf si l'utilisateur le retouche exprès (le manifeste d'empreintes l'arrête alors).
 - Ne jamais modifier la charte, les maquettes, ni le jeu de styles fermé (`STYLE_TABLE`) ; ne pas renommer `cerascan_object_styles` (identifiant lu par les `.indd` existants).
-- Piloter InDesign (`pdf`) exige l'accord de l'utilisateur, le document fermé, une copie de sauvegarde (faite par `update`) et un PowerShell lancé en administrateur. Sans cela, donner la commande à l'utilisateur au lieu de la lancer.
+- Piloter InDesign (`pdf`) exige l'accord de l'utilisateur, le document fermé, une copie de sauvegarde (faite par `update`) et aucun terminal administrateur : le moteur passe par une tâche planifiée élevée (`run-elevated.ps1`, codes de sortie dans le runbook, section 3 quater). Sans l'accord de l'utilisateur, donner la commande au lieu de la lancer.
 - Sans Pandoc dans le PATH, le moteur s'arrête avant d'écrire quoi que ce soit : indiquer l'installation à l'utilisateur.
 - Un texte retouché dans InDesign sur un cadre lié est écrasé par la mise à jour : le rappeler.
 - Ne rien copier du moteur dans le projet client : l'appeler depuis le plugin.
