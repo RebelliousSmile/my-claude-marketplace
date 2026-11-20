@@ -17,7 +17,7 @@
  * Le corps du chapitre ne contient que le texte qui coule dans la colonne. Le texte que la mise en
  * page place dans ses propres cadres est rendu à part, un fichier par cadre, dans `<chapitre>/` :
  * `ouverture-surtitre|numero|titre|chapeau|sommaire.icml` (gabarit B-Chapitre), `marge-N.M-<titre>.icml`
- * (numéro et rubrique d'une section, colonne marginale), `renvoi-K-<début du texte>.icml` (notes de renvoi).
+ * (numéro et rubrique d'une section, colonne marginale), `renvoi-K-s<M>-<début du texte>.icml` (notes de renvoi, M = rang de la section).
  * Chaque cadre reste ainsi lié à son fichier et se met à jour à chaque export.
  *
  * Chaque guide reçoit aussi un dossier `00-pages/` : `couverture.icml` (titre, version, sommaire de

@@ -4,14 +4,14 @@
  *
  *   node <racine du plugin>/engine/compose-guide.js [build] --guide <id> --chapitre 01-vue-ensemble [--config <chemin>]
  *   node <racine du plugin>/engine/compose-guide.js update --guide <id> [--force] [--config <chemin>]
- *   node <racine du plugin>/engine/compose-guide.js compose --guide <id> [--remplacer] [--sortie <fichier.indd>] [--config <chemin>]
+ *   node <racine du plugin>/engine/compose-guide.js compose --guide <id> [--remplacer] [--maj-pages] [--sortie <fichier.indd>] [--config <chemin>]
  *
  * `build` (commande par défaut) compose un chapitre d'essai et écrit sous `<outputDir>/pdf-essai/` (non suivi).
  * `update` met à jour le .indd du guide (champ `document` de la configuration) : régénération des ICML
  * (arrêt sur un ICML corrigé à la main, sauf `--force`), copie de sauvegarde `<nom>.avant-<horodatage>.indd`,
- * rafraîchissement des liens, pages ajoutées ou retirées, PDF écrit à côté du .indd.
+ * rafraîchissement des liens, pages ajoutées ou retirées, PDF écrit sous `<outputDir>/pdf/<nom>-v<version>.pdf`.
  * `compose` place TOUS les chapitres du guide (ICML liés) dans une copie du modèle IDML et écrit le .indd (champ
- * `document`, ou `--sortie`) et son PDF. Un .indd existant n'est remplacé qu'avec `--remplacer` (copie de sauvegarde faite).
+ * `document`, ou `--sortie`) et son PDF (`<outputDir>/pdf/<nom>-v<version>.pdf` ; à côté du .indd avec `--sortie`). Un .indd existant n'est remplacé qu'avec `--remplacer` (copie de sauvegarde faite).
  * Le guide est désigné par son identifiant (ou son dossier) dans `documentation.config.json`.
  * `update` et `compose` finissent par un constat d'empreintes avant/après (ICML, IDML, .indd, PDF) : à lire avant
  * d'annoncer qu'un correctif est livré.
@@ -23,7 +23,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { ConfigError, loadConfig, extractConfigArg, findGuide } = require('./guide-config');
+const { ConfigError, loadConfig, extractConfigArg, findGuide, readVersion } = require('./guide-config');
 const { outputPathFor } = require('./build-idml-template');
 
 const LAUNCHER = path.join(__dirname, 'indesign', 'run-indesign.ps1');
@@ -49,6 +49,8 @@ function parseArgs(argv) {
       options.force = true;
     } else if (flag === '--remplacer') {
       options.remplacer = true;
+    } else if (flag === '--maj-pages') {
+      options.majPages = true;
     } else if (flag === '--guide' || flag === '--chapitre' || flag === '--sortie') {
       const value = rest[index + 1];
       if (!value || value.startsWith('--')) throw new ComposeError(`${flag} attend une valeur.`);
@@ -62,11 +64,11 @@ function parseArgs(argv) {
   if (wholeGuide ? !options.guide : (!options.guide || !options.chapitre)) {
     throw new ComposeError('Usage : pdf [build] --guide <guide> --chapitre <0N-nom> [--config <chemin>]\n'
       + '        pdf update --guide <guide> [--force] [--config <chemin>]\n'
-      + '        pdf compose --guide <guide> [--remplacer] [--sortie <fichier.indd>] [--config <chemin>]');
+      + '        pdf compose --guide <guide> [--remplacer] [--maj-pages] [--sortie <fichier.indd>] [--config <chemin>]');
   }
   if (options.force && options.command !== 'update') throw new ComposeError('--force ne vaut que pour la commande update.');
-  if ((options.remplacer || options.sortie) && options.command !== 'compose') {
-    throw new ComposeError('--remplacer et --sortie ne valent que pour la commande compose.');
+  if ((options.remplacer || options.sortie || options.majPages) && options.command !== 'compose') {
+    throw new ComposeError('--remplacer, --sortie et --maj-pages ne valent que pour la commande compose.');
   }
   if (wholeGuide && options.chapitre) throw new ComposeError(`${options.command} traite le guide entier : --chapitre ne s'y applique pas.`);
   if (!NAME_PATTERN.test(options.guide) && !/^[A-Za-z0-9._-]+$/.test(options.guide)) {
@@ -105,7 +107,27 @@ function commonNamesIn(commonDir) {
   return fs.existsSync(commonDir) ? fs.readdirSync(commonDir).filter(name => name.toLowerCase().endsWith('.icml')).sort() : [];
 }
 
-/** Chemins de la mise à jour : le .indd du guide, son PDF à côté sous le même nom, le préréglage de la configuration. */
+/**
+ * Chemin du PDF livré : `<outputDir>/pdf/<nom du .indd>-v<version>.pdf`. La version est celle de `versionFile`
+ * (package.json du projet) ; sans fichier lisible, le nom n'en porte pas.
+ */
+function releasePdfPath(document, config) {
+  let version = null;
+  try {
+    version = readVersion(config) || null;
+  } catch (error) {
+    if (!(error instanceof ConfigError)) throw error;
+  }
+  const name = path.basename(document).replace(/\.indd$/i, '');
+  return path.join(config.outputDir, 'pdf', `${name}${version ? `-v${version}` : ''}.pdf`);
+}
+
+/** Crée les dossiers parents du .indd et du PDF avant de lancer InDesign. */
+function ensureOutputDirs(paths) {
+  [paths.document, paths.pdf].forEach(file => fs.mkdirSync(path.dirname(file), { recursive: true }));
+}
+
+/** Chemins de la mise à jour : le .indd du guide, son PDF versionné sous <outputDir>/pdf, le préréglage de la configuration. */
 function updatePathsFor({ guide }, config) {
   const entry = findGuide(config, guide);
   if (!entry.document) {
@@ -115,7 +137,7 @@ function updatePathsFor({ guide }, config) {
   const commonDir = path.join(icmlRoot, 'common');
   return {
     document: entry.document,
-    pdf: entry.document.replace(/\.indd$/i, '.pdf'),
+    pdf: releasePdfPath(entry.document, config),
     preset: config.pdfPreset,
     icmlDir: path.join(icmlRoot, entry.dir),
     commonDir,
@@ -132,7 +154,7 @@ function chapterNamesIn(icmlDir) {
     .sort();
 }
 
-/** Chemins de la composition du guide entier : modèle IDML, .indd écrit (champ `document` ou `--sortie`), PDF à côté. */
+/** Chemins de la composition du guide entier : modèle IDML, .indd écrit (champ `document` ou `--sortie`), PDF versionné sous <outputDir>/pdf. */
 function composePathsFor({ guide, sortie }, config) {
   const entry = findGuide(config, guide);
   const document = sortie ? path.resolve(sortie) : entry.document;
@@ -144,13 +166,59 @@ function composePathsFor({ guide, sortie }, config) {
   return {
     template: outputPathFor(path.join(config.outputDir, TRIAL_DIR), entry.accent, entry.id),
     document,
-    pdf: document.replace(/\.indd$/i, '.pdf'),
+    pdf: sortie ? document.replace(/\.indd$/i, '.pdf') : releasePdfPath(document, config),
     preset: config.pdfPreset,
     icmlDir,
     commonDir: path.join(config.outputDir, 'icml', 'common'),
     pagesDir: path.join(icmlDir, '00-pages'),
+    measuredPages: path.join(config.outputDir, 'pages-mesurees', `${entry.dir}.json`),
     chapters: chapterNamesIn(icmlDir)
   };
+}
+
+/** Écarts entre deux tables de pages { "N" | "N.M": page } : { key, declared, measured }, triés par numéro. */
+function diffPages(declared, measured) {
+  const known = declared || {};
+  const rank = key => key.split('.').map(Number);
+  const keys = [...new Set([...Object.keys(known), ...Object.keys(measured)])].sort((a, b) => {
+    const [chapterA, sectionA = 0] = rank(a);
+    const [chapterB, sectionB = 0] = rank(b);
+    return chapterA - chapterB || sectionA - sectionB;
+  });
+  return keys.filter(key => known[key] !== measured[key]).map(key => ({ key, declared: known[key], measured: measured[key] }));
+}
+
+/** Constat sur les numéros de page des sommaires : écarts entre pages-gabarit.json et le document composé. */
+function formatPagesReport(differences) {
+  if (differences.length === 0) return 'Numéros de page des sommaires : conformes au document composé.';
+  const lines = differences.map(({ key, declared, measured }) => {
+    const was = declared === undefined ? 'absent' : `p. ${declared}`;
+    const now = measured === undefined ? 'absente du document' : `p. ${measured}`;
+    return `  ${key} : ${was} -> ${now}`;
+  });
+  return [`A CONTROLER : numéros de page des sommaires différents du document composé (${differences.length}) :`, ...lines].join('\n');
+}
+
+/**
+ * Confronte les pages relevées par la composition à `pages` de pages-gabarit.json. Avec `--maj-pages`, réécrit cette table :
+ * les sommaires (ICML, écrits avant la composition) ne la reprennent qu'à la composition suivante.
+ */
+function reportMeasuredPages(options, paths, config) {
+  if (!fs.existsSync(paths.measuredPages)) return;
+  const entry = findGuide(config, options.guide);
+  const measured = JSON.parse(fs.readFileSync(paths.measuredPages, 'utf8'));
+  const pagesFile = JSON.parse(fs.readFileSync(config.pagesFile, 'utf8'));
+  const section = pagesFile[entry.dir];
+  const differences = diffPages(section && section.pages, measured);
+  process.stdout.write(`${formatPagesReport(differences)}\n`);
+  if (differences.length === 0) return;
+  if (options.majPages && section) {
+    section.pages = measured;
+    fs.writeFileSync(config.pagesFile, `${JSON.stringify(pagesFile, null, 2)}\n`);
+    process.stdout.write(`pages-gabarit.json mis à jour (${entry.dir}) : relancer pdf compose --remplacer pour que les sommaires reprennent ces numéros.\n`);
+  } else {
+    process.stdout.write('Pour les reprendre : pdf compose --remplacer --maj-pages, puis relancer pdf compose --remplacer (les sommaires sont écrits avant la composition).\n');
+  }
 }
 
 /** Horodatage de nom de fichier : 20261120-143005. */
@@ -262,6 +330,7 @@ function runUpdate(options, config) {
   const paths = updatePathsFor(options, config);
   const copy = backupDocument(paths.document);
   process.stdout.write(`Copie de sauvegarde : ${copy}\n`);
+  ensureOutputDirs(paths);
   const status = launch(UPDATE_SCRIPT, paths);
   process.stdout.write(`${formatChangeReport(diffSnapshots(before, snapshotOutputs(paths)))}\n`);
   return status;
@@ -279,8 +348,12 @@ function runCompose(options, config) {
   const paths = composePathsFor(options, config);
   if (paths.chapters.length === 0) throw new ComposeError(`Aucun chapitre (dossier 0N-nom) dans ${paths.icmlDir} pour le guide « ${entry.id} ».`);
   if (fs.existsSync(paths.document)) process.stdout.write(`Copie de sauvegarde : ${backupDocument(paths.document)}\n`);
+  fs.mkdirSync(path.dirname(paths.measuredPages), { recursive: true });
+  fs.rmSync(paths.measuredPages, { force: true });
+  ensureOutputDirs(paths);
   const status = launch(COMPOSE_GUIDE_SCRIPT, paths);
   process.stdout.write(`${formatChangeReport(diffSnapshots(before, snapshotOutputs(paths)))}\n`);
+  if (status === 0) reportMeasuredPages(options, paths, config);
   return status;
 }
 
@@ -308,4 +381,4 @@ if (require.main === module) {
   process.exitCode = main(process.argv.slice(2));
 }
 
-module.exports = { ComposeError, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main };
+module.exports = { ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main };

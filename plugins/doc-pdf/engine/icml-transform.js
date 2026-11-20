@@ -578,7 +578,7 @@ function takeSatellites(story, number, pageNumbers) {
       if (wasAfterNote) {
         notes[notes.length - 1].xml += paragraph;
       } else {
-        notes.push({ xml: paragraph, text: contentText(inner).replace(/^renvois*/i, '') });
+        notes.push({ xml: paragraph, section: sections.length, text: contentText(inner).replace(/^renvois*/i, '') });
       }
       return '';
     }
@@ -605,7 +605,9 @@ function takeSatellites(story, number, pageNumbers) {
     parts.push({ name: 'ouverture-sommaire', xml: heading + lines.join('') });
   }
   sections.forEach(({ key, title, xml }) => parts.push({ name: labelledName(`marge-${key}`, title), xml }));
-  notes.forEach(({ xml, text }, index) => parts.push({ name: labelledName(`renvoi-${index + 1}`, text), xml }));
+  // `sN` : rang de la section (Intertitre-1) sous laquelle la note apparaît (0 : avant la première) ; la mise
+  // en page s'en sert pour placer la note en face de cette section.
+  notes.forEach(({ xml, text, section }, index) => parts.push({ name: labelledName(`renvoi-${index + 1}-s${section}`, text), xml }));
   return { story: body, parts };
 }
 

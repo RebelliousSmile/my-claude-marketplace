@@ -143,9 +143,9 @@ Le corps du chapitre (`<chapitre>/corps.icml`) ne contient que le texte qui coul
 | `ouverture-chapeau.icml` | premier paragraphe du chapitre, en « Chapeau » | `chapitre-chapeau` |
 | `ouverture-sommaire.icml` | bloc « Dans ce chapitre » (absent sous deux sections) | `chapitre-sommaire` |
 | `marge-N.M-<titre>.icml` | numéro et rubrique de la section N.M (ex. `marge-1.2-se-connecter.icml`) | `marginale-…` de la page courante |
-| `renvoi-K-<début du texte>.icml` | K-ième note de renvoi du chapitre (les notes consécutives sont réunies) | `renvoi-…` de la page courante |
+| `renvoi-K-s<M>-<début du texte>.icml` | K-ième note de renvoi du chapitre (les notes consécutives sont réunies) | `renvoi-…` de la page courante |
 
-Les fichiers `ouverture-*` se placent une fois, sur la page d'ouverture du chapitre (gabarit B). Les fichiers `marge-N.M` et `renvoi-K` vont chacun dans le cadre de la colonne marginale, en regard du paragraphe qu'ils accompagnent : ce choix de page reste manuel, mais le lien suit les mises à jour.
+Les fichiers `ouverture-*` se placent une fois, sur la page d'ouverture du chapitre (gabarit B). Les fichiers `marge-N.M` et `renvoi-K` vont chacun dans le cadre de la colonne marginale, en regard du paragraphe qu'ils accompagnent : `pdf compose` les place seul (section 3 ter) ; posés à la main, le lien suit de même les mises à jour.
 
 Pour savoir où poser `marge-N.M-<titre>` : le titre dans le nom est celui de l'intertitre de la section dans le corps (le N.M-ième intertitre de niveau 1 du chapitre). Aligner le haut du cadre de marge sur le haut de cet intertitre. Le nom d'un fichier de marge change quand le titre de la section change : l'export liste l'ancien nom comme orphelin, et le bloc InDesign est à relier au nouveau fichier (Liens > Relier à).
 
@@ -190,7 +190,7 @@ Pour changer le sous-titre, le texte du pied, le contact ou les conseils d'un gu
 | Clé | Contenu |
 | --- | ------- |
 | `sousTitre` | phrase de la couverture, sous le titre |
-| `pages` | facultatif : numéros de page du sommaire, `"N"` (chapitre) ou `"N.M"` (section) vers un entier ≥ 1 ; relevés sur le PDF exporté, à relever à nouveau après tout changement de mise en page. Une entrée absente reste « p. … » |
+| `pages` | facultatif : numéros de page du sommaire, `"N"` (chapitre) ou `"N.M"` (section) vers un entier ≥ 1. `pdf compose` relève les numéros réels et signale les écarts ; `--maj-pages` réécrit cette table. Une entrée absente reste « p. … » |
 | `fin.titre`, `fin.accroche` | titre et phrase du bandeau de contact de la page de fin |
 | `fin.cartes` | exactement trois cartes `{ label, valeur, note }`, toutes renseignées |
 | `fin.colonnes` | exactement deux colonnes `{ titre, lignes }` de conseils, lignes non vides |
@@ -199,7 +199,7 @@ La page de fin répond à ce que chaque lecteur cherche : le client (partenaire)
 
 ## 3 ter. Composer un guide entier (`pdf compose`)
 
-`pdf compose --guide <id> [--remplacer] [--sortie <fichier.indd>]` place tous les chapitres dans une copie du modèle IDML, enregistre le `.indd` et exporte le PDF à côté. InDesign doit être fermé ; un `.indd` existant n'est remplacé qu'avec `--remplacer` (copie `<nom>.avant-<horodatage>.indd` faite avant).
+`pdf compose --guide <id> [--remplacer] [--maj-pages] [--sortie <fichier.indd>]` place tous les chapitres dans une copie du modèle IDML, enregistre le `.indd` et exporte le PDF à côté. InDesign doit être fermé ; un `.indd` existant n'est remplacé qu'avec `--remplacer` (copie `<nom>.avant-<horodatage>.indd` faite avant).
 
 Ce que la commande fait seule :
 
@@ -207,9 +207,11 @@ Ce que la commande fait seule :
 - cadres des pages dupliquées replacés sur la géométrie du premier jeu de pages ;
 - titre et sommaire d'ouverture : cadre agrandi, puis texte réduit (jusqu'à 60 %) tant qu'il déborde, la réduction étant signalée ;
 - en-têtes de droite (numéro et titre du chapitre) et de gauche (titre du guide, version) ;
-- corps chaîné sur autant de pages que nécessaire.
+- corps chaîné sur autant de pages que nécessaire ;
+- colonne marginale : pour chaque intertitre de niveau 1, le cadre `marge-N.M` (numéro « N.M » et rubrique) est cloné sur la page de l'intertitre, côté marginal de la page (gauche ou droite), le haut sur celui de l'intertitre, sous la marge de la rubrique précédente si elle est sur la même page ; les notes « Renvoi » de la section se rangent dessous (`renvoi-K-s<M>-…`, M = rang de la section, 0 pour une note avant le premier intertitre, rangée avec la section 1). Un renvoi qui ne tient pas est signalé `A CONTROLER` ;
+- numéros de page des sommaires : relevés sur le document composé (page d'ouverture de chaque chapitre, page de chaque intertitre), écrits dans `<outputDir>/pages-mesurees/<dossier du guide>.json` et comparés à la clé `pages` de `pages-gabarit.json`. Les sommaires étant des ICML écrits avant la composition, un écart se corrige en deux passages : `pdf compose --remplacer --maj-pages` (met la table à jour), puis `pdf compose --remplacer` (les sommaires reprennent les numéros). Quand le rapport dit « conformes », rien à refaire.
 
-Ce qu'elle laisse à la main : colonne marginale et renvois (cadres vidés), numéros de page du sommaire (clé `pages` de `pages-gabarit.json`). Les lignes `A CONTROLER` du rapport listent les débordements et les réductions de texte.
+Les lignes `A CONTROLER` du rapport listent les débordements, les réductions de texte, les renvois non placés et les numéros de page des sommaires qui diffèrent du document composé.
 
 ## 4. Mettre à jour après une modification des guides
 

@@ -135,10 +135,10 @@ const FORMATS = Object.freeze({
       }
     },
     'Numéro-chapitre': { font: QUICKSAND, fontStyle: 'Bold', size: 150, leading: 120, skew: 12, fill: 'Axe vif', hyphenate: false },
-    'Intertitre-1': { font: QUICKSAND, fontStyle: 'Bold', size: 22.5, leading: 25, tracking: -10, fill: DARK, hyphenate: false, keepNext: true,
+    'Intertitre-1': { font: QUICKSAND, fontStyle: 'Bold', size: 22.5, leading: 25, tracking: -10, fill: DARK, hyphenate: false, keepNext: true, keepLines: true,
       attrs: { SpaceBefore: '20', SpaceAfter: '8' } },
     'Intertitre-2': {
-      font: QUICKSAND, fontStyle: 'Bold', size: 15, leading: 18, fill: 'Axe texte', hyphenate: false, keepNext: true,
+      font: QUICKSAND, fontStyle: 'Bold', size: 15, leading: 18, fill: 'Axe texte', hyphenate: false, keepNext: true, keepLines: true,
       bullet: { char: BULLET_CODE, style: 'Puce' },
       attrs: { LeftIndent: '16', FirstLineIndent: '-16', SpaceBefore: '12', SpaceAfter: '5' }
     },
@@ -318,6 +318,7 @@ function renderStyle(family, name, tableAttributes, bulletFont) {
     if (format.hyphenate !== undefined) attributes.Hyphenation = String(format.hyphenate);
     if (format.hyphenate) properties.push('<AppliedLanguage type="string">$ID/French</AppliedLanguage>');
     if (format.keepNext) attributes.KeepWithNext = '1';
+    if (format.keepLines) attributes.KeepLinesTogether = 'true';
     if (format.tabs) {
       const stops = format.tabs.map(({ align, position }) =>
         `<ListItem type="record"><Alignment type="enumeration">${align}</Alignment><AlignmentCharacter type="string"></AlignmentCharacter><Leader type="string"></Leader><Position type="unit">${position}</Position></ListItem>`);

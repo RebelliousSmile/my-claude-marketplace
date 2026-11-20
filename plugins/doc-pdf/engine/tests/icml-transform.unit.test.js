@@ -477,9 +477,23 @@ describe('ouverture de chapitre', () => {
     const converted = convert(body + note('un') + note('deux') + paragraph('Paragraph', 'milieu') + BR + note('trois'), 1);
     expect(storyOf(converted.icml)).not.toContain('Note-renvoi');
     const renvois = converted.satellites.filter((satellite) => satellite.name.startsWith('renvoi-'));
-    expect(renvois.map((satellite) => satellite.name)).toEqual(['renvoi-1-un', 'renvoi-2-trois']);
+    expect(renvois.map((satellite) => satellite.name)).toEqual(['renvoi-1-s0-un', 'renvoi-2-s0-trois']);
     expect(styles(storyOf(renvois[0].icml))).toEqual(['Note-renvoi', 'Note-renvoi']);
     expect(storyOf(renvois[1].icml)).toContain('trois');
+  });
+
+  test('le nom d\'une note de renvoi porte le rang de la section sous laquelle elle apparaît', () => {
+    const note = (text) => '<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Blockquote &gt; Paragraph">\n'
+      + '  <CharacterStyleRange AppliedCharacterStyle="CharacterStyle/Bold">\n'
+      + '    <Content>Renvoi</Content>\n  </CharacterStyleRange>\n'
+      + '  <CharacterStyleRange AppliedCharacterStyle="$ID/NormalCharacterStyle">\n'
+      + `    <Content> ${text}</Content>\n  </CharacterStyleRange>\n</ParagraphStyleRange>\n${BR}`;
+    const section = (title) => paragraph('Header2', title) + BR;
+    const converted = convert(body + section('Premier') + note('alpha') + section('Second') + paragraph('Paragraph', 'texte') + BR + note('beta'), 1);
+    const names = converted.satellites.map((satellite) => satellite.name);
+    expect(names).toContain('renvoi-1-s1-alpha');
+    expect(names).toContain('renvoi-2-s2-beta');
+    expect(names).toContain('marge-1.2-second');
   });
 });
 

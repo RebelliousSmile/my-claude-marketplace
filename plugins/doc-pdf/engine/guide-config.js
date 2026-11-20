@@ -19,7 +19,8 @@
  *
  * `mergedFile` (facultatif) nomme la version fusionnée du guide (`build-merged-guides.js`).
  * `document` (facultatif) désigne le .indd du guide, relatif au fichier de configuration : la commande de
- * mise à jour (`compose-guide.js update`) le requiert ; le PDF est écrit à côté, sous le même nom.
+ * mise à jour (`compose-guide.js update`) le requiert (p. ex. `../../output/indd/guide.indd`) ; le PDF est écrit sous
+ * `<outputDir>/pdf/<nom du .indd>-v<version de versionFile>.pdf` (sans version lisible : `<nom>.pdf`).
  * Un accent est l'un des trois tons de la charte ; plusieurs guides peuvent partager le même.
  *
  * Recherche : `--config <chemin>` sinon `documentation.config.json` en remontant depuis le dossier courant.

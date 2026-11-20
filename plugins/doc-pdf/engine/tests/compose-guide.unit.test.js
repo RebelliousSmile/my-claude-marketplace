@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { ComposeError, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main } = require('../compose-guide');
+const { ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main } = require('../compose-guide');
 const { resolveConfig } = require('../guide-config');
 
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
@@ -118,10 +118,10 @@ describe('compose-guide', () => {
       guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', ...(document ? { document } : {}) }]
     }, path.resolve('/r/docs/documentation.config.json'));
 
-    it('écrit le PDF à côté du .indd sous le même nom, avec le préréglage de la configuration', () => {
+    it('écrit le PDF sous <outputDir>/pdf (sans version lisible : sans suffixe), avec le préréglage de la configuration', () => {
       const paths = updatePathsFor({ guide: 'vendeur' }, withDocument('guides/vendeur.indd'));
       expect(slash(paths.document)).toBe('/r/docs/guides/vendeur.indd');
-      expect(slash(paths.pdf)).toBe('/r/docs/guides/vendeur.pdf');
+      expect(slash(paths.pdf)).toBe('/r/output/pdf/vendeur.pdf');
       expect(paths.preset).toBe('Qualité optimale');
       expect(slash(paths.icmlDir)).toBe('/r/output/icml/guide-vendeur');
       expect(slash(paths.commonDir)).toBe('/r/output/icml/common');
@@ -137,6 +137,11 @@ describe('compose-guide', () => {
     it('lit --remplacer et --sortie, sans chapitre', () => {
       expect(parseArgs(['compose', '--guide', 'vendeur', '--remplacer', '--sortie', 'x/copie.indd']))
         .toEqual({ command: 'compose', guide: 'vendeur', chapitre: null, sortie: 'x/copie.indd', remplacer: true, configPath: null });
+    });
+
+    it('lit --maj-pages pour la seule commande compose', () => {
+      expect(parseArgs(['compose', '--guide', 'vendeur', '--maj-pages']).majPages).toBe(true);
+      expect(() => parseArgs(['update', '--guide', 'vendeur', '--maj-pages'])).toThrow(/ne valent que pour la commande compose/);
     });
 
     it.each([
@@ -158,14 +163,15 @@ describe('compose-guide', () => {
       guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', ...(document ? { document } : {}) }]
     }, path.resolve('/r/docs/documentation.config.json'));
 
-    it('compose dans le .indd de la configuration, PDF à côté, modèle sous pdf-essai', () => {
+    it('compose dans le .indd de la configuration, PDF sous <outputDir>/pdf, modèle sous pdf-essai', () => {
       const paths = composePathsFor({ guide: 'vendeur', sortie: null }, withDocument('guides/vendeur.indd'));
       expect(slash(paths.document)).toBe('/r/docs/guides/vendeur.indd');
-      expect(slash(paths.pdf)).toBe('/r/docs/guides/vendeur.pdf');
+      expect(slash(paths.pdf)).toBe('/r/output/pdf/vendeur.pdf');
       expect(slash(paths.template)).toBe('/r/output/pdf-essai/scriptami-orange-vendeur.idml');
       expect(slash(paths.icmlDir)).toBe('/r/output/icml/guide-vendeur');
       expect(slash(paths.commonDir)).toBe('/r/output/icml/common');
       expect(slash(paths.pagesDir)).toBe('/r/output/icml/guide-vendeur/00-pages');
+      expect(slash(paths.measuredPages)).toBe('/r/output/pages-mesurees/guide-vendeur.json');
       expect(paths.preset).toBe('Qualité optimale');
     });
 
@@ -173,6 +179,22 @@ describe('compose-guide', () => {
       const paths = composePathsFor({ guide: 'vendeur', sortie: 'copie/essai.indd' }, withDocument(null));
       expect(path.basename(paths.document)).toBe('essai.indd');
       expect(path.basename(paths.pdf)).toBe('essai.pdf');
+    });
+
+    it('le PDF porte la version de versionFile dans son nom', () => {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'doc-pdf-version-'));
+      try {
+        fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ version: '2.20.0' }));
+        const config = resolveConfig({
+          sourceDir: '.', outputDir: 'out', pagesFile: 'pages.json', versionFile: 'package.json',
+          guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', document: 'out/indd/cerascan-guide-du-vendeur.indd' }]
+        }, path.join(dir, 'documentation.config.json'));
+        expect(path.relative(dir, releasePdfPath(config.guides[0].document, config)).split(path.sep).join('/')).toBe('out/pdf/cerascan-guide-du-vendeur-v2.20.0.pdf');
+        expect(path.relative(dir, composePathsFor({ guide: 'vendeur', sortie: null }, config).pdf).split(path.sep).join('/')).toBe('out/pdf/cerascan-guide-du-vendeur-v2.20.0.pdf');
+        expect(path.relative(dir, updatePathsFor({ guide: 'vendeur' }, config).pdf).split(path.sep).join('/')).toBe('out/pdf/cerascan-guide-du-vendeur-v2.20.0.pdf');
+      } finally {
+        fs.rmSync(dir, { recursive: true, force: true });
+      }
     });
 
     it('refuse sans document ni --sortie, ou une extension autre que .indd', () => {
@@ -194,6 +216,34 @@ describe('compose-guide', () => {
       it('rend une liste vide si le dossier manque', () => {
         expect(chapterNamesIn(path.join(dir, 'absent'))).toEqual([]);
       });
+    });
+  });
+
+  describe('numéros de page des sommaires', () => {
+    it('ne rend aucun écart quand la table saisie égale le relevé', () => {
+      expect(diffPages({ 1: 3, '1.1': 4 }, { 1: 3, '1.1': 4 })).toEqual([]);
+      expect(formatPagesReport([])).toMatch(/conformes/);
+    });
+
+    it('relève valeur changée, rubrique absente de la table et rubrique disparue, triées par numéro', () => {
+      const differences = diffPages({ 1: 3, '1.10': 8, '1.2': 4, 2: 11 }, { 1: 3, '1.2': 5, '1.3': 6, '1.10': 8 });
+      expect(differences).toEqual([
+        { key: '1.2', declared: 4, measured: 5 },
+        { key: '1.3', declared: undefined, measured: 6 },
+        { key: '2', declared: 11, measured: undefined }
+      ]);
+    });
+
+    it('traite une table saisie absente comme vide', () => {
+      expect(diffPages(undefined, { 1: 3 })).toEqual([{ key: '1', declared: undefined, measured: 3 }]);
+    });
+
+    it('nomme chaque écart dans le constat', () => {
+      const report = formatPagesReport(diffPages({ '1.2': 4, 2: 11 }, { '1.2': 5, '1.3': 6 }));
+      expect(report).toMatch(/^A CONTROLER.*(3)/);
+      expect(report).toContain('1.2 : p. 4 -> p. 5');
+      expect(report).toContain('1.3 : absent -> p. 6');
+      expect(report).toContain('2 : p. 11 -> absente du document');
     });
   });
 

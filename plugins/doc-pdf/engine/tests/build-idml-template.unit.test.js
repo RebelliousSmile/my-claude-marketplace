@@ -119,6 +119,15 @@ describe('build-idml-template', () => {
     });
   });
 
+  it('garde les lignes d\'un intertitre ensemble, pour ne pas le couper entre deux pages', () => {
+    const styles = byName(files(), 'Resources/Styles.xml');
+    const style = name => styles.match(new RegExp(`<ParagraphStyle [^>]*Name="${name}"[^>]*>`))[0];
+    ['Intertitre-1', 'Intertitre-2'].forEach(name => {
+      expect(style(name)).toContain('KeepLinesTogether="true"');
+      expect(style(name)).toContain('KeepWithNext="1"');
+    });
+  });
+
   it('garde les retraits suspendus de STYLE_TABLE sur les listes', () => {
     const styles = byName(files(), 'Resources/Styles.xml');
     const style = name => styles.match(new RegExp(`<ParagraphStyle [^>]*Name="${name}"[^>]*>`))[0];
