@@ -352,4 +352,90 @@ function loadMaquette(dir) {
   return deepFreeze({ ...raw, logo: readLogo(raw.logo, folder), picto: raw.picto === undefined ? null : readPicto(raw.picto, folder), dir: folder, file });
 }
 
-module.exports = { MaquetteError, loadMaquette, MAQUETTE_FILE, SUPPORTED_FORMAT };
+const SKELETON_DIR = path.join(__dirname, 'maquettes', 'squelette');
+const SPECIMEN_DIR = path.join(__dirname, 'specimen');
+const SPECIMEN_FOLDER = 'specimen';
+const SPECIMEN_IGNORE = 'specimen/output/';
+const NAME_PATTERN = /^[a-z0-9-]+$/;
+const SKELETON_FILES = ['logo.svg', 'README.md'];
+
+function isEmptyFolder(folder) {
+  return fs.readdirSync(folder).length === 0;
+}
+
+/** Copie le spécimen sous `<folder>/specimen` ; son guide prend l'axe par défaut de la maquette comme accent. */
+function copySpecimen(folder, accent) {
+  const target = path.join(folder, SPECIMEN_FOLDER);
+  fs.cpSync(SPECIMEN_DIR, target, { recursive: true });
+  const configFile = path.join(target, 'documentation.config.json');
+  const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+  config.guides.forEach(guide => { guide.accent = accent; });
+  fs.writeFileSync(configFile, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
+}
+
+/** Ajoute `specimen/output/` au .gitignore du dossier de maquette, sans doublon ; le crée s'il manque. */
+function ensureGitignore(folder) {
+  const file = path.join(folder, '.gitignore');
+  const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+  if (current.split(/\r?\n/).some(line => line.trim() === SPECIMEN_IGNORE)) return;
+  const separator = current === '' || /\n$/.test(current) ? '' : '\n';
+  fs.writeFileSync(file, `${current}${separator}${SPECIMEN_IGNORE}\n`, 'utf8');
+}
+
+/**
+ * Crée le dossier d'une maquette : `maquette.json`, `logo.svg` et `README.md` du squelette, puis le spécimen de calage.
+ * Refuse un dossier non vide et un nom hors `^[a-z0-9-]+$` (il préfixe les modèles IDML) avant toute écriture ;
+ * l'écriture passe par un dossier temporaire voisin, validé par loadMaquette, puis renommé.
+ * @returns {string} chemin absolu du dossier créé
+ */
+function initMaquette(dossier, { nom } = {}) {
+  if (!isText(dossier)) throw new MaquetteError('Maquette : le dossier à créer est requis.');
+  const destination = path.resolve(dossier);
+  const name = nom === undefined || nom === null ? path.basename(destination) : nom;
+  if (!isText(name) || !NAME_PATTERN.test(name)) {
+    throw new MaquetteError(`Maquette : le nom « ${name} » est invalide : minuscules, chiffres et tirets seulement (il préfixe les modèles IDML).`);
+  }
+  const exists = fs.existsSync(destination);
+  if (exists && (!fs.statSync(destination).isDirectory() || !isEmptyFolder(destination))) {
+    throw new MaquetteError(`Maquette : ${destination} existe et n'est pas un dossier vide : rien écrit.`);
+  }
+  const parent = path.dirname(destination);
+  fs.mkdirSync(parent, { recursive: true });
+  const temporary = fs.mkdtempSync(path.join(parent, `.${path.basename(destination)}-`));
+  try {
+    const raw = JSON.parse(fs.readFileSync(path.join(SKELETON_DIR, MAQUETTE_FILE), 'utf8'));
+    raw.nom = name;
+    fs.writeFileSync(path.join(temporary, MAQUETTE_FILE), `${JSON.stringify(raw, null, 2)}\n`, 'utf8');
+    SKELETON_FILES.forEach(file => fs.copyFileSync(path.join(SKELETON_DIR, file), path.join(temporary, file)));
+    copySpecimen(temporary, raw.axes.defaut);
+    ensureGitignore(temporary);
+    loadMaquette(temporary);
+    if (exists) fs.rmdirSync(destination);
+    fs.renameSync(temporary, destination);
+  } catch (error) {
+    fs.rmSync(temporary, { recursive: true, force: true });
+    throw error;
+  }
+  return destination;
+}
+
+/**
+ * Ajoute le spécimen de calage à une maquette existante, sans toucher à ses autres fichiers
+ * (hors la ligne `specimen/output/` du .gitignore). Refuse un `specimen/` déjà présent.
+ * @returns {string} chemin absolu du spécimen
+ */
+function addSpecimen(dossier) {
+  const maquette = loadMaquette(dossier);
+  const target = path.join(maquette.dir, SPECIMEN_FOLDER);
+  if (fs.existsSync(target)) throw new MaquetteError(`Maquette : ${target} existe déjà : rien écrasé.`);
+  try {
+    copySpecimen(maquette.dir, maquette.axes.defaut);
+  } catch (error) {
+    fs.rmSync(target, { recursive: true, force: true });
+    throw error;
+  }
+  ensureGitignore(maquette.dir);
+  return target;
+}
+
+module.exports = { MaquetteError, loadMaquette, initMaquette, addSpecimen, MAQUETTE_FILE, SUPPORTED_FORMAT };

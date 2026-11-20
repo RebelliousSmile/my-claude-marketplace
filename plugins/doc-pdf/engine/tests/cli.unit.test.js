@@ -90,3 +90,31 @@ describe('cli', () => {
     });
   });
 });
+
+describe('cli maquette', () => {
+  const tmp = () => path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'cli-maquette-')), 'nouvelle');
+
+  it('maquette init crée la maquette, maquette specimen refuse un spécimen existant', () => {
+    const dest = tmp();
+    const a = sink();
+    expect(main(['maquette', 'init', dest], { out: a.out })).toBe(0);
+    expect(fs.existsSync(path.join(dest, 'maquette.json'))).toBe(true);
+    const b = sink();
+    expect(main(['maquette', 'specimen', dest], { out: b.out })).toBe(1);
+    expect(b.lines.err[0]).toMatch(/existe déjà/);
+  });
+
+  it('maquette init refuse un nom invalide avec le code 1', () => {
+    const s = sink();
+    expect(main(['maquette', 'init', tmp(), '--nom', 'Mauvais Nom'], { out: s.out })).toBe(1);
+    expect(s.lines.err[0]).toMatch(/invalide/);
+  });
+
+  it('sous-commande inconnue ou dossier manquant : code 1 et usage', () => {
+    const s = sink();
+    expect(main(['maquette', 'zzz'], { out: s.out })).toBe(1);
+    expect(s.lines.err[0]).toMatch(/inconnue/);
+    expect(s.lines.err.join('\n')).toMatch(/maquette init/);
+    expect(main(['maquette', 'init'], { out: sink().out })).toBe(1);
+  });
+});

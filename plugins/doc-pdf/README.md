@@ -8,6 +8,11 @@ Moteur interprojets de documentation PDF, maquette externe (dossier `maquette.js
 2. **Modèle IDML** de la maquette (gabarits, pages d'exemple).
 3. **Mise à jour d'un `.indd` existant** : copie de sauvegarde, liens rafraîchis, pages ajoutées ou retirées, export PDF.
 
+## Deux skills
+
+- `doc-pdf` : produit les documents d'un projet (ICML, IDML, `.indd`, PDF).
+- `maquette` : crée, cale et branche une maquette en trois temps (modèle, calage, production), sur un spécimen neutre.
+
 ## Prérequis
 
 - Node.js, Pandoc dans le PATH (`icml`, `pdf`).
@@ -17,6 +22,7 @@ Moteur interprojets de documentation PDF, maquette externe (dossier `maquette.js
 
 ```sh
 node <racine du plugin>/engine/cli.js init --maquette <dossier>   # écrit documentation.config.json
+node <racine du plugin>/engine/cli.js maquette init <dossier>     # nouvelle maquette ; maquette specimen <dossier> ajoute le spécimen
 node <racine du plugin>/engine/cli.js merge --check
 node <racine du plugin>/engine/cli.js icml [--force]
 node <racine du plugin>/engine/cli.js idml --gabarits --guide <id>

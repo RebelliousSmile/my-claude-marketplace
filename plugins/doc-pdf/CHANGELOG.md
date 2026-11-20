@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+- Skill `doc-pdf:maquette` : méthode rodée en trois temps (modèle, calage, production) pour créer, caler et brancher une maquette, avec ses evals de routage.
+- Commandes `maquette init <dossier> [--nom <nom>]` (squelette validé, refus d'un nom invalide ou d'un dossier non vide, aucune écriture partielle) et `maquette specimen <dossier>` (texte neutre qui exerce chaque style, sorties ignorées par git).
+- Spécimen de calage `engine/specimen/` : trois chapitres (structure, encadrés, images), fixture Pandoc figée et test qui vérifie que chaque style de la transformation est exercé.
+
 ## 0.4.0
 
 - Moteur sans marque : toute la charte (page, couleurs, axes, polices, styles, gabarits, cadres, textes, logo, picto) est lue dans une maquette externe (format 1 : dossier `maquette.json`, `logo.svg`, `picto.json` facultatif). Aucune mention de Scriptami ne reste dans le moteur, hors la maquette d'exemple qui sera retirée.

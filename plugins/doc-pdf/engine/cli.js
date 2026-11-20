@@ -6,6 +6,8 @@
  *
  * Commandes (chaque option est transmise telle quelle au script concerné) :
  *   init --maquette <dossier> [--dir <dossier>]  écrit un documentation.config.json de départ (refuse d'écraser)
+ *   maquette init <dossier> [--nom <nom>]  crée une maquette (squelette et spécimen de calage)
+ *   maquette specimen <dossier>  ajoute le spécimen de calage à une maquette existante
  *   merge  [--check]           versions fusionnées des guides (build-merged-guides.js)
  *   icml   [--force] …         régénère les ICML (export-icml.js) ; Pandoc requis
  *   idml   [--gabarits] …      modèle IDML de la maquette (build-idml-template.js)
@@ -19,7 +21,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { loadMaquette } = require('./maquette');
+const { loadMaquette, initMaquette, addSpecimen } = require('./maquette');
 
 const PLUGIN_MANIFEST = path.join(__dirname, '..', '.claude-plugin', 'plugin.json');
 const CONFIG_NAME = 'documentation.config.json';
@@ -69,6 +71,8 @@ function usage() {
     '',
     'Usage : node cli.js <commande> [options]',
     '  init --maquette <dossier> [--dir <dossier>]  écrit un documentation.config.json de départ',
+    '  maquette init <dossier> [--nom <nom>]  crée une maquette (squelette et spécimen de calage)',
+    '  maquette specimen <dossier>  ajoute le spécimen de calage à une maquette',
     '  merge [--check]          versions fusionnées des guides',
     '  icml [--force]           régénère les ICML (Pandoc requis)',
     '  idml [--gabarits]        modèle IDML de la charte',
@@ -119,6 +123,30 @@ function init(args, out) {
   return 0;
 }
 
+/** Sous-commandes de `maquette` : `init <dossier> [--nom <nom>]` et `specimen <dossier>`. */
+function maquetteCommand(args, out) {
+  const [sub, ...rest] = args;
+  const folder = rest.find(arg => !arg.startsWith('--') && arg !== optionValue(rest, '--nom'));
+  try {
+    if (sub === 'init' && folder) {
+      const created = initMaquette(folder, { nom: optionValue(rest, '--nom') ?? undefined });
+      out.log(`Écrit : ${created}`);
+      out.log('Remplir maquette.json et poser logo.svg, puis suivre la skill doc-pdf:maquette (modèle, calage, production).');
+      return 0;
+    }
+    if (sub === 'specimen' && folder) {
+      out.log(`Écrit : ${addSpecimen(folder)}`);
+      return 0;
+    }
+  } catch (error) {
+    out.err(error.message);
+    return 1;
+  }
+  out.err(`Sous-commande de maquette inconnue ou dossier manquant : « ${args.join(' ')} ».
+${usage()}`);
+  return 1;
+}
+
 /**
  * Route une commande. `deps` isole les effets (Pandoc, lancement) pour les tests.
  * Rend le code de sortie.
@@ -137,6 +165,7 @@ function main(argv, deps = {}) {
     return 0;
   }
   if (command === 'init') return init(rest, out);
+  if (command === 'maquette') return maquetteCommand(rest, out);
   if (!SCRIPTS[command]) {
     out.err(`Commande inconnue : « ${command} ».\n${usage()}`);
     return 1;

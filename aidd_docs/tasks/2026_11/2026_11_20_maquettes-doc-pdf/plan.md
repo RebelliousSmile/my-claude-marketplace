@@ -1,6 +1,6 @@
 ---
 objective: "doc-pdf compose n'importe quelle maquette décrite dans un dossier externe au format 1, Scriptami vit dans son propre dépôt, les guides cerascan en sortent identiques, et l'agent compose et crée une maquette sans terminal administrateur ni méthode à réapprendre."
-status: in-progress
+status: implemented
 ---
 
 # Plan: doc-pdf, des maquettes séparées du moteur

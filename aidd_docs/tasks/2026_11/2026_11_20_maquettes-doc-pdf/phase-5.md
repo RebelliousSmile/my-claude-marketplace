@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Skill `doc-pdf:maquette`, commandes `maquette init` et `maquette specimen` (0.5.0)
@@ -223,3 +223,12 @@ journey
 | 5 | Une recherche de « Ne jamais modifier la charte, les maquettes » dans `plugins/doc-pdf/` ne trouve plus rien ; le test `icml-transform` du runbook reste vert. |
 | 6 | Les trois manifestes sont en 0.5.0 avec la même description ; `consistency.mjs` et la suite Jest sont verts. |
 | 7 | `icml` passe sur le spécimen copié ; un spécimen composé sur une maquette neuve, un ajustement qui ne déplace que les pages attendues, aucune tâche `doc-pdf-*` restante. |
+
+## Compte rendu
+
+- Skill `doc-pdf:maquette` (modèle, calage, production), évals de routage et d'autonomie ; commandes `maquette init` et `maquette specimen` ; spécimen copié par `init` (champ `document` ajouté à sa configuration) ; README du squelette ; version 0.5.0 (trois manifestes + CHANGELOG). Jest : 456 verts ; `consistency.mjs`, `coverage.mjs` et `harness.mjs` verts.
+- Preuve réelle sur une maquette neuve : init → icml → idml (gabarits, guide) → `pdf compose` (12 pages, 41 liens). Alertes relevées : chapeau d'ouverture à 94 % (page 3), un intertitre reporté, sommaires sans numéros au premier essai (reprise par `--maj-pages`).
+- Calage : le levier est `formats.<style>` de `maquette.json`, pas les `attributes` de `styles.paragraph` (sans effet ; 02-calage corrigé). `formats.Intertitre-2.size` 15 → 17 : `compare-pdfs` montre 5 pages différentes (celles qui portent des sous-sections), même pagination.
+- Aucune tâche planifiée `doc-pdf-*` restante ; dossier d'essai supprimé (accord donné).
+- Le cache installé du plugin reste en 0.3.x tant qu'il n'est pas réinstallé.
+- SHA du commit de fin de phase : à noter après commit.

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { loadMaquette, MaquetteError, MAQUETTE_FILE } = require('../maquette');
+const { loadMaquette, initMaquette, addSpecimen, MaquetteError, MAQUETTE_FILE } = require('../maquette');
 
 const SQUELETTE = path.join(__dirname, '..', 'maquettes', 'squelette');
 const base = () => JSON.parse(fs.readFileSync(path.join(SQUELETTE, MAQUETTE_FILE), 'utf8'));
@@ -330,5 +330,82 @@ describe('loadMaquette : commun', () => {
     const raw = base();
     delete raw.textes.miseAJour;
     expect(() => loadMaquette(folderWith(raw))).toThrow(/« textes.miseAJour »/);
+  });
+});
+
+describe('initMaquette et addSpecimen', () => {
+  const scratch = () => fs.mkdtempSync(path.join(os.tmpdir(), 'maquette-init-'));
+  const files = dir => fs.readdirSync(dir).sort();
+
+  test('crée maquette.json, logo.svg, README.md, spécimen et .gitignore, et la maquette se charge', () => {
+    const dest = path.join(scratch(), 'ma-maquette');
+    expect(initMaquette(dest)).toBe(dest);
+    expect(files(dest)).toEqual(['.gitignore', 'README.md', 'logo.svg', 'maquette.json', 'specimen']);
+    expect(loadMaquette(dest).nom).toBe('ma-maquette');
+    expect(fs.readFileSync(path.join(dest, '.gitignore'), 'utf8')).toBe('specimen/output/\n');
+  });
+
+  test('--nom prime sur le nom du dossier et le spécimen prend l’axe par défaut', () => {
+    const dest = path.join(scratch(), 'dossier');
+    initMaquette(dest, { nom: 'jeu-noir' });
+    const maquette = loadMaquette(dest);
+    expect(maquette.nom).toBe('jeu-noir');
+    const config = JSON.parse(fs.readFileSync(path.join(dest, 'specimen', 'documentation.config.json'), 'utf8'));
+    expect(config.guides.map(g => g.accent)).toEqual([maquette.axes.defaut]);
+  });
+
+  test('refuse un nom invalide sans rien écrire, parent inexistant compris', () => {
+    const root = scratch();
+    const dest = path.join(root, 'nouveau-parent', 'Ma M');
+    expect(() => initMaquette(dest)).toThrow(MaquetteError);
+    expect(fs.existsSync(path.join(root, 'nouveau-parent'))).toBe(false);
+  });
+
+  test('refuse un dossier non vide sans rien modifier', () => {
+    const dest = scratch();
+    fs.writeFileSync(path.join(dest, 'notes.txt'), 'x');
+    expect(() => initMaquette(dest, { nom: 'ok' })).toThrow(/rien écrit/);
+    expect(files(dest)).toEqual(['notes.txt']);
+  });
+
+  test('accepte un dossier vide existant', () => {
+    const dest = path.join(scratch(), 'vide');
+    fs.mkdirSync(dest);
+    initMaquette(dest);
+    expect(files(dest)).toContain('maquette.json');
+  });
+
+  test('ne laisse aucun dossier temporaire voisin', () => {
+    const root = scratch();
+    initMaquette(path.join(root, 'propre'));
+    expect(files(root)).toEqual(['propre']);
+  });
+
+  test('addSpecimen ajoute le spécimen sans toucher au reste ni doubler le .gitignore', () => {
+    const dest = path.join(scratch(), 'existante');
+    initMaquette(dest);
+    fs.rmSync(path.join(dest, 'specimen'), { recursive: true });
+    fs.writeFileSync(path.join(dest, '.gitignore'), 'specimen/output/\n');
+    const before = fs.readFileSync(path.join(dest, MAQUETTE_FILE), 'utf8');
+    addSpecimen(dest);
+    expect(fs.existsSync(path.join(dest, 'specimen', 'documentation.config.json'))).toBe(true);
+    expect(fs.readFileSync(path.join(dest, MAQUETTE_FILE), 'utf8')).toBe(before);
+    expect(fs.readFileSync(path.join(dest, '.gitignore'), 'utf8')).toBe('specimen/output/\n');
+  });
+
+  test('addSpecimen refuse un specimen existant et un dossier sans maquette valide', () => {
+    const dest = path.join(scratch(), 'deja');
+    initMaquette(dest);
+    expect(() => addSpecimen(dest)).toThrow(/existe déjà/);
+    expect(() => addSpecimen(scratch())).toThrow(MaquetteError);
+  });
+
+  test('complète un .gitignore sans saut de ligne final', () => {
+    const dest = path.join(scratch(), 'sans-saut');
+    initMaquette(dest);
+    fs.rmSync(path.join(dest, 'specimen'), { recursive: true });
+    fs.writeFileSync(path.join(dest, '.gitignore'), 'node_modules');
+    addSpecimen(dest);
+    expect(fs.readFileSync(path.join(dest, '.gitignore'), 'utf8')).toBe('node_modules\nspecimen/output/\n');
   });
 });

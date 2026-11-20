@@ -2,6 +2,8 @@
 
 La commande `icml` convertit chaque chapitre numéroté de chaque guide de la configuration en un fichier ICML. Le fichier se place lié dans InDesign : après une correction du Markdown, on relance l'export et on met à jour le lien, la mise en page reste en place.
 
+Pour créer ou recaler la maquette elle-même, suivre la skill `doc-pdf:maquette` ; ce runbook décrit la mise en page d'un projet.
+
 Le Markdown reste la source du texte. InDesign porte la mise en forme, par un jeu court de styles dont les noms sont fixés par l'export.
 
 ## Prérequis
