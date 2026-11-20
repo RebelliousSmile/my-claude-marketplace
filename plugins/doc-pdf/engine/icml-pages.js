@@ -98,9 +98,9 @@ function footerLeftParagraphs(entry) {
 /** Titre d'en-tête : le Markdown d'un titre peut porter `*mot*` (accent), jamais dans un titre courant. */
 const plainTitle = title => title.replace(/\*/g, '');
 
-/** En-tête de la page gauche : puce, titre du document (celui de la couverture). */
+/** En-tête de la page gauche : flèche ◀ vers le bord extérieur (comme le ▶ de la page droite), titre du document (celui de la couverture). */
 function headerTitleParagraphs({ title }) {
-  return [{ style: 'Titre-courant', text: [{ text: '▶', character: 'Puce' }, { text: ` ${plainTitle(title)}` }] }];
+  return [{ style: 'Titre-courant', text: [{ text: '◀', character: 'Puce' }, { text: ` ${plainTitle(title)}` }] }];
 }
 
 /** En-tête de la page gauche : version du produit, alignée à droite contre la marge intérieure. */

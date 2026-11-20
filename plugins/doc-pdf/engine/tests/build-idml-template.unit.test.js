@@ -204,7 +204,7 @@ describe('build-idml-template', () => {
     const list = files({ masters: true });
     const headTitle = byName(list, 'Stories/Story_A-Courante_en-tete-gauche-titre.xml');
     // Quicksand n'a pas le triangle : il porte le style de caractère Puce (police qui l'a), sinon marqueur rouge.
-    expect(headTitle).toMatch(/CharacterStyle\/Puce"[^>]*>\s*<Content>▶<\/Content>/);
+    expect(headTitle).toMatch(/CharacterStyle\/Puce"[^>]*>\s*<Content>◀<\/Content>/);
     expect(headTitle).toContain('<Content> Titre du document</Content>');
     expect(byName(list, 'Stories/Story_A-Courante_en-tete-droite-titre.xml')).toMatch(/CharacterStyle\/Puce"[^>]*>\s*<Content>▶<\/Content>/);
     expect(byName(list, 'Stories/Story_A-Courante_en-tete-gauche-version.xml')).toContain('<Content>v1.0</Content>');

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3
+
+- En-tête de la page gauche : la flèche devant le titre du guide est maintenant ◀ (vers le bord extérieur), comme le ▶ de la page droite ; avant, les deux flèches regardaient vers l'intérieur à gauche et vers l'extérieur à droite. Modèle IDML et ICML d'en-tête ; recomposer (`pdf compose --remplacer`) ou régénérer l'ICML puis `pdf update` pour les .indd existants. Le ▶ du bloc « Dans ce chapitre » et des puces ne change pas.
+
 ## 0.2.2
 
 - `pdf compose` et `pdf update` écrivent le PDF sous `<outputDir>/pdf/<nom du .indd>-v<version>.pdf` (version lue dans `versionFile`, sans suffixe si le fichier manque) au lieu de le poser à côté du .indd ; avec `--sortie`, le PDF reste à côté du .indd choisi. Les dossiers de sortie sont créés. Le champ `document` n'a pas changé de sens : y mettre `../../output/indd/<nom>.indd` pour ranger les .indd (et leurs copies `avant-<horodatage>`) sous `output/indd`. Les anciens PDF restent où ils étaient, sans effet.

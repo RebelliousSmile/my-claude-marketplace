@@ -680,7 +680,7 @@ function masterA(builder, { footer = FOOTER_TEXT } = {}) {
   foldedCorner(builder, 'left');
   foldedCorner(builder, 'right');
   builder.frame('en-tete-gauche-titre', { left: left.outer, right: leftMid, ...headerBox },
-    [para('Titre-courant', [{ text: '▶', character: 'Puce' }, { text: ' Titre du document' }])]);
+    [para('Titre-courant', [{ text: '◀', character: 'Puce' }, { text: ' Titre du document' }])]);
   builder.frame('en-tete-gauche-version', { left: leftMid, right: left.inner, ...headerBox },
     [para('Titre-courant', [{ text: 'v1.0' }], { justification: 'RightAlign' })]);
   builder.line('en-tete-gauche', left.outer, left.inner, RULE_Y, 'Axe vif', { dotted: true });

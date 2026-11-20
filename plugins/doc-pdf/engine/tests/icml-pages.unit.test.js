@@ -173,9 +173,9 @@ describe('mentionsParagraphs', () => {
 });
 
 describe('titres courants d’en-tête', () => {
-  test('page gauche : puce et titre du document sans accent Markdown, puis version alignée à droite', () => {
+  test('page gauche : flèche vers l’extérieur et titre du document sans accent Markdown, puis version alignée à droite', () => {
     expect(headerTitleParagraphs({ title: 'Le guide du *partenaire*' })).toEqual([
-      { style: 'Titre-courant', text: [{ text: '▶', character: 'Puce' }, { text: ' Le guide du partenaire' }] }
+      { style: 'Titre-courant', text: [{ text: '◀', character: 'Puce' }, { text: ' Le guide du partenaire' }] }
     ]);
     expect(headerVersionParagraphs({ version: '2.20.0' })).toEqual([
       { style: 'Titre-courant', text: 'v2.20.0', justification: 'RightAlign' }
