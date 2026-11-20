@@ -1,13 +1,16 @@
 const {
   LogoError,
-  WORDMARK_PATHS,
   parseSvgPath,
   subpathsBounds,
   wordmarkShapes,
   pictoFacets,
-  pictoGradients,
-  PICTO_OPACITY
+  pictoGradients
 } = require('../logo-scriptami');
+const { loadMaquette } = require('../maquette');
+
+const { logo, picto: PICTO } = loadMaquette();
+const WORDMARK_PATHS = logo.chemins;
+const PICTO_OPACITY = PICTO.opacite;
 
 describe('logo-scriptami : analyse des tracés SVG', () => {
   it('lit des segments droits (M, L, H, V, Z) et fusionne le point de fermeture', () => {
@@ -54,7 +57,7 @@ describe('logo-scriptami : analyse des tracés SVG', () => {
 
 describe('logo-scriptami : mise à l’échelle', () => {
   it('ajuste le mot à la largeur demandée, coin haut gauche compris', () => {
-    const { subpaths, height } = wordmarkShapes({ left: 58, top: 50, width: 120 });
+    const { subpaths, height } = wordmarkShapes(WORDMARK_PATHS, { left: 58, top: 50, width: 120 });
     const bounds = subpathsBounds(subpaths);
     expect(bounds.left).toBeCloseTo(58, 3);
     expect(bounds.right - bounds.left).toBeCloseTo(120, 3);
@@ -64,7 +67,7 @@ describe('logo-scriptami : mise à l’échelle', () => {
   });
 
   it('ajuste le picto à la hauteur demandée, sans texte', () => {
-    const { facets, width } = pictoFacets({ left: 58, top: 700, height: 56 });
+    const { facets, width } = pictoFacets(PICTO, { left: 58, top: 700, height: 56 });
     expect(facets.map(facet => facet.name)).toEqual(['orange', 'jaune', 'turquoise']);
     const xs = facets.flatMap(facet => facet.points.map(([x]) => x));
     const ys = facets.flatMap(facet => facet.points.map(([, y]) => y));
@@ -76,7 +79,7 @@ describe('logo-scriptami : mise à l’échelle', () => {
   });
 
   it('donne à chaque facette un dégradé vertical dans la facette, à 88 % d’opacité', () => {
-    const { facets } = pictoFacets({ left: 58, top: 700, height: 56 });
+    const { facets } = pictoFacets(PICTO, { left: 58, top: 700, height: 56 });
     expect(PICTO_OPACITY).toBe(88);
     for (const { name, points, gradient, opacity } of facets) {
       expect(opacity).toBe(88);
@@ -91,7 +94,7 @@ describe('logo-scriptami : mise à l’échelle', () => {
   });
 
   it('déclare un dégradé par facette, aux décalages croissants de 0 à 1, en RVB valide', () => {
-    const gradients = pictoGradients();
+    const gradients = pictoGradients(PICTO);
     expect(gradients.map(({ name }) => name)).toEqual(['Picto orange', 'Picto jaune', 'Picto turquoise']);
     for (const { stops } of gradients) {
       expect(stops[0].offset).toBe(0);
@@ -104,8 +107,12 @@ describe('logo-scriptami : mise à l’échelle', () => {
     }
   });
 
+  it('sans picto, ne déclare aucun dégradé', () => {
+    expect(pictoGradients(null)).toEqual([]);
+  });
+
   it('incorpore l’ombrage aux couleurs : l’orange foncé du bas est plus sombre que le jaune clair du haut', () => {
-    const [orange] = pictoGradients();
+    const [orange] = pictoGradients(PICTO);
     const luminance = ([r, g, b]) => 0.299 * r + 0.587 * g + 0.114 * b;
     expect(luminance(orange.stops[0].rgb)).toBeLessThan(luminance(orange.stops[orange.stops.length - 1].rgb));
     // Sans l’ombrage, le point d’arrêt du jaune final (#FFD800) resterait inchangé : ici il l’est (ombrage nul en haut).

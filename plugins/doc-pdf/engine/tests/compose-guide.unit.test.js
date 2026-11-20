@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main, EXIT_MESSAGES, launch } = require('../compose-guide');
+const { pdfPresetFor, compositionFor, ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main, EXIT_MESSAGES, launch } = require('../compose-guide');
 const { resolveConfig } = require('../guide-config');
 
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
@@ -421,5 +421,31 @@ describe('compose-guide', () => {
       expect(code).toBe(1);
       expect(write.mock.calls[0][0]).toMatch(/introuvable/);
     });
+  });
+});
+
+describe('préréglage PDF et composition transmis à InDesign', () => {
+  const withMaquettePreset = (preset, projectPreset) => ({
+    pdfPreset: projectPreset || null,
+    maquette: { export: preset ? { preset } : undefined, composition: { gabaritCorps: 'Courante' } }
+  });
+
+  it('le préréglage du projet l’emporte sur celui de la maquette', () => {
+    expect(pdfPresetFor(withMaquettePreset('Maquette', 'Projet'))).toBe('Projet');
+  });
+
+  it('à défaut, celui de la maquette', () => {
+    expect(pdfPresetFor(withMaquettePreset('Maquette'))).toBe('Maquette');
+  });
+
+  it('sans aucun des deux, null (heuristique d’InDesign)', () => {
+    expect(pdfPresetFor(withMaquettePreset())).toBeNull();
+  });
+
+  it('la composition de la maquette voyage dans les chemins de l’essai, de la mise à jour et de la composition', () => {
+    const gabarit = CONFIG.maquette.composition.gabaritCorps;
+    expect(pathsFor({ guide: 'vendeur', chapitre: '01-a' }, CONFIG).composition.gabaritCorps).toBe(gabarit);
+    expect(compositionFor(CONFIG).gabaritCorps).toBe(gabarit);
+    expect(Object.isFrozen(compositionFor(CONFIG))).toBe(false);
   });
 });

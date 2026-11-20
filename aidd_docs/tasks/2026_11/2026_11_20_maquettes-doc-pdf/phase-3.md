@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Gabarits, styles, textes, logo, composition et export dans la maquette
@@ -163,3 +163,11 @@ journey
 | 5 | Deux PDF issus du même document rendent 0 ; une page modifiée rend 1 et nomme la page ; un nombre de pages différent est signalé. |
 | 6 | Le banc compose les trois guides avec chaque moteur sans écrire dans `cerascan` ; aucune tâche `doc-pdf-*` ne reste. |
 | 7 | Deux compositions du même guide par le même moteur rendent 0 avant toute comparaison entre moteurs ; ICML, IDML et PDF identiques sur les sources cerascan ; la suite Jest est verte ; le compte rendu porte le SHA du commit de fin de phase. |
+
+## Compte rendu
+
+- Format 1 complet (styles, formats, textes, nuances, gabarits, cadres, variables, composition, logo, picto, export) ; maquette obligatoire dans `transformIcml`, `buildPageIcml` et les fonctions de `icml-pages`. Le bloc `libelles` prévu est absorbé par `textes`.
+- Preuve : Jest 424 verts ; `compare-engines` (référence au SHA `6ff1d07`) : 273 fichiers ICML/IDML identiques octet pour octet ; `compare-engines --pdf` (accord de l'utilisateur, InDesign fermé) : PDF administrateur, partenaire et vendeur identiques (pages, texte, rendu).
+- Bruit : non mesuré séparément. Deux moteurs rendant des PDF identiques, le bruit de rendu est nul sur ces guides.
+- Worktree de référence supprimé, aucune tâche `doc-pdf-*` restante.
+- SHA du commit de fin de phase : SHA_A_REMPLACER

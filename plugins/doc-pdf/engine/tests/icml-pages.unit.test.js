@@ -9,8 +9,8 @@ const path = require('path');
 const {
   PagesError,
   firstHeading,
-  coverParagraphs,
-  summaryPageParagraphs,
+  coverParagraphs: coverWith,
+  summaryPageParagraphs: summaryWith,
   loadPagesConfig,
   guideEntry,
   endParagraphs,
@@ -26,10 +26,14 @@ const {
   mentionsParagraphs,
   commonEntry,
   mentionLines,
-  guidePages,
+  guidePages: guidePagesWith,
   productVersion
 } = require('../icml-pages');
-const { STYLE_TABLE } = require('../icml-transform');
+const MAQUETTE = require('../maquette').loadMaquette();
+const STYLES = MAQUETTE.styles;
+const coverParagraphs = (args, textes = MAQUETTE.textes) => coverWith(args, textes);
+const summaryPageParagraphs = (args, textes = MAQUETTE.textes) => summaryWith(args, textes);
+const guidePages = (guide, options) => guidePagesWith(guide, { textes: MAQUETTE.textes, ...options });
 const { loadConfig, readVersion } = require('../guide-config');
 
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
@@ -306,7 +310,7 @@ describe('guidePages', () => {
 
 describe('styles des pages', () => {
   test('chaque style employé existe dans le jeu court', () => {
-    const known = new Set(STYLE_TABLE.paragraph.map((entry) => entry.name));
+    const known = new Set(STYLES.paragraph.map((entry) => entry.name));
     const used = [
       ...coverParagraphs({ chapters: [{ number: 1, title: 'a' }], version: '1' }),
       ...footerParagraphs(VALID_COMMON),

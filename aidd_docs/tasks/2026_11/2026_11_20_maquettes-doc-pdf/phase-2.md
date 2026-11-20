@@ -125,4 +125,4 @@ journey
 - Le banc a servi : une première passe a révélé six IDML différents (`${LANGUAGE}` resté littéral dans `Styles.xml`, chaîne à guillemets simples). Corrigé en gabarit de chaîne, banc rejoué au vert.
 - Jest : 13 suites, 377 tests verts (ajouts : `maquette.unit.test.js`, `compare-engines.unit.test.js`).
 - Critère 4 : la recherche des hexadécimaux et noms de police ne trouve plus que les couleurs fixes hors axe (`Paper`, `Attention fond`, `Papier chaud`, `Orange vif`), laissées pour la phase 3, et la police de puce par défaut citée en commentaire d'aide.
-- Commit de fin de phase : à demander à l'utilisateur (phases 1 et 2 ensemble) ; SHA à noter ici.
+- Commit de fin de phase (Marketplace, feat/maquettes-doc-pdf), phases 1 et 2 : 6ff1d07.

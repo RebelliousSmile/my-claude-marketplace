@@ -14,14 +14,13 @@
  *   node <racine du plugin>/engine/cli.js idml --guide <id>          gabarits remplis pour un guide de documentation.config.json
  *                                                                    (titre, verbe, type, accent) ; --config <chemin> désigne la configuration
  *
- * Les noms des styles du jeu court viennent de STYLE_TABLE (icml-transform.js) : le
+ * Les noms des styles du jeu court viennent de la table « styles » de la maquette : le
  * modèle et les ICML exportés partagent leurs noms, InDesign n'a donc aucun doublon à
  * créer. Les mises en forme sont celles de la charte (section « Feuille de styles »).
  */
 
 const fs = require('fs');
 const path = require('path');
-const { STYLE_TABLE } = require('./icml-transform');
 const { writeZip } = require('./zip-store');
 const { PagesError, guidePages, mentionLines } = require('./icml-pages');
 const { ConfigError, DEFAULT_TYPE, loadConfig, extractConfigArg, findGuide, readVersion } = require('./guide-config');
@@ -42,6 +41,9 @@ const mm = value => Math.round(value * 72 / 25.4 * 10000) / 10000;
 // Grille, nuancier, axes et polices viennent de la maquette (engine/maquette.js) : `applyMaquette` les pose en fin de module
 // et `buildIdmlEntries` les repose à chaque appel. Les exports gardent ceux de la maquette embarquée.
 /** Grille de la maquette (points). */
+/** Table des styles de la maquette (familles paragraph, character, table, cell, object). */
+let STYLES;
+let TXT;
 let PAGE;
 let MARGINS;
 let COLUMNS;
@@ -79,176 +81,40 @@ let PROZA;
 let MONO;
 // Ni Quicksand ni Proza Libre n'ont le triangle ▶ : sans police qui le porte, InDesign affiche un carré.
 let DEFAULT_BULLET_FONT;
-const DARK = 'Anthracite foncé';
-const TEXT = 'Anthracite';
-const BULLET_CODE = 9654; // ▶
+let DARK;
+let TEXT;
+let NU; // nuances nommées de la maquette
+let LOGO_PATHS; // tracés du logo de la maquette
+let PICTO; // picto facultatif de la maquette (null sans picto)
 
 /**
  * Mise en forme de la charte, par famille et par nom de style. Sert aussi aux sept
  * styles de la charte que les ICML n'emploient pas (couverture, numéro de chapitre,
  * surtitre, chapeau, légende, titre courant, folio) et aux styles d'appui de leurs
- * listes. `attrs` : attributs IDML bruts. Les STYLE_TABLE.attributes (retraits de
+ * listes. `attrs` : attributs IDML bruts. Les attributs de la table des styles (retraits de
  * liste…) complètent ce qui n'y figure pas.
  */
-/** Filet de 1,5 pt au-dessus d'un paragraphe, sur la largeur de la colonne. */
-const ruleAbove = color => ({
-  RuleAboveOn: 'true', RuleAboveColor: colorRef(color), RuleAboveLineWeight: '1.5',
-  RuleAboveOffset: '0', RuleAboveWidth: 'ColumnWidth'
-});
-
-/** Retraits qui laissent le fond d'un encadré déborder le texte. */
-const boxInsets = () => ({ LeftIndent: '8', RightIndent: '8' });
-
 /** Filet sous un paragraphe, sur la largeur du cadre ; `offset` compté depuis la ligne de base. */
 const ruleBelow = (color, weight, offset) => ({
   RuleBelowOn: 'true', RuleBelowColor: colorRef(color), RuleBelowLineWeight: String(weight),
   RuleBelowOffset: String(offset), RuleBelowWidth: 'ColumnWidth'
 });
 
-/** Largeur du cadre de la page de sommaire : la page moins ses deux marges. */
-let SUMMARY_WIDTH;
-const SUMMARY_NUMBER_TAB = 44;
-
+/** Mise en forme de la charte et styles déclarés sans entrée de table : lues dans la maquette (formats, charteSeule). */
 let FORMATS;
+let CHARTER_ONLY;
 
-function buildFormats() {
-  return Object.freeze({
-  paragraph: {
-    'Titre-couverture': { font: QUICKSAND, fontStyle: 'Bold', size: 45, leading: 45, tracking: -25, fill: DARK, hyphenate: false },
-    'Titre-chapitre': { font: QUICKSAND, fontStyle: 'Bold', size: 34, leading: 36, tracking: -15, fill: DARK, hyphenate: false, keepNext: true,
-      // Filet d'axe sous le titre, sur la largeur de la colonne.
-      attrs: {
-        RuleBelowOn: 'true', RuleBelowColor: colorRef('Axe vif'), RuleBelowLineWeight: '3',
-        RuleBelowOffset: '10', RuleBelowWidth: 'ColumnWidth', SpaceAfter: '14'
-      }
-    },
-    'Numéro-chapitre': { font: QUICKSAND, fontStyle: 'Bold', size: 150, leading: 120, skew: 12, fill: 'Axe vif', hyphenate: false },
-    'Intertitre-1': { font: QUICKSAND, fontStyle: 'Bold', size: 22.5, leading: 25, tracking: -10, fill: DARK, hyphenate: false, keepNext: true, keepLines: true,
-      attrs: { SpaceBefore: '20', SpaceAfter: '8' } },
-    'Intertitre-2': {
-      font: QUICKSAND, fontStyle: 'Bold', size: 15, leading: 18, fill: 'Axe texte', hyphenate: false, keepNext: true, keepLines: true,
-      bullet: { char: BULLET_CODE, style: 'Puce' },
-      attrs: { LeftIndent: '16', FirstLineIndent: '-16', SpaceBefore: '12', SpaceAfter: '5' }
-    },
-    'Surtitre': { font: QUICKSAND, fontStyle: 'Bold', size: 9, leading: 12, caps: true, tracking: 120, fill: 'Axe texte', hyphenate: false },
-    'Chapeau': { font: PROZA, fontStyle: 'Regular', size: 13.5, leading: 20, fill: TEXT, attrs: { SpaceAfter: '14' } },
-    // Sommaire général du guide (page de couverture) : libellé « Sommaire » puis une « Sommaire-ligne » par chapitre.
-    'Sommaire-général': { font: QUICKSAND, fontStyle: 'Bold', size: 9, leading: 12, caps: true, tracking: 120, fill: 'Axe texte', hyphenate: false, keepNext: true,
-      attrs: { ...ruleAbove(TEXT), SpaceBefore: '16', SpaceAfter: '6' } },
-    // Sommaire partiel, propre à un chapitre : bloc « Dans ce chapitre », entre deux filets, une ligne par section.
-    'Sommaire-titre': { font: QUICKSAND, fontStyle: 'Bold', size: 9, leading: 12, caps: true, tracking: 120, fill: 'Axe texte', hyphenate: false, keepNext: true,
-      attrs: { ...ruleAbove(TEXT), SpaceBefore: '16', SpaceAfter: '6' } },
-    'Sommaire-ligne': { font: PROZA, fontStyle: 'Regular', size: 11, leading: 17, fill: TEXT, hyphenate: false,
-      attrs: { LeftIndent: '30', FirstLineIndent: '-30', SpaceAfter: '1' } },
-    // Page de sommaire : une ligne par chapitre (numéro, tabulation, titre, tabulation à droite, page), filet fin dessous.
-    'Sommaire-chapitre': { font: QUICKSAND, fontStyle: 'Bold', size: 11.5, leading: 30, fill: DARK, hyphenate: false,
-      tabs: [{ align: 'LeftAlign', position: SUMMARY_NUMBER_TAB }, { align: 'RightAlign', position: SUMMARY_WIDTH }],
-      attrs: ruleBelow(TEXT, 0.5, 9) },
-    // Bloc « Dans ce chapitre » de l'ouverture de chapitre : une ligne par section (numéro, titre, page), filet fin dessous.
-    'Sommaire-section': { font: QUICKSAND, fontStyle: 'Bold', size: 11, leading: 35, fill: DARK, hyphenate: false,
-      tabs: [{ align: 'LeftAlign', position: 36 }, { align: 'RightAlign', position: 388 }],
-      attrs: ruleBelow(TEXT, 0.5, 10) },
-    // Numéro de section (N.M), à poser dans la colonne marginale en regard de l'intertitre.
-    'Numéro-section': { font: QUICKSAND, fontStyle: 'Bold', size: 33, leading: 36, skew: 12, fill: 'Axe vif', hyphenate: false, keepNext: true,
-      attrs: { SpaceBefore: '20' } },
-    'Courant': {
-      font: PROZA, fontStyle: 'Regular', size: 12, leading: 19, fill: TEXT, hyphenate: true,
-      attrs: { Justification: 'LeftAlign', SpaceAfter: '7' }
-    },
-    // Encadrés : filet de 1,5 pt en tête, fond et retraits qui figurent le cadre ; la barre latérale se pose à la main.
-    'Encadré-info': { font: PROZA, fontStyle: 'Regular', size: 11, leading: 17, fill: TEXT, hyphenate: false, shading: 'Paper',
-      attrs: { ...ruleAbove('Axe vif'), ...boxInsets(), SpaceBefore: '10', SpaceAfter: '10' } },
-    'Encadré-attention': { font: PROZA, fontStyle: 'Regular', size: 11, leading: 17, fill: TEXT, hyphenate: false, shading: 'Attention fond',
-      attrs: { ...ruleAbove('Orange vif'), ...boxInsets(), SpaceBefore: '10', SpaceAfter: '10' } },
-    'Encadré-retenir': { font: PROZA, fontStyle: 'Regular', size: 11, leading: 17, fill: TEXT, hyphenate: false, shading: 'Papier chaud',
-      attrs: { ...ruleAbove(TEXT), ...boxInsets(), SpaceBefore: '10', SpaceAfter: '10' } },
-    'Note-renvoi': { font: PROZA, fontStyle: 'Regular', size: 10.5, leading: 16, fill: TEXT, hyphenate: false,
-      attrs: { ...ruleAbove('Axe vif'), SpaceBefore: '8', SpaceAfter: '8' } },
-    'Liste-num': { font: PROZA, fontStyle: 'Regular', size: 12, leading: 18.5, fill: TEXT, numbering: { style: 'Numéro-liste' }, attrs: { SpaceAfter: '3' } },
-    'Liste-num-suite': { font: PROZA, fontStyle: 'Regular', size: 12, leading: 18.5, fill: TEXT, attrs: { SpaceAfter: '3' } },
-    'Liste-puce': { font: PROZA, fontStyle: 'Regular', size: 12, leading: 18.5, fill: TEXT, bullet: { char: BULLET_CODE, style: 'Puce' }, attrs: { SpaceAfter: '3' } },
-    'Liste-puce-2': { font: PROZA, fontStyle: 'Regular', size: 12, leading: 18.5, fill: TEXT, bullet: { char: BULLET_CODE, style: 'Puce' }, attrs: { SpaceAfter: '3' } },
-    // Hors charte : tableaux et captures, calés sur le corps du texte courant.
-    'Tableau texte': { font: PROZA, fontStyle: 'Regular', size: 10, leading: 14, fill: TEXT },
-    // Pastille « type de document » de la couverture : Surtitre en 8 pt anthracite, centré.
-    'Type-document': { font: QUICKSAND, fontStyle: 'Bold', size: 8, leading: 12, caps: true, tracking: 120, fill: DARK, hyphenate: false,
-      attrs: { Justification: 'CenterAlign' } },
-    'Carte-valeur': { font: QUICKSAND, fontStyle: 'Bold', size: 10, leading: 14, fill: DARK, hyphenate: false },
-    'Tableau en-tête': { font: QUICKSAND, fontStyle: 'Bold', size: 10, leading: 14, fill: DARK, hyphenate: false },
-    'Capture': { font: PROZA, fontStyle: 'Regular', size: 12, leading: 'Auto', fill: TEXT, attrs: { SpaceBefore: '7', SpaceAfter: '7' } },
-    'Légende': { font: QUICKSAND, fontStyle: 'Medium', size: 9, leading: 13.5, fill: TEXT },
-    'Code': { font: MONO, fontStyle: 'Regular', size: 10, leading: 15, fill: TEXT, hyphenate: false, shading: 'Papier chaud' },
-    'Titre-courant': { font: QUICKSAND, fontStyle: 'Bold', size: 9, leading: 12, caps: true, tracking: 100, fill: DARK, hyphenate: false },
-    // Bandeau orange de la page de fin : mêmes corps que Intertitre-1 et Courant, couleur du papier ('Paper').
-    'Bandeau-titre': { font: QUICKSAND, fontStyle: 'Bold', size: 22.5, leading: 25, tracking: -10, fill: 'Paper', hyphenate: false, keepNext: true,
-      attrs: { SpaceAfter: '8' } },
-    'Bandeau-texte': { font: PROZA, fontStyle: 'Regular', size: 12, leading: 19, fill: 'Paper', hyphenate: false },
-    // Pied anthracite de la page de fin : couleur du papier.
-    'Mentions-marque': { font: QUICKSAND, fontStyle: 'Bold', size: 16, leading: 21, fill: 'Paper', hyphenate: false, attrs: { SpaceAfter: '10' } },
-    'Mentions': { font: QUICKSAND, fontStyle: 'Medium', size: 9, leading: 13.5, fill: 'Paper', hyphenate: false },
-    // Numéro de chapitre de l'en-tête : même corps que Titre-courant, couleur d'accent.
-    'En-tête-chapitre': { font: QUICKSAND, fontStyle: 'Bold', size: 9, leading: 12, caps: true, tracking: 100, fill: 'Axe texte', hyphenate: false },
-    'Folio': { font: QUICKSAND, fontStyle: 'Bold', size: 11, leading: 12, caps: true, tracking: 100, fill: DARK, hyphenate: false }
-  },
-  character: {
-    // Le gras et l'italique gardent la police du texte qu'ils habillent.
-    'Gras': { fontStyle: 'Bold' },
-    'Italique': { fontStyle: 'Italic' },
-    'Code-inline': { font: MONO, fontStyle: 'Regular', size: 10.5 },
-    'Renvoi': { fill: 'Axe texte' },
-    // Mot mis en valeur d'un titre (écrit *mot* en Markdown) : penché de 12°.
-    'Accent': { font: QUICKSAND, fontStyle: 'SemiBold', skew: 12, fill: 'Axe texte' },
-    'Encadré-libellé': { font: QUICKSAND, fontStyle: 'Bold', caps: true, tracking: 80, fill: 'Axe texte' },
-    'Légende-numéro': { font: QUICKSAND, fontStyle: 'Bold' },
-    'Sommaire-numéro': { font: QUICKSAND, fontStyle: 'Bold', size: 17, skew: 12, fill: 'Axe texte' },
-    'Sommaire-page': { font: QUICKSAND, fontStyle: 'Medium', size: 8, fill: TEXT },
-    'Puce': { font: DEFAULT_BULLET_FONT, fontStyle: 'Regular', fill: 'Axe vif' },
-    'Numéro-liste': { font: QUICKSAND, fontStyle: 'Bold', fill: 'Axe vif' }
-  },
-  table: {
-    'Tableau': {
-      attrs: {
-        TopBorderStrokeWeight: '1.5', TopBorderStrokeColor: colorRef(TEXT),
-        BottomBorderStrokeWeight: '1.5', BottomBorderStrokeColor: colorRef(TEXT),
-        // Sans ces valeurs, InDesign trace le contour noir de 1 pt de ses réglages par défaut.
-        LeftBorderStrokeWeight: '0', RightBorderStrokeWeight: '0',
-        AlternatingFillsType: 'AlternatingRows',
-        StartRowFillColor: NONE_SWATCH, StartRowFillCount: '1',
-        EndRowFillColor: colorRef('Papier chaud'), EndRowFillCount: '1'
-      }
-    }
-  },
-  cell: {
-    'Cellule': {
-      attrs: {
-        AppliedParagraphStyle: ref('ParagraphStyle', 'Tableau texte'),
-        TopInset: '3', BottomInset: '3', LeftInset: '5', RightInset: '5',
-        // Filets horizontaux fins entre les lignes, aucun filet vertical ; l'IDML ne porte pas les pointillés.
-        TopEdgeStrokeWeight: '0.5', TopEdgeStrokeColor: colorRef('Axe vif'),
-        BottomEdgeStrokeWeight: '0.5', BottomEdgeStrokeColor: colorRef('Axe vif'),
-        LeftEdgeStrokeWeight: '0', RightEdgeStrokeWeight: '0'
-      }
-    }
-  },
-  object: {
-    'Capture': {
-      attrs: {
-        FillColor: NONE_SWATCH, EnableFill: 'true',
-        StrokeColor: colorRef(TEXT), StrokeWeight: '1.5', EnableStrokeAndCornerOptions: 'true'
-      }
-    }
-  }
-  });
+/** Remplace les jetons de la maquette : rôle de police (@titre, @texte, @code, @puce) et largeur utile de la page (@largeurUtile). */
+function resolveFormats(formats, polices, usableWidth) {
+  const tokens = { '@titre': polices.titre, '@texte': polices.texte, '@code': polices.code, '@puce': polices.puce, '@largeurUtile': usableWidth };
+  const walk = value => {
+    if (typeof value === 'string' && Object.prototype.hasOwnProperty.call(tokens, value)) return tokens[value];
+    if (Array.isArray(value)) return value.map(walk);
+    if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, walk(item)]));
+    return value;
+  };
+  return Object.freeze(walk(formats));
 }
-
-/** Styles de la charte absents de STYLE_TABLE, déclarés quand même. */
-const CHARTER_ONLY = Object.freeze({
-  paragraph: ['Titre-couverture', 'Légende', 'Code', 'Titre-courant', 'Folio'],
-  character: ['Légende-numéro', 'Numéro-liste'],
-  table: [],
-  cell: [],
-  object: []
-});
 
 const FAMILY_REFS = Object.freeze({
   paragraph: { prefix: 'ParagraphStyle', element: 'ParagraphStyle', root: 'RootParagraphStyleGroup', none: NO_PARAGRAPH },
@@ -270,7 +136,7 @@ function renderProperties(properties) {
   return lines.length === 0 ? '' : `\n        <Properties>\n${lines.map(line => `          ${line}`).join('\n')}\n        </Properties>\n      `;
 }
 
-/** Définition d'un style : STYLE_TABLE complète la mise en forme de la charte. */
+/** Définition d'un style : la table des styles complète la mise en forme de la charte. */
 function renderStyle(family, name, tableAttributes, bulletFont) {
   const defined = FORMATS[family][name];
   const format = defined && family === 'character' && name === 'Puce' ? { ...defined, font: bulletFont } : defined;
@@ -332,15 +198,15 @@ function renderStyle(family, name, tableAttributes, bulletFont) {
     properties.push(`<BasedOn type="object">${none}</BasedOn>`);
   }
 
-  // STYLE_TABLE (retraits des listes…) est posé plus haut ; la charte l'emporte sur ses tailles provisoires d'ICML.
+  // La table des styles (retraits des listes…) est posé plus haut ; la charte l'emporte sur ses tailles provisoires d'ICML.
   Object.assign(attributes, format.attrs);
   const open = `      <${element}${renderAttributes(attributes)}>`;
   return `${open}${renderProperties(properties)}</${element}>`;
 }
 
-/** Entrées de style d'une famille : STYLE_TABLE d'abord, puis les styles propres à la charte. */
+/** Entrées de style d'une famille : la table des styles d'abord, puis les styles propres à la charte. */
 function styleEntries(family) {
-  const fromTable = STYLE_TABLE[family].map(entry => ({ name: entry.name, attributes: entry.attributes }));
+  const fromTable = STYLES[family].map(entry => ({ name: entry.name, attributes: entry.attributes }));
   const known = new Set(fromTable.map(entry => entry.name));
   const extra = CHARTER_ONLY[family].filter(name => !known.has(name)).map(name => ({ name, attributes: {} }));
   return [...fromTable, ...extra];
@@ -370,7 +236,7 @@ function graphicXml(axis) {
     `  <Swatch Self="${NONE_SWATCH}" Name="None" ColorEditable="false" ColorRemovable="false" Visible="true" SwatchCreatorID="7937"/>`,
     ...Object.entries(COLORS).map(([name, rgb]) => swatch(name, rgb)),
     ...Object.entries(axisColors).map(([name, rgb]) => swatch(name, rgb)),
-    ...pictoGradients().flatMap(({ name, stops }) => [
+    ...pictoGradients(PICTO).flatMap(({ name, stops }) => [
       ...stops.map(({ rgb }, index) => swatch(`${name} ${String(index + 1).padStart(2, '0')}`, rgb)),
       `  <Gradient Self="${ref('Gradient', name)}" Type="Linear" Name="${escapeXml(name)}" ColorEditable="true" ColorRemovable="true" Visible="true" SwatchCreatorID="7937">\n${stops.map(({ offset }, index) =>
         `    <GradientStop Self="${ref('GradientStop', `${name} ${index + 1}`)}" StopColor="${colorRef(`${name} ${String(index + 1).padStart(2, '0')}`)}" Location="${Math.round(offset * 10000) / 100}"/>`).join('\n')}\n  </Gradient>`
@@ -403,7 +269,10 @@ function pageMargins(side) {
   return `<MarginPreference ColumnCount="2" ColumnGutter="${COLUMNS.gutter}" Top="${MARGINS.top}" Bottom="${MARGINS.bottom}" Left="${MARGINS.inner}" Right="${MARGINS.outer}" ColumnDirection="Horizontal" ColumnsPositions="${columnsPositions(side)}"/>`;
 }
 
-const LAYER_SELF = 'Layer/Calque1';
+let LAYER;
+let LAYER_SELF;
+let FRAME_PAGES; // noms des cadres de page d'exemple
+let MASTER_NAMES; // nom de gabarit par rôle
 let HEADER_TOP;
 let HEADER_HEIGHT;
 let RULE_Y;
@@ -417,25 +286,15 @@ let FOOTER_WIDTH;
 let CORNER; // coin plié des pages courantes
 let FOLIO_WIDTH; // largeur du cadre du folio, centré dans le rabat du coin
 let FOOTER_BAND; // pied anthracite de la dernière page
-const PAPER = 'Paper';
-const ORANGE = 'Orange vif';
+let PAPER;
+let ORANGE;
 
-/** Les quatre gabarits de la charte : A pages courantes (double), B ouverture, C couverture, D fin. */
-const MASTERS = Object.freeze([
-  { name: 'A-Courante', prefix: 'A', base: 'Courante', pages: 2 },
-  { name: 'B-Chapitre', prefix: 'B', base: 'Chapitre', pages: 1 },
-  { name: 'C-Couverture', prefix: 'C', base: 'Couverture', pages: 1 },
-  { name: 'D-Fin', prefix: 'D', base: 'Fin', pages: 1 }
-]);
+/** Gabarits de la maquette : courante (double), chapitre, couverture, fin. */
+let MASTERS;
 const masterSelf = name => `Master_${name}`;
 
-/** Variables de texte des titres courants : titre du document, version, chapitre. */
-const TEXT_VARIABLES = Object.freeze([
-  { name: 'Titre du document', type: 'CustomTextType', contents: 'Titre du document' },
-  { name: 'Version', type: 'CustomTextType', contents: 'v1.0' },
-  { name: 'Chapitre', type: 'CustomTextType', contents: 'Chapitre 00' },
-  { name: 'Titre du chapitre', type: 'MatchParagraphStyleType', style: 'Titre-chapitre' }
-]);
+/** Variables de texte des titres courants (maquette.variables). */
+let TEXT_VARIABLES;
 
 function variableXml({ name, type, contents, style }) {
   const inner = type === 'CustomTextType'
@@ -636,10 +495,10 @@ function foldedCorner(builder, side) {
   const dir = side === 'left' ? 1 : -1; // vers l'intérieur de la page
   const bottom = height + bleed;
   builder.polygon(`coin-${side}`, [[x - dir * bleed, height - CORNER], [x + dir * CORNER, bottom], [x - dir * bleed, bottom]], PAPER);
-  builder.polygon(`pli-${side}`, [[x, height - CORNER], [x + dir * CORNER, height], [x + dir * CORNER, height - CORNER]], 'Axe vif');
+  builder.polygon(`pli-${side}`, [[x, height - CORNER], [x + dir * CORNER, height], [x + dir * CORNER, height - CORNER]], NU.axeVif);
   // Pointillé de pliage : prolonge le bord haut du rabat, de la marge intérieure au rabat, et sépare le pied de page du corps.
   const edges = [pageEdges[side].inner, x + dir * CORNER].sort((a, b) => a - b);
-  builder.line(`pli-pointille-${side}`, edges[0], edges[1], foldRuleY(), 'Axe vif', { dotted: true });
+  builder.line(`pli-pointille-${side}`, edges[0], edges[1], foldRuleY(), NU.axeVif, { dotted: true });
 }
 
 /** Cadre du folio, centré sur le centre de gravité du rabat (le triangle rectangle du coin plié). */
@@ -669,7 +528,7 @@ function masterA(builder, { footer = FOOTER_TEXT } = {}) {
     [para('Titre-courant', [{ text: '◀', character: 'Puce' }, { text: ' Titre du document' }])]);
   builder.frame('en-tete-gauche-version', { left: leftMid, right: left.inner, ...headerBox },
     [para('Titre-courant', [{ text: 'v1.0' }], { justification: 'RightAlign' })]);
-  builder.line('en-tete-gauche', left.outer, left.inner, RULE_Y, 'Axe vif', { dotted: true });
+  builder.line('en-tete-gauche', left.outer, left.inner, RULE_Y, NU.axeVif, { dotted: true });
   builder.frame('folio-gauche', foldFolioBox('left'), [para('Folio', [{ folio: true }], { justification: 'CenterAlign', fill: PAPER })]);
   builder.frame('pied-gauche', { left: left.inner - FOOTER_WIDTH, right: left.inner, ...footerBox },
     [para('Titre-courant', [{ text: footer }], { justification: 'RightAlign' })]);
@@ -678,7 +537,7 @@ function masterA(builder, { footer = FOOTER_TEXT } = {}) {
     [para('En-tête-chapitre', [{ text: 'Chapitre 00' }])]);
   builder.frame('en-tete-droite-titre', { left: rightMid, right: right.outer, ...headerBox },
     [para('Titre-courant', [{ text: 'Titre du chapitre ' }, { text: '▶', character: 'Puce' }], { justification: 'RightAlign' })]);
-  builder.line('en-tete-droite', right.inner, right.outer, RULE_Y, 'Axe vif', { dotted: true });
+  builder.line('en-tete-droite', right.inner, right.outer, RULE_Y, NU.axeVif, { dotted: true });
   builder.frame('folio-droite', foldFolioBox('right'),
     [para('Folio', [{ folio: true }], { justification: 'CenterAlign', fill: PAPER })]);
   builder.frame('pied-droite', { left: right.inner, right: right.inner + FOOTER_WIDTH, ...footerBox },
@@ -694,9 +553,7 @@ const CHAPTER_WIDTH = 388; // largeur de la colonne de texte de l'ouverture de c
 const CHAPTER_DIAGONAL = { left: 420, right: 385 }; // ordonnées de la diagonale au dos puis au bord extérieur
 const CHAPTER_FLANK_LEFT = 503; // le flanc triangulé commence ici, jusqu'au bord extérieur
 // Nuances du flanc (nuance, teinte en %) : aplats vifs, fond clair et touches sombres.
-const FLANK_TONES = Object.freeze([
-  ['Axe vif', 100], ['Axe fond', 100], ['Axe vif', 55], ['Axe texte', 100], ['Axe fond', 100], ['Axe vif', 30], ['Axe fond', 60]
-]);
+let FLANK_TONES;
 
 /**
  * B-Chapitre : décor seul. Demi-page haute en teinte de fond dont le bord bas suit une
@@ -712,8 +569,8 @@ function masterB(builder, { footer = FOOTER_TEXT } = {}) {
   // Le haut de page (teinte de fond) s'arrête sur une légère diagonale, de gauche à droite.
   const diagonal = x => CHAPTER_DIAGONAL.left - ((CHAPTER_DIAGONAL.left - CHAPTER_DIAGONAL.right) * x) / width;
 
-  builder.rectangle('fond', { left: 0, right, top: -bleed, bottom }, 'Papier de page');
-  builder.polygon('fond-haut', [[0, -bleed], [right, -bleed], [right, diagonal(right)], [0, diagonal(0)]], 'Axe fond');
+  builder.rectangle('fond', { left: 0, right, top: -bleed, bottom }, NU.papierPage);
+  builder.polygon('fond-haut', [[0, -bleed], [right, -bleed], [right, diagonal(right)], [0, diagonal(0)]], NU.axeFond);
 
   // Flanc triangulé : une grille de points légèrement décalés, chaque case coupée en deux triangles
   // aux nuances de l'axe. Le décalage est déterministe : le gabarit se régénère à l'identique.
@@ -743,10 +600,10 @@ function masterB(builder, { footer = FOOTER_TEXT } = {}) {
     }
   }
   // Triangle vif dans l'angle du bas, par-dessus la mosaïque.
-  builder.polygon('coin-bas', [[right - mm(26), bottom], [right, bottom], [right, bottom - mm(26)]], 'Axe vif');
+  builder.polygon('coin-bas', [[right - mm(26), bottom], [right, bottom], [right, bottom - mm(26)]], NU.axeVif);
 
   // Même pointillé de pliage que sur A-Courante, sur la largeur de la colonne de texte, au-dessus du pied.
-  builder.line('pli-pointille', inner, inner + CHAPTER_WIDTH, foldRuleY(), 'Axe vif', { dotted: true });
+  builder.line('pli-pointille', inner, inner + CHAPTER_WIDTH, foldRuleY(), NU.axeVif, { dotted: true });
   builder.frame('pied-titre', { left: inner, right: inner + FOOTER_WIDTH, ...footerBox },
     [para('Titre-courant', [{ text: footer }])]);
   builder.frame('folio-droite', { left: inner + CHAPTER_WIDTH - 60, right: inner + CHAPTER_WIDTH, ...footerBox },
@@ -789,7 +646,6 @@ function coverTextBox() {
   return { ...title, bottom: PAGE.height - 84 };
 }
 
-const DEFAULT_SUBTITLE = 'Sous-titre du document à renseigner.';
 // Contour du cadre du type de document : 1,25 pt sur la maquette, 2 pt ici pour qu'il ressorte à l'écran sur l'aplat.
 const TAG_STROKE = 2;
 
@@ -797,10 +653,10 @@ const TAG_STROKE = 2;
  * Textes de la couverture portés par des cadres : gabarit C (repères, sans titre) ou page
  * remplie (`title` et `version` renseignés).
  */
-function coverTexts(builder, { tag = DEFAULT_TYPE, verb = `${DEFAULT_VERB} · Guide`, title = null, subtitle = DEFAULT_SUBTITLE, version = null } = {}) {
+function coverTexts(builder, { tag = DEFAULT_TYPE, verb = `${TXT.verbeDefaut} · ${TXT.libelleGuideDefaut}`, title = null, subtitle = TXT.sousTitreDefaut, version = null } = {}) {
   const boxes = coverBoxes();
   builder.frame('type-document', boxes.tagText, [para('Type-document', [{ text: tag }], { justification: 'CenterAlign' })]);
-  builder.frame('verbe', boxes.verb, [para('Surtitre', [{ text: verb }], { fill: 'Axe texte' })]);
+  builder.frame('verbe', boxes.verb, [para('Surtitre', [{ text: verb }], { fill: NU.axeTexte })]);
   if (title !== null) {
     builder.frame('titre-couverture', boxes.title, [para('Titre-couverture', accentedTitle(title))]);
     builder.frame('sous-titre', boxes.subtitle, [para('Chapeau', [{ text: subtitle }])]);
@@ -818,23 +674,6 @@ function accentedTitle(title) {
     ? [{ text: last, character: 'Accent' }]
     : [{ text: `${words.join(' ')} ` }, { text: last, character: 'Accent' }];
 }
-
-/** Deux lignes du pied de la page de fin, quand le guide n'en fournit pas. */
-const DEFAULT_MENTIONS = Object.freeze([
-  'Phrase de marque à renseigner.',
-  'Mentions légales de la micro-entreprise à renseigner.'
-]);
-
-// Contact du gabarit D tant qu'aucun guide ne le renseigne.
-const DEFAULT_CONTACT = Object.freeze({
-  titre: 'Une question sur ce document ?',
-  accroche: 'Une phrase d’invitation à renseigner.',
-  cartes: Object.freeze([
-    { label: 'E-mail', valeur: 'À renseigner', note: 'Adresse du contact' },
-    { label: 'Téléphone', valeur: 'À renseigner', note: 'Jours et horaires de réponse' },
-    { label: 'Nom', valeur: 'À renseigner', note: 'Interlocuteur du lecteur' }
-  ])
-});
 
 const END_BANNER ={ top: 40, cut: 36 }; // bloc contact inséré entre les marges, coin bas gauche coupé
 const END_CARD_HEIGHT = 92;
@@ -873,23 +712,23 @@ function masterC(builder, { filled = false } = {}) {
   const meeting = [0.336 * width, 0.526 * height]; // jonction des trois aplats sur la diagonale
   const topSplit = 0.617 * width + 0.413 * bleed; // pied de la frontière orange / turquoise, fond perdu compris
   const rightSplit = 0.2375 * height - 5; // frontière turquoise / vert au bord extérieur
-  builder.rectangle('fond', { left: 0, right, top: -bleed, bottom: height + bleed }, 'Papier de page');
-  builder.polygon('bandeau', [[0, -bleed], [topSplit, -bleed], orangeBottomRight, [0, 0.543 * height]], 'Orange vif');
-  builder.polygon('bandeau-turquoise', [[topSplit, -bleed], [right, -bleed], [right, rightSplit], meeting, orangeBottomRight], 'Turquoise vif');
-  builder.polygon('bandeau-vert', [meeting, [right, rightSplit], [right, 0.493 * height]], 'Vert vif');
+  builder.rectangle('fond', { left: 0, right, top: -bleed, bottom: height + bleed }, NU.papierPage);
+  builder.polygon('bandeau', [[0, -bleed], [topSplit, -bleed], orangeBottomRight, [0, 0.543 * height]], NU.orange);
+  builder.polygon('bandeau-turquoise', [[topSplit, -bleed], [right, -bleed], [right, rightSplit], meeting, orangeBottomRight], NU.turquoise);
+  builder.polygon('bandeau-vert', [meeting, [right, rightSplit], [right, 0.493 * height]], NU.vert);
 
-  builder.vector('logo', wordmarkShapes({ left: inner, top: boxes.logo.top, width: boxes.logo.right - boxes.logo.left }).subpaths, DARK);
-  builder.rectangle('type-document-cadre', boxes.tagRectangle, 'Papier de page', { color: DARK, weight: TAG_STROKE });
+  builder.vector('logo', wordmarkShapes(LOGO_PATHS, { left: inner, top: boxes.logo.top, width: boxes.logo.right - boxes.logo.left }).subpaths, DARK);
+  builder.rectangle('type-document-cadre', boxes.tagRectangle, NU.papierPage, { color: DARK, weight: TAG_STROKE });
   builder.frame('signature-marque', boxes.tagline,
-    [['consolider', ' · guide du client'], ['débloquer', ' · guide du vendeur'], ['maîtriser', ' · guide de l’administrateur']]
+    TXT.marque
       // Les trois lignes présentent les trois guides, sans en mettre un en avant : le verbe du document est sur la ligne de surtitre.
-      .map(([word, rest]) => para('Légende', [{ text: word, character: 'Gras' }, { text: rest }], { fill: DARK })));
+      .map(({ mot: word, suite: rest }) => para('Légende', [{ text: word, character: 'Gras' }, { text: rest }], { fill: DARK })));
   const { left, top, size } = boxes.verbTriangle;
-  builder.polygon('verbe-triangle', [[left, top], [left + size, top + size / 2], [left, top + size]], 'Axe vif');
+  builder.polygon('verbe-triangle', [[left, top], [left + size, top + size / 2], [left, top + size]], NU.axeVif);
   // Même pointillé orange que le pli des pages courantes (plus un filet plein sombre).
-  builder.line('pied-filet', inner, outer, boxes.rule.y, 'Axe vif', { dotted: true });
+  builder.line('pied-filet', inner, outer, boxes.rule.y, NU.axeVif, { dotted: true });
   builder.frame('signature', boxes.signature,
-    [para('Légende', [{ text: 'François-Xavier Guillois · scriptami.com' }], { fill: DARK, justification: 'RightAlign' })]);
+    [para('Légende', [{ text: TXT.signature }], { fill: DARK, justification: 'RightAlign' })]);
 
   // Page remplie : le texte vit dans des cadres de la page, le gabarit n'en porte pas (pas de doublon).
   if (filled) return;
@@ -899,8 +738,8 @@ function masterC(builder, { filled = false } = {}) {
     [
       para('Titre-couverture', [{ variable: 'Titre du document' }]),
       para('Surtitre', [{ variable: 'Version' }]),
-      para('Sommaire-général', [{ text: 'Sommaire' }]),
-      para('Sommaire-ligne', [{ text: '01 Placer ici 00-pages/couverture.icml' }])
+      para('Sommaire-général', [{ text: TXT.sommaire }]),
+      para('Sommaire-ligne', [{ text: TXT.reperes.couvertureSommaire }])
     ]);
 }
 
@@ -909,8 +748,8 @@ function masterC(builder, { filled = false } = {}) {
  * cartes de la couleur du papier à bordure sombre, deux colonnes de conseils côte à côte sous un filet,
  * pied anthracite à filet orange. Le contact (titre, accroche, trois cartes) est propre au guide.
  */
-function masterD(builder, { filled = false, contact = null, mentions = DEFAULT_MENTIONS } = {}) {
-  const { titre, accroche, cartes } = contact || DEFAULT_CONTACT;
+function masterD(builder, { filled = false, contact = null, mentions = TXT.mentionsDefaut } = {}) {
+  const { titre, accroche, cartes } = contact || TXT.contactDefaut;
   const { width, height, bleed } = PAGE;
   const right = width + bleed;
   const inner = pageEdges.right.inner;
@@ -918,8 +757,8 @@ function masterD(builder, { filled = false, contact = null, mentions = DEFAULT_M
   const bannerBottom = endBannerBottom();
   const { top: bannerTop, cut } = END_BANNER;
   const padding = 20;
-  builder.rectangle('fond', { left: 0, right, top: -bleed, bottom: height + bleed }, 'Papier de page');
-  builder.polygon('bandeau-contact', [[inner, bannerTop], [outer, bannerTop], [outer, bannerBottom], [inner + cut, bannerBottom], [inner, bannerBottom - cut]], 'Axe vif');
+  builder.rectangle('fond', { left: 0, right, top: -bleed, bottom: height + bleed }, NU.papierPage);
+  builder.polygon('bandeau-contact', [[inner, bannerTop], [outer, bannerTop], [outer, bannerBottom], [inner + cut, bannerBottom], [inner, bannerBottom - cut]], NU.axeVif);
   // Un seul cadre pour le titre et l'accroche : l'ICML 00-pages/fin-bandeau.icml s'y place d'un bloc.
   builder.frame('bandeau-texte', { left: inner + padding, right: outer - padding, top: bannerTop + 26, bottom: bannerBottom - cut + 10 },
     [
@@ -932,7 +771,7 @@ function masterD(builder, { filled = false, contact = null, mentions = DEFAULT_M
   const cardsTop = bannerBottom + 24;
   cartes.forEach((card, index) => {
     const left = inner + index * (cardWidth + gap);
-    builder.rectangle(`carte-${index + 1}`, { left, right: left + cardWidth, top: cardsTop, bottom: cardsTop + END_CARD_HEIGHT }, 'Papier de page', { color: DARK, weight: 1 });
+    builder.rectangle(`carte-${index + 1}`, { left, right: left + cardWidth, top: cardsTop, bottom: cardsTop + END_CARD_HEIGHT }, NU.papierPage, { color: DARK, weight: 1 });
     // Un cadre par carte : l'ICML 00-pages/fin-carte-N.icml s'y place d'un bloc.
     builder.frame(`carte-${index + 1}-texte`, { left: left + 10, right: left + cardWidth - 10, top: cardsTop + 10, bottom: cardsTop + END_CARD_HEIGHT - 8 },
       [
@@ -948,8 +787,8 @@ function masterD(builder, { filled = false, contact = null, mentions = DEFAULT_M
   if (!filled) {
     builder.frame('conseils-fin', endTextBox(),
       [
-        para('Surtitre', [{ text: 'Conseils' }]),
-        para('Courant', [{ text: 'Placer ici 00-pages/fin-conseils.icml (deux colonnes de conseils).' }])
+        para('Surtitre', [{ text: TXT.reperes.conseilsTitre }]),
+        para('Courant', [{ text: TXT.reperes.conseilsCorps }])
       ], { columns: 2 });
   }
 
@@ -957,25 +796,25 @@ function masterD(builder, { filled = false, contact = null, mentions = DEFAULT_M
   builder.rectangle('pied-anthracite', { left: 0, right, top: footerTop, bottom: height + bleed }, DARK);
   builder.rectangle('pied-filet', { left: 0, right, top: footerTop, bottom: footerTop + 4.5 }, ORANGE);
   // Picto seul (sans le mot) sur la zone noire ; le texte de pied s'aligne à sa droite.
-  const picto = pictoFacets({ left: inner, top: footerTop + 22, height: PICTO_HEIGHT });
-  picto.facets.forEach(({ name, points, gradient, opacity }) => builder.gradientPolygon(`picto-${name}`, points, { gradient, opacity }));
-  builder.frame('pied-texte', { left: inner + picto.width + 18, right: outer, top: footerTop + 22, bottom: height - 8 },
+  const picto = PICTO ? pictoFacets(PICTO, { left: inner, top: footerTop + 22, height: PICTO_HEIGHT }) : null;
+  if (picto) picto.facets.forEach(({ name, points, gradient, opacity }) => builder.gradientPolygon(`picto-${name}`, points, { gradient, opacity }));
+  builder.frame('pied-texte', { left: inner + (picto ? picto.width + 18 : 0), right: outer, top: footerTop + 22, bottom: height - 8 },
     mentionLines(mentions).map(({ style, text }) => para(style, [{ text }])));
 }
 
-const MASTER_BUILDERS = { 'A-Courante': masterA, 'B-Chapitre': masterB, 'C-Couverture': masterC, 'D-Fin': masterD };
+const MASTER_BUILDERS = { courante: masterA, chapitre: masterB, couverture: masterC, fin: masterD };
 
 function marginsXml(master, side) {
-  if (master.name === 'A-Courante' || master.name === 'B-Chapitre') return pageMargins(side);
+  if (master.role === 'courante' || master.role === 'chapitre') return pageMargins(side);
   return `<MarginPreference ColumnCount="1" ColumnGutter="${COLUMNS.gutter}" Top="${MARGINS.top}" Bottom="${MARGINS.bottom}" Left="${MARGINS.inner}" Right="${MARGINS.outer}" ColumnDirection="Horizontal"/>`;
 }
 
 /** Gabarit complet : `{ master, xml, stories }`. Les pages simples sont des pages de droite. */
-function buildMaster(master, { filled = false, contact = null, footer = FOOTER_TEXT, mentions = DEFAULT_MENTIONS } = {}) {
+function buildMaster(master, { filled = false, contact = null, footer = FOOTER_TEXT, mentions = TXT.mentionsDefaut } = {}) {
   const { width, height } = PAGE;
   const half = height / 2;
   const builder = masterBuilder(master.name);
-  MASTER_BUILDERS[master.name](builder, { filled, contact, footer, mentions });
+  MASTER_BUILDERS[master.role](builder, { filled, contact, footer, mentions });
   const self = masterSelf(master.name);
   const page = (id, side, offsetX) => `    <Page Self="${self}_${id}" GeometricBounds="0 0 ${height} ${width}" ItemTransform="1 0 0 1 ${offsetX} ${-half}" Name="${master.prefix}" AppliedMaster="n" OverrideList="" TabOrder="" GridStartingPoint="TopOutside" UseMasterGrid="true">
       ${marginsXml(master, side)}
@@ -1022,13 +861,11 @@ ${items.join('\n')}
 `;
 }
 
-const SUMMARY_PAGE_LABEL = 'p. …';
 /** « p. N » si la configuration du guide donne la page du chapitre (clé « N » sans zéro initial), sinon le libellé à remplacer. */
 function summaryPageLabel(pageNumbers, number) {
   const page = pageNumbers ? pageNumbers[String(Number.parseInt(number, 10))] : undefined;
-  return page === undefined ? SUMMARY_PAGE_LABEL : `p. ${page}`;
+  return page === undefined ? TXT.pageSommaire : `${TXT.pageSommairePrefixe}${page}`;
 }
-const SUMMARY_LABEL = 'Sommaire';
 const SUMMARY_LINE = /^(\d+)\t(.+)$/;
 
 /** Cadre du sommaire : toute la page de gauche entre ses marges, sous l'en-tête courant. */
@@ -1057,7 +894,7 @@ function summaryParagraphs(cover, pageNumbers) {
     ],
     index === lines.length - 1 ? { attrs: ruleBelow(DARK, 3, 9) } : {}));
   return [
-    para('Surtitre', [{ text: SUMMARY_LABEL }], { attrs: { ...heavy, SpaceAfter: '6' } }),
+    para('Surtitre', [{ text: TXT.sommaire }], { attrs: { ...heavy, SpaceAfter: '6' } }),
     ...rows
   ];
 }
@@ -1100,61 +937,15 @@ const boxPara = (style, label, text) => para(style, [{ text: label, character: '
  * titres courants, le folio et le pied, avec les styles les plus fréquents du jeu court.
  */
 function sampleBodyPages() {
-  const note = value => para('Note-renvoi', [{ text: 'Renvoi', character: 'Encadré-libellé' }, { text: ` ${value}` }]);
-  const side = (section, label, renvoi) => ({
-    margin: [para('Numéro-section', [{ text: section }]), para('Surtitre', [{ text: label }])],
+  const note = value => para('Note-renvoi', [{ text: TXT.noteRenvoi, character: 'Encadré-libellé' }, { text: ` ${value}` }]);
+  const paragraph = ({ style, libelle, texte }) => (libelle ? boxPara(style, libelle, texte) : para(style, [{ text: texte }]));
+  return TXT.pagesExemple.map(({ section, rubrique, renvoi, blocs }) => ({
+    paragraphs: blocs.map(paragraph),
+    margin: [para('Numéro-section', [{ text: section }]), para('Surtitre', [{ text: rubrique }])],
     note: renvoi ? [note(renvoi)] : null
-  });
-  const text = value => para('Courant', [{ text: value }]);
-  const bullet = value => para('Liste-puce', [{ text: value }]);
-  const numbered = value => para('Liste-num', [{ text: value }]);
-  const pages = [
-    [
-      para('Intertitre-1', [{ text: 'Préparer le fichier' }]),
-      text('Le fichier du catalogue est un tableur enregistré au format CSV. Chaque ligne décrit une référence, chaque colonne porte un titre fixe : l’ordre des colonnes est libre, leurs titres ne le sont pas.'),
-      text('Avant l’envoi, ouvrez le fichier et vérifiez que les prix et les dimensions sont renseignés.'),
-      bullet('Enregistrer le tableur en CSV, séparateur point-virgule.'),
-      bullet('Conserver les 23 titres de colonne, sans en ajouter ni en retirer.'),
-      bullet('Laisser vide une cellule sans valeur plutôt que d’y écrire un zéro.'),
-      boxPara('Encadré-info', 'Bon à savoir', 'un fichier refusé n’efface jamais le catalogue en ligne : rien n’est modifié tant que l’import n’a pas réussi.')
-    ],
-    [
-      para('Intertitre-1', [{ text: 'Envoyer le fichier' }]),
-      text('Depuis l’espace partenaire, déposez le fichier dans la zone d’import. La validation démarre aussitôt et affiche le résultat ligne par ligne.'),
-      numbered('Cliquer sur « Choisir un fichier » et sélectionner le CSV.'),
-      numbered('Attendre la fin de la validation.'),
-      numbered('Lire les avertissements, puis cliquer sur « Importer ».'),
-      text('L’import remplace le catalogue précédent : les références absentes du nouveau fichier sont retirées.'),
-      boxPara('Encadré-attention', 'Attention', 'un fichier partiel vide la partie manquante du catalogue. Importez toujours le tarif complet.')
-    ],
-    [
-      para('Intertitre-1', [{ text: 'Lire le résultat' }]),
-      para('Intertitre-2', [{ text: 'Les avertissements' }]),
-      text('Un avertissement signale un point à corriger sans bloquer l’import. Le message nomme la colonne concernée et indique la correction à faire dans le fichier.'),
-      para('Intertitre-2', [{ text: 'Les erreurs' }]),
-      text('Une erreur bloque l’import : le fichier doit être corrigé puis envoyé de nouveau.'),
-      boxPara('Encadré-retenir', 'À retenir', 'le partenaire corrige seul son fichier ; rien n’est nettoyé automatiquement.'),
-    ],
-    [
-      para('Intertitre-1', [{ text: 'Vérifier le catalogue' }]),
-      text('Une fois l’import terminé, ouvrez la page du catalogue et contrôlez quelques références : le prix, les dimensions et la photo doivent correspondre au tarif.'),
-      bullet('Rechercher une référence par son code.'),
-      bullet('Ouvrir sa fiche et comparer avec le tableur.'),
-      text('Si un écart persiste, corrigez le fichier et relancez l’import.'),
-      boxPara('Encadré-info', 'Bon à savoir', 'le catalogue affiché peut mettre quelques minutes à suivre l’import.')
-    ]
-  ];
-  const sides = [
-    side('1.1', 'Mise en route', 'Les 23 titres de colonne sont listés dans le chapitre sur le format du fichier.'),
-    side('1.2', 'Import'),
-    side('1.3', 'Résultat', 'Voir aussi le chapitre suivant pour générer les QR codes.'),
-    side('1.4', 'Contrôle')
-  ];
-  return pages.map((paragraphs, index) => ({ paragraphs, ...sides[index] }));
+  }));
 }
 
-// Sections d'exemple du bloc « Dans ce chapitre » (celles des pages courantes d'exemple).
-const SAMPLE_SECTIONS = Object.freeze(['Préparer le fichier', 'Envoyer le fichier', 'Lire le résultat', 'Vérifier le catalogue']);
 
 /** Cadres de l'ouverture de chapitre, d'après la maquette (colonne de 388 pt à la marge intérieure). */
 function chapterBoxes() {
@@ -1177,24 +968,24 @@ function chapterBoxes() {
  */
 function chapterOpening(cover) {
   const lines = cover.filter(item => item.style === 'Sommaire-ligne').map(item => SUMMARY_LINE.exec(item.text)).filter(Boolean);
-  const [, number = '01', title = 'Titre du chapitre'] = lines[1] || lines[0] || [];
+  const [, number = TXT.chapitre.numeroDefaut, title = TXT.chapitre.titreDefaut] = lines[1] || lines[0] || [];
   const titleParts = accentedTitle(title);
   const heavy = { RuleAboveLineWeight: '3', RuleAboveColor: colorRef(DARK), SpaceBefore: '0', SpaceAfter: '4' };
-  const sections = SAMPLE_SECTIONS.map((section, index) => para('Sommaire-section',
+  const sections = TXT.chapitre.sections.map((section, index) => para('Sommaire-section',
     [
       { text: `${Number.parseInt(number, 10)}.${index + 1}`, character: 'Sommaire-numéro' },
       { text: '\t' },
       { text: section },
       { text: '\t' },
-      { text: SUMMARY_PAGE_LABEL, character: 'Sommaire-page' }
+      { text: TXT.pageSommaire, character: 'Sommaire-page' }
     ],
-    index === SAMPLE_SECTIONS.length - 1 ? { attrs: ruleBelow(DARK, 3, 10) } : {}));
+    index === TXT.chapitre.sections.length - 1 ? { attrs: ruleBelow(DARK, 3, 10) } : {}));
   return {
-    kicker: [para('Surtitre', [{ text: 'Chapitre' }])],
+    kicker: [para('Surtitre', [{ text: TXT.chapitre.surtitre }])],
     number: [para('Numéro-chapitre', [{ text: number }])],
     title: [para('Titre-chapitre', titleParts)],
-    lead: [para('Chapeau', [{ text: 'Chapeau du chapitre : deux ou trois phrases qui disent ce que le lecteur saura faire à la fin.' }])],
-    contents: [para('Sommaire-titre', [{ text: '▶', character: 'Puce' }, { text: ' Dans ce chapitre' }], { attrs: heavy }), ...sections]
+    lead: [para('Chapeau', [{ text: TXT.chapitre.chapeau }])],
+    contents: [para('Sommaire-titre', [{ text: '▶', character: 'Puce' }, { text: ` ${TXT.chapitre.dansCeChapitre}` }], { attrs: heavy }), ...sections]
   };
 }
 
@@ -1205,8 +996,8 @@ function chapterOpening(cover) {
  * sont libres, posés sur la page, donc modifiables sans surcharge d'élément de gabarit.
  * @returns {{ spreads: object[], stories: { self: string, xml: string }[] }}
  */
-function filledPages({ cover, end, pages: pageNumbers, subtitle = DEFAULT_SUBTITLE, label = 'Guide', verb = DEFAULT_VERB, tag = DEFAULT_TYPE }) {
-  const coverBuilder = masterBuilder('Page-C');
+function filledPages({ cover, end, pages: pageNumbers, subtitle = TXT.sousTitreDefaut, label = TXT.libelleGuideDefaut, verb = TXT.verbeDefaut, tag = DEFAULT_TYPE }) {
+  const coverBuilder = masterBuilder(FRAME_PAGES.couverture);
   coverTexts(coverBuilder, {
     tag,
     verb: `${verb} · ${label}`,
@@ -1214,7 +1005,7 @@ function filledPages({ cover, end, pages: pageNumbers, subtitle = DEFAULT_SUBTIT
     subtitle,
     version: textOfStyle(cover, 'Surtitre') || ''
   });
-  const summaryBuilder = masterBuilder('Page-Sommaire');
+  const summaryBuilder = masterBuilder(FRAME_PAGES.sommaire);
   summaryBuilder.frame('sommaire', summaryBox(), summaryParagraphs(cover, pageNumbers));
   const opening = chapterOpening(cover);
   const boxes = chapterBoxes();
@@ -1225,7 +1016,7 @@ function filledPages({ cover, end, pages: pageNumbers, subtitle = DEFAULT_SUBTIT
   summaryBuilder.frame('chapitre-chapeau', boxes.lead, opening.lead);
   summaryBuilder.frame('chapitre-sommaire', boxes.contents, opening.contents);
   const textBuilders = [0, 1].map(index => {
-    const builder = masterBuilder(`Page-Texte-${index + 1}`);
+    const builder = masterBuilder(`${FRAME_PAGES.textePrefixe}${index + 1}`);
     const [leftPage, rightPage] = sampleBodyPages().slice(index * 2, index * 2 + 2);
     const placed = [['gauche', 'left', leftPage], ['droite', 'right', rightPage]].map(([label, side, page]) => ({ label, boxes: bodyBoxes(side), page }));
     placed.forEach(({ label, boxes, page }) => builder.frame(`corps-${label}`, boxes.text, page.paragraphs));
@@ -1233,24 +1024,24 @@ function filledPages({ cover, end, pages: pageNumbers, subtitle = DEFAULT_SUBTIT
     placed.filter(({ page }) => page.note).forEach(({ label, boxes, page }) => builder.frame(`renvoi-${label}`, { ...boxes.margin, top: NOTE_TOP, bottom: NOTE_TOP + NOTE_HEIGHT }, page.note));
     return builder;
   });
-  const endBuilder = masterBuilder('Page-D');
+  const endBuilder = masterBuilder(FRAME_PAGES.fin);
   endBuilder.frame('conseils-fin', endTextBox(), filledParagraphs(end), { columns: 2 });
   const textSpread = (index, first, builder) => ({
     index,
-    pages: [{ master: 'A-Courante', side: 'left', name: String(first) }, { master: 'A-Courante', side: 'right', name: String(first + 1) }],
+    pages: [{ master: MASTER_NAMES.courante, side: 'left', name: String(first) }, { master: MASTER_NAMES.courante, side: 'right', name: String(first + 1) }],
     items: builder.items
   });
   return {
     spreads: [
-      { index: 1, master: 'C-Couverture', items: coverBuilder.items },
+      { index: 1, master: MASTER_NAMES.couverture, items: coverBuilder.items },
       {
         index: 2,
-        pages: [{ master: 'A-Courante', side: 'left', name: '2' }, { master: 'B-Chapitre', side: 'right', name: '3' }],
+        pages: [{ master: MASTER_NAMES.courante, side: 'left', name: '2' }, { master: MASTER_NAMES.chapitre, side: 'right', name: '3' }],
         items: summaryBuilder.items
       },
       textSpread(3, 4, textBuilders[0]),
       textSpread(4, 6, textBuilders[1]),
-      { index: 5, master: 'D-Fin', items: endBuilder.items, name: '8' }
+      { index: 5, master: MASTER_NAMES.fin, items: endBuilder.items, name: '8' }
     ],
     stories: [...coverBuilder.stories, ...summaryBuilder.stories, ...textBuilders.flatMap(builder => builder.stories), ...endBuilder.stories]
   };
@@ -1268,7 +1059,7 @@ function designmapXml({ masters, storyFiles, spreadCount = 1 }) {
     '  <idPkg:BackingStory src="XML/BackingStory.xml"/>',
     ...storyFiles.map(file => `  <idPkg:Story src="Stories/${file.self}.xml"/>`)
   ];
-  const layer = `  <Layer Self="${LAYER_SELF}" Name="Calque 1" Visible="true" Locked="false" IgnoreWrap="false" ShowGuides="true" LockGuides="false" UI="true" Expendable="true" Printable="true">\n    <Properties><LayerColor type="enumeration">LightBlue</LayerColor></Properties>\n  </Layer>`;
+  const layer = `  <Layer Self="${LAYER_SELF}" Name="${escapeXml(LAYER.nom)}" Visible="true" Locked="false" IgnoreWrap="false" ShowGuides="true" LockGuides="false" UI="true" Expendable="true" Printable="true">\n    <Properties><LayerColor type="enumeration">LightBlue</LayerColor></Properties>\n  </Layer>`;
   const variables = masters ? TEXT_VARIABLES.map(variableXml) : [];
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <?aid style="50" type="document" readerVersion="6.0" featureSet="257" product="8.0(370)" ?>
@@ -1316,6 +1107,16 @@ function applyMaquette(maquette) {
   PAGE = { width: mm(page.largeurMm), height: mm(page.hauteurMm), bleed: mm(page.fondPerduMm) };
   MARGINS = { top: mm(page.marges.hautMm), bottom: mm(page.marges.basMm), inner: mm(page.marges.interieureMm), outer: mm(page.marges.exterieureMm) };
   COLUMNS = { text: mm(page.colonnes.texteMm), gutter: mm(page.colonnes.gouttiereMm), margin: mm(page.colonnes.marginaleMm) };
+  STYLES = maquette.styles;
+  TXT = maquette.textes;
+  NU = maquette.nuances;
+  LOGO_PATHS = maquette.logo.chemins;
+  PICTO = maquette.picto;
+  DARK = NU.sombre;
+  TEXT = NU.texte;
+  PAPER = NU.papier;
+  ORANGE = NU.orange;
+  FLANK_TONES = Object.freeze(NU.flanc.map(pair => Object.freeze([...pair])));
   COLORS = maquette.couleurs;
   AXES = maquette.axes.noms;
   AXIS_TONES = maquette.axes.tons;
@@ -1337,7 +1138,6 @@ function applyMaquette(maquette) {
   CORNER = mm(header.coinMm);
   FOLIO_WIDTH = header.folioLargeur;
   FOOTER_BAND = mm(header.bandePiedMm);
-  SUMMARY_WIDTH = PAGE.width - MARGINS.inner - MARGINS.outer;
   pageEdges = {
     left: { outer: -PAGE.width + MARGINS.outer, inner: -MARGINS.inner },
     right: { inner: MARGINS.inner, outer: PAGE.width - MARGINS.outer }
@@ -1345,7 +1145,16 @@ function applyMaquette(maquette) {
   headerBox = { top: HEADER_TOP, bottom: HEADER_TOP + HEADER_HEIGHT };
   footerBox = { top: PAGE.height - 14 - FOOTER_HEIGHT, bottom: PAGE.height - 14 };
   BODY_BOTTOM = PAGE.height - 70;
-  FORMATS = buildFormats();
+  FORMATS = resolveFormats(maquette.formats, polices, PAGE.width - MARGINS.inner - MARGINS.outer);
+  CHARTER_ONLY = maquette.charteSeule;
+  LAYER = maquette.cadres.calque;
+  LAYER_SELF = LAYER.id;
+  FRAME_PAGES = maquette.cadres.pages;
+  MASTERS = maquette.gabarits.map(({ nom, prefixe, base, pages, role }) => Object.freeze({ name: nom, prefix: prefixe, base, pages, role }));
+  MASTER_NAMES = Object.fromEntries(MASTERS.map(master => [master.role, master.name]));
+  TEXT_VARIABLES = maquette.variables.map(({ nom, type, contenu, style }) => (type === 'texte'
+    ? { name: nom, type: 'CustomTextType', contents: contenu }
+    : { name: nom, type: 'MatchParagraphStyleType', style }));
 }
 
 const EMBEDDED_MAQUETTE = loadMaquette();
@@ -1360,7 +1169,7 @@ function buildIdmlEntries({ axis, masters = false, bulletFont, pages = null, maq
   const built = masters ? MASTERS.map(master => buildMaster(master, { filled: Boolean(filled), contact: pages ? pages.contact : null, footer: pages ? pages.footer : undefined, mentions: pages ? pages.mentions : undefined })) : [];
   const storyFiles = [...built.flatMap(item => item.stories), ...(filled ? filled.stories : [])];
   // Sans pages remplies : une page courante sur le gabarit A (ou sans gabarit).
-  const spreads = filled ? filled.spreads : [{ index: 1, master: masters ? 'A-Courante' : null, items: [] }];
+  const spreads = filled ? filled.spreads : [{ index: 1, master: masters ? MASTER_NAMES.courante : null, items: [] }];
   return [
     { name: 'mimetype', data: MIMETYPE, store: true },
     { name: 'META-INF/container.xml', data: CONTAINER_XML },
@@ -1381,11 +1190,8 @@ function buildIdml(options) {
   return writeZip(buildIdmlEntries(options));
 }
 
-// Verbe d'ordre de la couverture quand aucun guide n'est désigné ; avec --guide, il vient de la configuration.
-const DEFAULT_VERB = 'Maîtriser';
-
 function outputPathFor(outDir, axis, guide) {
-  return path.join(outDir, `scriptami-${axis}${guide ? `-${guide}` : ''}.idml`);
+  return path.join(outDir, `${EMBEDDED_MAQUETTE.nom}-${axis}${guide ? `-${guide}` : ''}.idml`);
 }
 
 function parseArgs(argv) {
@@ -1436,7 +1242,7 @@ function main(argv) {
     // Couverture et fin remplies d'après le guide : titre, sous-titre, version, sommaire, contact et conseils de chaque guide.
     const pages = guide
       ? {
-        ...guidePages(guide.dir, { guidesDir: config.sourceDir, pagesConfig: config.pagesFile, version: readVersion(config) }),
+        ...guidePages(guide.dir, { guidesDir: config.sourceDir, pagesConfig: config.pagesFile, version: readVersion(config), textes: maquette.textes }),
         label: guide.title,
         verb: guide.verb,
         tag: guide.type

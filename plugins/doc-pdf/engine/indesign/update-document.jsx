@@ -114,11 +114,12 @@ function growStory(doc, story, notes) {
     notes.push('corps déborde dans un cadre unique : pages à ajouter à la main');
     return 0;
   }
-  return flowBody(doc, frames, 'Courante');
+  return flowBody(doc, frames, BODY_MASTER);
 }
 
 function updateDocument() {
   var paths = eval('(' + app.scriptArgs.getValue('paths') + ')');
+  BODY_MASTER = paths.composition.gabaritCorps;
   var documentFile = toFile(paths.document);
   if (!documentFile.exists) fail('Document introuvable : ' + paths.document);
   app.scriptPreferences.userInteractionLevel = UserInteractionLevels.NEVER_INTERACT;

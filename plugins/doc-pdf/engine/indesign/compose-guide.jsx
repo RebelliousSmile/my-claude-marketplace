@@ -13,36 +13,57 @@
 
 #include "compose-lib.jsx"
 
-var OPENING_FILES = [
-  ['chapitre-surtitre', 'ouverture-surtitre.icml'],
-  ['chapitre-numero', 'ouverture-numero.icml'],
-  ['chapitre-titre', 'ouverture-titre.icml'],
-  ['chapitre-chapeau', 'ouverture-chapeau.icml', true],
-  ['chapitre-sommaire', 'ouverture-sommaire.icml', true]
-];
-var SATELLITE_FRAMES = ['marginale-gauche', 'marginale-droite', 'renvoi-gauche', 'renvoi-droite'];
-var HEADER_FILES = [
-  ['en-tete-droite-chapitre', 'en-tete-chapitre.icml'],
-  ['en-tete-droite-titre', 'en-tete-titre-chapitre.icml']
-];
+// Composition de la maquette (bloc « composition » de maquette.json, transmis dans paths.composition) : posée par
+// useComposition au début de la composition, jamais écrite en dur ici.
+var OPENING_FILES = []; // [cadre, fichier ICML, facultatif]
+var SATELLITE_FRAMES = [];
+var HEADER_FILES = []; // [cadre, fichier ICML]
 
-var MIN_TEXT_SCALE = 0.6;
-var SHRINK_STEP = 0.94;
-var FOOT_CLEARANCE = 28; // marge basse + réserve pour le filet et le pied de page
-var TITLE_GAP = 8;
-// Hauteur des capitales rapportée au corps (Quicksand, titres et numéros de marge de la charte Scriptami).
-var CAP_HEIGHT = 0.7;
+var MIN_TEXT_SCALE = 0;
+var SHRINK_STEP = 0;
+var FOOT_CLEARANCE = 0; // marge basse + réserve pour le filet et le pied de page
+var TITLE_GAP = 0;
+// Hauteur des capitales rapportée au corps (police des titres et des numéros de marge de la maquette).
+var CAP_HEIGHT = 0;
 // Le modèle IDML travaille en millimètres : geometricBounds et baseline sont en mm, pointSize en points. Toute valeur en points
 // entrant dans une coordonnée passe par PT_MM (sans quoi un réglage de 9,5 pt déplaçait de 27 pt, mesuré le 2026-11-20).
 var PT_MM = 25.4 / 72;
 // Haut du cadre de marge, en points, mesuré depuis le haut des capitales de l'intertitre. Négatif parce que le haut du chiffre
 // tombe ≈ 10 pt sous le haut de son cadre ; la maquette veut le chiffre ≈ 5 pt sous le haut du titre. Relevé sur le PDF vendeur
 // (2026-11-20, hauts de glyphes au pixel), à réajuster sur une nouvelle mesure.
-var NUMBER_FRAME_SHIFT = -5.2;
-var GEOMETRY_TOLERANCE = 0.5;
+var NUMBER_FRAME_SHIFT = 0;
+var GEOMETRY_TOLERANCE = 0;
 // Pas de remontée (mm) d'une marge dont l'intertitre est en bas de page.
-var MARGIN_RISE_STEP = 4;
-var MIN_LINES_UNDER_HEADING = 3; // en dessous, l'intertitre passe sur la page suivante
+var MARGIN_RISE_STEP = 0;
+var MIN_LINES_UNDER_HEADING = 0; // en dessous, l'intertitre passe sur la page suivante
+
+/** Pose les constantes de composition à partir de paths.composition (ES3 : boucles simples, pas de map). */
+function useComposition(composition) {
+  var settings = composition.reglages;
+  var index;
+  var entry;
+  BODY_MASTER = composition.gabaritCorps;
+  OPENING_FILES = [];
+  for (index = 0; index < composition.ouverture.length; index += 1) {
+    entry = composition.ouverture[index];
+    OPENING_FILES.push([entry.cadre, entry.fichier, entry.facultatif === true]);
+  }
+  HEADER_FILES = [];
+  for (index = 0; index < composition.entetes.length; index += 1) {
+    entry = composition.entetes[index];
+    HEADER_FILES.push([entry.cadre, entry.fichier]);
+  }
+  SATELLITE_FRAMES = composition.satellites;
+  MIN_TEXT_SCALE = settings.echelleTexteMin;
+  SHRINK_STEP = settings.pasReduction;
+  FOOT_CLEARANCE = settings.reserveBas;
+  TITLE_GAP = settings.ecartTitre;
+  CAP_HEIGHT = settings.hauteurCapitales;
+  NUMBER_FRAME_SHIFT = settings.decalageCadreNumero;
+  GEOMETRY_TOLERANCE = settings.toleranceGeometrie;
+  MARGIN_RISE_STEP = settings.pasRemonteeMarge;
+  MIN_LINES_UNDER_HEADING = settings.lignesMinSousIntertitre;
+}
 
 function lastPageOf(pages) {
   var best = pages[0];
@@ -630,6 +651,7 @@ function placeHeaders(bodyFrames, chapterDir) {
 
 function composeGuide() {
   var paths = eval('(' + app.scriptArgs.getValue('paths') + ')');
+  useComposition(paths.composition);
   var doc = app.open(toFile(paths.template));
   var report = [];
   var notes = [];
@@ -689,8 +711,8 @@ function composeGuide() {
       secondFrame.contents = '';
       firstFrame.nextTextFrame = secondFrame;
       var bodyFrames = [firstFrame, secondFrame];
-      addedPages += flowBody(doc, bodyFrames, 'Courante');
-      addedPages += keepHeadingsWithText(doc, bodyFrames, 'Courante', notes, chapterName);
+      addedPages += flowBody(doc, bodyFrames, BODY_MASTER);
+      addedPages += keepHeadingsWithText(doc, bodyFrames, BODY_MASTER, notes, chapterName);
       if (bodyFrames[bodyFrames.length - 1].overflows) fail(chapterName + ' : le texte du corps déborde encore après la composition.');
       kit.lastPage = bodyFrames[bodyFrames.length - 1].parentPage;
 

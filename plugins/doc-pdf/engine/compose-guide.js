@@ -94,6 +94,20 @@ function isInDesignRunning(processListing) {
   return /(^|\s)InDesign(\.exe)?(\s|$)/im.test(String(processListing));
 }
 
+/**
+ * Préréglage PDF : celui du projet d'abord, puis celui de la maquette (`export.preset`), sinon null (heuristique
+ * « qualité » d'InDesign, cf. compose-lib.jsx).
+ */
+function pdfPresetFor(config) {
+  const fromMaquette = config.maquette && config.maquette.export ? config.maquette.export.preset : null;
+  return config.pdfPreset || fromMaquette || null;
+}
+
+/** Réglages de composition de la maquette, transmis à InDesign (les scripts ES3 ne lisent pas la maquette). */
+function compositionFor(config) {
+  return JSON.parse(JSON.stringify(config.maquette.composition));
+}
+
 /** Chemins de l'essai pour un guide de la configuration et un chapitre. */
 function pathsFor({ guide, chapitre }, config) {
   const entry = findGuide(config, guide);
@@ -107,7 +121,9 @@ function pathsFor({ guide, chapitre }, config) {
     commonDir: path.join(icmlRoot, 'common'),
     template: outputPathFor(trialDir, entry.accent, entry.id),
     document: path.join(trialDir, `${entry.dir}-${chapitre}.indd`),
-    pdf: path.join(trialDir, `${entry.dir}-${chapitre}.pdf`)
+    pdf: path.join(trialDir, `${entry.dir}-${chapitre}.pdf`),
+    preset: pdfPresetFor(config),
+    composition: compositionFor(config)
   };
 }
 
@@ -147,7 +163,8 @@ function updatePathsFor({ guide }, config) {
   return {
     document: entry.document,
     pdf: releasePdfPath(entry.document, config),
-    preset: config.pdfPreset,
+    preset: pdfPresetFor(config),
+    composition: compositionFor(config),
     icmlDir: path.join(icmlRoot, entry.dir),
     commonDir,
     commonNames: commonNamesIn(commonDir)
@@ -176,7 +193,8 @@ function composePathsFor({ guide, sortie }, config) {
     template: outputPathFor(path.join(config.outputDir, TRIAL_DIR), entry.accent, entry.id),
     document,
     pdf: sortie ? document.replace(/\.indd$/i, '.pdf') : releasePdfPath(document, config),
-    preset: config.pdfPreset,
+    preset: pdfPresetFor(config),
+    composition: compositionFor(config),
     icmlDir,
     commonDir: path.join(config.outputDir, 'icml', 'common'),
     pagesDir: path.join(icmlDir, '00-pages'),
@@ -399,4 +417,4 @@ if (require.main === module) {
   process.exitCode = main(process.argv.slice(2));
 }
 
-module.exports = { ComposeError, EXIT_MESSAGES, launch, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main };
+module.exports = { pdfPresetFor, compositionFor, ComposeError, EXIT_MESSAGES, launch, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main };

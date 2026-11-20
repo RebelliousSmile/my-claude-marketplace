@@ -1,7 +1,7 @@
 const { writeZip, readZip, METHOD_STORE } = require('../zip-store');
 const os = require('os');
 const path = require('path');
-const { STYLE_TABLE } = require('../icml-transform');
+const STYLES = require('../maquette').loadMaquette().styles;
 const { loadConfig } = require('../guide-config');
 const {
   buildIdml,
@@ -103,11 +103,11 @@ describe('build-idml-template', () => {
       .forEach(name => expect(declared).toContain(name));
   });
 
-  it('définit tous les styles de STYLE_TABLE et ceux de la charte, sous leurs noms exacts', () => {
+  it('définit tous les styles de la maquette et ceux de la charte, sous leurs noms exacts', () => {
     const styles = byName(files(), 'Resources/Styles.xml');
     const elements = { paragraph: 'ParagraphStyle', character: 'CharacterStyle', table: 'TableStyle', cell: 'CellStyle', object: 'ObjectStyle' };
     Object.entries(elements).forEach(([family, element]) => {
-      const expected = [...STYLE_TABLE[family].map(s => s.name), ...CHARTER_ONLY[family]];
+      const expected = [...STYLES[family].map(s => s.name), ...CHARTER_ONLY[family]];
       const defined = [...styles.matchAll(new RegExp(`<${element} [^>]*\\sName="([^"]+)"`, 'g'))].map(m => m[1]);
       expected.forEach(name => expect(defined).toContain(name));
     });
@@ -115,7 +115,7 @@ describe('build-idml-template', () => {
 
   it('donne une mise en forme à chaque style déclaré', () => {
     Object.keys(FORMATS).forEach(family => {
-      [...STYLE_TABLE[family].map(s => s.name), ...CHARTER_ONLY[family]].forEach(name => {
+      [...STYLES[family].map(s => s.name), ...CHARTER_ONLY[family]].forEach(name => {
         expect(FORMATS[family][name]).toBeDefined();
       });
     });
@@ -130,7 +130,7 @@ describe('build-idml-template', () => {
     });
   });
 
-  it('garde les retraits suspendus de STYLE_TABLE sur les listes', () => {
+  it('garde les retraits suspendus de la maquette sur les listes', () => {
     const styles = byName(files(), 'Resources/Styles.xml');
     const style = name => styles.match(new RegExp(`<ParagraphStyle [^>]*Name="${name}"[^>]*>`))[0];
     expect(style('Liste-num')).toContain('LeftIndent="18"');
@@ -140,7 +140,7 @@ describe('build-idml-template', () => {
     expect(style('Liste-puce-2')).toContain('FirstLineIndent="-14"');
   });
 
-  it('applique les corps de la charte, pas ceux provisoires de STYLE_TABLE', () => {
+  it('applique les corps de la charte, pas ceux provisoires de la maquette', () => {
     const styles = byName(files(), 'Resources/Styles.xml');
     const style = name => styles.match(new RegExp(`<ParagraphStyle [^>]*Name="${name}"[^>]*>`))[0];
     Object.entries(FORMATS.paragraph).forEach(([name, format]) => {

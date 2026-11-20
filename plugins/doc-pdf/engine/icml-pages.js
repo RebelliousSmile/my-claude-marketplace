@@ -19,9 +19,6 @@ const fs = require('fs');
 const path = require('path');
 const { DEFAULT_TYPE } = require('./guide-config');
 
-const SUMMARY_LABEL = 'Sommaire';
-const SUMMARY_PAGE_LABEL = 'p. …';
-
 class PagesError extends Error {}
 
 /** Premier titre de niveau 1 d'un chapitre Markdown. */
@@ -33,15 +30,21 @@ function firstHeading(markdown, label) {
   return line.replace(/^# /, '').trim();
 }
 
+/** Les textes fixes viennent de la maquette : aucun repli sur une maquette embarquée. */
+function requireTextes(textes, caller) {
+  if (!textes) throw new PagesError(`${caller} : les textes de la maquette sont obligatoires.`);
+}
+
 /** Couverture : titre, version, sommaire. `chapters` : [{ number, title }] dans l'ordre du guide. */
-function coverParagraphs({ chapters, version }) {
+function coverParagraphs({ chapters, version }, textes) {
+  requireTextes(textes, 'coverParagraphs');
   if (chapters.length === 0) {
     throw new PagesError('Couverture impossible : le guide ne contient aucun chapitre.');
   }
   return [
     { style: 'Titre-couverture', text: chapters[0].title },
     { style: 'Surtitre', text: `Version ${version}` },
-    { style: 'Sommaire-général', text: SUMMARY_LABEL },
+    { style: 'Sommaire-général', text: textes.sommaire },
     ...chapters.map(({ number, title }) => ({
       style: 'Sommaire-ligne',
       text: `${String(number).padStart(2, '0')}\t${title}`
@@ -54,12 +57,13 @@ function coverParagraphs({ chapters, version }) {
  * (numéro, tabulation, titre, tabulation, « p. … » à remplacer par la page).
  * Distincte du sommaire de la couverture, qui a ses propres styles.
  */
-function summaryPageParagraphs({ chapters, pages }) {
+function summaryPageParagraphs({ chapters, pages }, textes) {
+  requireTextes(textes, 'summaryPageParagraphs');
   if (chapters.length === 0) {
     throw new PagesError('Sommaire impossible : le guide ne contient aucun chapitre.');
   }
   return [
-    { style: 'Surtitre', text: SUMMARY_LABEL },
+    { style: 'Surtitre', text: textes.sommaire },
     ...chapters.map(({ number, title }) => ({
       style: 'Sommaire-chapitre',
       text: [
@@ -67,7 +71,7 @@ function summaryPageParagraphs({ chapters, pages }) {
         { text: '\t' },
         { text: title },
         { text: '\t' },
-        { text: pageLabel(pages, String(number)), character: 'Sommaire-page' }
+        { text: pageLabel(pages, String(number), textes), character: 'Sommaire-page' }
       ]
     }))
   ];
@@ -77,9 +81,10 @@ function summaryPageParagraphs({ chapters, pages }) {
  * Libellé de page d'une entrée de sommaire : « p. N » si `pages` (clé du guide dans le fichier
  * de configuration) porte le numéro, « p. … » sinon, à remplacer par celui d'InDesign.
  */
-function pageLabel(pages, key) {
+function pageLabel(pages, key, textes) {
+  requireTextes(textes, 'pageLabel');
   const page = pages ? pages[key] : undefined;
-  return page === undefined ? SUMMARY_PAGE_LABEL : `p. ${page}`;
+  return page === undefined ? textes.pageSommaire : `${textes.pageSommairePrefixe}${page}`;
 }
 
 /**
@@ -284,10 +289,10 @@ function guideChapters(guide, guidesDir) {
  * Couverture et fin d'un guide : paragraphes tels que les écrit l'ICML, plus le sous-titre
  * de la couverture et le contact (bandeau et cartes) de la page de fin.
  */
-function guidePages(guide, { guidesDir, pagesConfig, version }) {
+function guidePages(guide, { guidesDir, pagesConfig, version, textes }) {
   const entry = guideEntry(loadPagesConfig(pagesConfig), guide);
   return {
-    cover: coverParagraphs({ chapters: guideChapters(guide, guidesDir), version }),
+    cover: coverParagraphs({ chapters: guideChapters(guide, guidesDir), version }, textes),
     subtitle: entry.sousTitre,
     pages: entry.pages,
     footer: entry.pied,
