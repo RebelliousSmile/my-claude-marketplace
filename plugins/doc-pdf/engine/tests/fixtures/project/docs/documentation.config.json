@@ -1,4 +1,5 @@
 {
+  "maquette": "../../../../maquettes/squelette",
   "sourceDir": ".",
   "outputDir": "../output",
   "pagesFile": "pages-gabarit.json",
@@ -10,7 +11,7 @@
       "title": "Guide de l’administrateur",
       "verb": "Maîtriser",
       "type": "Documentation utilisateur",
-      "accent": "vert",
+      "accent": "bleu",
       "mergedFile": "Guide administrateur.md"
     },
     {
@@ -19,7 +20,7 @@
       "title": "Guide du client",
       "verb": "Consolider",
       "type": "Documentation utilisateur",
-      "accent": "turquoise",
+      "accent": "gris",
       "mergedFile": "guide client.md"
     },
     {
@@ -28,7 +29,7 @@
       "title": "Guide du vendeur",
       "verb": "Débloquer",
       "type": "Documentation utilisateur",
-      "accent": "orange",
+      "accent": "bleu",
       "document": "cerascan-guide-du-vendeur.indd"
     }
   ]

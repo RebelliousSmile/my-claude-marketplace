@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Pilote InDesign pour un guide (plan `aidd_docs/tasks/2026_11/2026_11_19_moteur-documentation-pdf`).
+ * Pilote InDesign pour un guide.
  *
  *   node <racine du plugin>/engine/compose-guide.js [build] --guide <id> --chapitre 01-vue-ensemble [--config <chemin>]
  *   node <racine du plugin>/engine/compose-guide.js update --guide <id> [--force] [--config <chemin>]
@@ -16,7 +16,8 @@
  * `update` et `compose` finissent par un constat d'empreintes avant/après (ICML, IDML, .indd, PDF) : à lire avant
  * d'annoncer qu'un correctif est livré.
  * Refuse si InDesign est déjà ouvert : l'application ne se pilote que sur un poste où l'utilisateur
- * l'a fermée et a donné son accord.
+ * l'a fermée et a donné son accord. InDesign se lance par `indesign/run-elevated.ps1` (tâche planifiée
+ * élevée, sans terminal administrateur) ; son code de sortie est relayé (cf. EXIT_MESSAGES).
  */
 
 const fs = require('fs');
@@ -26,7 +27,7 @@ const { spawnSync } = require('child_process');
 const { ConfigError, loadConfig, extractConfigArg, findGuide, readVersion } = require('./guide-config');
 const { outputPathFor } = require('./build-idml-template');
 
-const LAUNCHER = path.join(__dirname, 'indesign', 'run-indesign.ps1');
+const LAUNCHER = path.join(__dirname, 'indesign', 'run-elevated.ps1');
 const COMPOSE_SCRIPT = path.join(__dirname, 'indesign', 'compose-chapter.jsx');
 const UPDATE_SCRIPT = path.join(__dirname, 'indesign', 'update-document.jsx');
 const COMPOSE_GUIDE_SCRIPT = path.join(__dirname, 'indesign', 'compose-guide.jsx');
@@ -34,6 +35,14 @@ const COMMANDS = ['build', 'update', 'compose'];
 const CHAPTER_PATTERN = /^\d{2}-[a-z0-9-]+$/;
 const NAME_PATTERN = /^[a-z0-9-]+$/;
 const TRIAL_DIR = 'pdf-essai';
+
+// Codes de run-elevated.ps1 (qui relaie ceux de run-indesign.ps1) : cause et geste, sans PDF annoncé.
+const EXIT_MESSAGES = {
+  2: "InDesign est déjà ouvert : fermer ses documents et l'application, puis relancer. Aucun PDF produit.",
+  3: "COM d'InDesign indisponible : vérifier qu'InDesign est installé sur ce poste, puis relancer. Aucun PDF produit.",
+  4: "Le script InDesign a échoué : lire le journal ci-dessus (rien n'est annoncé comme produit), corriger, puis relancer. Aucun PDF produit.",
+  5: "Délai dépassé : la tâche planifiée est arrêtée et InDesign a pu rester ouvert. Le journal est conservé (chemin ci-dessus) : le lire, fermer InDesign, puis relancer. Aucun PDF produit."
+};
 
 class ComposeError extends Error {}
 
@@ -85,6 +94,20 @@ function isInDesignRunning(processListing) {
   return /(^|\s)InDesign(\.exe)?(\s|$)/im.test(String(processListing));
 }
 
+/**
+ * Préréglage PDF : celui du projet d'abord, puis celui de la maquette (`export.preset`), sinon null (heuristique
+ * « qualité » d'InDesign, cf. compose-lib.jsx).
+ */
+function pdfPresetFor(config) {
+  const fromMaquette = config.maquette && config.maquette.export ? config.maquette.export.preset : null;
+  return config.pdfPreset || fromMaquette || null;
+}
+
+/** Réglages de composition de la maquette, transmis à InDesign (les scripts ES3 ne lisent pas la maquette). */
+function compositionFor(config) {
+  return JSON.parse(JSON.stringify(config.maquette.composition));
+}
+
 /** Chemins de l'essai pour un guide de la configuration et un chapitre. */
 function pathsFor({ guide, chapitre }, config) {
   const entry = findGuide(config, guide);
@@ -96,9 +119,11 @@ function pathsFor({ guide, chapitre }, config) {
     chapterDir: path.join(icmlDir, chapitre),
     pagesDir: path.join(icmlDir, '00-pages'),
     commonDir: path.join(icmlRoot, 'common'),
-    template: outputPathFor(trialDir, entry.accent, entry.id),
+    template: outputPathFor(trialDir, entry.accent, entry.id, config.maquette),
     document: path.join(trialDir, `${entry.dir}-${chapitre}.indd`),
-    pdf: path.join(trialDir, `${entry.dir}-${chapitre}.pdf`)
+    pdf: path.join(trialDir, `${entry.dir}-${chapitre}.pdf`),
+    preset: pdfPresetFor(config),
+    composition: compositionFor(config)
   };
 }
 
@@ -138,7 +163,8 @@ function updatePathsFor({ guide }, config) {
   return {
     document: entry.document,
     pdf: releasePdfPath(entry.document, config),
-    preset: config.pdfPreset,
+    preset: pdfPresetFor(config),
+    composition: compositionFor(config),
     icmlDir: path.join(icmlRoot, entry.dir),
     commonDir,
     commonNames: commonNamesIn(commonDir)
@@ -164,10 +190,11 @@ function composePathsFor({ guide, sortie }, config) {
   if (!/\.indd$/i.test(document)) throw new ComposeError(`Le document doit porter l'extension .indd : ${document}`);
   const icmlDir = path.join(config.outputDir, 'icml', entry.dir);
   return {
-    template: outputPathFor(path.join(config.outputDir, TRIAL_DIR), entry.accent, entry.id),
+    template: outputPathFor(path.join(config.outputDir, TRIAL_DIR), entry.accent, entry.id, config.maquette),
     document,
     pdf: sortie ? document.replace(/\.indd$/i, '.pdf') : releasePdfPath(document, config),
-    preset: config.pdfPreset,
+    preset: pdfPresetFor(config),
+    composition: compositionFor(config),
     icmlDir,
     commonDir: path.join(config.outputDir, 'icml', 'common'),
     pagesDir: path.join(icmlDir, '00-pages'),
@@ -314,13 +341,22 @@ function prepare(options, paths, config) {
   });
 }
 
-function launch(script, paths) {
+/** Lanceur réel : run-elevated.ps1 rend le code de run-indesign.ps1 (0, 2, 3, 4) ou 5 (délai dépassé). */
+function runElevated(script, paths) {
   const result = spawnSync('pwsh', ['-NoProfile', '-File', LAUNCHER, '-Script', script, '-ArgsJson', JSON.stringify(paths)], { stdio: 'inherit' });
-  return result.status === 0 ? 0 : 1;
+  return typeof result.status === 'number' ? result.status : 4; // pwsh introuvable ou tué : échec du script
+}
+
+/** Lance InDesign par `launcher` et rend son code tel quel ; un code non nul reçoit un message qui nomme la cause. */
+function launch(script, paths, launcher) {
+  const status = launcher(script, paths);
+  if (status !== 0) process.stderr.write(`${EXIT_MESSAGES[status] || `Lancement d'InDesign échoué (code ${status}). Aucun PDF produit.`}
+`);
+  return status;
 }
 
 /** Mise à jour du .indd : contrôles et régénération des ICML avant toute copie ou ouverture d'InDesign. */
-function runUpdate(options, config) {
+function runUpdate(options, config, launcher) {
   const entry = findGuide(config, options.guide);
   updatePathsFor(options, config);
   const exportArgs = [path.join(__dirname, 'export-icml.js'), '--config', config.file, ...(options.force ? ['--force'] : [])];
@@ -331,13 +367,13 @@ function runUpdate(options, config) {
   const copy = backupDocument(paths.document);
   process.stdout.write(`Copie de sauvegarde : ${copy}\n`);
   ensureOutputDirs(paths);
-  const status = launch(UPDATE_SCRIPT, paths);
+  const status = launch(UPDATE_SCRIPT, paths, launcher);
   process.stdout.write(`${formatChangeReport(diffSnapshots(before, snapshotOutputs(paths)))}\n`);
   return status;
 }
 
 /** Composition du guide entier : un .indd existant n'est remplacé qu'avec --remplacer, après copie de sauvegarde. */
-function runCompose(options, config) {
+function runCompose(options, config, launcher) {
   const entry = findGuide(config, options.guide);
   const target = composePathsFor(options, config).document;
   if (fs.existsSync(target) && !options.remplacer) {
@@ -351,13 +387,13 @@ function runCompose(options, config) {
   fs.mkdirSync(path.dirname(paths.measuredPages), { recursive: true });
   fs.rmSync(paths.measuredPages, { force: true });
   ensureOutputDirs(paths);
-  const status = launch(COMPOSE_GUIDE_SCRIPT, paths);
+  const status = launch(COMPOSE_GUIDE_SCRIPT, paths, launcher);
   process.stdout.write(`${formatChangeReport(diffSnapshots(before, snapshotOutputs(paths)))}\n`);
   if (status === 0) reportMeasuredPages(options, paths, config);
   return status;
 }
 
-function main(argv,{ processListing = listProcesses } = {}) {
+function main(argv, { processListing = listProcesses, launcher = runElevated } = {}) {
   try {
     const options = parseArgs(argv);
     const config = loadConfig({ configPath: options.configPath });
@@ -365,11 +401,11 @@ function main(argv,{ processListing = listProcesses } = {}) {
     if (isInDesignRunning(processListing())) {
       throw new ComposeError("InDesign est déjà ouvert : fermer ses documents et l'application, puis relancer. Aucun fichier écrit.");
     }
-    if (options.command === 'update') return runUpdate(options, config);
-    if (options.command === 'compose') return runCompose(options, config);
+    if (options.command === 'update') return runUpdate(options, config, launcher);
+    if (options.command === 'compose') return runCompose(options, config, launcher);
     const paths = pathsFor(options, config);
     prepare(options, paths, config);
-    return launch(COMPOSE_SCRIPT, paths);
+    return launch(COMPOSE_SCRIPT, paths, launcher);
   } catch (error) {
     if (!(error instanceof ComposeError) && !(error instanceof ConfigError)) throw error;
     process.stderr.write(`${error.message}\n`);
@@ -381,4 +417,4 @@ if (require.main === module) {
   process.exitCode = main(process.argv.slice(2));
 }
 
-module.exports = { ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main };
+module.exports = { pdfPresetFor, compositionFor, ComposeError, EXIT_MESSAGES, launch, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main };

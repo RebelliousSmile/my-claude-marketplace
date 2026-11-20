@@ -1,22 +1,24 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main } = require('../compose-guide');
+const { pdfPresetFor, compositionFor, ComposeError, releasePdfPath, parseArgs, isInDesignRunning, pathsFor, updatePathsFor, composePathsFor, chapterNamesIn, backupDocument, diffPages, formatPagesReport, stamp, snapshotOutputs, diffSnapshots, formatChangeReport, main, EXIT_MESSAGES, launch } = require('../compose-guide');
 const { resolveConfig } = require('../guide-config');
 
+const MAQUETTE_DIR = path.join(__dirname, '..', 'maquettes', 'squelette');
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
 
 const REPO_CONFIG_FILE = FIXTURE_CONFIG;
 
 /** Configuration synthétique : le moteur ne doit rien savoir des guides d'un projet. */
 const CONFIG = resolveConfig({
+  maquette: path.relative(path.resolve('/r/docs'), MAQUETTE_DIR),
   sourceDir: '.',
   outputDir: '../output',
   pagesFile: 'pages.json',
   versionFile: '../package.json',
   guides: [
-    { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange' },
-    { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'turquoise' }
+    { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu' },
+    { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'gris' }
   ]
 }, path.resolve('/r/docs/documentation.config.json'));
 
@@ -99,8 +101,8 @@ describe('compose-guide', () => {
     });
 
     it("le modèle IDML porte l'accent du guide, tiré de la configuration, désigné par id ou par dossier", () => {
-      expect(path.basename(pathsFor({ guide: 'vendeur', chapitre: '01-a' }, CONFIG).template)).toBe('scriptami-orange-vendeur.idml');
-      expect(path.basename(pathsFor({ guide: 'guide-client', chapitre: '01-a' }, CONFIG).template)).toBe('scriptami-turquoise-client.idml');
+      expect(path.basename(pathsFor({ guide: 'vendeur', chapitre: '01-a' }, CONFIG).template)).toBe('squelette-bleu-vendeur.idml');
+      expect(path.basename(pathsFor({ guide: 'guide-client', chapitre: '01-a' }, CONFIG).template)).toBe('squelette-gris-client.idml');
     });
 
     it('refuse un guide absent de la configuration', () => {
@@ -110,12 +112,13 @@ describe('compose-guide', () => {
 
   describe('updatePathsFor', () => {
     const withDocument = (document) => resolveConfig({
+      maquette: path.relative(path.resolve('/r/docs'), MAQUETTE_DIR),
       sourceDir: '.',
       outputDir: '../output',
       pagesFile: 'pages.json',
       versionFile: '../package.json',
       pdfPreset: 'Qualité optimale',
-      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', ...(document ? { document } : {}) }]
+      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu', ...(document ? { document } : {}) }]
     }, path.resolve('/r/docs/documentation.config.json'));
 
     it('écrit le PDF sous <outputDir>/pdf (sans version lisible : sans suffixe), avec le préréglage de la configuration', () => {
@@ -155,19 +158,20 @@ describe('compose-guide', () => {
     });
 
     const withDocument = (document) => resolveConfig({
+      maquette: path.relative(path.resolve('/r/docs'), MAQUETTE_DIR),
       sourceDir: '.',
       outputDir: '../output',
       pagesFile: 'pages.json',
       versionFile: '../package.json',
       pdfPreset: 'Qualité optimale',
-      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', ...(document ? { document } : {}) }]
+      guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu', ...(document ? { document } : {}) }]
     }, path.resolve('/r/docs/documentation.config.json'));
 
     it('compose dans le .indd de la configuration, PDF sous <outputDir>/pdf, modèle sous pdf-essai', () => {
       const paths = composePathsFor({ guide: 'vendeur', sortie: null }, withDocument('guides/vendeur.indd'));
       expect(slash(paths.document)).toBe('/r/docs/guides/vendeur.indd');
       expect(slash(paths.pdf)).toBe('/r/output/pdf/vendeur.pdf');
-      expect(slash(paths.template)).toBe('/r/output/pdf-essai/scriptami-orange-vendeur.idml');
+      expect(slash(paths.template)).toBe('/r/output/pdf-essai/squelette-bleu-vendeur.idml');
       expect(slash(paths.icmlDir)).toBe('/r/output/icml/guide-vendeur');
       expect(slash(paths.commonDir)).toBe('/r/output/icml/common');
       expect(slash(paths.pagesDir)).toBe('/r/output/icml/guide-vendeur/00-pages');
@@ -186,8 +190,9 @@ describe('compose-guide', () => {
       try {
         fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ version: '2.20.0' }));
         const config = resolveConfig({
+          maquette: MAQUETTE_DIR,
           sourceDir: '.', outputDir: 'out', pagesFile: 'pages.json', versionFile: 'package.json',
-          guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange', document: 'out/indd/cerascan-guide-du-vendeur.indd' }]
+          guides: [{ id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu', document: 'out/indd/cerascan-guide-du-vendeur.indd' }]
         }, path.join(dir, 'documentation.config.json'));
         expect(path.relative(dir, releasePdfPath(config.guides[0].document, config)).split(path.sep).join('/')).toBe('out/pdf/cerascan-guide-du-vendeur-v2.20.0.pdf');
         expect(path.relative(dir, composePathsFor({ guide: 'vendeur', sortie: null }, config).pdf).split(path.sep).join('/')).toBe('out/pdf/cerascan-guide-du-vendeur-v2.20.0.pdf');
@@ -346,6 +351,48 @@ describe('compose-guide', () => {
     });
   });
 
+  describe('launch', () => {
+    let write;
+    beforeEach(() => {
+      write = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    });
+    afterEach(() => write.mockRestore());
+
+    const messageFor = code => {
+      write.mockClear();
+      expect(launch('compose.jsx', { document: 'a.indd' }, () => code)).toBe(code);
+      return write.mock.calls.map(call => call[0]).join('');
+    };
+
+    it('passe le script et les chemins au lanceur et rend le code 0 sans rien écrire', () => {
+      const launcher = jest.fn(() => 0);
+      expect(launch('compose.jsx', { document: 'a.indd' }, launcher)).toBe(0);
+      expect(launcher).toHaveBeenCalledWith('compose.jsx', { document: 'a.indd' });
+      expect(write).not.toHaveBeenCalled();
+    });
+
+    it("rend chaque code 2 à 5 tel quel, avec un message distinct qui n'annonce aucun PDF", () => {
+      const messages = [2, 3, 4, 5].map(messageFor);
+      expect(new Set(messages).size).toBe(4);
+      messages.forEach(message => {
+        expect(message).toMatch(/Aucun PDF produit/);
+        expect(message).not.toMatch(/PDF :/);
+      });
+      expect(messages[0]).toMatch(/déjà ouvert/);
+      expect(messages[1]).toMatch(/COM/);
+      expect(messages[2]).toMatch(/journal/);
+      expect(messages[3]).toMatch(/Délai dépassé/);
+    });
+
+    it('nomme le code quand il est inattendu', () => {
+      expect(messageFor(9)).toMatch(/code 9/);
+    });
+
+    it('couvre exactement les codes 2 à 5', () => {
+      expect(Object.keys(EXIT_MESSAGES).sort()).toEqual(['2', '3', '4', '5']);
+    });
+  });
+
   describe('main', () => {
     let write;
     beforeEach(() => {
@@ -379,5 +426,31 @@ describe('compose-guide', () => {
       expect(code).toBe(1);
       expect(write.mock.calls[0][0]).toMatch(/introuvable/);
     });
+  });
+});
+
+describe('préréglage PDF et composition transmis à InDesign', () => {
+  const withMaquettePreset = (preset, projectPreset) => ({
+    pdfPreset: projectPreset || null,
+    maquette: { export: preset ? { preset } : undefined, composition: { gabaritCorps: 'Courante' } }
+  });
+
+  it('le préréglage du projet l’emporte sur celui de la maquette', () => {
+    expect(pdfPresetFor(withMaquettePreset('Maquette', 'Projet'))).toBe('Projet');
+  });
+
+  it('à défaut, celui de la maquette', () => {
+    expect(pdfPresetFor(withMaquettePreset('Maquette'))).toBe('Maquette');
+  });
+
+  it('sans aucun des deux, null (heuristique d’InDesign)', () => {
+    expect(pdfPresetFor(withMaquettePreset())).toBeNull();
+  });
+
+  it('la composition de la maquette voyage dans les chemins de l’essai, de la mise à jour et de la composition', () => {
+    const gabarit = CONFIG.maquette.composition.gabaritCorps;
+    expect(pathsFor({ guide: 'vendeur', chapitre: '01-a' }, CONFIG).composition.gabaritCorps).toBe(gabarit);
+    expect(compositionFor(CONFIG).gabaritCorps).toBe(gabarit);
+    expect(Object.isFrozen(compositionFor(CONFIG))).toBe(false);
   });
 });

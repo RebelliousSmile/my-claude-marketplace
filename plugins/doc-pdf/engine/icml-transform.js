@@ -1,11 +1,11 @@
 /**
  * Transforme l'ICML produit par `pandoc -f gfm -t icml -s` en ICML aux styles
- * de la charte Scriptami (jeu court), prêt à être lié dans InDesign.
+ * de la maquette (jeu court), prêt à être lié dans InDesign.
  *
  * Fonction pure : aucune lecture disque. L'existence des images est vérifiée
  * par l'appelant (export-icml.js).
  *
- * - chaque style Pandoc composé est ramené à un nom de STYLE_TABLE, tout autre
+ * - chaque style Pandoc composé est ramené à un nom de la table des styles de la maquette, tout autre
  *   nom arrête la transformation ;
  * - légendes de tableau vides, liens et ancres sont retirés (sans objet sur papier) ;
  * - chaque image seule dans son paragraphe devient une capture ancrée : style de
@@ -22,112 +22,8 @@
 const path = require('path');
 const url = require('url');
 
-/**
- * Retrait suspendu : le numéro ou la puce sort en marge, la tabulation qui les suit
- * s'arrête au retrait gauche et les lignes suivantes s'alignent sur le texte.
- */
-const NUMBERED_INDENT = 18;
-const BULLET_INDENT = 14;
-const NUMBERED_LIST = {
-  BulletsAndNumberingListType: 'NumberedList', NumberingExpression: '^#.^t', NumberingLevel: '1',
-  LeftIndent: String(NUMBERED_INDENT), FirstLineIndent: String(-NUMBERED_INDENT)
-};
-const BULLET_LIST = {
-  BulletsAndNumberingListType: 'BulletList',
-  LeftIndent: String(BULLET_INDENT), FirstLineIndent: String(-BULLET_INDENT)
-};
-
-/**
- * Table unique du jeu court, par famille. `pandoc` liste les noms Pandoc ramenés
- * à ce style (vide pour un style posé par la transformation) ; `attributes` donne
- * une définition minimale lisible sans gabarit, le gabarit InDesign fait foi.
- */
-const STYLE_TABLE = Object.freeze({
-  paragraph: [
-    { name: 'Titre-chapitre', usage: 'titre du chapitre', pandoc: ['Header1'], attributes: { PointSize: '24' } },
-    { name: 'Surtitre', usage: "mention « Chapitre » au-dessus du numéro, posée par l'export", pandoc: [], attributes: {} },
-    { name: 'Numéro-chapitre', usage: "numéro du chapitre, posé par l'export d'après le nom du fichier", pandoc: [], attributes: {} },
-    { name: 'Chapeau', usage: 'premier paragraphe du chapitre', pandoc: [], attributes: {} },
-    { name: 'Sommaire-titre', usage: "intitulé « Dans ce chapitre », posé par l'export quand le chapitre a deux sections ou plus", pandoc: [], attributes: {} },
-    { name: 'Sommaire-général', usage: "libellé « Sommaire » du sommaire général du guide, sur la page de couverture, posé par l'export (à ne pas confondre avec « Sommaire-titre »)", pandoc: [], attributes: {} },
-    { name: 'Sommaire-ligne', usage: "une ligne du sommaire de la page de couverture (numéro, tabulation, titre), posée par l'export", pandoc: [], attributes: {} },
-    { name: 'Sommaire-chapitre', usage: "une ligne du sommaire de la page de sommaire (numéro, tabulation, titre, tabulation, « p. … »), posée par l'export", pandoc: [], attributes: {} },
-    { name: 'Sommaire-section', usage: "une section du sommaire d'ouverture (numéro « 2.1 », tabulation, titre, tabulation, « p. … »), posée par l'export", pandoc: [], attributes: {} },
-    { name: 'Numéro-section', usage: "numéro « N.M » de la section, rendu par l'export dans son fichier de marge", pandoc: [], attributes: {} },
-    { name: 'Intertitre-1', usage: 'titre de section', pandoc: ['Header2'], attributes: { PointSize: '18' } },
-    { name: 'Intertitre-2', usage: 'titre de sous-section', pandoc: ['Header3'], attributes: { PointSize: '14' } },
-    { name: 'Courant', usage: 'paragraphe courant', pandoc: ['Paragraph'], attributes: {} },
-    {
-      name: 'Liste-num',
-      usage: "étape d'une procédure",
-      pandoc: ['NumList', 'NumList > first', 'NumList > Paragraph', 'NumList > first > Paragraph'],
-      attributes: NUMBERED_LIST
-    },
-    {
-      name: 'Liste-num-suite',
-      usage: "paragraphe qui prolonge une étape, sans numéro",
-      pandoc: ['NumList > subParagraph > Paragraph'],
-      attributes: { LeftIndent: String(NUMBERED_INDENT) }
-    },
-    { name: 'Liste-puce', usage: 'élément de liste', pandoc: ['BulList', 'BulList > first'], attributes: BULLET_LIST },
-    {
-      name: 'Liste-puce-2',
-      usage: "élément de liste à l'intérieur d'une étape",
-      pandoc: ['NumList > BulList', 'NumList > BulList > first'],
-      attributes: { ...BULLET_LIST, LeftIndent: String(NUMBERED_INDENT + BULLET_INDENT) }
-    },
-    { name: 'Tableau texte', usage: "cellule d'un tableau", pandoc: ['TablePar', 'NumList > TablePar'], attributes: {} },
-    {
-      name: 'Tableau en-tête',
-      usage: "cellule d'en-tête d'un tableau",
-      pandoc: ['TablePar > TableHeader', 'NumList > TablePar > TableHeader'],
-      attributes: {}
-    },
-    {
-      name: 'Encadré-info',
-      usage: 'citation « > **Bon à savoir** … » : information utile',
-      pandoc: ['Blockquote > Paragraph'],
-      attributes: {}
-    },
-    { name: 'Encadré-attention', usage: 'citation « > **Attention** … » : point qui peut mal tourner', pandoc: [], attributes: {} },
-    { name: 'Encadré-retenir', usage: 'citation « > **À retenir** … » : synthèse de fin de chapitre', pandoc: [], attributes: {} },
-    { name: 'Note-renvoi', usage: 'citation « > **Renvoi** … » : renvoi vers un autre chapitre ou guide', pandoc: [], attributes: {} },
-    { name: 'Capture', usage: "paragraphe qui porte une capture d'écran ancrée", pandoc: [], attributes: {} },
-    { name: 'Titre-couverture', usage: "titre du document sur la couverture, posé par l'export de la couverture", pandoc: [], attributes: {} },
-    { name: 'Légende', usage: "légende des pages de couverture et de fin, posée dans les cadres du gabarit", pandoc: [], attributes: {} },
-    { name: 'Titre-courant', usage: "texte unique des pieds de page et titres courants d'en-tête, dans `00-pages/`, `common/` et les dossiers de chapitre seulement", pandoc: [], attributes: {} },
-    { name: 'Bandeau-titre', usage: "titre du bandeau orange de la page de fin (couleur du papier), dans `00-pages/fin-bandeau.icml` seulement", pandoc: [], attributes: { FillColor: 'Color/Paper' } },
-    { name: 'Bandeau-texte', usage: "accroche du bandeau orange de la page de fin (couleur du papier), dans `00-pages/fin-bandeau.icml` seulement", pandoc: [], attributes: { FillColor: 'Color/Paper' } },
-    { name: 'Type-document', usage: "pastille « type de document » de la couverture (anthracite, centrée), dans `common/type-document.icml` seulement", pandoc: [], attributes: {} },
-    { name: 'Carte-valeur', usage: "valeur d'une carte de contact de la page de fin, dans `00-pages/fin-carte-N.icml` seulement", pandoc: [], attributes: {} },
-    { name: 'Mentions', usage: "pied anthracite de la page de fin (couleur du papier), dans `common/fin-mentions.icml` seulement", pandoc: [], attributes: { FillColor: 'Color/Paper', PointSize: '9' } },
-    { name: 'Mentions-marque', usage: "phrase de marque du pied anthracite de la page de fin (couleur du papier, plus grande que « Mentions »), dans `common/fin-mentions.icml` seulement", pandoc: [], attributes: { FillColor: 'Color/Paper', PointSize: '16' } },
-    { name: 'En-tête-chapitre', usage: "numéro du chapitre dans l'en-tête de la page courante (couleur d'accent), dans le dossier du chapitre seulement", pandoc: [], attributes: {} }
-  ],
-  character: [
-    { name: 'Gras', usage: 'libellé à repérer', pandoc: ['Bold'], attributes: {} },
-    { name: 'Italique', usage: 'mise en valeur', pandoc: ['Italic'], attributes: {} },
-    { name: 'Accent', usage: 'mot mis en valeur dans un titre (*mot* dans un titre), posé par l\'export', pandoc: [], attributes: {} },
-    { name: 'Sommaire-numéro', usage: "numéro de section du sommaire d'ouverture, posé par l'export", pandoc: [], attributes: {} },
-    { name: 'Sommaire-page', usage: "« p. … » du sommaire d'ouverture, à remplacer par la page (table des matières), posé par l'export", pandoc: [], attributes: {} },
-    { name: 'Puce', usage: "triangle ▶ devant l'intitulé « Dans ce chapitre », posé par l'export", pandoc: [], attributes: {} },
-    { name: 'Encadré-libellé', usage: "libellé en gras qui ouvre un encadré, posé par l'export", pandoc: [], attributes: {} },
-    { name: 'Code-inline', usage: 'nom de champ, valeur saisie', pandoc: ['Code'], attributes: {} },
-    { name: 'Renvoi', usage: 'texte d\'un lien vers un autre chapitre ou guide', pandoc: ['Link'], attributes: {} }
-  ],
-  table: [
-    { name: 'Tableau', usage: 'tableau', pandoc: ['Table'], attributes: {} }
-  ],
-  cell: [
-    { name: 'Cellule', usage: 'cellule de tableau', pandoc: ['Cell'], attributes: {} }
-  ],
-  object: [
-    { name: 'Capture', usage: "cadre d'une capture d'écran ancrée", pandoc: [], attributes: {} }
-  ]
-});
 
 const CAPTURE_STYLE = 'Capture';
-const KICKER_TEXT = 'Chapitre';
 
 /** Préfixe de `Self`/`Applied*Style` et élément de déclaration, par famille. */
 const FAMILIES = {
@@ -424,14 +320,11 @@ function chapterParagraph(style, content, { columnBreak = false, justification, 
 }
 
 const PARAGRAPH_RANGE = /<ParagraphStyleRange\b([^>]*)>([\s\S]*?)<\/ParagraphStyleRange>/g;
-const SUMMARY_TITLE = 'Dans ce chapitre';
-/** Numéro de page à remplacer par celui de la table des matières InDesign. */
-const SUMMARY_PAGE_LABEL = 'p. …';
 
 /** « p. N » si `pageNumbers` (clé « N.M ») porte la page, sinon le libellé à remplacer. */
-function pageLabelFor(pageNumbers, key) {
+function pageLabelFor(pageNumbers, key, textes) {
   const page = pageNumbers ? pageNumbers[key] : undefined;
-  return page === undefined ? SUMMARY_PAGE_LABEL : `p. ${page}`;
+  return page === undefined ? textes.pageSommaire : `${textes.pageSommairePrefixe}${page}`;
 }
 /** Un sommaire n'a de sens qu'à partir de ce nombre de sections. */
 const MIN_SUMMARY_SECTIONS = 2;
@@ -549,7 +442,7 @@ const PARAGRAPH_WITH_BREAK = /<ParagraphStyleRange\b([^>]*)>([\s\S]*?)<\/Paragra
  *
  * @returns {{ story: string, parts: { name: string, xml: string }[] }}
  */
-function takeSatellites(story, number, pageNumbers) {
+function takeSatellites(story, number, pageNumbers, textes) {
   if (number === undefined || number === null) {
     return { story, parts: [] };
   }
@@ -590,7 +483,7 @@ function takeSatellites(story, number, pageNumbers) {
     return paragraph;
   });
   const parts = [
-    { name: 'ouverture-surtitre', xml: chapterParagraph('Surtitre', KICKER_TEXT) },
+    { name: 'ouverture-surtitre', xml: chapterParagraph('Surtitre', textes.chapitre.surtitre) },
     { name: 'ouverture-numero', xml: chapterParagraph('Numéro-chapitre', String(number).padStart(2, '0')) }
   ];
   if (found.title) parts.push({ name: 'ouverture-titre', xml: accentLastWord(found.title) });
@@ -599,9 +492,9 @@ function takeSatellites(story, number, pageNumbers) {
     const lines = titles.map((title, index) => chapterParagraph('Sommaire-section', [
       { text: `${number}.${index + 1}`, character: 'Sommaire-numéro' },
       { text: `\t${title}\t` },
-      { text: pageLabelFor(pageNumbers, `${number}.${index + 1}`), character: 'Sommaire-page' }
+      { text: pageLabelFor(pageNumbers, `${number}.${index + 1}`, textes), character: 'Sommaire-page' }
     ]));
-    const heading = chapterParagraph('Sommaire-titre', [{ text: '▶', character: 'Puce' }, { text: ` ${SUMMARY_TITLE}` }]);
+    const heading = chapterParagraph('Sommaire-titre', [{ text: '▶', character: 'Puce' }, { text: ` ${textes.chapitre.dansCeChapitre}` }]);
     parts.push({ name: 'ouverture-sommaire', xml: heading + lines.join('') });
   }
   sections.forEach(({ key, title, xml }) => parts.push({ name: labelledName(`marge-${key}`, title), xml }));
@@ -690,14 +583,16 @@ function replaceStyleGroups(head, groupsXml) {
  *   ICML du corps, chemins absolus des captures, et un ICML par cadre pour le texte que la mise
  *   en page place hors du flux (ouverture de chapitre, colonne marginale, notes de renvoi)
  */
-function transformIcml(icml, { chapterDir, columnWidth = 360, chapterNumber, pageNumbers } = {}) {
+function transformIcml(icml, { chapterDir, columnWidth = 360, chapterNumber, pageNumbers, maquette } = {}) {
+  if (!maquette) throw new Error('transformIcml : maquette est obligatoire.');
+  const styleTable = maquette.styles;
   if (!chapterDir) {
     throw new Error('transformIcml : chapterDir est obligatoire.');
   }
   const parts = splitDocument(icml);
   const withoutLinks = removeLinks(parts.story, parts.tail);
   const withoutCaptions = removeEmptyTableCaptions(withoutLinks.story);
-  const { story: mappedStory, unknown } = mapAppliedStyles(withoutCaptions, buildReverseIndex(STYLE_TABLE));
+  const { story: mappedStory, unknown } = mapAppliedStyles(withoutCaptions, buildReverseIndex(styleTable));
   if (unknown.length > 0) {
     const error = new Error(`Styles Pandoc sans correspondance dans le jeu court : ${describeUnknown(unknown).join(', ')}.`);
     error.unknownStyles = unknown;
@@ -705,10 +600,10 @@ function transformIcml(icml, { chapterDir, columnWidth = 360, chapterNumber, pag
   }
   const images = [];
   const titled = applyFrenchTypography(applyTitleAccent(convertCallouts(mappedStory)));
-  const taken = takeSatellites(titled, chapterNumber, pageNumbers);
+  const taken = takeSatellites(titled, chapterNumber, pageNumbers, maquette.textes);
   const story = sizeTables(convertCaptures(taken.story, { chapterDir, columnWidth, images }), columnWidth);
-  const head = replaceStyleGroups(parts.head, renderGroups(parts.head, collectUsed(story), STYLE_TABLE));
-  const satellites = taken.parts.map(({ name, xml }) => ({ name, icml: satelliteIcml(parts, withoutLinks.tail, xml) }));
+  const head = replaceStyleGroups(parts.head, renderGroups(parts.head, collectUsed(story), styleTable));
+  const satellites = taken.parts.map(({ name, xml }) => ({ name, icml: satelliteIcml(parts, withoutLinks.tail, xml, styleTable) }));
   return { icml: `${head}${story}${withoutLinks.tail}`, images, satellites };
 }
 
@@ -722,9 +617,9 @@ function storyOpening(story) {
 }
 
 /** ICML d'un seul cadre : l'enveloppe du chapitre, dont le flux est remplacé par `xml`. */
-function satelliteIcml(parts, tail, xml) {
+function satelliteIcml(parts, tail, xml, styleTable) {
   const story = `${storyOpening(parts.story)}\n${xml}</Story>`;
-  const head = replaceStyleGroups(parts.head, renderGroups(parts.head, collectUsed(story), STYLE_TABLE));
+  const head = replaceStyleGroups(parts.head, renderGroups(parts.head, collectUsed(story), styleTable));
   return `${head}${story}${tail}`;
 }
 
@@ -732,7 +627,7 @@ function satelliteIcml(parts, tail, xml) {
  * ICML d'une page de gabarit (couverture, fin) : un seul flux de paragraphes
  * posés par l'export, sans Pandoc pour le contenu. L'enveloppe (en-tête, histoire,
  * pied) vient d'une sortie Pandoc quelconque, `rawIcml`, dont le corps est jeté.
- * Chaque style doit appartenir à STYLE_TABLE.
+ * Chaque style doit appartenir à la table des styles de la maquette.
  *
  * @param {string} rawIcml sortie de `pandoc -f gfm -t icml -s`
  * @param {{ style: string, text: string, columnBreak?: boolean, justification?: string }[]} paragraphs
@@ -740,9 +635,11 @@ function satelliteIcml(parts, tail, xml) {
  *   `columnBreak` : le paragraphe commence en colonne suivante (colophon de la page de fin)
  *   `noHyphenation` : coupe les césures de ce paragraphe seul, sans toucher au style (conseils de la page de fin)
  */
-function buildPageIcml(rawIcml, paragraphs) {
+function buildPageIcml(rawIcml, paragraphs, { maquette } = {}) {
+  if (!maquette) throw new Error('buildPageIcml : maquette est obligatoire.');
+  const styleTable = maquette.styles;
   const parts = splitDocument(rawIcml);
-  const known = new Set(STYLE_TABLE.paragraph.map((entry) => entry.name));
+  const known = new Set(styleTable.paragraph.map((entry) => entry.name));
   const unknown = paragraphs.filter((paragraph) => !known.has(paragraph.style));
   if (unknown.length > 0) {
     throw new Error(`Styles de page sans correspondance dans le jeu court : ${[...new Set(unknown.map((p) => p.style))].join(', ')}.`);
@@ -750,8 +647,8 @@ function buildPageIcml(rawIcml, paragraphs) {
   const opening = [storyOpening(parts.story)];
   const body = paragraphs.map((paragraph) => chapterParagraph(paragraph.style, paragraph.text, { columnBreak: paragraph.columnBreak, justification: paragraph.justification, noHyphenation: paragraph.noHyphenation })).join('');
   const story = `${opening[0]}\n${body}</Story>`;
-  const head = replaceStyleGroups(parts.head, renderGroups(parts.head, collectUsed(story), STYLE_TABLE));
+  const head = replaceStyleGroups(parts.head, renderGroups(parts.head, collectUsed(story), styleTable));
   return `${head}${story}${parts.tail}`;
 }
 
-module.exports = { transformIcml, buildPageIcml, toLinkUri, STYLE_TABLE };
+module.exports = { transformIcml, buildPageIcml, toLinkUri };

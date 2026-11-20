@@ -8,6 +8,7 @@
 
 function composeChapter() {
   var paths = eval('(' + app.scriptArgs.getValue('paths') + ')');
+  BODY_MASTER = paths.composition.gabaritCorps;
   var doc = app.open(toFile(paths.template));
   var report = [];
   try {
@@ -55,13 +56,13 @@ function composeChapter() {
     rightFrame.contents = '';
     leftFrame.nextTextFrame = rightFrame;
     var bodyFrames = [leftFrame, rightFrame];
-    var added = flowBody(doc, bodyFrames, 'Courante');
+    var added = flowBody(doc, bodyFrames, BODY_MASTER);
     report.push('pages de corps ajoutées : ' + added);
 
     var overflowing = bodyFrames[bodyFrames.length - 1].overflows;
     if (overflowing) fail('Le texte du corps déborde encore après la composition.');
 
-    var preset = exportPdf(doc, paths.pdf, null);
+    var preset = exportPdf(doc, paths.pdf, paths.preset || null);
     report.push('PDF : ' + paths.pdf + ' (préréglage ' + preset + ', ' + doc.pages.length + ' pages)');
     doc.save();
   } finally {

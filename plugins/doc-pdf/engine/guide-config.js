@@ -28,10 +28,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { MaquetteError, loadMaquette } = require('./maquette');
 
 const CONFIG_NAME = 'documentation.config.json';
-/** Les trois tons d'accent de la charte (cf. AXES de build-idml-template.js). */
-const ACCENTS = Object.freeze(['turquoise', 'orange', 'vert']);
 const DEFAULT_TYPE = 'Documentation utilisateur';
 const DEFAULT_OUTPUT_DIR = 'output';
 const ID_PATTERN = /^[a-z0-9-]+$/;
@@ -47,7 +46,7 @@ function requireText(value, field) {
   return value;
 }
 
-function checkGuide(guide, index, seen) {
+function checkGuide(guide, index, seen, axes) {
   const where = `guides[${index}]`;
   if (!guide || typeof guide !== 'object' || Array.isArray(guide)) {
     throw new ConfigError(`Configuration : « ${where} » doit être un objet.`);
@@ -65,8 +64,8 @@ function checkGuide(guide, index, seen) {
   seen.ids.add(id);
   seen.dirs.add(dir);
   const accent = requireText(guide.accent, `${where}.accent`);
-  if (!ACCENTS.includes(accent)) {
-    throw new ConfigError(`Configuration : « ${where}.accent » hors charte : ${accent}. Valeurs acceptées : ${ACCENTS.join(', ')}.`);
+  if (!axes.includes(accent)) {
+    throw new ConfigError(`Configuration : « ${where}.accent » (guide ${id}) hors de la maquette : ${accent}. Valeurs acceptées : ${axes.join(', ')}.`);
   }
   if (guide.type !== undefined) requireText(guide.type, `${where}.type`);
   if (guide.mergedFile !== undefined) requireText(guide.mergedFile, `${where}.mergedFile`);
@@ -97,6 +96,16 @@ function findUp(dir, name) {
   }
 }
 
+/** Maquette désignée par la configuration (chemin relatif à son dossier) : le champ est obligatoire. */
+function loadMaquetteField(value, dir) {
+  try {
+    return loadMaquette(path.resolve(dir, requireText(value, 'maquette')));
+  } catch (error) {
+    if (error instanceof MaquetteError) throw new ConfigError(error.message);
+    throw error;
+  }
+}
+
 /** Valide un objet de configuration lu depuis `file` ; rend la configuration résolue (chemins absolus). */
 function resolveConfig(raw, file) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
@@ -116,10 +125,12 @@ function resolveConfig(raw, file) {
     throw new ConfigError('Configuration : « guides » doit lister au moins un guide.');
   }
   const seen = { ids: new Set(), dirs: new Set() };
-  const guides = raw.guides.map((guide, index) => checkGuide(guide, index, seen))
+  const maquette = loadMaquetteField(raw.maquette, dir);
+  const axes = Object.keys(maquette.axes.noms);
+  const guides = raw.guides.map((guide, index) => checkGuide(guide, index, seen, axes))
     .map(guide => ({ ...guide, document: guide.document === null ? null : path.resolve(dir, guide.document) }));
   const pdfPreset = raw.pdfPreset === undefined ? null : requireText(raw.pdfPreset, 'pdfPreset');
-  return { file: path.resolve(file), dir, sourceDir, outputDir, pagesFile, versionFile, pdfPreset, guides };
+  return { file: path.resolve(file), dir, sourceDir, outputDir, pagesFile, versionFile, pdfPreset, maquette, guides };
 }
 
 /** Lit et valide le fichier de configuration `file`. */
@@ -191,7 +202,6 @@ function readVersion(config) {
 
 module.exports = {
   ConfigError,
-  ACCENTS,
   CONFIG_NAME,
   DEFAULT_TYPE,
   resolveConfig,

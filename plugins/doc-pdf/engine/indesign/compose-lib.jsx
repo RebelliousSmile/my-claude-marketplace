@@ -3,6 +3,8 @@
 // Vérifié dans InDesign 2025 de bout en bout en phase 1 (compte rendu dans le plan).
 
 var MAX_ADDED_PAGES = 200;
+// Fragment du nom des gabarits de corps (maquette, composition.gabaritCorps) : posé par chaque script au démarrage.
+var BODY_MASTER = '';
 
 function toFile(path) {
   return new File(String(path).replace(/\\/g, '/'));

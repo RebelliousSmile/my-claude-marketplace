@@ -1,6 +1,6 @@
 /**
  * Textes des pages de gabarit (couverture, sommaire, fin) d'un guide, en paragraphes à
- * styles du jeu court, prêts pour `buildPageIcml` (scripts/guides/icml-transform.js).
+ * styles du jeu court, prêts pour `buildPageIcml` (engine/icml-transform.js).
  *
  * - couverture : titre du document (premier titre du chapitre 01), version du
  *   produit (`versionFile` de la configuration), sommaire « NN, tabulation, titre » de tous les chapitres ;
@@ -19,9 +19,6 @@ const fs = require('fs');
 const path = require('path');
 const { DEFAULT_TYPE } = require('./guide-config');
 
-const SUMMARY_LABEL = 'Sommaire';
-const SUMMARY_PAGE_LABEL = 'p. …';
-
 class PagesError extends Error {}
 
 /** Premier titre de niveau 1 d'un chapitre Markdown. */
@@ -33,15 +30,21 @@ function firstHeading(markdown, label) {
   return line.replace(/^# /, '').trim();
 }
 
+/** Les textes fixes viennent de la maquette : aucun repli sur une maquette embarquée. */
+function requireTextes(textes, caller) {
+  if (!textes) throw new PagesError(`${caller} : les textes de la maquette sont obligatoires.`);
+}
+
 /** Couverture : titre, version, sommaire. `chapters` : [{ number, title }] dans l'ordre du guide. */
-function coverParagraphs({ chapters, version }) {
+function coverParagraphs({ chapters, version }, textes) {
+  requireTextes(textes, 'coverParagraphs');
   if (chapters.length === 0) {
     throw new PagesError('Couverture impossible : le guide ne contient aucun chapitre.');
   }
   return [
     { style: 'Titre-couverture', text: chapters[0].title },
     { style: 'Surtitre', text: `Version ${version}` },
-    { style: 'Sommaire-général', text: SUMMARY_LABEL },
+    { style: 'Sommaire-général', text: textes.sommaire },
     ...chapters.map(({ number, title }) => ({
       style: 'Sommaire-ligne',
       text: `${String(number).padStart(2, '0')}\t${title}`
@@ -54,12 +57,13 @@ function coverParagraphs({ chapters, version }) {
  * (numéro, tabulation, titre, tabulation, « p. … » à remplacer par la page).
  * Distincte du sommaire de la couverture, qui a ses propres styles.
  */
-function summaryPageParagraphs({ chapters, pages }) {
+function summaryPageParagraphs({ chapters, pages }, textes) {
+  requireTextes(textes, 'summaryPageParagraphs');
   if (chapters.length === 0) {
     throw new PagesError('Sommaire impossible : le guide ne contient aucun chapitre.');
   }
   return [
-    { style: 'Surtitre', text: SUMMARY_LABEL },
+    { style: 'Surtitre', text: textes.sommaire },
     ...chapters.map(({ number, title }) => ({
       style: 'Sommaire-chapitre',
       text: [
@@ -67,7 +71,7 @@ function summaryPageParagraphs({ chapters, pages }) {
         { text: '\t' },
         { text: title },
         { text: '\t' },
-        { text: pageLabel(pages, String(number)), character: 'Sommaire-page' }
+        { text: pageLabel(pages, String(number), textes), character: 'Sommaire-page' }
       ]
     }))
   ];
@@ -77,9 +81,10 @@ function summaryPageParagraphs({ chapters, pages }) {
  * Libellé de page d'une entrée de sommaire : « p. N » si `pages` (clé du guide dans le fichier
  * de configuration) porte le numéro, « p. … » sinon, à remplacer par celui d'InDesign.
  */
-function pageLabel(pages, key) {
+function pageLabel(pages, key, textes) {
+  requireTextes(textes, 'pageLabel');
   const page = pages ? pages[key] : undefined;
-  return page === undefined ? SUMMARY_PAGE_LABEL : `p. ${page}`;
+  return page === undefined ? textes.pageSommaire : `${textes.pageSommairePrefixe}${page}`;
 }
 
 /**
@@ -169,8 +174,11 @@ const COMMON_KEY = 'commun';
  * Lit et vérifie le fichier de configuration : une entrée `commun` (`pied` : texte unique des pieds
  * de page, `mentions` : pied de la page de fin) et une entrée par dossier de guide
  * (clé = `dir` du guide dans la configuration), avec `sousTitre` (couverture), `fin` (page de fin) et `pages` (facultatif).
+ * Le `commun` de la maquette sert de base, complété clé par clé par celui du projet (une clé du projet l'emporte) ;
+ * `miseAJour` (date, projet) s'ajoute à la dernière mention, après le libellé `textes.miseAJour` de la maquette.
  */
-function loadPagesConfig(file) {
+function loadPagesConfig(file, maquette) {
+  if (!maquette) throw new PagesError('Pages de couverture et de fin : la maquette est obligatoire.');
   let config;
   try {
     config = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -180,11 +188,8 @@ function loadPagesConfig(file) {
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new PagesError('Pages de couverture et de fin : le fichier doit contenir un objet par guide.');
   }
-  const common = config[COMMON_KEY];
-  if (!common || !isText(common.pied)) {
-    throw new PagesError(`Pied de page (${COMMON_KEY}) : « pied » doit être un texte non vide.`);
-  }
-  checkMentions(common.mentions, COMMON_KEY);
+  const common = mergeCommon(config[COMMON_KEY], maquette, file);
+  config[COMMON_KEY] = common;
   Object.entries(config).filter(([guide]) => guide !== COMMON_KEY).forEach(([guide, entry]) => {
     if (!entry || !isText(entry.sousTitre)) {
       throw new PagesError(`Couverture (${guide}) : « sousTitre » doit être un texte non vide.`);
@@ -193,6 +198,25 @@ function loadPagesConfig(file) {
     checkPages(entry.pages, guide);
   });
   return config;
+}
+
+/** `commun` du projet complété de celui de la maquette, date de mise à jour ajoutée ; vérifie le résultat. */
+function mergeCommon(project, maquette, file) {
+  const merged = { ...(maquette.commun ?? {}), ...(project ?? {}) };
+  const where = `${maquette.file} et ${file}`;
+  if (!isText(merged.pied)) {
+    throw new PagesError(`Pied de page (${COMMON_KEY}) : « pied » doit être un texte non vide, ni la maquette ni le projet ne le donne (${where}).`);
+  }
+  if (!Array.isArray(merged.mentions)) {
+    throw new PagesError(`Mentions de fin (${COMMON_KEY}) : « mentions » absent, ni la maquette ni le projet ne le donne (${where}).`);
+  }
+  checkMentions(merged.mentions, COMMON_KEY);
+  if (merged.miseAJour !== undefined) {
+    if (!isText(merged.miseAJour)) throw new PagesError(`Mentions de fin (${COMMON_KEY}) : « miseAJour » doit être un texte non vide.`);
+    const last = merged.mentions.length - 1;
+    merged.mentions = merged.mentions.map((text, index) => (index === last ? `${text} · ${maquette.textes.miseAJour} ${merged.miseAJour}` : text));
+  }
+  return merged;
 }
 
 /** Texte commun aux trois guides (`pied`, `mentions`) de la configuration lue. */
@@ -284,10 +308,11 @@ function guideChapters(guide, guidesDir) {
  * Couverture et fin d'un guide : paragraphes tels que les écrit l'ICML, plus le sous-titre
  * de la couverture et le contact (bandeau et cartes) de la page de fin.
  */
-function guidePages(guide, { guidesDir, pagesConfig, version }) {
-  const entry = guideEntry(loadPagesConfig(pagesConfig), guide);
+function guidePages(guide, { guidesDir, pagesConfig, version, maquette }) {
+  const { textes } = maquette;
+  const entry = guideEntry(loadPagesConfig(pagesConfig, maquette), guide);
   return {
-    cover: coverParagraphs({ chapters: guideChapters(guide, guidesDir), version }),
+    cover: coverParagraphs({ chapters: guideChapters(guide, guidesDir), version }, textes),
     subtitle: entry.sousTitre,
     pages: entry.pages,
     footer: entry.pied,

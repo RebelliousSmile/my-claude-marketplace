@@ -1,5 +1,5 @@
 /**
- * Configuration d'un projet client du moteur de documentation (scripts/guides/guide-config.js) :
+ * Configuration d'un projet client du moteur de documentation (engine/guide-config.js) :
  * validation, résolution des chemins, découverte du fichier, désignation d'un guide, version.
  */
 
@@ -8,7 +8,6 @@ const os = require('os');
 const path = require('path');
 const {
   ConfigError,
-  ACCENTS,
   CONFIG_NAME,
   DEFAULT_TYPE,
   resolveConfig,
@@ -19,8 +18,8 @@ const {
   findGuide,
   readVersion
 } = require('../guide-config');
-const { AXES } = require('../build-idml-template');
 
+const SQUELETTE = path.join(__dirname, '..', 'maquettes', 'squelette');
 const REPO_CONFIG_FILE = path.join(__dirname, 'fixtures', 'project', 'docs', CONFIG_NAME);
 
 const tempDirs = [];
@@ -35,13 +34,14 @@ afterAll(() => {
   tempDirs.forEach(dir => fs.rmSync(dir, { recursive: true, force: true }));
 });
 
-const GUIDE = { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'orange' };
+const GUIDE = { id: 'vendeur', dir: 'guide-vendeur', title: 'Guide du vendeur', verb: 'Débloquer', accent: 'bleu' };
 
 function valid(overrides = {}) {
   return {
+    maquette: SQUELETTE,
     sourceDir: '.',
     pagesFile: 'pages.json',
-    guides: [{ ...GUIDE }, { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'turquoise' }],
+    guides: [{ ...GUIDE }, { id: 'client', dir: 'guide-client', title: 'Guide du client', verb: 'Consolider', accent: 'gris' }],
     ...overrides
   };
 }
@@ -116,8 +116,8 @@ describe('resolveConfig', () => {
 
   test('refuse un accent hors charte et cite les valeurs acceptées', () => {
     const raw = valid({ guides: [{ ...GUIDE, accent: 'rose' }] });
-    expect(() => resolveConfig(raw, FILE)).toThrow(/« guides\[0\]\.accent » hors charte : rose/);
-    expect(() => resolveConfig(raw, FILE)).toThrow(/turquoise, orange, vert/);
+    expect(() => resolveConfig(raw, FILE)).toThrow(/« guides\[0\]\.accent » \(guide vendeur\) hors de la maquette : rose/);
+    expect(() => resolveConfig(raw, FILE)).toThrow(/bleu, gris/);
   });
 
   test('refuse un identifiant ou un dossier en double, en désignant le second guide', () => {
@@ -131,8 +131,23 @@ describe('resolveConfig', () => {
     expect(() => resolveConfig(raw, FILE)).toThrow(/doit contenir un objet/);
   });
 
-  test('les accents de la charte sont exactement les axes du modèle IDML', () => {
-    expect([...ACCENTS].sort()).toEqual(Object.keys(AXES).sort());
+  test('charge la maquette désignée, chemin relatif au fichier de configuration', () => {
+    const config = resolveConfig(valid({ maquette: path.relative(path.dirname(FILE), SQUELETTE) }), FILE);
+    expect(config.maquette.nom).toBe('squelette');
+    expect(Object.keys(config.maquette.axes.noms)).toEqual(['bleu', 'gris']);
+  });
+
+  test('refuse l’absence du champ « maquette » en le nommant', () => {
+    const raw = valid();
+    delete raw.maquette;
+    expect(() => resolveConfig(raw, FILE)).toThrow(ConfigError);
+    expect(() => resolveConfig(raw, FILE)).toThrow(/« maquette » doit être un texte non vide/);
+  });
+
+  test('refuse une maquette introuvable en donnant le chemin résolu', () => {
+    const raw = valid({ maquette: '../absente' });
+    expect(() => resolveConfig(raw, FILE)).toThrow(ConfigError);
+    expect(() => resolveConfig(raw, FILE)).toThrow(path.resolve('/projet/absente'));
   });
 });
 
@@ -180,7 +195,7 @@ describe('lecture et découverte', () => {
   test('loadConfig enchaîne la découverte et la lecture', () => {
     const config = loadConfig({ configPath: REPO_CONFIG_FILE });
     expect(config.guides.map(guide => guide.id)).toEqual(['administrateur', 'partenaire', 'vendeur']);
-    expect(config.guides.every(guide => ACCENTS.includes(guide.accent))).toBe(true);
+    expect(config.guides.every(guide => Object.keys(config.maquette.axes.noms).includes(guide.accent))).toBe(true);
   });
 });
 

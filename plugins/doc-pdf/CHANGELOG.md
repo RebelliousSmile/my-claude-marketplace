@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.5.0
+
+- Skill `doc-pdf:maquette` : méthode rodée en trois temps (modèle, calage, production) pour créer, caler et brancher une maquette, avec ses evals de routage.
+- Commandes `maquette init <dossier> [--nom <nom>]` (squelette validé, refus d'un nom invalide ou d'un dossier non vide, aucune écriture partielle) et `maquette specimen <dossier>` (texte neutre qui exerce chaque style, sorties ignorées par git).
+- Spécimen de calage `engine/specimen/` : trois chapitres (structure, encadrés, images), fixture Pandoc figée et test qui vérifie que chaque style de la transformation est exercé.
+
+## 0.4.0
+
+- Moteur sans marque : toute la charte (page, couleurs, axes, polices, styles, gabarits, cadres, textes, logo, picto) est lue dans une maquette externe (format 1 : dossier `maquette.json`, `logo.svg`, `picto.json` facultatif). Aucune mention de Scriptami ne reste dans le moteur, hors la maquette d'exemple qui sera retirée.
+- Migration : le champ `maquette` de `documentation.config.json` est obligatoire (chemin relatif au fichier de configuration) ; sans lui, toute commande s'arrête avec un message. `init` exige `--maquette <dossier>` et prend l'accent par défaut de la maquette. Le `commun` de la maquette (pied, mentions) est complété par celui du projet ; `pages-gabarit.json` peut se réduire à `"commun": { "miseAJour": "…" }`.
+- Les IDML de gabarits et de guides portent le nom de la maquette (`<maquette>-<accent>[-<guide>].idml`).
+- Maquette `squelette` livrée (axes bleu et gris, polices Segoe UI, Consolas) pour démarrer une nouvelle maquette.
+- Banc `tools/compare-engines.js` : option `--config-reference` pour comparer deux moteurs dont les configurations diffèrent (ancien moteur sans champ `maquette`). Vérifié sur les guides cerascan : 273 fichiers ICML/IDML identiques octet pour octet.
+
+## 0.3.0
+
+- Lanceur élevé : `engine/indesign/run-elevated.ps1` exécute InDesign par une tâche planifiée (`RunLevel Highest`, session interactive), sans terminal administrateur ; `pdf compose` et `pdf update` le consomment. Le journal est relayé à l'écran, la tâche est désenregistrée à la fin, le délai par défaut est de 60 min.
+- Le lanceur passe toujours par la tâche, même depuis un shell déjà élevé : un jeton élevé par un autre moyen reçoit 0x800702E4 du COM d'InDesign, la tâche non (constaté le 2026-11-20).
+- Codes de sortie : 0 succès, 2 InDesign déjà ouvert, 3 COM indisponible, 4 script introuvable ou en échec, 5 délai dépassé ; chacun porte un message explicite.
+- Runbook générique (`references/runbook-export-indesign.md`, section 3 quater) : plus de mention de projet, de `scripts/guides` ni de pnpm ; messages et en-têtes du moteur neutralisés. Le commentaire des guides fusionnés cite désormais la commande `merge` du plugin : un `merge` sur un projet existant ne change que cette première ligne.
+
 ## 0.2.3
 
 - En-tête de la page gauche : la flèche devant le titre du guide est maintenant ◀ (vers le bord extérieur), comme le ▶ de la page droite ; avant, les deux flèches regardaient vers l'intérieur à gauche et vers l'extérieur à droite. Modèle IDML et ICML d'en-tête ; recomposer (`pdf compose --remplacer`) ou régénérer l'ICML puis `pdf update` pour les .indd existants. Le ▶ du bloc « Dans ce chapitre » et des puces ne change pas.

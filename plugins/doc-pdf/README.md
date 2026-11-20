@@ -1,22 +1,28 @@
 # doc-pdf
 
-Moteur interprojets de documentation PDF, charte Scriptami unique. La documentation reste en Markdown dans le dépôt de chaque client ; le moteur, lui, vit ici.
+Moteur interprojets de documentation PDF, maquette externe (dossier `maquette.json`). La documentation reste en Markdown dans le dépôt de chaque client ; le moteur, lui, vit ici.
 
 ## Ce qu'il fait
 
-1. **Markdown → ICML** (Pandoc) avec le jeu de styles fermé de la charte, manifeste d'empreintes (`output/icml/.manifest.json`) : un ICML corrigé à la main arrête la régénération sauf `--force`.
-2. **Modèle IDML** de la charte (gabarits, pages d'exemple).
+1. **Markdown → ICML** (Pandoc) avec le jeu de styles fermé de la maquette, manifeste d'empreintes (`output/icml/.manifest.json`) : un ICML corrigé à la main arrête la régénération sauf `--force`.
+2. **Modèle IDML** de la maquette (gabarits, pages d'exemple).
 3. **Mise à jour d'un `.indd` existant** : copie de sauvegarde, liens rafraîchis, pages ajoutées ou retirées, export PDF.
+
+## Deux skills
+
+- `doc-pdf` : produit les documents d'un projet (ICML, IDML, `.indd`, PDF).
+- `maquette` : crée, cale et branche une maquette en trois temps (modèle, calage, production), sur un spécimen neutre.
 
 ## Prérequis
 
 - Node.js, Pandoc dans le PATH (`icml`, `pdf`).
-- Adobe InDesign et un PowerShell lancé en administrateur (`pdf` uniquement, document fermé).
+- Adobe InDesign (`pdf` uniquement, document fermé). Le COM exige un processus élevé : `engine/indesign/run-elevated.ps1` le lance par une tâche planifiée, sans terminal administrateur.
 
 ## Utilisation
 
 ```sh
-node <racine du plugin>/engine/cli.js init            # écrit documentation.config.json
+node <racine du plugin>/engine/cli.js init --maquette <dossier>   # écrit documentation.config.json
+node <racine du plugin>/engine/cli.js maquette init <dossier>     # nouvelle maquette ; maquette specimen <dossier> ajoute le spécimen
 node <racine du plugin>/engine/cli.js merge --check
 node <racine du plugin>/engine/cli.js icml [--force]
 node <racine du plugin>/engine/cli.js idml --gabarits --guide <id>

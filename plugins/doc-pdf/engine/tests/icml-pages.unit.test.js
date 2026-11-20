@@ -1,5 +1,5 @@
 /**
- * Textes des pages de couverture et de fin (scripts/guides/icml-pages.js) :
+ * Textes des pages de couverture et de fin (engine/icml-pages.js) :
  * titre lu dans le chapitre, sommaire, sous-titre, contact et conseils de la fin.
  */
 
@@ -9,8 +9,8 @@ const path = require('path');
 const {
   PagesError,
   firstHeading,
-  coverParagraphs,
-  summaryPageParagraphs,
+  coverParagraphs: coverWith,
+  summaryPageParagraphs: summaryWith,
   loadPagesConfig,
   guideEntry,
   endParagraphs,
@@ -26,10 +26,16 @@ const {
   mentionsParagraphs,
   commonEntry,
   mentionLines,
-  guidePages,
+  guidePages: guidePagesWith,
   productVersion
 } = require('../icml-pages');
-const { STYLE_TABLE } = require('../icml-transform');
+const MAQUETTE = require('../maquette').loadMaquette(require('path').join(__dirname, '..', 'maquettes', 'squelette'));
+const STYLES = MAQUETTE.styles;
+/** Maquette sans « commun » : le projet doit alors tout fournir. */
+const SANS_COMMUN = { ...MAQUETTE, commun: undefined };
+const coverParagraphs = (args, textes = MAQUETTE.textes) => coverWith(args, textes);
+const summaryPageParagraphs = (args, textes = MAQUETTE.textes) => summaryWith(args, textes);
+const guidePages = (guide, options) => guidePagesWith(guide, { maquette: MAQUETTE, ...options });
 const { loadConfig, readVersion } = require('../guide-config');
 
 const FIXTURE_CONFIG = path.join(__dirname, 'fixtures', 'project', 'docs', 'documentation.config.json');
@@ -65,7 +71,7 @@ const VALID_END = {
   ]
 };
 const VALID_MENTIONS = ['Phrase de marque.', 'Mentions légales.'];
-const VALID_COMMON = { pied: 'Scriptami · Guide X', mentions: VALID_MENTIONS };
+const VALID_COMMON = { pied: 'Marque · Guide X', mentions: VALID_MENTIONS };
 const VALID = { commun: VALID_COMMON, 'guide-x': { sousTitre: 'Un sous-titre.', fin: VALID_END } };
 const withEnd = changes => ({
   commun: VALID_COMMON,
@@ -135,16 +141,16 @@ describe('bandeau et cartes de la page de fin', () => {
 
 describe('footerParagraphs', () => {
   test('un seul paragraphe de titre courant portant le texte du pied', () => {
-    expect(footerParagraphs({ pied: 'Scriptami · Guide X' })).toEqual([
-      { style: 'Titre-courant', text: 'Scriptami · Guide X' }
+    expect(footerParagraphs({ pied: 'Marque · Guide X' })).toEqual([
+      { style: 'Titre-courant', text: 'Marque · Guide X' }
     ]);
   });
 });
 
 describe('footerLeftParagraphs', () => {
   test('même texte que le pied courant, aligné à droite', () => {
-    expect(footerLeftParagraphs({ pied: 'Scriptami · Guide X' })).toEqual([
-      { style: 'Titre-courant', text: 'Scriptami · Guide X', justification: 'RightAlign' }
+    expect(footerLeftParagraphs({ pied: 'Marque · Guide X' })).toEqual([
+      { style: 'Titre-courant', text: 'Marque · Guide X', justification: 'RightAlign' }
     ]);
   });
 });
@@ -214,7 +220,7 @@ describe('coverParagraphs', () => {
 
 describe('loadPagesConfig et endParagraphs', () => {
   test('une configuration valide donne les deux colonnes de conseils', () => {
-    const entry = guideEntry(loadPagesConfig(writeConfig(VALID)), 'guide-x');
+    const entry = guideEntry(loadPagesConfig(writeConfig(VALID), MAQUETTE), 'guide-x');
     expect(endParagraphs(entry)).toEqual([
       { style: 'Surtitre', text: 'Pour être aidé vite' },
       { style: 'Courant', text: '1. Première ligne.', noHyphenation: true },
@@ -247,23 +253,23 @@ describe('loadPagesConfig et endParagraphs', () => {
     ['numéro de page non entier', { ...VALID, 'guide-x': { ...VALID['guide-x'], pages: { '1.1': '4' } } }],
     ['numéro de page nul', { ...VALID, 'guide-x': { ...VALID['guide-x'], pages: { '1': 0 } } }]
   ])('%s : refusé', (_label, content) => {
-    expect(() => loadPagesConfig(writeConfig(content))).toThrow(PagesError);
+    expect(() => loadPagesConfig(writeConfig(content), SANS_COMMUN)).toThrow(PagesError);
   });
 
   test('pages valides : conservées dans l’entrée du guide', () => {
-    const config = loadPagesConfig(writeConfig({ ...VALID, 'guide-x': { ...VALID['guide-x'], pages: { 1: 3, '1.1': 4 } } }));
+    const config = loadPagesConfig(writeConfig({ ...VALID, 'guide-x': { ...VALID['guide-x'], pages: { 1: 3, '1.1': 4 } } }), MAQUETTE);
     expect(guideEntry(config, 'guide-x').pages).toEqual({ 1: 3, '1.1': 4 });
   });
 
   test('l’entrée d’un guide reprend le pied et les mentions communs', () => {
-    const entry = guideEntry(loadPagesConfig(writeConfig(VALID)), 'guide-x');
+    const entry = guideEntry(loadPagesConfig(writeConfig(VALID), MAQUETTE), 'guide-x');
     expect(entry.pied).toBe(VALID_COMMON.pied);
     expect(entry.mentions).toEqual(VALID_MENTIONS);
-    expect(commonEntry(loadPagesConfig(writeConfig(VALID)))).toEqual(VALID_COMMON);
+    expect(commonEntry(loadPagesConfig(writeConfig(VALID), MAQUETTE))).toEqual(VALID_COMMON);
   });
 
   test('« commun » n’est pas un guide', () => {
-    expect(() => guideEntry(loadPagesConfig(writeConfig(VALID)), 'commun')).toThrow(/commun/);
+    expect(() => guideEntry(loadPagesConfig(writeConfig(VALID), MAQUETTE), 'commun')).toThrow(/commun/);
   });
 
   test('fichier absent : refusé', () => {
@@ -271,11 +277,11 @@ describe('loadPagesConfig et endParagraphs', () => {
   });
 
   test('guide absent de la configuration : refusé', () => {
-    expect(() => guideEntry(loadPagesConfig(writeConfig(VALID)), 'guide-inconnu')).toThrow(/guide-inconnu/);
+    expect(() => guideEntry(loadPagesConfig(writeConfig(VALID), MAQUETTE), 'guide-inconnu')).toThrow(/guide-inconnu/);
   });
 
   test('la configuration du dépôt est valide et couvre les trois guides', () => {
-    const config = loadPagesConfig(REPO_CONFIG.pagesFile);
+    const config = loadPagesConfig(REPO_CONFIG.pagesFile, MAQUETTE);
     expect(Object.keys(config).sort()).toEqual(['commun', ...REPO_CONFIG.guides.map(guide => guide.dir)].sort());
   });
 });
@@ -289,14 +295,14 @@ describe('guidePages', () => {
     const pages = guidePages('guide-x', { guidesDir, pagesConfig: writeConfig(VALID), version: '9.9.9' });
     expect(pages.cover[0]).toEqual({ style: 'Titre-couverture', text: 'Mon guide' });
     expect(pages.subtitle).toBe('Un sous-titre.');
-    expect(pages.footer).toBe('Scriptami · Guide X');
+    expect(pages.footer).toBe('Marque · Guide X');
     expect(pages.mentions).toEqual(VALID_MENTIONS);
     expect(pages.contact).toEqual({ titre: VALID_END.titre, accroche: VALID_END.accroche, cartes: VALID_END.cartes });
     expect(pages.end).toEqual(endParagraphs(VALID['guide-x']));
   });
 
   test('chaque guide du dépôt a un contact, un sous-titre et des conseils qui lui sont propres (le pied est commun)', () => {
-    const config = loadPagesConfig(REPO_CONFIG.pagesFile);
+    const config = loadPagesConfig(REPO_CONFIG.pagesFile, MAQUETTE);
     const entries = Object.entries(config).filter(([key]) => key !== 'commun').map(([, entry]) => entry);
     expect(new Set(entries.map(entry => entry.sousTitre)).size).toBe(entries.length);
     expect(new Set(entries.map(entry => entry.fin.titre)).size).toBe(entries.length);
@@ -306,7 +312,7 @@ describe('guidePages', () => {
 
 describe('styles des pages', () => {
   test('chaque style employé existe dans le jeu court', () => {
-    const known = new Set(STYLE_TABLE.paragraph.map((entry) => entry.name));
+    const known = new Set(STYLES.paragraph.map((entry) => entry.name));
     const used = [
       ...coverParagraphs({ chapters: [{ number: 1, title: 'a' }], version: '1' }),
       ...footerParagraphs(VALID_COMMON),
@@ -325,5 +331,24 @@ describe('styles des pages', () => {
   test('la version du produit est celle de package.json', () => {
     expect(productVersion(REPO_CONFIG.versionFile)).toMatch(/^\d+\.\d+\.\d+/);
     expect(productVersion(REPO_CONFIG.versionFile)).toBe(readVersion(REPO_CONFIG));
+  });
+});
+
+describe('commun de la maquette', () => {
+  test('sans commun dans le projet : repris de la maquette', () => {
+    const config = loadPagesConfig(writeConfig({ 'guide-x': VALID['guide-x'] }), MAQUETTE);
+    expect(commonEntry(config)).toEqual(MAQUETTE.commun);
+  });
+
+  test('une clé du projet l’emporte sur celle de la maquette', () => {
+    const config = loadPagesConfig(writeConfig({ commun: { pied: 'Pied projet' }, 'guide-x': VALID['guide-x'] }), MAQUETTE);
+    expect(commonEntry(config).pied).toBe('Pied projet');
+    expect(commonEntry(config).mentions).toEqual(MAQUETTE.commun.mentions);
+  });
+
+  test('miseAJour du projet : ajoutée à la dernière mention', () => {
+    const config = loadPagesConfig(writeConfig({ commun: { miseAJour: '1 janvier 2027' }, 'guide-x': VALID['guide-x'] }), MAQUETTE);
+    const mentions = commonEntry(config).mentions;
+    expect(mentions[mentions.length - 1]).toBe(`${MAQUETTE.commun.mentions[mentions.length - 1]} · ${MAQUETTE.textes.miseAJour} 1 janvier 2027`);
   });
 });

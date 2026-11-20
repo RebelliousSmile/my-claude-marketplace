@@ -51,7 +51,7 @@ describe('buildMergedGuide', () => {
 
   test('concatène dans l\'ordre du nom, sans en-tête de nom de fichier, avec le bandeau', () => {
     const merged = buildMergedGuide(files);
-    expect(merged.startsWith('<!-- Fichier généré par scripts/guides/build-merged-guides.js')).toBe(true);
+    expect(merged.startsWith('<!-- Fichier généré par la commande merge du plugin doc-pdf')).toBe(true);
     expect(merged.indexOf('# Début')).toBeLessThan(merged.indexOf('# Suite du guide'));
     expect(merged).not.toMatch(/^# 0\d-/m);
   });
@@ -102,7 +102,7 @@ describe('buildMergedGuide', () => {
 });
 
 describe('versions fusionnées du projet de fixture', () => {
-  test.each(inspectTargets(CONFIG).map(t => [t.output, t]))('%s est à jour (pnpm run guides:build)', (_name, target) => {
+  test.each(inspectTargets(CONFIG).map(t => [t.output, t]))('%s est à jour (relancer merge)', (_name, target) => {
     expect(target.upToDate).toBe(true);
   });
 });

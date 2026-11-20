@@ -1,8 +1,8 @@
 /**
- * Commande d'export ICML des guides (scripts/guides/export-icml.js) : sélection
+ * Commande d'export ICML des guides (engine/export-icml.js) : sélection
  * des chapitres, chemins de sortie, ICML orphelins, échecs sans écriture.
  * La conversion elle-même est couverte par icml-transform.unit.test.js ; les
- * exécutions avec Pandoc se font par pnpm run guides:icml.
+ * exécutions avec Pandoc se font par la commande icml.
  */
 
 const fs = require('fs');

@@ -1,6 +1,6 @@
 /**
- * Empreintes des ICML générés (scripts/guides/icml-manifest.js) : enregistrement, détection d'un fichier
- * corrigé à la main, entrées sans source, et arrêt de l'export (scripts/guides/export-icml.js) sans écriture.
+ * Empreintes des ICML générés (engine/icml-manifest.js) : enregistrement, détection d'un fichier
+ * corrigé à la main, entrées sans source, et arrêt de l'export (engine/export-icml.js) sans écriture.
  */
 
 const fs = require('fs');

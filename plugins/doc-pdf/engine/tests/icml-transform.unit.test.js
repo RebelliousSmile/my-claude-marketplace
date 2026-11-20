@@ -1,5 +1,5 @@
 /**
- * Transformation ICML Pandoc → styles CERASCAN (scripts/guides/icml-transform.js).
+ * Transformation ICML Pandoc → styles CERASCAN (engine/icml-transform.js).
  *
  * Fixture figée, régénérée par (Pandoc 3.7) :
  *   cd tests/fixtures/icml && pandoc -f gfm -t icml -s echantillon.md -o echantillon.pandoc.icml
@@ -7,7 +7,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const { transformIcml, buildPageIcml, toLinkUri, STYLE_TABLE } =require('../icml-transform');
+const icmlTransform = require('../icml-transform');
+const MAQUETTE = require('../maquette').loadMaquette(require('path').join(__dirname, '..', 'maquettes', 'squelette'));
+const STYLES = MAQUETTE.styles;
+const { toLinkUri } = icmlTransform;
+const transformIcml = (icml, options = {}) => icmlTransform.transformIcml(icml, { maquette: MAQUETTE, ...options });
+const buildPageIcml = (icml, paragraphs, options = {}) => icmlTransform.buildPageIcml(icml, paragraphs, { maquette: MAQUETTE, ...options });
 
 const FIXTURE_DIR = path.join(__dirname, 'fixtures', 'icml');
 const SOURCE = fs.readFileSync(path.join(FIXTURE_DIR, 'echantillon.pandoc.icml'), 'utf8');
@@ -572,9 +577,9 @@ describe('buildPageIcml', () => {
   });
 });
 
-describe('STYLE_TABLE', () => {
+describe('styles de la maquette', () => {
   test('chaque nom Pandoc ne mène qu\'à un style, et chaque nom est unique dans sa famille', () => {
-    for (const entries of Object.values(STYLE_TABLE)) {
+    for (const entries of Object.values(STYLES)) {
       const names = entries.map((e) => e.name);
       expect(new Set(names).size).toBe(names.length);
       const pandocNames = entries.flatMap((e) => e.pandoc);
@@ -583,8 +588,8 @@ describe('STYLE_TABLE', () => {
   });
 
   test('les styles posés par la transformation figurent dans leur famille', () => {
-    expect(STYLE_TABLE.paragraph.map((e) => e.name)).toContain('Capture');
-    expect(STYLE_TABLE.object.map((e) => e.name)).toEqual(['Capture']);
+    expect(STYLES.paragraph.map((e) => e.name)).toContain('Capture');
+    expect(STYLES.object.map((e) => e.name)).toEqual(['Capture']);
   });
 
   test('le runbook InDesign liste exactement les styles de la table', () => {
@@ -598,7 +603,7 @@ describe('STYLE_TABLE', () => {
     const familyKey = { paragraphe: 'paragraph', caractère: 'character', tableau: 'table', cellule: 'cell', objet: 'object' };
     const documented = [...section.matchAll(/^\| « ([^»]+) » \| ([^|]+?) \|/gm)]
       .map(([, name, family]) => `${familyKey[family.trim()] || family.trim()}/${name}`);
-    const expected = Object.entries(STYLE_TABLE)
+    const expected = Object.entries(STYLES)
       .flatMap(([family, entries]) => entries.map((e) => `${family}/${e.name}`));
 
     expect(documented.length).toBeGreaterThanOrEqual(15);

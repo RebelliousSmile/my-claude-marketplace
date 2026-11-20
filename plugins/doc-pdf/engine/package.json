@@ -2,7 +2,7 @@
   "name": "doc-pdf-engine",
   "version": "0.2.0",
   "private": true,
-  "description": "Moteur Markdown → ICML/IDML → PDF (InDesign) de la charte Scriptami.",
+  "description": "Moteur Markdown → ICML/IDML → PDF (InDesign) d'une maquette externe.",
   "license": "UNLICENSED",
   "scripts": {
     "test": "jest"

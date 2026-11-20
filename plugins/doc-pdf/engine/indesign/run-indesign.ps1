@@ -8,7 +8,7 @@
 
  `New-Object -ComObject InDesign.Application` se rattache à l'instance en cours : on refuse donc
  AVANT tout appel COM si le processus existe, pour ne jamais agir sur le document de l'utilisateur.
- Vérifié de bout en bout en phase 1 (InDesign 2025) : le COM exige un PowerShell lancé en administrateur.
+ Vérifié de bout en bout en phase 1 (InDesign 2025) : le COM exige un processus élevé (run-elevated.ps1 s'en charge).
 #>
 param(
   [Parameter(Mandatory = $true)][string]$Script,

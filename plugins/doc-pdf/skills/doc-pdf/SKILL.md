@@ -1,9 +1,9 @@
 ---
 name: doc-pdf
 description: >-
-  Génère la documentation PDF d'un projet client depuis son Markdown : ICML et IDML de la charte Scriptami, mise à jour du .indd existant et export PDF par InDesign.
+  Génère la documentation PDF d'un projet client depuis son Markdown : ICML et IDML d'une maquette externe, mise à jour du .indd existant et export PDF par InDesign.
 author: François-Xavier Guillois
-version: 0.2.0
+version: 0.3.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash
@@ -18,7 +18,7 @@ Read [host portability](../../references/host-portability.md) before resolving p
 
 # doc-pdf
 
-Moteur interprojets : le Markdown reste dans le dépôt du client, la charte Scriptami est unique, le moteur vit dans ce plugin.
+Moteur interprojets : le Markdown reste dans le dépôt du client, la mise en page vient d'une maquette externe, le moteur vit dans ce plugin.
 
 ## Available actions
 
@@ -30,6 +30,8 @@ Une seule skill, plusieurs commandes du moteur. Les lancer avec `node <DOC_PDF_P
 | `merge` | Versions fusionnées des guides (`--check` pour seulement contrôler) | aucun |
 | `icml` | Régénère les ICML depuis le Markdown (`--force` pour passer outre un ICML modifié) | Pandoc |
 | `idml` | Modèle IDML de la charte (`--gabarits`, `--guide <id>`) | aucun |
+| `maquette init` | Crée une maquette (squelette validé) : voir la skill `maquette` | aucun |
+| `maquette specimen` | Ajoute le spécimen de calage à une maquette | aucun |
 | `pdf build` | Compose un chapitre d'essai dans InDesign | Pandoc, InDesign |
 | `pdf update` | Met à jour le `.indd` du guide et exporte le PDF | Pandoc, InDesign |
 | `pdf compose` | Place tous les chapitres (ICML liés) dans le modèle IDML, écrit le `.indd` et le PDF (`--remplacer`, `--sortie <fichier.indd>`) | Pandoc, InDesign |
@@ -43,12 +45,13 @@ Une seule skill, plusieurs commandes du moteur. Les lancer avec `node <DOC_PDF_P
 ## Transversal rules
 
 - Sources uniques : le Markdown et `documentation.config.json`. Ne jamais corriger un ICML généré sans le dire : la prochaine régénération l'écrase, sauf si l'utilisateur le retouche exprès (le manifeste d'empreintes l'arrête alors).
-- Ne jamais modifier la charte, les maquettes, ni le jeu de styles fermé (`STYLE_TABLE`) ; ne pas renommer `cerascan_object_styles` (identifiant lu par les `.indd` existants).
-- Piloter InDesign (`pdf`) exige l'accord de l'utilisateur, le document fermé, une copie de sauvegarde (faite par `update`) et un PowerShell lancé en administrateur. Sans cela, donner la commande à l'utilisateur au lieu de la lancer.
+- Ne jamais modifier la charte, les maquettes, ni le jeu de styles fermé (`STYLE_TABLE`) ; ne pas renommer `cerascan_object_styles` (identifiant lu par les `.indd` existants). Une maquette se crée et se modifie par la skill `maquette`, jamais en touchant au moteur.
+- Piloter InDesign (`pdf`) exige l'accord de l'utilisateur, le document fermé, une copie de sauvegarde (faite par `update`) et aucun terminal administrateur : le moteur passe par une tâche planifiée élevée (`run-elevated.ps1`, codes de sortie dans le runbook, section 3 quater). Sans l'accord de l'utilisateur, donner la commande au lieu de la lancer.
 - Sans Pandoc dans le PATH, le moteur s'arrête avant d'écrire quoi que ce soit : indiquer l'installation à l'utilisateur.
 - Un texte retouché dans InDesign sur un cadre lié est écrasé par la mise à jour : le rappeler.
 - Ne rien copier du moteur dans le projet client : l'appeler depuis le plugin.
 
 ## References
 
+- Skill `maquette` : créer, caler et brancher une maquette.
 - `references/runbook-export-indesign.md` : mise en page dans InDesign, jeu de styles, liens, dépannage.
