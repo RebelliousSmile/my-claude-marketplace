@@ -12,6 +12,7 @@
  *   icml   [--force] …         régénère les ICML (export-icml.js) ; Pandoc requis
  *   idml   [--gabarits] …      modèle IDML de la maquette (build-idml-template.js)
  *   pdf    build|update|compose …  pilote InDesign (compose-guide.js) ; Pandoc et InDesign requis
+ *   captures list|check|run …  images citées par les guides, contrôle, commande de captures du projet (capture-guides.js)
  *   version                    version du plugin
  *
  * Toutes les commandes acceptent `--config <chemin>` (sinon recherche en remontant depuis le dossier courant).
@@ -29,7 +30,8 @@ const SCRIPTS = {
   merge: 'build-merged-guides.js',
   icml: 'export-icml.js',
   idml: 'build-idml-template.js',
-  pdf: 'compose-guide.js'
+  pdf: 'compose-guide.js',
+  captures: 'capture-guides.js'
 };
 const NEEDS_PANDOC = new Set(['icml', 'pdf']);
 const PANDOC_MISSING = "Pandoc est introuvable dans le PATH. L'installer (https://pandoc.org/installing.html, "
@@ -77,6 +79,7 @@ function usage() {
     '  icml [--force]           régénère les ICML (Pandoc requis)',
     '  idml [--gabarits]        modèle IDML de la charte',
     '  pdf build|update|compose pilote InDesign (Pandoc et InDesign requis)',
+    '  captures list|check|run  images citées par les guides, contrôle, lancement des captures du projet',
     '  version                  version du plugin',
     '',
     'Toutes les commandes acceptent --config <chemin>.'

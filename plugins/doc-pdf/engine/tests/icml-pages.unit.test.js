@@ -111,6 +111,11 @@ describe('summaryPageParagraphs', () => {
     expect(() => summaryPageParagraphs({ chapters: [] })).toThrow(PagesError);
   });
 
+  test('les marques d\'accent `*mot*` des titres sont retirées du sommaire', () => {
+    const lines = summaryPageParagraphs({ chapters: [{ number: 1, title: 'Vue d\'ensemble du *projet*' }] });
+    expect(lines[1].text[2]).toEqual({ text: 'Vue d\'ensemble du projet' });
+  });
+
   test('numéros de page connus : « p. N » ; chapitre absent de la table : « p. … »', () => {
     const lines = summaryPageParagraphs({ chapters: [{ number: 1, title: 'Vue' }, { number: 2, title: 'Fin' }], pages: { 1: 3 } });
     const pageOf = line => line.text[4];
@@ -203,9 +208,9 @@ describe('titres courants d’en-tête', () => {
 describe('coverParagraphs', () => {
   const chapters = [{ number: 1, title: 'Guide' }, { number: 2, title: 'Importer' }];
 
-  test('titre du premier chapitre, version, puis une ligne de sommaire par chapitre', () => {
-    expect(coverParagraphs({ chapters, version: '2.20.0' })).toEqual([
-      { style: 'Titre-couverture', text: 'Guide' },
+  test('titre du guide (jamais celui du premier chapitre), version, puis une ligne de sommaire par chapitre', () => {
+    expect(coverParagraphs({ title: 'Guide du contributeur', chapters, version: '2.20.0' })).toEqual([
+      { style: 'Titre-couverture', text: 'Guide du contributeur' },
       { style: 'Surtitre', text: 'Version 2.20.0' },
       { style: 'Sommaire-général', text: 'Sommaire' },
       { style: 'Sommaire-ligne', text: '01\tGuide' },
@@ -214,7 +219,22 @@ describe('coverParagraphs', () => {
   });
 
   test('un guide sans chapitre est refusé', () => {
-    expect(() => coverParagraphs({ chapters: [], version: '1' })).toThrow(PagesError);
+    expect(() => coverParagraphs({ title: 'Guide', chapters: [], version: '1' })).toThrow(PagesError);
+  });
+
+  test('un guide sans titre est refusé : le titre d\'un chapitre ne le remplace pas', () => {
+    expect(() => coverParagraphs({ chapters, version: '1' })).toThrow(/titre du guide/);
+  });
+
+  test('les marques d\'accent `*mot*` des titres ne figurent ni sur la couverture ni dans son sommaire', () => {
+    const accented = [{ number: 1, title: 'Prise en *main*' }, { number: 2, title: 'Points d\'*extension*' }];
+    const cover = coverParagraphs({ title: 'Guide de l\'*utilisateur*', chapters: accented, version: '1' });
+    expect(cover[0]).toEqual({ style: 'Titre-couverture', text: 'Guide de l\'utilisateur' });
+    expect(cover.slice(3)).toEqual([
+      { style: 'Sommaire-ligne', text: '01\tPrise en main' },
+      { style: 'Sommaire-ligne', text: '02\tPoints d\'extension' }
+    ]);
+    expect(JSON.stringify(cover)).not.toContain('*');
   });
 });
 
@@ -292,8 +312,8 @@ describe('guidePages', () => {
     tempDirs.push(guidesDir);
     fs.mkdirSync(path.join(guidesDir, 'guide-x'));
     fs.writeFileSync(path.join(guidesDir, 'guide-x', '01-intro.md'), '# Mon guide\n', 'utf8');
-    const pages = guidePages('guide-x', { guidesDir, pagesConfig: writeConfig(VALID), version: '9.9.9' });
-    expect(pages.cover[0]).toEqual({ style: 'Titre-couverture', text: 'Mon guide' });
+    const pages = guidePages('guide-x', { title: 'Guide X', guidesDir, pagesConfig: writeConfig(VALID), version: '9.9.9' });
+    expect(pages.cover[0]).toEqual({ style: 'Titre-couverture', text: 'Guide X' });
     expect(pages.subtitle).toBe('Un sous-titre.');
     expect(pages.footer).toBe('Marque · Guide X');
     expect(pages.mentions).toEqual(VALID_MENTIONS);
@@ -314,7 +334,7 @@ describe('styles des pages', () => {
   test('chaque style employé existe dans le jeu court', () => {
     const known = new Set(STYLES.paragraph.map((entry) => entry.name));
     const used = [
-      ...coverParagraphs({ chapters: [{ number: 1, title: 'a' }], version: '1' }),
+      ...coverParagraphs({ title: 'a', chapters: [{ number: 1, title: 'a' }], version: '1' }),
       ...footerParagraphs(VALID_COMMON),
       ...headerTitleParagraphs({ title: 'a' }),
       ...headerVersionParagraphs({ version: '1' }),

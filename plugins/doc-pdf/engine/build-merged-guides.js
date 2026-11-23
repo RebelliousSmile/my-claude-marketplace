@@ -28,8 +28,8 @@ const BANNER = '<!-- Fichier généré par la commande merge du plugin doc-pdf �
   + 'fichiers 0*.md de ce dossier. Ne pas modifier : éditer les fichiers numérotés '
   + 'puis relancer merge. -->';
 
-const NUMBERED_FILE = /^0\d-[^/\\]+\.md$/;
-const LOCAL_LINK = /\[([^\]]*)\]\((0\d-[^)#\s/\\]+\.md)(#[^)\s]*)?\)/g;
+const NUMBERED_FILE = /^\d{2}-[^/\\]+\.md$/;
+const LOCAL_LINK = /\[([^\]]*)\]\((\d{2}-[^)#\s/\\]+\.md)(#[^)\s]*)?\)/g;
 const HEADING = /^(#{1,6})\s+(.+?)\s*#*\s*$/;
 
 function toLf(text) {

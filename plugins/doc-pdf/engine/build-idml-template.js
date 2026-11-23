@@ -1239,7 +1239,7 @@ function main(argv) {
     // Couverture et fin remplies d'après le guide : titre, sous-titre, version, sommaire, contact et conseils de chaque guide.
     const pages = guide
       ? {
-        ...guidePages(guide.dir, { guidesDir: config.sourceDir, pagesConfig: config.pagesFile, version: readVersion(config), maquette }),
+        ...guidePages(guide.dir, { title: guide.title, guidesDir: config.sourceDir, pagesConfig: config.pagesFile, version: readVersion(config), maquette }),
         label: guide.title,
         verb: guide.verb,
         tag: guide.type

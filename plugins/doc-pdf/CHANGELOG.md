@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.1
+
+- Republication de 0.6.0 : le cache installé sous ce numéro était un instantané antérieur du travail en cours (couverture et en-tête portant le titre du premier chapitre, p. ex. « Prise en main »). Réinstaller le plugin pour obtenir le moteur courant ; aucun changement de code par rapport à 0.6.0.
+
+## 0.6.0
+
+- Commande `captures list|check|run [--guide <id>]` : inventaire des images citées par chaque guide (état, images non citées), contrôle (exit 1 si une image citée manque sur le disque) et lancement de la commande de captures du projet, suivi d'un constat des images réécrites, inchangées ou manquantes.
+- Champ facultatif `captures` de `documentation.config.json` (`command`, `cwd`, `env`) : le moteur ne prend aucune capture, il lance l'outil du projet (Playwright, etc.) avec `DOC_PDF_SOURCE_DIR` et, selon `--guide`, `DOC_PDF_GUIDE`.
+- `captures` ne demande ni Pandoc ni InDesign. Référence `references/captures.md`.
+- Chapitres numérotés sur deux chiffres (`01-` à `99-`) : l'ancien motif `0N-` ignorait en silence tout chapitre à partir de `10-` (ni ICML, ni fusion, ni liens locaux).
+- Couverture et en-tête de la page gauche : ils portent le `title` du guide (`documentation.config.json`) et non plus le titre de son premier chapitre. `title` devient obligatoire pour chaque guide (`coverParagraphs` refuse un guide sans titre). Régénérer les ICML puis recomposer (`pdf compose --remplacer`).
+
 ## 0.5.1
 
 - Skill `doc-pdf:maquette` : le dossier cible de la maquette est confirmé par l'utilisateur avant `maquette init`, le calage annonce les pages attendues et se clôt sur la validation de l'utilisateur, la production lit le constat d'empreintes et renvoie tout défaut de rendu vers le calage.

@@ -3,7 +3,7 @@ name: doc-pdf
 description: >-
   Génère la documentation PDF d'un projet client depuis son Markdown : ICML et IDML d'une maquette externe, mise à jour du .indd existant et export PDF par InDesign.
 author: François-Xavier Guillois
-version: 0.3.0
+version: 0.4.0
 vibe_version: ">=1.0.0"
 permissions:
   - bash
@@ -32,6 +32,8 @@ Une seule skill, plusieurs commandes du moteur. Les lancer avec `node <DOC_PDF_P
 | `idml` | Modèle IDML de la charte (`--gabarits`, `--guide <id>`) | aucun |
 | `maquette init` | Crée une maquette (squelette validé) : voir la skill `maquette` | aucun |
 | `maquette specimen` | Ajoute le spécimen de calage à une maquette | aucun |
+| `captures list` / `captures check` | Images citées par les guides et leur état ; `check` sort en 1 si une image manque (`--guide <id>`) | aucun |
+| `captures run` | Lance la commande de captures du projet (champ `captures` de la configuration), puis dit quelles images ont été réécrites | outil du projet |
 | `pdf build` | Compose un chapitre d'essai dans InDesign | Pandoc, InDesign |
 | `pdf update` | Met à jour le `.indd` du guide et exporte le PDF | Pandoc, InDesign |
 | `pdf compose` | Place tous les chapitres (ICML liés) dans le modèle IDML, écrit le `.indd` et le PDF (`--remplacer`, `--sortie <fichier.indd>`) | Pandoc, InDesign |
@@ -39,14 +41,16 @@ Une seule skill, plusieurs commandes du moteur. Les lancer avec `node <DOC_PDF_P
 ## Default flow
 
 1. Localiser `DOC_PDF_PLUGIN_ROOT` (cf. portabilité), puis vérifier la configuration : `init` si le projet n'a pas de `documentation.config.json`.
-2. Régénérer les ICML avec `icml`. Si l'export s'arrête en nommant un ICML modifié à la main, le montrer à l'utilisateur : ne passer `--force` qu'avec son accord, car la régénération écrase la retouche.
-3. Pour mettre à jour le PDF, lancer `pdf update --guide <id>`, seulement avec l'accord explicite de l'utilisateur.
+2. Contrôler les images avec `captures check` : si une image citée manque ou si l'interface a changé, régénérer les captures par `captures run` (cf. `references/captures.md`), seulement si la commande du projet cible une base jetable.
+3. Régénérer les ICML avec `icml`. Si l'export s'arrête en nommant un ICML modifié à la main, le montrer à l'utilisateur : ne passer `--force` qu'avec son accord, car la régénération écrase la retouche.
+4. Pour mettre à jour le PDF, lancer `pdf update --guide <id>`, seulement avec l'accord explicite de l'utilisateur.
 
 ## Transversal rules
 
 - Sources uniques : le Markdown et `documentation.config.json`. Ne jamais corriger un ICML généré sans le dire : la prochaine régénération l'écrase, sauf si l'utilisateur le retouche exprès (le manifeste d'empreintes l'arrête alors).
 - Ne jamais modifier la charte, les maquettes, ni le jeu de styles fermé (`STYLE_TABLE`) ; ne pas renommer `cerascan_object_styles` (identifiant lu par les `.indd` existants). Une maquette se crée et se modifie par la skill `maquette`, jamais en touchant au moteur.
 - Piloter InDesign (`pdf`) exige l'accord de l'utilisateur, le document fermé, une copie de sauvegarde (faite par `update`) et aucun terminal administrateur : le moteur passe par une tâche planifiée élevée (`run-elevated.ps1`, codes de sortie dans le runbook, section 3 quater). Sans l'accord de l'utilisateur, donner la commande au lieu de la lancer.
+- `captures run` exécute une commande du projet qui peut écrire en base : ne la lancer qu'après avoir lu `captures.command` et `captures.env` dans la configuration et vérifié que la cible est jetable, jamais la production. Une capture ne doit montrer aucun secret ni donnée réelle.
 - Sans Pandoc dans le PATH, le moteur s'arrête avant d'écrire quoi que ce soit : indiquer l'installation à l'utilisateur.
 - Un texte retouché dans InDesign sur un cadre lié est écrasé par la mise à jour : le rappeler.
 - Ne rien copier du moteur dans le projet client : l'appeler depuis le plugin.
@@ -54,4 +58,5 @@ Une seule skill, plusieurs commandes du moteur. Les lancer avec `node <DOC_PDF_P
 ## References
 
 - Skill `maquette` : créer, caler et brancher une maquette.
+- `references/captures.md` : captures d'écran des guides, contrat avec la commande du projet.
 - `references/runbook-export-indesign.md` : mise en page dans InDesign, jeu de styles, liens, dépannage.

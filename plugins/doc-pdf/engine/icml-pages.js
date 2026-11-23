@@ -30,24 +30,36 @@ function firstHeading(markdown, label) {
   return line.replace(/^# /, '').trim();
 }
 
+/**
+ * Titre sans marque d'accent : le Markdown d'un titre peut porter `*mot*` (accent, rendu à
+ * l'ouverture du chapitre), jamais dans un titre courant, la couverture ni le sommaire.
+ */
+const plainTitle = title => title.replace(/\*/g, '');
+
 /** Les textes fixes viennent de la maquette : aucun repli sur une maquette embarquée. */
 function requireTextes(textes, caller) {
   if (!textes) throw new PagesError(`${caller} : les textes de la maquette sont obligatoires.`);
 }
 
-/** Couverture : titre, version, sommaire. `chapters` : [{ number, title }] dans l'ordre du guide. */
-function coverParagraphs({ chapters, version }, textes) {
+/**
+ * Couverture : titre du guide, version, sommaire. `title` : titre du guide (champ `title` de la
+ * configuration), jamais celui d'un chapitre ; `chapters` : [{ number, title }] dans l'ordre du guide.
+ */
+function coverParagraphs({ title, chapters, version }, textes) {
   requireTextes(textes, 'coverParagraphs');
+  if (!title) {
+    throw new PagesError('Couverture impossible : le titre du guide est obligatoire.');
+  }
   if (chapters.length === 0) {
     throw new PagesError('Couverture impossible : le guide ne contient aucun chapitre.');
   }
   return [
-    { style: 'Titre-couverture', text: chapters[0].title },
+    { style: 'Titre-couverture', text: plainTitle(title) },
     { style: 'Surtitre', text: `Version ${version}` },
     { style: 'Sommaire-général', text: textes.sommaire },
     ...chapters.map(({ number, title }) => ({
       style: 'Sommaire-ligne',
-      text: `${String(number).padStart(2, '0')}\t${title}`
+      text: `${String(number).padStart(2, '0')}\t${plainTitle(title)}`
     }))
   ];
 }
@@ -69,7 +81,7 @@ function summaryPageParagraphs({ chapters, pages }, textes) {
       text: [
         { text: String(number).padStart(2, '0'), character: 'Sommaire-numéro' },
         { text: '\t' },
-        { text: title },
+        { text: plainTitle(title) },
         { text: '\t' },
         { text: pageLabel(pages, String(number), textes), character: 'Sommaire-page' }
       ]
@@ -99,9 +111,6 @@ function footerParagraphs(entry) {
 function footerLeftParagraphs(entry) {
   return [{ style: 'Titre-courant', text: entry.pied, justification: 'RightAlign' }];
 }
-
-/** Titre d'en-tête : le Markdown d'un titre peut porter `*mot*` (accent), jamais dans un titre courant. */
-const plainTitle = title => title.replace(/\*/g, '');
 
 /** En-tête de la page gauche : flèche ◀ vers le bord extérieur (comme le ▶ de la page droite), titre du document (celui de la couverture). */
 function headerTitleParagraphs({ title }) {
@@ -287,7 +296,7 @@ function productVersion(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8')).version;
 }
 
-const NUMBERED_CHAPTER = /^0\d-[^/\\]+\.md$/;
+const NUMBERED_CHAPTER = /^\d{2}-[^/\\]+\.md$/;
 
 /** Chapitres numérotés d'un dossier de guide : [{ number, title }] (numéro du préfixe, premier titre). */
 function guideChapters(guide, guidesDir) {
@@ -308,11 +317,11 @@ function guideChapters(guide, guidesDir) {
  * Couverture et fin d'un guide : paragraphes tels que les écrit l'ICML, plus le sous-titre
  * de la couverture et le contact (bandeau et cartes) de la page de fin.
  */
-function guidePages(guide, { guidesDir, pagesConfig, version, maquette }) {
+function guidePages(guide, { title, guidesDir, pagesConfig, version, maquette }) {
   const { textes } = maquette;
   const entry = guideEntry(loadPagesConfig(pagesConfig, maquette), guide);
   return {
-    cover: coverParagraphs({ chapters: guideChapters(guide, guidesDir), version }, textes),
+    cover: coverParagraphs({ title, chapters: guideChapters(guide, guidesDir), version }, textes),
     subtitle: entry.sousTitre,
     pages: entry.pages,
     footer: entry.pied,

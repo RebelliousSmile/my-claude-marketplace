@@ -23,6 +23,11 @@
  * `<outputDir>/pdf/<nom du .indd>-v<version de versionFile>.pdf` (sans version lisible : `<nom>.pdf`).
  * Un accent est l'un des trois tons de la charte ; plusieurs guides peuvent partager le même.
  *
+ * `captures` (facultatif) déclare la commande du projet qui régénère les captures d'écran des guides
+ * (commande `captures run`) : `{ "command": "pnpm run guides:captures", "cwd": "../..", "env": { "PORT": "3033" } }`.
+ * `command` est lancée par le shell depuis `cwd` (relatif au fichier de configuration, défaut : son dossier) ;
+ * `env` s'ajoute à l'environnement courant (valeurs textuelles). Le moteur ne sait rien de l'outil de capture.
+ *
  * Recherche : `--config <chemin>` sinon `documentation.config.json` en remontant depuis le dossier courant.
  */
 
@@ -106,6 +111,22 @@ function loadMaquetteField(value, dir) {
   }
 }
 
+/** Champ `captures` : commande du projet, dossier de lancement résolu et environnement ; null si absent. */
+function checkCaptures(value, dir) {
+  if (value === undefined) return null;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new ConfigError('Configuration : « captures » doit être un objet.');
+  }
+  const command = requireText(value.command, 'captures.command');
+  const cwd = path.resolve(dir, value.cwd === undefined ? '.' : requireText(value.cwd, 'captures.cwd'));
+  const env = value.env === undefined ? {} : value.env;
+  if (!env || typeof env !== 'object' || Array.isArray(env)
+    || Object.values(env).some(entry => typeof entry !== 'string')) {
+    throw new ConfigError('Configuration : « captures.env » doit associer des noms à des valeurs textuelles.');
+  }
+  return { command, cwd, env: { ...env } };
+}
+
 /** Valide un objet de configuration lu depuis `file` ; rend la configuration résolue (chemins absolus). */
 function resolveConfig(raw, file) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
@@ -130,7 +151,8 @@ function resolveConfig(raw, file) {
   const guides = raw.guides.map((guide, index) => checkGuide(guide, index, seen, axes))
     .map(guide => ({ ...guide, document: guide.document === null ? null : path.resolve(dir, guide.document) }));
   const pdfPreset = raw.pdfPreset === undefined ? null : requireText(raw.pdfPreset, 'pdfPreset');
-  return { file: path.resolve(file), dir, sourceDir, outputDir, pagesFile, versionFile, pdfPreset, maquette, guides };
+  const captures = checkCaptures(raw.captures, dir);
+  return { file: path.resolve(file), dir, sourceDir, outputDir, pagesFile, versionFile, pdfPreset, maquette, guides, captures };
 }
 
 /** Lit et valide le fichier de configuration `file`. */

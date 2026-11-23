@@ -58,6 +58,14 @@ describe('resolveConfig', () => {
     expect(config.versionFile).toBe(path.resolve('/projet/package.json'));
   });
 
+  test('captures : absent vaut null, présent est résolu depuis le dossier de la configuration', () => {
+    expect(resolveConfig(valid(), FILE).captures).toBeNull();
+    const captures = resolveConfig(valid({ captures: { command: 'pnpm run guides:captures', cwd: '..', env: { PORT: '3033' } } }), FILE).captures;
+    expect(captures).toEqual({ command: 'pnpm run guides:captures', cwd: path.resolve('/projet'), env: { PORT: '3033' } });
+    expect(resolveConfig(valid({ captures: { command: 'x' } }), FILE).captures)
+      .toEqual({ command: 'x', cwd: path.resolve('/projet/docs'), env: {} });
+  });
+
   test('sortie par défaut : « output » à côté du fichier', () => {
     expect(resolveConfig(valid(), FILE).outputDir).toBe(path.resolve('/projet/docs/output'));
   });
@@ -108,7 +116,11 @@ describe('resolveConfig', () => {
     ['mergedFile vide', { guides: [{ ...GUIDE, mergedFile: '' }] }, /« guides\[0\]\.mergedFile »/],
     ['document vide', { guides: [{ ...GUIDE, document: '' }] }, /« guides\[0\]\.document »/],
     ['document sans extension .indd', { guides: [{ ...GUIDE, document: 'guide.pdf' }] }, /« guides\[0\]\.document » doit être un fichier \.indd/],
-    ['pdfPreset vide', { pdfPreset: ' ' }, /« pdfPreset »/]
+    ['pdfPreset vide', { pdfPreset: ' ' }, /« pdfPreset »/],
+    ['captures qui n’est pas un objet', { captures: 'pnpm run captures' }, /« captures » doit être un objet/],
+    ['captures sans command', { captures: { cwd: '.' } }, /« captures\.command »/],
+    ['captures.cwd vide', { captures: { command: 'x', cwd: ' ' } }, /« captures\.cwd »/],
+    ['captures.env non textuel', { captures: { command: 'x', env: { PORT: 3033 } } }, /« captures\.env »/]
   ])('refuse %s en nommant le champ', (_name, overrides, message) => {
     expect(() => resolveConfig(valid(overrides), FILE)).toThrow(ConfigError);
     expect(() => resolveConfig(valid(overrides), FILE)).toThrow(message);

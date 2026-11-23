@@ -238,7 +238,7 @@ function convertCommon({ outDir, pandoc, config, version, documentType, maquette
 }
 
 /** Couverture, sommaire et fin propres à un guide : [{ file, icml }]. */
-function convertPages({ guide, chapters, outDir, pandoc, config, version, maquette }) {
+function convertPages({ guide, title, chapters, outDir, pandoc, config, version, maquette }) {
   const label = `${guide}/pages`;
   const titled = chapters.map(chapter => {
     const markdown = fs.readFileSync(path.join(chapter.dir, chapter.name), 'utf8');
@@ -249,9 +249,9 @@ function convertPages({ guide, chapters, outDir, pandoc, config, version, maquet
   const entry = pages.guideEntry(config, guide);
   try {
     return [
-      { file: paths.cover, icml: buildPageIcml(envelope, pages.coverParagraphs({ chapters: titled, version }, maquette.textes), { maquette }) },
+      { file: paths.cover, icml: buildPageIcml(envelope, pages.coverParagraphs({ title, chapters: titled, version }, maquette.textes), { maquette }) },
       { file: paths.summary, icml: buildPageIcml(envelope, pages.summaryPageParagraphs({ chapters: titled, pages: entry.pages }, maquette.textes), { maquette }) },
-      { file: paths.headerTitle, icml: buildPageIcml(envelope, pages.headerTitleParagraphs({ title: titled[0].title }), { maquette }) },
+      { file: paths.headerTitle, icml: buildPageIcml(envelope, pages.headerTitleParagraphs({ title }), { maquette }) },
       { file: paths.endBanner, icml: buildPageIcml(envelope, pages.endBannerParagraphs(entry), { maquette }) },
       ...paths.endCards.map((file, index) => ({ file, icml: buildPageIcml(envelope, pages.endCardParagraphs(entry, index), { maquette }) })),
       { file: paths.end, icml: buildPageIcml(envelope, pages.endParagraphs(entry), { maquette }) },
@@ -329,9 +329,9 @@ function exportGuides({ config, outDir: outDirOverride, pandoc = 'pandoc', colum
     ];
   });
   const guideDirs = config.guides.map(guide => guide.dir);
-  guideDirs.forEach(guide => {
+  config.guides.forEach(({ dir: guide, title }) => {
     const own = chapters.filter(chapter => chapter.guide === guide);
-    outputs.push(...convertPages({ guide, chapters: own, outDir, pandoc, config: pagesConfig, version: productVersion, maquette: config.maquette }));
+    outputs.push(...convertPages({ guide, title, chapters: own, outDir, pandoc, config: pagesConfig, version: productVersion, maquette: config.maquette }));
   });
   outputs.push(...convertCommon({ outDir, pandoc, config: pagesConfig, version: productVersion, documentType, maquette: config.maquette }));
   outputs.forEach(({ file, icml }) => {
