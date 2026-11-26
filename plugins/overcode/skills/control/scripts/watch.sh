@@ -61,12 +61,18 @@ git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1 && is_git=1
 # Empreinte de l'arbre de travail : "statut<TAB>chemin<TAB>taille:mtime" par fichier modifié.
 snapshot() {
   if [ "$is_git" = 1 ]; then
+    # Un seul `stat` pour tous les chemins : un fork par fichier coûte ~80 ms sous
+    # Git Bash, soit ~30 min par tick sur un index de 23 000 entrées.
+    local list="$state/.snapshot_list" sigs="$state/.snapshot_sigs"
     git -C "$root" status --porcelain=v1 --untracked-files=all 2>/dev/null |
-    while IFS= read -r line; do
-      st="${line:0:2}"; p="${line:3}"; p="${p##* -> }"; p="${p%\"}"; p="${p#\"}"
-      sig="$(stat -c '%s:%Y' "$root/$p" 2>/dev/null || echo gone)"
-      printf '%s\t%s\t%s\n' "$(echo "$st" | tr -d ' ')" "$p" "$sig"
-    done | LC_ALL=C sort
+      awk '{ st = substr($0, 1, 2); gsub(/ /, "", st); p = substr($0, 4)
+             sub(/.* -> /, "", p); sub(/^"/, "", p); sub(/"$/, "", p)
+             print st "\t" p }' > "$list"
+    cut -f2 "$list" | (cd "$root" && xargs -r -d '\n' stat -c $'%n\t%s:%Y' 2>/dev/null) > "$sigs"
+    awk -F'\t' 'NR == FNR { s[$1] = $2; next }
+                { print $1 "\t" $2 "\t" (($2 in s) ? s[$2] : "gone") }' "$sigs" "$list" |
+      LC_ALL=C sort
+    rm -f "$list" "$sigs"
   else
     find "$root" -type f -not -path '*/.git/*' -not -path '*/node_modules/*' \
       -printf '~\t%P\t%s:%T@\n' 2>/dev/null | LC_ALL=C sort
@@ -120,8 +126,8 @@ tick() {
 
   # Fichiers apparus, modifiés ou disparus depuis le tick précédent.
   files="$(
-    { comm -13 <(printf '%s\n' "$prev") <(printf '%s\n' "$cur") | cut -f1,2
-      comm -23 <(printf '%s\n' "$prev" | cut -f2 | LC_ALL=C sort -u) \
+    { LC_ALL=C comm -13 <(printf '%s\n' "$prev") <(printf '%s\n' "$cur") | cut -f1,2
+      LC_ALL=C comm -23 <(printf '%s\n' "$prev" | cut -f2 | LC_ALL=C sort -u) \
                <(printf '%s\n' "$cur" | cut -f2 | LC_ALL=C sort -u) | sed 's/^/clean\t/'
     } | grep -v '^\s*$' | awk -F'\t' '$2 != "" && !seen[$2]++ { printf "%s%s %s", (n++ ? ", " : ""), $1, $2 }'
   )"
