@@ -4,6 +4,25 @@
 
 ## [Unreleased]
 
+## [6.2.3] — 2026-11-26
+
+### Fixed
+
+- **`control` : la sonde ne bloque plus l'index du dépôt observé.** Ses appels git passent par
+  `--no-optional-locks` : un `git status` qui rafraîchissait l'index prenait `index.lock` et faisait
+  échouer le `git add` de la session observée.
+- **`control` : plus de lots fantômes sur une lecture incomplète.** Un `git status` en échec, un
+  `stat` interrompu (code de `xargs` autre que 0 ou 123) ou un chemin noté « gone » qui existe
+  pourtant sur disque font sauter le tick au lieu d'émettre un lot « tout supprimé / tout revenu ».
+- **`control` : une seule sonde par dossier d'état.** Sous Windows, l'expiration du Monitor ne tue
+  pas toujours `bash.exe` ; la nouvelle instance arrête la précédente (fichier `pid`) et une instance
+  supplantée sort sans tick.
+
+### Changed
+
+- **`control` : lots lisibles sur un gros changement.** La liste des fichiers d'un lot s'arrête à 40,
+  suivie de « … +N autres » et du compte par statut.
+
 ## [6.2.2] — 2026-11-26
 
 ### Fixed
