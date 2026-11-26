@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+## [6.2.2] — 2026-11-26
+
+### Fixed
+
+- **`control` : la sonde tient son intervalle sur un gros index.** `snapshot` lançait un `stat` et un
+  `tr` par ligne de `git status` ; sous Git Bash, chaque fork coûte ~80 ms, soit ~30 min par tick sur
+  un dépôt de 23 129 entrées indexées (aucune ligne de base posée). Les signatures sont désormais
+  lues en un seul `stat` par `xargs`, puis rapprochées par `awk` : 8 s par tick sur le même dépôt.
+- **`control` : plus de faux lots dus au tri.** `comm` comparait sous la locale courante des
+  snapshots triés en `LC_ALL=C` (« file is not in sorted order », lots fantômes possibles) ; il tourne
+  désormais en `LC_ALL=C`.
+
 ## [6.2.1] — 2026-11-04
 
 ### Fixed
