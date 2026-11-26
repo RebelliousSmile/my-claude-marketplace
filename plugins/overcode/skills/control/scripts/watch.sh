@@ -26,6 +26,7 @@
 # Dossier d'état : snapshot, head (dernier tick) ; baseline_snapshot, baseline_head
 # (jamais réécrits — ce qui était déjà là au départ) ; tlines, tlines_prev (offsets
 # du transcript : les lignes <a>-<b> du dernier lot) ; batch, last_change, idle_sent ;
+# pid (la sonde active : une nouvelle instance arrête la précédente) ;
 # emitted.log (chaque ligne émise, en ajout : le commentateur y rattrape les lots
 # qu'aucune notification n'a remontés). `commented` (dernier lot commenté) est écrit
 # par le commentateur, jamais par la sonde.
@@ -42,7 +43,7 @@ while [ $# -gt 0 ]; do
     --state) state="$2"; shift 2 ;;
     --once) once=1; shift ;;
     --reset) reset=1; shift ;;
-    -h|--help) sed -n '2,32p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,33p' "$0"; exit 0 ;;
     *) echo "watch.sh: option inconnue $1" >&2; exit 2 ;;
   esac
 done
@@ -56,30 +57,49 @@ fi
 mkdir -p "$state"
 
 is_git=0
-git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1 && is_git=1
+# `--no-optional-locks` : un `git status` qui rafraîchit l'index prend
+# `index.lock` et fait échouer le `git add` de la session observée.
+git_ro() { git --no-optional-locks -C "$root" "$@"; }
+git_ro rev-parse --is-inside-work-tree >/dev/null 2>&1 && is_git=1
 
 # Empreinte de l'arbre de travail : "statut<TAB>chemin<TAB>taille:mtime" par fichier modifié.
 snapshot() {
   if [ "$is_git" = 1 ]; then
     # Un seul `stat` pour tous les chemins : un fork par fichier coûte ~80 ms sous
     # Git Bash, soit ~30 min par tick sur un index de 23 000 entrées.
-    local list="$state/.snapshot_list" sigs="$state/.snapshot_sigs"
-    git -C "$root" status --porcelain=v1 --untracked-files=all 2>/dev/null |
-      awk '{ st = substr($0, 1, 2); gsub(/ /, "", st); p = substr($0, 4)
-             sub(/.* -> /, "", p); sub(/^"/, "", p); sub(/"$/, "", p)
-             print st "\t" p }' > "$list"
-    cut -f2 "$list" | (cd "$root" && xargs -r -d '\n' stat -c $'%n\t%s:%Y' 2>/dev/null) > "$sigs"
+    local list="$state/.snapshot_list" sigs="$state/.snapshot_sigs" raw="$state/.snapshot_raw"
+    # Un `git status` en échec ne doit pas se lire comme « tout est redevenu
+    # propre » : le tick est sauté.
+    if ! git_ro status --porcelain=v1 --untracked-files=all > "$raw" 2>/dev/null; then
+      rm -f "$raw"; return 1
+    fi
+    awk '{ st = substr($0, 1, 2); gsub(/ /, "", st); p = substr($0, 4)
+           sub(/.* -> /, "", p); sub(/^"/, "", p); sub(/"$/, "", p)
+           print st "\t" p }' "$raw" > "$list"
+    rm -f "$raw"
+    # xargs rend 123 quand un `stat` n'a pas trouvé un fichier (supprimé : normal) ;
+    # tout autre code (fork refusé, lot tué) laisse des fichiers sans signature,
+    # lus à tort comme « gone » : le tick est sauté.
+    local rc=0 out="$state/.snapshot_out" p
+    cut -f2 "$list" | (cd "$root" && xargs -r -d '\n' stat -c $'%n\t%s:%Y' 2>/dev/null) > "$sigs" || rc=$?
+    if [ "$rc" != 0 ] && [ "$rc" != 123 ]; then rm -f "$list" "$sigs"; return 1; fi
     awk -F'\t' 'NR == FNR { s[$1] = $2; next }
                 { print $1 "\t" $2 "\t" (($2 in s) ? s[$2] : "gone") }' "$sigs" "$list" |
-      LC_ALL=C sort
+      LC_ALL=C sort > "$out"
     rm -f "$list" "$sigs"
+    # Garde-fou : un chemin noté « gone » qui existe pourtant sur disque trahit un
+    # `stat` incomplet ; sauter le tick plutôt qu'émettre un lot fantôme.
+    while IFS=$'\t' read -r _ p _; do
+      if [ -e "$root/$p" ] || [ -L "$root/$p" ]; then rm -f "$out"; return 1; fi
+    done < <(awk -F'\t' '$3 == "gone"' "$out")
+    cat "$out"; rm -f "$out"
   else
     find "$root" -type f -not -path '*/.git/*' -not -path '*/node_modules/*' \
       -printf '~\t%P\t%s:%T@\n' 2>/dev/null | LC_ALL=C sort
   fi
 }
 
-head_sha() { [ "$is_git" = 1 ] && git -C "$root" rev-parse --short HEAD 2>/dev/null || echo "-"; }
+head_sha() { [ "$is_git" = 1 ] && git_ro rev-parse --short HEAD 2>/dev/null || echo "-"; }
 
 tool_names() {
   if command -v jq >/dev/null 2>&1; then
@@ -107,7 +127,8 @@ emit() { printf '%s
 tick() {
   local now cur prev head prev_head files commits tr="" changed=0
   now="$(date +%s)"
-  cur="$(snapshot)"; head="$(head_sha)"
+  cur="$(snapshot)" || return 0
+  head="$(head_sha)"
 
   if [ ! -f "$state/snapshot" ]; then
     printf '%s\n' "$cur" > "$state/snapshot"; echo "$head" > "$state/head"
@@ -129,12 +150,15 @@ tick() {
     { LC_ALL=C comm -13 <(printf '%s\n' "$prev") <(printf '%s\n' "$cur") | cut -f1,2
       LC_ALL=C comm -23 <(printf '%s\n' "$prev" | cut -f2 | LC_ALL=C sort -u) \
                <(printf '%s\n' "$cur" | cut -f2 | LC_ALL=C sort -u) | sed 's/^/clean\t/'
-    } | grep -v '^\s*$' | awk -F'\t' '$2 != "" && !seen[$2]++ { printf "%s%s %s", (n++ ? ", " : ""), $1, $2 }'
+    } | grep -v '^\s*$' | awk -F'\t' -v max=40 '
+        $2 != "" && !seen[$2]++ { if (n < max) printf "%s%s %s", (n ? ", " : ""), $1, $2; n++; c[$1]++ }
+        END { if (n > max) { printf " … +%d autres (", n - max; k = 0
+                             for (s in c) printf "%s%s×%d", (k++ ? " " : ""), s, c[s]; printf ")" } }'
   )"
 
   commits=""
   if [ "$head" != "$prev_head" ] && [ "$is_git" = 1 ]; then
-    commits="$(git -C "$root" log --format='%h %s' "${prev_head}..${head}" 2>/dev/null | head -n 10 | paste -sd ';' - | sed 's/;/; /g')"
+    commits="$(git_ro log --format='%h %s' "${prev_head}..${head}" 2>/dev/null | head -n 10 | paste -sd ';' - | sed 's/;/; /g')"
     [ -z "$commits" ] && commits="HEAD ${prev_head} → ${head} (réécriture d'historique ?)"
   fi
 
@@ -172,7 +196,23 @@ tick() {
 }
 
 if [ "$once" = 1 ]; then tick; exit 0; fi
+
+# Une seule sonde par dossier d'état. Sous Windows, l'expiration ou l'arrêt du
+# Monitor ne tue pas toujours bash.exe : l'orpheline et la nouvelle se partagent
+# alors `snapshot` et émettent en alternance des lots fantômes (tout propre / tout
+# revenu). La nouvelle instance arrête donc la précédente avant de boucler.
+if [ -f "$state/pid" ]; then
+  old="$(cat "$state/pid" 2>/dev/null)"
+  if [ -n "$old" ] && [ "$old" != "$$" ] && kill -0 "$old" 2>/dev/null; then
+    kill "$old" 2>/dev/null; sleep 1; kill -9 "$old" 2>/dev/null || true
+  fi
+fi
+echo "$$" > "$state/pid"
+trap '[ "$(cat "$state/pid" 2>/dev/null)" = "$$" ] && rm -f "$state/pid"' EXIT
+
 while true; do
+  # Une instance plus récente a pris la main : sortir sans tick.
+  [ "$(cat "$state/pid" 2>/dev/null)" = "$$" ] || exit 0
   tick || true
   sleep "$interval"
 done
